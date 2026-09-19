@@ -32,7 +32,7 @@ for row in ws_class.iter_rows(min_row=2, values_only=True):
         "pt": int(row[10] or 0),
         "pt_totali": float(str(row[11]).replace(",", ".")) if row[11] else 0
     })
-wb_class.close()
+
 
 # === 1.5 STATISTICHE SQUADRE ===
 STAT_FILE = r"E:\--- fantacalcio tot uff\26-27\nuovo statistiche.xlsm"
@@ -77,8 +77,42 @@ for r in range(5, 15):
         except (ValueError, TypeError):
             dati[key] = 0
     stat_squadre.append({"nome": str(nome).strip(), "dati": dati})   
-wb_stat.close()   
+  
 
+# === 1.6 CLASSIFICA F1 E BATTLE ROYALE (Foglio 4) ===
+ws_f1 = wb_stat.worksheets[3]
+
+# F1: righe 4-13, nome in col A, punteggio in col B
+f1_scores = {}
+for r in range(4, 14):
+    nome = ws_f1.cell(row=r, column=1).value
+    val = ws_f1.cell(row=r, column=2).value
+    if nome is not None and str(nome).strip():
+        try:
+            f1_scores[str(nome).strip()] = float(str(val).replace(",", ".")) if val is not None else 0
+        except (ValueError, TypeError):
+            f1_scores[str(nome).strip()] = 0
+
+# BR: righe 19-28, nome in col A, punteggio in col B
+br_scores = {}
+for r in range(19, 29):
+    nome = ws_f1.cell(row=r, column=1).value
+    val = ws_f1.cell(row=r, column=2).value
+    if nome is not None and str(nome).strip():
+        try:
+            br_scores[str(nome).strip()] = float(str(val).replace(",", ".")) if val is not None else 0
+        except (ValueError, TypeError):
+            br_scores[str(nome).strip()] = 0
+
+# Aggiunge i campi a stat_squadre
+for sq in stat_squadre:
+    sq["dati"]["f1"] = f1_scores.get(sq["nome"], 0)
+    sq["dati"]["br"] = br_scores.get(sq["nome"], 0)
+
+# Aggiunge le colonne alla lista
+colonne_stat.append("f1")
+colonne_stat.append("br")   
+wb_stat.close()
 # === 2. GIOCATORI (INSER DATA) ===
 wb_borr = openpyxl.load_workbook(BORRACHOS_FILE, read_only=True, data_only=True)
 ws_data = wb_borr["INSER DATA"]
@@ -251,6 +285,7 @@ for sq in stat_squadre:
 for c in ["gol d", "gol c", "gol a"]:
     if c not in colonne_stat:
         colonne_stat.append(c)   
+
 # === 3. CALENDARIO ===
 wb_cal = openpyxl.load_workbook(CALENDARIO_FILE, read_only=True, data_only=True)
 ws_cal = wb_cal.active
