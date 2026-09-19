@@ -801,15 +801,6 @@ function updateBest11() {
     });
     players = players.concat(att.slice(0, nAtt));
 
-    // Y: distribuiti verticalmente (altezza)
-    function getY(n, i, margin) {
-    if (n === 1) return 50;
-    if (!margin) margin = 15;
-    var step = (100 - 2 * margin) / (n - 1);
-    return margin + i * step;
-}   
-
-    // X: portiere 8%, difensori 30%, centrocampisti 55%, attaccanti 82%
     var groups = [
         { list: players.slice(0, 1), x: 8 },
         { list: players.slice(1, 1 + nDif), x: 30 },
@@ -817,26 +808,30 @@ function updateBest11() {
         { list: players.slice(1 + nDif + nCen), x: 82 }
     ];
 
-   groups.forEach(function(grp, gi) {
-    var n = grp.list.length;
-    var margin = (gi === 3 && n === 2) ? 35 : 15;
-    grp.list.forEach(function(g, i) {
-        var y = getY(n, i, margin);
-        var el = document.createElement('div');
-        el.className = 'pitch-player';
-        el.style.left = grp.x + '%';
-        el.style.top = y + '%';
+    groups.forEach(function(grp, gi) {
+        var n = grp.list.length;
+        var margin = (gi === 3 && n === 2) ? 35 : 15;
+        grp.list.forEach(function(g, i) {
+            var y;
+            if (n === 1) y = 50;
+            else y = margin + i * ((100 - 2 * margin) / (n - 1));
 
-        var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
-        el.innerHTML =
-            '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">'
-            + '<span class="pp-name">' + g.nome + '</span>'
-            + '<span class="pp-val">' + (g[bestMetric]||0) + '</span>'
-            + '<span class="pp-ruolo">' + rl + '</span>';
+            var el = document.createElement('div');
+            el.className = 'pitch-player';
+            el.style.left = grp.x + '%';
+            el.style.top = y + '%';
 
-        container.appendChild(el);
+            var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
+            el.innerHTML =
+                '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">'
+                + '<span class="pp-name">' + g.nome + '</span>'
+                + '<span class="pp-val">' + (g[bestMetric]||0) + '</span>'
+                + '<span class="pp-ruolo">' + rl + '</span>';
+
+            container.appendChild(el);
+        });
     });
-});   
+}     
 // === CARICA DATI ===
 fetch("dati.json")
     .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
