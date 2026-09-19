@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -823,4 +824,831 @@ fetch("dati.json")
     });
 </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BORRACHO'S LEAGUE 25-26</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-bottom: 3px solid #e94560;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        body.home-active .header { display: none; }
+
+        .logo { display: flex; align-items: center; gap: 15px; }
+        .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #e94560; }
+        .logo-text { font-size: 1.4em; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .logo-text span { color: #e94560; }
+        .logo-sub { font-size: 0.7em; color: #888; font-weight: 400; }
+
+        .nav { display: flex; gap: 5px; }
+        .nav-btn {
+            background: transparent; border: 2px solid #333; color: #ccc;
+            padding: 10px 20px; font-size: 0.9em; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            border-radius: 6px; transition: all 0.3s;
+        }
+        .nav-btn:hover { border-color: #e94560; color: #fff; }
+        .nav-btn.active { background: #e94560; border-color: #e94560; color: #fff; }
+
+        .page { display: none; padding: 5px 5px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .page.active { display: block; }
+
+        #page-home.active {
+            position: fixed; top: 10; left: 10;
+            width: 100vw; height: 100vh;
+            padding: 0; margin: 0;
+            background: url('logo.png') no-repeat center center;
+            background-size: cover;
+            z-index: 0;
+        }
+
+        .home-nav {
+            position: absolute; right: 30px; top: 50%;
+            transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 15px; z-index: 10;
+        }
+        .home-nav .nav-btn {
+            background: rgba(26,26,46,0.85); border: 2px solid #e94560; color: #fff;
+            padding: 12px 25px; font-size: 1em; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            border-radius: 6px; transition: all 0.3s; backdrop-filter: blur(5px);
+        }
+        .home-nav .nav-btn:hover { background: #e94560; }
+
+        .page-title { font-size: 1.3em; font-weight: 800; color: #fff; margin-bottom: 5px; padding-bottom: 3px; border-bottom: 2px solid #e94560; display: inline-block; }
+
+        .subnav { display: flex; gap: 5px; margin-bottom: 5px; flex-wrap: wrap; }
+        .subnav-btn {
+            background: #1a1a2e; border: 1px solid #333; color: #aaa;
+            padding: 8px 18px; font-size: 0.85em; font-weight: 600;
+            cursor: pointer; border-radius: 4px; transition: all 0.3s;
+        }
+        .subnav-btn:hover { border-color: #e94560; color: #fff; }
+        .subnav-btn.active { background: #e94560; border-color: #e94560; color: #fff; }
+        .subpage { display: none; }
+        .subpage.active { display: block; }
+
+        .table-container { overflow-x: auto; position: relative; z-index: 1; }
+        table { width: 100%; border-collapse: collapse; background: #1a1a2e; border-radius: 8px; overflow: hidden; }
+        thead { background: #16213e; }
+        th { padding: 5px 6px; text-align: left; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; color: #e94560; border-bottom: 2px solid #e94560; }
+        td { padding: 4px 8px; border-bottom: 1px solid #222; font-size: 0.95em; }
+        tr:hover { background: #1f1f35; }
+        .pos { font-weight: 800; color: #e94560; width: 35px; }
+        .logo-cell { width: 45px; }
+        .logo-cell img { width: 48px; height: 48px; border-radius: 50%; }
+        #tabella-giocatori .logo-cell img { width: 50px; height: 50px; }
+
+        .criterio-select {
+            background: #1a1a2e; border: 2px solid #333; color: #fff;
+            padding: 8px 15px; font-size: 0.9em; border-radius: 6px;
+            margin-bottom: 8px; cursor: pointer; display: block; width: 130px;
+        }
+        .criterio-select:focus { outline: none; border-color: #e94560; }
+
+        .classifica-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .giocatori-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .giocatori-controls {
+            flex: 0 0 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 5px;
+        }
+        .ricerca-input {
+            background: #1a1a2e;
+            border: 2px solid #333;
+            color: #fff;
+            padding: 8px 10px;
+            font-size: 0.85em;
+            border-radius: 6px;
+            width: 100%;
+        }
+        .ricerca-input:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+        .giocatori-controls .criterio-select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .giocatori-layout .table-container {
+            flex: 1;
+            margin-left: 0;
+        }
+
+        .titolo-riquadro {
+            background: #16213e;
+            border: 2px solid #e94560;
+            border-radius: 6px;
+            padding: 8px 15px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+        }
+        .desc-riquadro {
+            background: #1a1a2e;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #aaa;
+            min-height: 40px;
+        }
+        .sq-dati { flex: 1; }
+
+        #tabella-risultati td { font-size: 1.1em; text-align: center; }
+        #tabella-risultati th { font-size: 0.9em; text-align: center; }
+
+        #sub-squadre .titolo-riquadro { display: none; }
+        #sub-squadre .table-container { margin-left: 140px; margin-top: -110px; }
+        #sub-squadre td:nth-child(3) { max-width: 120px; }
+        #sub-squadre td:nth-child(4) { max-width: 60px; text-align: center; }
+        #sub-squadre th:nth-child(3) { max-width: 120px; }
+        #sub-squadre th:nth-child(4) { max-width: 60px; }
+        #page-statistiche { padding-top: 0; }
+
+        #sub-giocatori .criterio-select {
+            width: auto;
+            min-width: 120px;
+            max-width: 180px;
+            float: right;
+        }
+        #sub-squadre .criterio-select {
+            width: auto;
+            min-width: 120px;
+            max-width: 180px;
+            float: right;
+        }
+
+        .home-loghi {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .home-loghi img {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.85;
+        }
+
+        #tabella-classifica td:nth-child(4) {
+            font-size: 1.2em;
+            font-weight: 800;
+            color: #ffd700;
+        }
+        #tabella-classifica td:nth-child(11) {
+            font-size: 1.2em;
+            font-weight: 800;
+            color: #e94560;
+        }
+
+        #sub-squadre .classifica-grid { margin-left: 140px; }
+        #sub-giocatori td:last-child,
+        #sub-squadre td:last-child { text-align: center; min-width: 35px; max-width: 55px; }
+
+        .footer { text-align: center; padding: 20px; color: #444; font-size: 0.8em; margin-top: 40px; }
+        .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
+
+        /* === PITCH BEST 11 === */
+        .pitch-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 10px auto;
+            aspect-ratio: 3/4;
+            background: linear-gradient(180deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
+            border: 3px solid #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .pitch-lines {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .pitch-lines::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%; height: 2px;
+            background: rgba(255,255,255,0.5);
+        }
+        .pitch-center-circle {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 18%; aspect-ratio: 1;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+        }
+        .pitch-center-spot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 6px; height: 6px;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+        }
+        .pitch-box-top, .pitch-box-bottom {
+            position: absolute;
+            left: 50%; transform: translateX(-50%);
+            width: 60%; height: 14%;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        .pitch-box-top { top: 0; border-top: none; }
+        .pitch-box-bottom { bottom: 0; border-bottom: none; }
+        .pitch-goal-box-top, .pitch-goal-box-bottom {
+            position: absolute;
+            left: 50%; transform: translateX(-50%);
+            width: 30%; height: 6%;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        .pitch-goal-box-top { top: 0; border-top: none; }
+        .pitch-goal-box-bottom { bottom: 0; border-bottom: none; }
+        .pitch-penalty-top, .pitch-penalty-bottom {
+            position: absolute;
+            left: 50%; transform: translateX(-50%);
+            width: 6px; height: 6px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+        }
+        .pitch-penalty-top { top: 10%; }
+        .pitch-penalty-bottom { bottom: 10%; }
+
+        .pitch-player {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            z-index: 2;
+            transition: all 0.4s ease;
+        }
+        .pitch-player .pp-logo {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            background: #1a1a2e;
+        }
+        .pitch-player .pp-name {
+            font-size: 0.65em;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
+            padding: 1px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pitch-player .pp-val {
+            font-size: 0.6em;
+            font-weight: 800;
+            color: #ffd700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        .pitch-player .pp-ruolo {
+            font-size: 0.55em;
+            color: #aaa;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 15px;
+            }
+            .nav { flex-wrap: wrap; justify-content: center; }
+            .nav-btn { padding: 8px 12px; font-size: 0.8em; }
+            .logo-text { font-size: 1.1em; }
+            .logo img { width: 35px; height: 35px; }
+            .home-nav { right: 10px; gap: 8px; }
+            .home-nav .nav-btn { padding: 8px 15px; font-size: 0.85em; }
+            .home-loghi img { width: 60px; height: 60px; }
+            .table-container { font-size: 0.85em; }
+            th, td { padding: 3px 5px; font-size: 0.85em; }
+            .logo-cell img { width: 30px; height: 30px; }
+            .giocatori-layout { flex-direction: column; }
+            .giocatori-controls {
+                flex: none;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .giocatori-controls .criterio-select { width: auto; }
+            .ricerca-input { width: auto; flex: 1; }
+            #sub-squadre .table-container { margin-left: 0; margin-top: 0; }
+            #sub-giocatori .criterio-select,
+            #sub-squadre .criterio-select { float: none; width: 100%; }
+            .page-title { font-size: 1.1em; }
+        }
+
+        @media (max-width: 480px) {
+            .home-loghi img {
+                width: 45px !important;
+                height: 45px !important;
+            }
+            .home-logo-right { right: 18% !important; }
+            .home-nav {
+                right: 50%;
+                transform: translateX(50%);
+            }
+            .pitch-player .pp-logo { width: 32px; height: 32px; }
+            .pitch-player .pp-name { font-size: 0.55em; max-width: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        <div>
+            <div class="logo-text">BORRACHO'S <span>LEAGUE</span></div>
+            <div class="logo-sub">STAGIONE 25-26</div>
+        </div>
+    </div>
+    <div class="nav">
+        <button class="nav-btn" onclick="showPage('home', this)">&#8962; Home</button>
+        <button class="nav-btn" onclick="showPage('classifica', this)">Classifica</button>
+        <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
+        <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
+        <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
+    </div>
+</div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+    <div class="home-loghi" id="home-loghi"></div>
+    <div class="home-nav">
+        <button class="nav-btn" onclick="showPage('classifica', this)">Classifica</button>
+        <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
+        <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
+        <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
+    </div>
+</div>
+
+<!-- CLASSIFICA -->
+<div id="page-classifica" class="page">
+    <div class="table-container">
+        <table id="tabella-classifica">
+            <thead>
+                <tr><th>Pos</th><th></th><th>Squadra</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt Totali</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- RISULTATI -->
+<div id="page-risultati" class="page">
+    <h2 class="page-title">Risultati</h2>
+    <select class="criterio-select" id="sel-risultati" onchange="updateRisultati()"></select>
+    <div class="table-container">
+        <table id="tabella-risultati">
+            <thead>
+                <tr><th>Squadra Casa</th><th>Pt</th><th>Gol</th><th>Gol</th><th>Pt</th><th>Squadra Trasferta</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- STATISTICHE -->
+<div id="page-statistiche" class="page">
+    <h2 class="page-title">Statistiche</h2>
+    <div class="subnav">
+        <button class="subnav-btn active" onclick="showSubPage('giocatori', this)">Giocatori</button>
+        <button class="subnav-btn" onclick="showSubPage('squadre', this)">Squadre</button>
+    </div>
+
+    <div id="sub-giocatori" class="subpage active">
+        <div class="giocatori-layout">
+            <div class="giocatori-controls">
+                <input type="text" id="ricerca-giocatori" placeholder="Cerca giocatore..." oninput="updateGiocatori()" class="ricerca-input">
+                <select class="criterio-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)">
+                    <option value="mediavototit">Media Voto Tit</option>
+                    <option value="fvototit">Fantamedia Tit</option>
+                    <option value="goltit">Gol Tit</option>
+                    <option value="assisttit">Assist Tit</option>
+                    <option value="golsubititit">Gol Subiti Tit</option>
+                    <option value="cleansheettit">Clean Sheet Tit</option>
+                    <option value="rigtit">Rigori Segnati Tit</option>
+                    <option value="risgsbtit">Rigori Sbagliati Tit</option>
+                    <option value="rigpartit">Rigori Parati Tit</option>
+                    <option value="autgoltit">Autogol Tit</option>
+                    <option value="ammtit">Ammonizioni Tit</option>
+                    <option value="esptit">Espulsioni Tit</option>
+                    <option value="prestit">Presenze Tit</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="tabella-giocatori">
+                    <thead><tr><th>Pos</th><th></th><th>Giocatore</th><th>Squadra</th><th id="head-gioc"></th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="sub-squadre" class="subpage">
+        <div class="giocatori-layout">
+            <div class="giocatori-controls">
+                <select class="criterio-select" id="criterio-squadre2" onchange="updateSquadre(); resizeSelect(this)"></select>
+                <div id="desc-sq" class="desc-riquadro"></div>
+            </div>
+            <div class="sq-dati">
+                <div id="titolo-sq" class="titolo-riquadro"></div>
+                <div class="table-container">
+                    <table id="tabella-sq">
+                        <thead><tr><th>Pos</th><th></th><th>Squadra</th><th id="head-sq"></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BEST 11 -->
+<div id="page-best11" class="page">
+    <h2 class="page-title">Best 11</h2>
+    <div class="subnav" id="best-metrica">
+        <button class="subnav-btn active" onclick="setBestMetric('mediavototit', this)">Media Voto</button>
+        <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
+    </div>
+    <div class="subnav" id="best-modulo">
+        <button class="subnav-btn active" onclick="setBestModulo('352', this)">3-5-2</button>
+        <button class="subnav-btn" onclick="setBestModulo('442', this)">4-4-2</button>
+        <button class="subnav-btn" onclick="setBestModulo('433', this)">4-3-3</button>
+        <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
+    </div>
+    <div class="pitch-container" id="pitch-best11">
+        <div class="pitch-lines">
+            <div class="pitch-center-circle"></div>
+            <div class="pitch-center-spot"></div>
+            <div class="pitch-box-top"></div>
+            <div class="pitch-box-bottom"></div>
+            <div class="pitch-goal-box-top"></div>
+            <div class="pitch-goal-box-bottom"></div>
+            <div class="pitch-penalty-top"></div>
+            <div class="pitch-penalty-bottom"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let datiSquadre = [];
+let datiGiocatori = [];
+let datiRisultati = [];
+let datiStatSquadre = [];
+
+var definizioni = {
+    "pt": { titolo: "Punti", desc: "Punti solo dei voti" },
+    "bonus": { titolo: "Punti Bonus", desc: "Punti Bonus/Malus" },
+    "pt mod": { titolo: "Punti Mod", desc: "Punti del modificatore difesa" },
+    "pt tot": { titolo: "Punti Totali", desc: "Punti fantavoto" },
+    "class": { titolo: "Classifica", desc: "Posizione in classifica" },
+    "gol cl": { titolo: "Gol", desc: "Gol in classifica" },
+    "gol r": { titolo: "Gol reali", desc: "Gol segnati realmente dai calciatori titolari" },
+    "ass": { titolo: "Assist", desc: "Assist totali della squadra" },
+    "amm": { titolo: "Ammonizioni", desc: "Cartellini gialli totali" },
+    "esp": { titolo: "Espulsioni", desc: "Cartellini rossi totali" },
+    "clnsht": { titolo: "Clean Sheet", desc: "Partite senza subire gol" },
+    "autogol": { titolo: "Autogol", desc: "Autoreti" },
+    "rig f": { titolo: "Rigori Fatti", desc: "Rigori segnati" },
+    "rig sb": { titolo: "Rigori Sbagliati", desc: "Rigori falliti" },
+    "rig par": { titolo: "Rigori Parati", desc: "Rigori parati dai portieri" },
+    "pt best": { titolo: "Punti Best", desc: "Punteggio con la migliore formazione possibile solo pagelle" },
+    "bonus best": { titolo: "Bonus Best", desc: "Bonus con la migliore formazione possibile" },
+    "mod dif best": { titolo: "Mod. Dif. Best", desc: "Punti Modificatore difesa con la migliore formazione possibile" },
+    "tot best": { titolo: "Fanta Punti Best", desc: "FantaPunti totali con la migliore formazione" },
+    "diff pt": { titolo: "Diff. Punti", desc: "Differenza tra punti reali e punti best solo pagelle" },
+    "diff bonus": { titolo: "Diff. Bonus", desc: "Differenza tra bonus e bonus best" },
+    "diff mod": { titolo: "Diff. Modificatore", desc: "Differenza punti mod e punti mod best" },
+    "diff tot pt": { titolo: "Diff. Fantapunti", desc: "Differenza fantapunti e fantapunti best" },
+    "pt max": { titolo: "Punteggio Max", desc: "Punteggio più alto della stagione" },
+    "pt min": { titolo: "Punteggio Min", desc: "Punteggio più basso della stagione" },
+    "gol d": { titolo: "Gol Difensori", desc: "Gol segnati dai difensori titolari" },
+    "gol c": { titolo: "Gol Centrocampisti", desc: "Gol segnati dai centrocampisti titolari" },
+    "gol a": { titolo: "Gol Attaccanti", desc: "Gol segnati dagli attaccanti titolari" }
+};
+
+const noPortieri = ['goltit', 'assisttit', 'rigtit', 'risgsbtit', 'autgoltit', 'prestit'];
+const soloPortieri = ['golsubititit', 'cleansheettit', 'rigpartit'];
+
+function resizeSelect(sel) {
+    var opt = sel.options[sel.selectedIndex];
+    var len = opt ? opt.text.length : 0;
+    sel.style.width = Math.max(120, len * 9 + 55) + 'px';
+}
+
+function showPage(page, btn) {
+    document.querySelectorAll('.page').forEach(function(p) {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('page-' + page);
+    target.classList.add('active');
+    target.style.display = 'block';
+    if (btn) btn.classList.add('active');
+    document.body.classList.toggle('home-active', page === 'home');
+}
+
+function populateHomeLoghi() {
+    var container = document.getElementById('home-loghi');
+    container.innerHTML = '';
+    var n = datiSquadre.length;
+    var perColonna = 5;
+    for (var i = 0; i < n; i++) {
+        var img = document.createElement('img');
+        img.src = logoUrl(datiSquadre[i].nome);
+        img.onerror = function() { this.style.display = 'none'; };
+        var col = Math.floor(i / perColonna);
+        var row = i % perColonna;
+        var y = 5 + row * 17;
+        if (col === 0) {
+            img.className = 'home-logo-left';
+            img.style.left = '2%';
+        } else {
+            img.className = 'home-logo-right';
+            img.style.right = '-25%';
+            img.style.left = 'auto';
+        }
+        img.style.top = y + '%';
+        container.appendChild(img);
+    }
+}
+
+function showSubPage(sub, btn) {
+    document.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('sub-' + sub).classList.add('active');
+    btn.classList.add('active');
+}
+
+function getVal(obj, criterio) {
+    if (criterio === 'dr') return obj.gf - obj.gs;
+    return obj[criterio] || 0;
+}
+
+function logoUrl(nome) {
+    return "loghi finiti/" + nome.toLowerCase().replace(/ /g, "-") + ".png";
+}
+
+function updateClassifica() {
+    var sorted = datiSquadre.slice().sort(function(a, b) {
+        if (b.pt !== a.pt) return b.pt - a.pt;
+        return b.pt_totali - a.pt_totali;
+    });
+    var tbody = document.querySelector('#tabella-classifica tbody');
+    tbody.innerHTML = '';
+    sorted.forEach(function(sq, i) {
+        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + sq.pt + '</td><td>' + sq.v + '</td><td>' + sq.n + '</td><td>' + sq.p + '</td><td>' + sq.gf + '</td><td>' + sq.gs + '</td><td>' + sq.dr + '</td><td>' + sq.pt_totali + '</td></tr>';
+    });
+}
+
+function updateGiocatori() {
+    var criterio = document.getElementById('criterio-giocatori').value;
+    var label = document.getElementById('criterio-giocatori').options[document.getElementById('criterio-giocatori').selectedIndex].text;
+    document.getElementById('head-gioc').textContent = label;
+    var ricerca = document.getElementById('ricerca-giocatori').value.toLowerCase().trim();
+
+    var sorted = datiGiocatori.slice().sort(function(a, b) { return (b[criterio]||0) - (a[criterio]||0); });
+
+    var filtered;
+    if (ricerca) {
+        filtered = sorted.filter(function(g) { return g.nome.toLowerCase().indexOf(ricerca) !== -1; });
+    } else if (soloPortieri.indexOf(criterio) !== -1) {
+        if (criterio === 'golsubititit') {
+            filtered = sorted.filter(function(g) { return g.ruolo === 'p' && g.prestit > 0; });
+        } else {
+            filtered = sorted.filter(function(g) { return g.ruolo === 'p' && (g[criterio]||0) > 0; });
+        }
+    } else if (noPortieri.indexOf(criterio) !== -1) {
+        filtered = sorted.filter(function(g) { return g.ruolo !== 'p' && (g[criterio]||0) > 0; });
+    } else {
+        filtered = sorted.filter(function(g) { return (g[criterio]||0) > 0; });
+    }
+
+    var posizioni = [];
+    for (var k = 0; k < sorted.length; k++) {
+        if (k === 0) {
+            posizioni.push(1);
+        } else if ((sorted[k][criterio]||0) === (sorted[k-1][criterio]||0)) {
+            posizioni.push(posizioni[k-1]);
+        } else {
+            posizioni.push(k + 1);
+        }
+    }
+
+    var tbody = document.querySelector('#tabella-giocatori tbody');
+    tbody.innerHTML = '';
+    filtered.forEach(function(g) {
+        var pos = posizioni[sorted.indexOf(g)];
+        tbody.innerHTML += '<tr><td class="pos">' + pos + '</td><td class="logo-cell"><img src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'"></td><td>' + g.nome + '</td><td>' + g.squadra + '</td><td>' + (g[criterio]||0) + '</td></tr>';
+    });
+}
+
+function updateSquadre() {
+    var criterio = document.getElementById('criterio-squadre2').value;
+    var def = definizioni[criterio] || { titolo: criterio, desc: "" };
+    document.getElementById('titolo-sq').textContent = def.titolo;
+    document.getElementById('desc-sq').textContent = def.desc;
+    document.getElementById('head-sq').textContent = def.titolo;
+
+    var ascending = (criterio === 'pt min');
+    var sorted = datiStatSquadre.slice().sort(function(a, b) {
+        var va = a.dati[criterio]||0, vb = b.dati[criterio]||0;
+        return ascending ? va - vb : vb - va;
+    });
+
+    var tbody = document.querySelector('#tabella-sq tbody');
+    tbody.innerHTML = '';
+    sorted.forEach(function(sq, i) {
+        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + (sq.dati[criterio]||0) + '</td></tr>';
+    });
+}
+
+function updateRisultati() {
+    var idx = document.getElementById('sel-risultati').selectedIndex;
+    if (idx < 0 || idx >= datiRisultati.length) return;
+    var g = datiRisultati[idx];
+    var tbody = document.querySelector('#tabella-risultati tbody');
+    tbody.innerHTML = '';
+    g.partite.forEach(function(p) {
+        tbody.innerHTML += '<tr><td>' + p.casa + '</td><td>' + p.pt_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_trasferta + '</td><td>' + p.pt_trasferta + '</td><td>' + p.trasferta + '</td></tr>';
+    });
+}
+
+// === BEST 11 ===
+var bestMetric = 'mediavototit';
+var bestModulo = '352';
+
+function setBestMetric(metric, btn) {
+    bestMetric = metric;
+    btn.parentElement.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    updateBest11();
+}
+
+function setBestModulo(modulo, btn) {
+    bestModulo = modulo;
+    btn.parentElement.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    updateBest11();
+}
+
+function updateBest11() {
+    var nums = bestModulo.split('').map(Number);
+    var nDif = nums[0], nCen = nums[1], nAtt = nums[2];
+
+    var container = document.getElementById('pitch-best11');
+    container.querySelectorAll('.pitch-player').forEach(function(el) { el.remove(); });
+
+    var players = [];
+
+    // Portiere
+    var portieri = datiGiocatori.filter(function(g) { return g.ruolo === 'p'; });
+    portieri.sort(function(a, b) {
+        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
+        if (vb !== va) return vb - va;
+        return (b.prestit || 0) - (a.prestit || 0);
+    });
+    if (portieri.length > 0) players.push(portieri[0]);
+
+    // Difensori
+    var dif = datiGiocatori.filter(function(g) { return g.ruolo === 'd'; });
+    dif.sort(function(a, b) {
+        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
+        if (vb !== va) return vb - va;
+        return (b.prestit || 0) - (a.prestit || 0);
+    });
+    players = players.concat(dif.slice(0, nDif));
+
+    // Centrocampisti
+    var cen = datiGiocatori.filter(function(g) { return g.ruolo === 'c'; });
+    cen.sort(function(a, b) {
+        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
+        if (vb !== va) return vb - va;
+        return (b.prestit || 0) - (a.prestit || 0);
+    });
+    players = players.concat(cen.slice(0, nCen));
+
+    // Attaccanti
+    var att = datiGiocatori.filter(function(g) { return g.ruolo === 'a'; });
+    att.sort(function(a, b) {
+        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
+        if (vb !== va) return vb - va;
+        return (b.prestit || 0) - (a.prestit || 0);
+    });
+    players = players.concat(att.slice(0, nAtt));
+
+    // Posizionamento
+    function getX(n, i) {
+        if (n === 1) return 50;
+        var margin = 15;
+        var step = (100 - 2 * margin) / (n - 1);
+        return margin + i * step;
+    }
+
+    var groups = [
+        { list: players.slice(0, 1), y: 8 },
+        { list: players.slice(1, 1 + nDif), y: 28 },
+        { list: players.slice(1 + nDif, 1 + nDif + nCen), y: 52 },
+        { list: players.slice(1 + nDif + nCen), y: 76 }
+    ];
+
+    groups.forEach(function(grp) {
+        var n = grp.list.length;
+        grp.list.forEach(function(g, i) {
+            var x = getX(n, i);
+            var el = document.createElement('div');
+            el.className = 'pitch-player';
+            el.style.left = x + '%';
+            el.style.top = grp.y + '%';
+
+            var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
+            el.innerHTML =
+                '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">'
+                + '<span class="pp-name">' + g.nome + '</span>'
+                + '<span class="pp-val">' + (g[bestMetric]||0) + '</span>'
+                + '<span class="pp-ruolo">' + rl + '</span>';
+
+            container.appendChild(el);
+        });
+    });
+}
+
+// === CARICA DATI ===
+fetch("dati.json")
+    .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function(d) {
+        datiSquadre = d.squadre;
+        datiGiocatori = d.giocatori;
+        datiRisultati = d.risultati || [];
+        datiStatSquadre = d.stat_squadre || [];
+        var colStat = d.stat_colonne || [];
+        var selSq = document.getElementById('criterio-squadre2');
+        selSq.innerHTML = '';
+        colStat.forEach(function(c) {
+            if (c) {
+                var label = (definizioni[c] && definizioni[c].titolo) ? definizioni[c].titolo : c;
+                selSq.innerHTML += '<option value="' + c + '">' + label + '</option>';
+            }
+        });
+        if (colStat.length > 0) { updateSquadre(); resizeSelect(selSq); }
+
+        var selR = document.getElementById('sel-risultati');
+        selR.innerHTML = '';
+        datiRisultati.forEach(function(g, i) {
+            selR.innerHTML += '<option value="' + i + '">' + g.giornata + '\u00aa Giornata</option>';
+        });
+
+        updateClassifica();
+        populateHomeLoghi();
+        updateGiocatori(); resizeSelect(document.getElementById('criterio-giocatori'));
+        updateSquadre();
+        if (datiRisultati.length > 0) updateRisultati();
+        updateBest11();
+    })
+    .catch(function(e) {
+        document.body.innerHTML = '<div style="text-align:center;padding:40px;color:#e94560;">Errore: ' + e.message + '<br><br>Verifica che dati.json sia nella stessa cartella.</div>';
+    });
+</script>
+</body>
+>>>>>>> e7f8a1304063b560de2e954ad47e90811e82c16f
 </html>   
