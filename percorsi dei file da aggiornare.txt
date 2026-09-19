@@ -1,0 +1,10 @@
+File	Percorso completo	Cosa aggiornare
+Classifica	E:\--- fantacalcio tot uff\26-27\esportazioni\classifica\Classifica_Serie-Aperol.xlsx	Punti, V/N/P, gol, DR
+Giocatori	E:\--- fantacalcio tot uff\26-27\BORRACHOSLEAGUE 26.27.xlsm	Foglio INSER DATA: voti, gol, assist, ecc.
+Calendario/Risultati	E:\--- fantacalcio tot uff\26-27\CalendarioSerieAperol.xlsx	Risultati di ogni giornata
+Statistiche squadre	E:\--- fantacalcio tot uff\26-27\nuovo statistiche.xlsm	Riga 3 intestazioni, righe 5-14 dati
+Output (generato automaticamente)	E:\--- fantacalcio tot uff\26-27\dati.json	Non si tocca a mano
+Sito	E:\--- fantacalcio tot uff\26-27\ (file HTML)	Solo se cambi design/funzionalità
+Loghi	E:\--- fantacalcio tot uff\26-27\loghi finiti\	Aggiungi PNG se manca una squadra
+
+Dopo aver aggiornato i 4 Excel → chiudi tutto → doppio click su refresh.bat.

@@ -1,0 +1,13 @@
+@echo off
+cd /d E:\--- fantacalcio tot uff\26-27
+
+echo === Avvio server locale ===
+start "Server Borracho's" cmd /k "python -m http.server 8000"
+
+timeout /t 2 /nobreak >nul
+
+echo === Aggiornamento dati ===
+python aggiorna.py
+
+echo === Apertura sito ===
+start http://localhost:8000

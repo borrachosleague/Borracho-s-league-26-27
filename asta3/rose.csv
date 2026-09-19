@@ -1,0 +1,145 @@
+Squadra,Nome,Squadra_Appartenenza,Ruolo,Ruoli_Mantra,Prezzo,Quotazione,Quotazione_Mantra,Fantacalcio_Id
+"TRICCHETRACHT FRANKFURT","Vicario","JUV","P","Por",34,17,17,4964
+"TRICCHETRACHT FRANKFURT","Grabara","JUV","P","Por",1,1,1,7603
+"TRICCHETRACHT FRANKFURT","Palmisani","FRO","P","Por",1,5,5,6415
+"TRICCHETRACHT FRANKFURT","Dimarco","INT","D","E,W",81,31,29,254
+"TRICCHETRACHT FRANKFURT","Molina N.","ROM","D","E",44,18,18,4998
+"TRICCHETRACHT FRANKFURT","Kaiki","COM","D","Ds,E",5,6,6,7414
+"TRICCHETRACHT FRANKFURT","Valeri","PAR","D","Ds,E",3,8,8,5862
+"TRICCHETRACHT FRANKFURT","Kamara H.","UDI","D","Ds,E",7,9,9,5555
+"TRICCHETRACHT FRANKFURT","Veiga D.","LEC","D","Dd,E",1,6,6,6990
+"TRICCHETRACHT FRANKFURT","Odenthal","SAS","D","Dc",1,3,3,7154
+"TRICCHETRACHT FRANKFURT","Pedraza","LAZ","D","Ds,E",1,6,6,4817
+"TRICCHETRACHT FRANKFURT","Calhanoglu","INT","C","M,C",55,28,29,2194
+"TRICCHETRACHT FRANKFURT","Frattesi","LAZ","C","C,T",36,10,10,2848
+"TRICCHETRACHT FRANKFURT","Milla","COM","C","M,C",3,6,6,7412
+"TRICCHETRACHT FRANKFURT","Rowe","BOL","C","W,T",20,10,10,6844
+"TRICCHETRACHT FRANKFURT","Gudmundsson A.","FIO","C","T,A",16,12,11,5800
+"TRICCHETRACHT FRANKFURT","Calò","FRO","C","M,C",1,8,9,7472
+"TRICCHETRACHT FRANKFURT","Gaetano","ATA","C","M,C",1,7,8,4364
+"TRICCHETRACHT FRANKFURT","Volpato","SAS","C","W,T",1,9,9,5735
+"PARTIZAN DEGRADO","Falcone","LEC","P","Por",7,8,8,2134
+"PARTIZAN DEGRADO","Carnesecchi","ATA","P","Por",33,17,17,4431
+"PARTIZAN DEGRADO","Corvi","PAR","P","Por",15,2,2,6662
+"PARTIZAN DEGRADO","Solet","UDI","D","Dc",32,13,13,6956
+"PARTIZAN DEGRADO","Tiago Gabriel","LEC","D","Dc",10,8,8,6989
+"PARTIZAN DEGRADO","Valdepenas","FIO","D","Dc,Ds",21,5,6,7294
+"PARTIZAN DEGRADO","Ramon","COM","D","Dc",31,10,10,6869
+"PARTIZAN DEGRADO","Hermoso","ROM","D","Dc",20,11,11,4807
+"PARTIZAN DEGRADO","Bernasconi","ATA","D","Ds,E",14,6,6,7219
+"PARTIZAN DEGRADO","Vojvoda","UDI","D","Dd,E",8,9,9,4994
+"PARTIZAN DEGRADO","Lulli","ROM","D","E",4,2,2,7599
+"PARTIZAN DEGRADO","Da Cunha","COM","C","C,T",30,18,18,5559
+"PARTIZAN DEGRADO","Jones C.","INT","C","C",27,12,12,5172
+"PARTIZAN DEGRADO","Diouf","INT","C","E,C",27,9,10,6274
+"PARTIZAN DEGRADO","Baldanzi","GEN","C","T",17,11,10,5823
+"PARTIZAN DEGRADO","Ekkelenkamp","UDI","C","C,T",25,12,12,6684
+"PARTIZAN DEGRADO","Romano","CAG","C","M,C",7,7,8,7311
+"PARTIZAN DEGRADO","Casadei","TOR","C","C,T",9,9,9,5888
+"PARTIZAN DEGRADO","Cacciamani","TOR","C","E,W",3,6,7,7060
+"SAN GRIA","Svilar","ROM","P","Por",63,19,19,5841
+"SAN GRIA","Gollini","ROM","P","Por",1,1,1,610
+"SAN GRIA","De Marzi","ROM","P","Por",1,1,1,7048
+"SAN GRIA","Bastoni","INT","D","Dc",50,14,14,2120
+"SAN GRIA","Tavares N.","LAZ","D","Ds,E",32,7,7,5620
+"SAN GRIA","Gila","MIL","D","Dc",27,13,13,5833
+"SAN GRIA","Leysen F.","SAS","D","Dc,Ds",1,6,7,7564
+"SAN GRIA","Bracaglia","FRO","D","Dc,Ds",3,7,7,7469
+"SAN GRIA","Mitaj","GEN","D","Ds,E",1,4,4,7537
+"SAN GRIA","Pellegrini Lu.","LAZ","D","Ds,E",2,2,2,2728
+"SAN GRIA","Viery","FIO","D","Dc,Ds",1,6,7,7410
+"SESTO ASENSIO","Butez","COM","P","Por",35,15,15,6966
+"SESTO ASENSIO","Maignan","MIL","P","Por",36,15,15,4312
+"SESTO ASENSIO","Torriani","MIL","P","Por",3,1,1,6813
+"SESTO ASENSIO","Pavlovic","MIL","D","Dc",30,14,14,5022
+"SESTO ASENSIO","Bremer","JUV","D","Dc",43,16,16,2788
+"SESTO ASENSIO","Comuzzo","TOR","D","Dc",10,8,8,6495
+"SESTO ASENSIO","Lucumì","JUV","D","Dc",25,7,7,6042
+"SESTO ASENSIO","Scalvini","ATA","D","Dc",14,10,10,5526
+"SESTO ASENSIO","Holm","BOL","D","Dd,E",6,6,6,5678
+"SESTO ASENSIO","Koulierakis","ROM","D","Dc",11,8,8,7529
+"SESTO ASENSIO","De Winter","MIL","D","Dc,Dd",21,5,6,5739
+"SESTO ASENSIO","Mora","ROM","C","T",16,20,19,7556
+"SESTO ASENSIO","Baturina","COM","C","T",44,20,19,7126
+"SESTO ASENSIO","Vergara","NAP","C","W,T",11,10,10,7223
+"SESTO ASENSIO","Keita M.","PAR","C","M,C",10,5,6,6898
+"SESTO ASENSIO","Karlstrom","UDI","C","M,C",7,7,8,6680
+"SESTO ASENSIO","Gonzalez N.","JUV","C","W,A",8,12,11,4179
+"SESTO ASENSIO","Cissè A.","MIL","C","W,T",11,5,5,6618
+"SESTO ASENSIO","Pellegrini Lo.","ROM","C","C,T",8,9,9,530
+"PESCICULINI","Meret","NAP","P","Por",49,11,11,572
+"PESCICULINI","De Gea","FIO","P","Por",14,11,11,2521
+"PESCICULINI","Milinkovic-Savic V.","NAP","P","Por",35,5,5,2170
+"PESCICULINI","Wesley","ROM","D","E",55,18,17,7181
+"PESCICULINI","Mina","CAG","D","Dc",21,7,7,4210
+"PESCICULINI","Mancini","ROM","D","Dc",42,16,16,2296
+"PESCICULINI","Buongiorno","NAP","D","Dc",13,6,6,2724
+"PESCICULINI","Estupinan","MIL","D","Ds,E",2,3,3,5273
+"PESCICULINI","Bellanova","ATA","D","Dd,E",3,6,6,4887
+"PESCICULINI","Dembelè A.","LEC","D","Dd,E",1,1,1,6826
+"PESCICULINI","Carlos Augusto","INT","D","B,Ds,E",2,6,7,5877
+"PESCICULINI","Isaksen","LAZ","C","W,A",11,9,8,6398
+"PESCICULINI","Barella","INT","C","C",54,18,18,1870
+"PESCICULINI","De Roon","ROM","C","M,C",14,4,4,22
+"PESCICULINI","Politano","NAP","C","W",18,9,8,536
+"PESCICULINI","Stankovic A.","INT","C","M,C",7,3,3,6503
+"PESCICULINI","Njie","FIO","C","W,A",2,4,4,6827
+"PESCICULINI","Zalewski","ATA","C","W",1,7,6,5422
+"PESCICULINI","Nicolussi Caviglia","PAR","C","M,C",1,6,6,4349
+"aTLETICO IMPROVVISATO","Okoye","UDI","P","Por",15,9,9,6462
+"aTLETICO IMPROVVISATO","Mrozek","UDI","P","Por",9,1,1,7611
+"aTLETICO IMPROVVISATO","Motta","LAZ","P","Por",1,1,1,7337
+"aTLETICO IMPROVVISATO","Bisseck","INT","D","Dc",42,12,12,6217
+"aTLETICO IMPROVVISATO","Obrador","SAS","D","Ds,E",8,6,6,7329
+"aTLETICO IMPROVVISATO","Zè Pedro","CAG","D","Dc,Dd",9,5,6,7274
+"aTLETICO IMPROVVISATO","Bella-Kotchap","VEN","D","Dc",17,5,5,7253
+"aTLETICO IMPROVVISATO","Cambiaso","JUV","D","Ds,Dd,E",15,8,9,5520
+"aTLETICO IMPROVVISATO","Gallo","LEC","D","Ds,E",4,6,6,4502
+"aTLETICO IMPROVVISATO","Spinazzola","NAP","D","Ds,E",20,8,8,1852
+"aTLETICO IMPROVVISATO","Pavard","INT","D","Dc,Dd",5,6,7,4177
+"aTLETICO IMPROVVISATO","Locatelli","JUV","C","M,C",29,9,10,827
+"aTLETICO IMPROVVISATO","Zielinski","INT","C","C",37,12,12,152
+"aTLETICO IMPROVVISATO","Zambo Anguissa","NAP","C","C",17,10,10,4220
+"aTLETICO IMPROVVISATO","Jashari","MIL","C","C",18,5,5,7203
+"aTLETICO IMPROVVISATO","Bernabè","PAR","C","C",17,7,7,6666
+"aTLETICO IMPROVVISATO","Konè I.","SAS","C","C",3,8,8,6717
+"aTLETICO IMPROVVISATO","Cancellieri","LAZ","C","W,A",6,9,8,5500
+"aTLETICO IMPROVVISATO","Pasalic","ATA","C","C,T",3,8,8,2077
+"aS PIPPERIA","Bijlow","GEN","P","Por",10,8,8,7332
+"aS PIPPERIA","Perri","TOR","P","Por",2,9,9,6534
+"aS PIPPERIA","Mandas","LAZ","P","Por",23,10,10,6482
+"aS PIPPERIA","Couto","COM","D","Dd,E",21,8,8,6727
+"aS PIPPERIA","Di Lorenzo","NAP","D","Dd,E",40,12,12,2816
+"aS PIPPERIA","Bartesaghi","MIL","D","Ds,E",23,8,8,6496
+"aS PIPPERIA","Marcandalli","GEN","D","Dc",7,6,6,6660
+"aS PIPPERIA","Kristensen T.","ATA","D","Dc,Dd",11,6,7,6485
+"aS PIPPERIA","Gaspar K.","LEC","D","Dc",3,5,5,6632
+"aS PIPPERIA","Delprato","PAR","D","B,Dd,E",3,8,8,6664
+"aS PIPPERIA","Jimenez A.","FIO","D","Ds,Dd,E",2,7,8,6531
+"aS PIPPERIA","Paz N.","COM","C","T,A",41,29,27,6875
+"aS PIPPERIA","Zaccagni","LAZ","C","W,A",26,16,15,632
+"aS PIPPERIA","Douglas Luiz","JUV","C","C",13,4,4,4911
+"aS PIPPERIA","Samardzic","ATA","C","C,T",27,13,13,5119
+"aS PIPPERIA","McKennie","JUV","C","C",13,17,17,4973
+"aS PIPPERIA","Colpani","MON","C","T",1,9,8,5878
+"aS PIPPERIA","Moreira","MIL","C","W",1,11,11,6372
+"aS PIPPERIA","Odgaard","BOL","C","T",1,8,7,2765
+"FC INTERNAZIOANALE","Martinez Jo.","INT","P","Por",59,17,17,5116
+"FC INTERNAZIOANALE","Provedel","INT","P","Por",24,2,2,2814
+"FC INTERNAZIOANALE","Di Gennaro","INT","P","Por",1,1,1,1926
+"FC INTERNAZIOANALE","Miranda J.","BOL","D","Ds,E",24,8,8,4734
+"FC INTERNAZIOANALE","Haps","VEN","D","Ds,E",8,5,5,5695
+"FC INTERNAZIOANALE","N'Dicka","ROM","D","Dc",30,13,13,4317
+"FC INTERNAZIOANALE","Celik","JUV","D","B,Dd,E",12,8,9,4657
+"FC INTERNAZIOANALE","Norton-Cuffy","GEN","D","Dd,E",8,8,8,6814
+"FC INTERNAZIOANALE","Fortini","TOR","D","E",6,6,5,7069
+"FC INTERNAZIOANALE","Zortea","BOL","D","Dd,E",2,7,7,4433
+"FC INTERNAZIOANALE","Theate","BOL","D","Dc,Ds",2,8,9,5675
+"FC INTERNAZIOANALE","McTominay","NAP","C","C,T",46,27,27,4777
+"FC INTERNAZIOANALE","De Bruyne","NAP","C","T",28,17,16,2517
+"FC INTERNAZIOANALE","Vlasic","TOR","C","T",16,13,12,5687
+"FC INTERNAZIOANALE","Ederson D.S.","ATA","C","M,C",21,12,13,5792
+"FC INTERNAZIOANALE","Elmas","ATA","C","W,T",11,7,7,4479
+"FC INTERNAZIOANALE","Fazzini","CAG","C","C,T",3,6,7,6010
+"FC INTERNAZIOANALE","Ndour","FIO","C","C",1,7,7,6294
+"FC INTERNAZIOANALE","Thorstvedt","SAS","C","C,T",3,10,10,5844

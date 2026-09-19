@@ -1,0 +1,39 @@
+@echo off
+cd /d "E:\--- fantacalcio tot uff\26-27"
+
+set "PYTHON=C:\Users\Marco\AppData\Local\Python\pythoncore-3.14-64\python.exe"
+
+echo === Kill server vecchi ===
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000" ^| findstr "LISTENING"') do taskkill /F /PID %%a >nul 2>&1
+timeout /t 3 /nobreak >nul
+
+echo === Avvio server ===
+start /min cmd /k "%PYTHON% -m http.server 8000"
+
+echo === Attendo che il server sia pronto ===
+set /a TENTATIVI=0
+:check
+timeout /t 1 /nobreak >nul
+"%PYTHON%" -c "import urllib.request; urllib.request.urlopen('http://localhost:8000')" >nul 2>&1
+if errorlevel 1 (
+    set /a TENTATIVI+=1
+    if %TENTATIVI% LSS 10 goto check
+    echo ERRORE: server non risponde!
+    pause
+    exit /b 1
+)
+echo Server pronto.
+
+echo === Aggiorna dati ===
+"%PYTHON%" aggiorna.py
+if errorlevel 1 (
+    echo ERRORE: aggiorna.py ha fallito!
+    pause
+    exit /b 1
+)
+
+echo === Apri sito ===
+start http://localhost:8000
+
+echo Fatto!
+pause   

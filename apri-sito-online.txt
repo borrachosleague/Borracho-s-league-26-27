@@ -1,0 +1,12 @@
+@echo off
+echo === AGGIORNAMENTO DATI ===
+python aggiorna.py
+
+echo === PUBLISH SU GITHUB ===
+git add dati.json
+git commit -m "Update dati %date%"
+git push
+
+echo === SITO AGGIORNATO ===
+start https://TUO-USERNAME.github.io/borrachos-league/
+pause   
