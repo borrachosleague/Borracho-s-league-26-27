@@ -208,17 +208,51 @@
         .footer { text-align: center; padding: 20px; color: #444; font-size: 0.8em; margin-top: 40px; }
         .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
 
-       /* === PITCH BEST 11 === */
+      /* === BEST 11 LAYOUT === */
+.best11-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+.best11-controls {
+    flex: 0 0 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 5px;
+}
+.best11-label {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: #e94560;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+.subnav.best11-v {
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.subnav.best11-v .subnav-btn {
+    width: 100%;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.8em;
+}
+
+/* === PITCH BEST 11 === */
 .pitch-container {
     position: relative;
     width: 100%;
-    max-width: 900px;
-    margin: 10px auto;
+    max-width: 700px;
+    margin: 0;
     aspect-ratio: 4/3;
     background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
     border: 3px solid #fff;
     border-radius: 8px;
     overflow: hidden;
+    flex: 1;
 }
 .pitch-lines {
     position: absolute;
@@ -286,35 +320,51 @@
     transition: all 0.4s ease;
 }
 .pitch-player .pp-logo {
-    width: 55px; height: 55px;
+    width: 50px; height: 50px;
     border-radius: 50%;
     border: 2px solid #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     background: #1a1a2e;
 }
 .pitch-player .pp-name {
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 700;
     color: #fff;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     background: rgba(0,0,0,0.6);
-    padding: 2px 8px;
+    padding: 2px 6px;
     border-radius: 3px;
     white-space: nowrap;
-    max-width: 110px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .pitch-player .pp-val {
-    font-size: 1.0em;
+    font-size: 0.9em;
     font-weight: 800;
     color: #ffd700;
     text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 .pitch-player .pp-ruolo {
-    font-size: 0.8em;
+    font-size: 0.7em;
     color: #aaa;
     text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+@media (max-width: 768px) {
+    .best11-layout { flex-direction: column; }
+    .best11-controls {
+        flex: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .subnav.best11-v {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .subnav.best11-v .subnav-btn { width: auto; }
+    .pitch-container { max-width: 100%; }
 }   
         /* === RESPONSIVE === */
         @media (max-width: 768px) {
@@ -479,30 +529,35 @@
 <!-- BEST 11 -->
 <div id="page-best11" class="page">
     <h2 class="page-title">Best 11</h2>
-    <div class="subnav" id="best-metrica">
-        <button class="subnav-btn active" onclick="setBestMetric('mediavototit', this)">Media Voto</button>
-        <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
-    </div>
-    <div class="subnav" id="best-modulo">
-        <button class="subnav-btn active" onclick="setBestModulo('352', this)">3-5-2</button>
-        <button class="subnav-btn" onclick="setBestModulo('442', this)">4-4-2</button>
-        <button class="subnav-btn" onclick="setBestModulo('433', this)">4-3-3</button>
-        <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
-    </div>
-    <div class="pitch-container" id="pitch-best11">
-    <div class="pitch-lines">
-        <div class="pitch-center-circle"></div>
-        <div class="pitch-center-spot"></div>
-        <div class="pitch-box-left"></div>
-        <div class="pitch-box-right"></div>
-        <div class="pitch-goal-box-left"></div>
-        <div class="pitch-goal-box-right"></div>
-        <div class="pitch-penalty-left"></div>
-        <div class="pitch-penalty-right"></div>
+    <div class="best11-layout">
+        <div class="best11-controls">
+            <div class="best11-label">Metrica</div>
+            <div class="subnav best11-v" id="best-metrica">
+                <button class="subnav-btn active" onclick="setBestMetric('mediavototit', this)">Media Voto</button>
+                <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
+            </div>
+            <div class="best11-label">Modulo</div>
+            <div class="subnav best11-v" id="best-modulo">
+                <button class="subnav-btn active" onclick="setBestModulo('352', this)">3-5-2</button>
+                <button class="subnav-btn" onclick="setBestModulo('442', this)">4-4-2</button>
+                <button class="subnav-btn" onclick="setBestModulo('433', this)">4-3-3</button>
+                <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
+            </div>
+        </div>
+        <div class="pitch-container" id="pitch-best11">
+            <div class="pitch-lines">
+                <div class="pitch-center-circle"></div>
+                <div class="pitch-center-spot"></div>
+                <div class="pitch-box-left"></div>
+                <div class="pitch-box-right"></div>
+                <div class="pitch-goal-box-left"></div>
+                <div class="pitch-goal-box-right"></div>
+                <div class="pitch-penalty-left"></div>
+                <div class="pitch-penalty-right"></div>
+            </div>
+        </div>
     </div>
 </div>   
-</div>
-
 <script>
 let datiSquadre = [];
 let datiGiocatori = [];
