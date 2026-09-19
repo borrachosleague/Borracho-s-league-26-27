@@ -80,7 +80,6 @@ for r in range(5, 15):
   
 
 # === 1.6 CLASSIFICA F1 E BATTLE ROYALE (Foglio 4) ===
-ws_f1 = wb_stat.worksheets[3]
 
 # F1: righe 4-13, nome in col A, punteggio in col B
 f1_scores = {}
@@ -103,6 +102,9 @@ for r in range(19, 29):
             br_scores[str(nome).strip()] = float(str(val).replace(",", ".")) if val is not None else 0
         except (ValueError, TypeError):
             br_scores[str(nome).strip()] = 0
+# DEBUG
+print("Nomi Foglio 4 F1:", list(f1_scores.keys()))
+print("Nomi Foglio 1:", [sq["nome"] for sq in stat_squadre])   
 
 # Aggiunge i campi a stat_squadre
 for sq in stat_squadre:
