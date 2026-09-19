@@ -207,115 +207,114 @@
         .footer { text-align: center; padding: 20px; color: #444; font-size: 0.8em; margin-top: 40px; }
         .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
 
-        /* === PITCH BEST 11 === */
-        .pitch-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: 10px auto;
-            aspect-ratio: 3/4;
-            background: linear-gradient(180deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
-            border: 3px solid #fff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .pitch-lines {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-        }
-        .pitch-lines::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 0;
-            width: 100%; height: 2px;
-            background: rgba(255,255,255,0.5);
-        }
-        .pitch-center-circle {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 18%; aspect-ratio: 1;
-            transform: translate(-50%, -50%);
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 50%;
-        }
-        .pitch-center-spot {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 6px; height: 6px;
-            transform: translate(-50%, -50%);
-            background: rgba(255,255,255,0.7);
-            border-radius: 50%;
-        }
-        .pitch-box-top, .pitch-box-bottom {
-            position: absolute;
-            left: 50%; transform: translateX(-50%);
-            width: 60%; height: 14%;
-            border: 2px solid rgba(255,255,255,0.5);
-        }
-        .pitch-box-top { top: 0; border-top: none; }
-        .pitch-box-bottom { bottom: 0; border-bottom: none; }
-        .pitch-goal-box-top, .pitch-goal-box-bottom {
-            position: absolute;
-            left: 50%; transform: translateX(-50%);
-            width: 30%; height: 6%;
-            border: 2px solid rgba(255,255,255,0.5);
-        }
-        .pitch-goal-box-top { top: 0; border-top: none; }
-        .pitch-goal-box-bottom { bottom: 0; border-bottom: none; }
-        .pitch-penalty-top, .pitch-penalty-bottom {
-            position: absolute;
-            left: 50%; transform: translateX(-50%);
-            width: 6px; height: 6px;
-            background: rgba(255,255,255,0.7);
-            border-radius: 50%;
-        }
-        .pitch-penalty-top { top: 10%; }
-        .pitch-penalty-bottom { bottom: 10%; }
+       /* === PITCH BEST 11 === */
+.pitch-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 10px auto;
+    aspect-ratio: 4/3;
+    background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
+    border: 3px solid #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.pitch-lines {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+}
+.pitch-lines::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    width: 2px; height: 100%;
+    background: rgba(255,255,255,0.5);
+}
+.pitch-center-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    height: 18%; aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+}
+.pitch-center-spot {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 6px; height: 6px;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+}
+.pitch-box-left, .pitch-box-right {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    height: 60%; width: 14%;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+.pitch-box-left { left: 0; border-left: none; }
+.pitch-box-right { right: 0; border-right: none; }
+.pitch-goal-box-left, .pitch-goal-box-right {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    height: 30%; width: 6%;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+.pitch-goal-box-left { left: 0; border-left: none; }
+.pitch-goal-box-right { right: 0; border-right: none; }
+.pitch-penalty-left, .pitch-penalty-right {
+    position: absolute;
+    top: 50%;
+    width: 6px; height: 6px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+}
+.pitch-penalty-left { left: 10%; transform: translateY(-50%); }
+.pitch-penalty-right { right: 10%; transform: translateY(-50%); }
 
-        .pitch-player {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            z-index: 2;
-            transition: all 0.4s ease;
-        }
-        .pitch-player .pp-logo {
-            width: 55px; height: 55px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            background: #1a1a2e;
-        }
-        .pitch-player .pp-name {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-            background: rgba(0,0,0,0.6);
-            padding: 2px 8px;
-            border-radius: 3px;
-            white-space: nowrap;
-            max-width: 110px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .pitch-player .pp-val {
-            font-size: 1.0em;
-            font-weight: 800;
-            color: #ffd700;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-        }
-        .pitch-player .pp-ruolo {
-            font-size: 0.8em;
-            color: #aaa;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-        }
-
+.pitch-player {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+.pitch-player .pp-logo {
+    width: 55px; height: 55px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    background: #1a1a2e;
+}
+.pitch-player .pp-name {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.6);
+    padding: 2px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pitch-player .pp-val {
+    font-size: 1.0em;
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+.pitch-player .pp-ruolo {
+    font-size: 0.8em;
+    color: #aaa;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}   
         /* === RESPONSIVE === */
         @media (max-width: 768px) {
             .header {
@@ -490,17 +489,17 @@
         <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
     </div>
     <div class="pitch-container" id="pitch-best11">
-        <div class="pitch-lines">
-            <div class="pitch-center-circle"></div>
-            <div class="pitch-center-spot"></div>
-            <div class="pitch-box-top"></div>
-            <div class="pitch-box-bottom"></div>
-            <div class="pitch-goal-box-top"></div>
-            <div class="pitch-goal-box-bottom"></div>
-            <div class="pitch-penalty-top"></div>
-            <div class="pitch-penalty-bottom"></div>
-        </div>
+    <div class="pitch-lines">
+        <div class="pitch-center-circle"></div>
+        <div class="pitch-center-spot"></div>
+        <div class="pitch-box-left"></div>
+        <div class="pitch-box-right"></div>
+        <div class="pitch-goal-box-left"></div>
+        <div class="pitch-goal-box-right"></div>
+        <div class="pitch-penalty-left"></div>
+        <div class="pitch-penalty-right"></div>
     </div>
+</div>   
 </div>
 
 <script>
@@ -747,28 +746,30 @@ function updateBest11() {
     });
     players = players.concat(att.slice(0, nAtt));
 
-    function getX(n, i) {
+    // Y: distribuiti verticalmente (altezza)
+    function getY(n, i) {
         if (n === 1) return 50;
         var margin = 15;
         var step = (100 - 2 * margin) / (n - 1);
         return margin + i * step;
     }
 
+    // X: portiere 8%, difensori 30%, centrocampisti 55%, attaccanti 82%
     var groups = [
-        { list: players.slice(0, 1), y: 8 },
-        { list: players.slice(1, 1 + nDif), y: 28 },
-        { list: players.slice(1 + nDif, 1 + nDif + nCen), y: 52 },
-        { list: players.slice(1 + nDif + nCen), y: 76 }
+        { list: players.slice(0, 1), x: 8 },
+        { list: players.slice(1, 1 + nDif), x: 30 },
+        { list: players.slice(1 + nDif, 1 + nDif + nCen), x: 55 },
+        { list: players.slice(1 + nDif + nCen), x: 82 }
     ];
 
     groups.forEach(function(grp) {
         var n = grp.list.length;
         grp.list.forEach(function(g, i) {
-            var x = getX(n, i);
+            var y = getY(n, i);
             var el = document.createElement('div');
             el.className = 'pitch-player';
-            el.style.left = x + '%';
-            el.style.top = grp.y + '%';
+            el.style.left = grp.x + '%';
+            el.style.top = y + '%';
 
             var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
             el.innerHTML =
@@ -780,8 +781,7 @@ function updateBest11() {
             container.appendChild(el);
         });
     });
-}
-
+}   
 // === CARICA DATI ===
 fetch("dati.json")
     .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
