@@ -37,7 +37,7 @@ for row in ws_class.iter_rows(min_row=2, values_only=True):
 # === 1.5 STATISTICHE SQUADRE ===
 STAT_FILE = r"E:\--- fantacalcio tot uff\26-27\nuovo statistiche.xlsm"
 
-wb_stat = openpyxl.load_workbook(STAT_FILE, read_only=True, data_only=True)
+wb_stat = openpyxl.load_workbook(STAT_FILE, data_only=True)
 ws_stat = wb_stat.worksheets[0]
 
 stat_squadre = []

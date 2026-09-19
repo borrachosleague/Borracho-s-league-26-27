@@ -5824,6 +5824,8 @@
         "diff tot pt": -7.0,
         "pt max": 86.0,
         "pt min": 72.0,
+        "f1": 0,
+        "br": 0,
         "gol d": 1,
         "gol c": 2,
         "gol a": 3
@@ -5857,6 +5859,8 @@
         "diff tot pt": -3.5,
         "pt max": 85.0,
         "pt min": 70.5,
+        "f1": 0,
+        "br": 0,
         "gol d": 0,
         "gol c": 1,
         "gol a": 4
@@ -5890,6 +5894,8 @@
         "diff tot pt": -15.0,
         "pt max": 84.0,
         "pt min": 72.0,
+        "f1": 0,
+        "br": 0,
         "gol d": 2,
         "gol c": 0,
         "gol a": 2
@@ -5923,6 +5929,8 @@
         "diff tot pt": -8.5,
         "pt max": 80.5,
         "pt min": 62.5,
+        "f1": 0,
+        "br": 0,
         "gol d": 0,
         "gol c": 2,
         "gol a": 2
@@ -5956,6 +5964,8 @@
         "diff tot pt": -11.0,
         "pt max": 85.0,
         "pt min": 76.0,
+        "f1": 0,
+        "br": 0,
         "gol d": 1,
         "gol c": 3,
         "gol a": 3
@@ -5989,6 +5999,8 @@
         "diff tot pt": -19.5,
         "pt max": 73.5,
         "pt min": 71.5,
+        "f1": 0,
+        "br": 0,
         "gol d": 1,
         "gol c": 2,
         "gol a": 2
@@ -6022,6 +6034,8 @@
         "diff tot pt": -11.0,
         "pt max": 76.0,
         "pt min": 68.5,
+        "f1": 0,
+        "br": 0,
         "gol d": 0,
         "gol c": 1,
         "gol a": 4
@@ -6055,6 +6069,8 @@
         "diff tot pt": -9.0,
         "pt max": 69.0,
         "pt min": 68.0,
+        "f1": 0,
+        "br": 0,
         "gol d": 0,
         "gol c": 0,
         "gol a": 1
@@ -6088,6 +6104,8 @@
         "diff tot pt": -28.5,
         "pt max": 69.5,
         "pt min": 63.5,
+        "f1": 0,
+        "br": 0,
         "gol d": 0,
         "gol c": 1,
         "gol a": 0
@@ -6121,6 +6139,8 @@
         "diff tot pt": -19.5,
         "pt max": 78.0,
         "pt min": 65.0,
+        "f1": 0,
+        "br": 0,
         "gol d": 0,
         "gol c": 0,
         "gol a": 2
@@ -6152,6 +6172,8 @@
     "diff tot pt",
     "pt max",
     "pt min",
+    "f1",
+    "br",
     "gol d",
     "gol c",
     "gol a"
