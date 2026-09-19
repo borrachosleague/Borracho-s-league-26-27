@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BORRACHO'S LEAGUE 25-26</title>
-<!-- v2 -->   
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
@@ -23,7 +22,7 @@
         body.home-active .header { display: none; }
 
         .logo { display: flex; align-items: center; gap: 15px; }
-        .logo img { width: 50px; height: 50px; border: 2px solid #e94560; }
+        .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #e94560; }
         .logo-text { font-size: 1.4em; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
         .logo-text span { color: #e94560; }
         .logo-sub { font-size: 0.7em; color: #888; font-weight: 400; }
@@ -38,7 +37,7 @@
         .nav-btn:hover { border-color: #e94560; color: #fff; }
         .nav-btn.active { background: #e94560; border-color: #e94560; color: #fff; }
 
-        .page { display: none; padding: 0px 5px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .page { display: none; padding: 0 5px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
         .page.active { display: block; }
 
         #page-home.active {
@@ -117,18 +116,9 @@
             border-radius: 6px;
             width: 100%;
         }
-        .ricerca-input:focus {
-            outline: none;
-            border-color: #e94560;
-        }
-        .giocatori-controls .criterio-select {
-            width: 100%;
-            margin-bottom: 0;
-        }
-        .giocatori-layout .table-container {
-            flex: 1;
-            margin-left: 0;
-        }
+        .ricerca-input:focus { outline: none; border-color: #e94560; }
+        .giocatori-controls .criterio-select { width: 100%; margin-bottom: 0; }
+        .giocatori-layout .table-container { flex: 1; margin-left: 0; }
 
         .titolo-riquadro {
             background: #16213e;
@@ -208,160 +198,144 @@
         .footer { text-align: center; padding: 20px; color: #444; font-size: 0.8em; margin-top: 40px; }
         .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
 
-      /* === BEST 11 LAYOUT === */
-.best11-layout {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    margin-top: 0;
-   }
-.best11-controls {
-    flex: 0 0 130px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-top: 5px;
-}
-.best11-label {
-    font-size: 0.75em;
-    font-weight: 700;
-    color: #e94560;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-}
-.subnav.best11-v {
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 10px;
-}
-.subnav.best11-v .subnav-btn {
-    width: 100%;
-    text-align: center;
-    padding: 8px 10px;
-    font-size: 0.8em;
-}
+        /* === BEST 11 LAYOUT === */
+        .best11-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-top: 0;
+        }
+        .best11-controls {
+            flex: 0 0 110px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 5px;
+        }
+        .best11-label {
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #e94560;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .subnav.best11-v {
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .subnav.best11-v .subnav-btn {
+            width: 100%;
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 0.8em;
+        }
 
-/* === PITCH BEST 11 === */
-.pitch-container {
-    position: relative;
-    width: 100%;
-    margin: -5;
-    aspect-ratio: 16/10;
-    background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
-    border: 3px solid #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    flex: 1;
-}
-.pitch-lines {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-}
-.pitch-lines::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 50%;
-    width: 2px; height: 100%;
-    background: rgba(255,255,255,0.5);
-}
-.pitch-center-circle {
-    position: absolute;
-    top: 50%; left: 50%;
-    height: 18%; aspect-ratio: 1;
-    transform: translate(-50%, -50%);
-    border: 2px solid rgba(255,255,255,0.5);
-    border-radius: 50%;
-}
-.pitch-center-spot {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 6px; height: 6px;
-    transform: translate(-50%, -50%);
-    background: rgba(255,255,255,0.7);
-    border-radius: 50%;
-}
-.pitch-box-left, .pitch-box-right {
-    position: absolute;
-    top: 50%; transform: translateY(-50%);
-    height: 60%; width: 14%;
-    border: 2px solid rgba(255,255,255,0.5);
-}
-.pitch-box-left { left: 0; border-left: none; }
-.pitch-box-right { right: 0; border-right: none; }
-.pitch-goal-box-left, .pitch-goal-box-right {
-    position: absolute;
-    top: 50%; transform: translateY(-50%);
-    height: 30%; width: 6%;
-    border: 2px solid rgba(255,255,255,0.5);
-}
-.pitch-goal-box-left { left: 0; border-left: none; }
-.pitch-goal-box-right { right: 0; border-right: none; }
-.pitch-penalty-left, .pitch-penalty-right {
-    position: absolute;
-    top: 50%;
-    width: 6px; height: 6px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 50%;
-}
-.pitch-penalty-left { left: 10%; transform: translateY(-50%); }
-.pitch-penalty-right { right: 10%; transform: translateY(-50%); }
+        /* === PITCH BEST 11 === */
+        .pitch-container {
+            position: relative;
+            width: 100%;
+            margin: 0;
+            aspect-ratio: 16/10;
+            background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
+            border: 3px solid #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .pitch-lines {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .pitch-lines::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            width: 2px; height: 100%;
+            background: rgba(255,255,255,0.5);
+        }
+        .pitch-center-circle {
+            position: absolute;
+            top: 50%; left: 50%;
+            height: 22%; aspect-ratio: 1;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+        }
+        .pitch-center-spot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 6px; height: 6px;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+        }
+        .pitch-box-left, .pitch-box-right {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            height: 55%; width: 10%;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        .pitch-box-left { left: 0; border-left: none; }
+        .pitch-box-right { right: 0; border-right: none; }
+        .pitch-goal-box-left, .pitch-goal-box-right {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            height: 28%; width: 5%;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        .pitch-goal-box-left { left: 0; border-left: none; }
+        .pitch-goal-box-right { right: 0; border-right: none; }
+        .pitch-penalty-left, .pitch-penalty-right {
+            position: absolute;
+            top: 50%;
+            width: 5px; height: 5px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+        }
+        .pitch-penalty-left { left: 7%; transform: translateY(-50%); }
+        .pitch-penalty-right { right: 7%; transform: translateY(-50%); }
 
-.pitch-player {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    z-index: 2;
-    transition: all 0.4s ease;
-}
-.pitch-player .pp-logo {
-    width: 50px; height: 50px;
-    }  
- .pitch-player .pp-name {
-    font-size: 1em;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    background: rgba(0,0,0,0.6);
-    padding: 2px 6px;
-    border-radius: 3px;
-    white-space: nowrap;
-    max-width: 130px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.pitch-player .pp-val {
-    font-size: 0.9em;
-    font-weight: 800;
-    color: #ffd700;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-}
-.pitch-player .pp-ruolo {
-    font-size: 0.7em;
-    color: #aaa;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-}
+        .pitch-player {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            z-index: 2;
+        }
+        .pitch-player .pp-logo {
+            width: 50px; height: 50px;
+        }
+        .pitch-player .pp-name {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.7);
+            padding: 1px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pitch-player .pp-val {
+            font-size: 0.75em;
+            font-weight: 800;
+            color: #ffd700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+        }
+        .pitch-player .pp-ruolo {
+            font-size: 0.6em;
+            color: #aaa;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+        }
 
-@media (max-width: 768px) {
-    .best11-layout { flex-direction: column; }
-    .best11-controls {
-        flex: none;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    .subnav.best11-v {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    .subnav.best11-v .subnav-btn { width: auto; }
-    .pitch-container { max-width: 100%; }
-}   
         /* === RESPONSIVE === */
         @media (max-width: 768px) {
             .header {
@@ -392,24 +366,25 @@
             #sub-giocatori .criterio-select,
             #sub-squadre .criterio-select { float: none; width: 100%; }
             .page-title { font-size: 1.1em; }
+            .best11-layout { flex-direction: column; }
+            .best11-controls {
+                flex: none;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .subnav.best11-v { flex-direction: row; flex-wrap: wrap; }
+            .subnav.best11-v .subnav-btn { width: auto; }
+            .pitch-container { max-width: 100%; }
         }
 
         @media (max-width: 480px) {
-            .home-loghi img {
-                width: 45px !important;
-                height: 45px !important;
-            }
+            .home-loghi img { width: 45px !important; height: 45px !important; }
             .home-logo-right { right: 18% !important; }
-            .home-nav {
-                right: 50%;
-                transform: translateX(50%);
-            }
-            .pitch-player .pp-logo {
-    width: 38px; height: 38px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}   
-            .pitch-player .pp-name { font-size: 0.75em; max-width: 90px; }
-            .pitch-player .pp-val { font-size: 0.75em; }
+            .home-nav { right: 50%; transform: translateX(50%); }
+            .pitch-player .pp-logo { width: 35px; height: 35px; }
+            .pitch-player .pp-name { font-size: 0.7em; max-width: 70px; }
+            .pitch-player .pp-val { font-size: 0.65em; }
         }
     </style>
 </head>
@@ -556,7 +531,8 @@
             </div>
         </div>
     </div>
-</div>   
+</div>
+
 <script>
 let datiSquadre = [];
 let datiGiocatori = [];
@@ -831,7 +807,8 @@ function updateBest11() {
             container.appendChild(el);
         });
     });
-}     
+}
+
 // === CARICA DATI ===
 fetch("dati.json")
     .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
