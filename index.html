@@ -23,7 +23,7 @@
         body.home-active .header { display: none; }
 
         .logo { display: flex; align-items: center; gap: 15px; }
-        .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #e94560; }
+        .logo img { width: 50px; height: 50px; border: 2px solid #e94560; }
         .logo-text { font-size: 1.4em; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
         .logo-text span { color: #e94560; }
         .logo-sub { font-size: 0.7em; color: #888; font-weight: 400; }
@@ -247,7 +247,7 @@
     width: 100%;
     max-width: 700px;
     margin: 0;
-    aspect-ratio: 4/3;
+    aspect-ratio: 16/11;
     background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
     border: 3px solid #fff;
     border-radius: 8px;
@@ -320,13 +320,9 @@
     transition: all 0.4s ease;
 }
 .pitch-player .pp-logo {
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    background: #1a1a2e;
-}
-.pitch-player .pp-name {
+    width: 38px; height: 38px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}   .pitch-player .pp-name {
     font-size: 1em;
     font-weight: 700;
     color: #fff;
@@ -408,8 +404,11 @@
                 right: 50%;
                 transform: translateX(50%);
             }
-            .pitch-player .pp-logo { width: 38px; height: 38px; }
-            .pitch-player .pp-name { font-size: 0.8em; max-width: 70px; }
+            .pitch-player .pp-logo {
+    width: 38px; height: 38px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}   
+            .pitch-player .pp-name { font-size: 0.75em; max-width: 90px; }
             .pitch-player .pp-val { font-size: 0.75em; }
         }
     </style>
