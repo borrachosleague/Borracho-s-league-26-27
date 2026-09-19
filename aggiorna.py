@@ -79,9 +79,10 @@ for r in range(5, 15):
     stat_squadre.append({"nome": str(nome).strip(), "dati": dati})   
   
 
-# === 1.6 CLASSIFICA F1 E BATTLE ROYALE (Foglio 4) ===
 
-# F1: righe 4-13, nome in col A, punteggio in col B
+# === 1.6 CLASSIFICA F1 E BATTLE ROYALE (Foglio4) ===
+ws_f1 = wb_stat.worksheets[2]
+
 f1_scores = {}
 for r in range(4, 14):
     nome = ws_f1.cell(row=r, column=1).value
@@ -92,7 +93,6 @@ for r in range(4, 14):
         except (ValueError, TypeError):
             f1_scores[str(nome).strip()] = 0
 
-# BR: righe 19-28, nome in col A, punteggio in col B
 br_scores = {}
 for r in range(19, 29):
     nome = ws_f1.cell(row=r, column=1).value
@@ -102,19 +102,15 @@ for r in range(19, 29):
             br_scores[str(nome).strip()] = float(str(val).replace(",", ".")) if val is not None else 0
         except (ValueError, TypeError):
             br_scores[str(nome).strip()] = 0
-# DEBUG
-print("Nomi Foglio 4 F1:", list(f1_scores.keys()))
-print("Nomi Foglio 1:", [sq["nome"] for sq in stat_squadre])   
 
-# Aggiunge i campi a stat_squadre
 for sq in stat_squadre:
     sq["dati"]["f1"] = f1_scores.get(sq["nome"], 0)
     sq["dati"]["br"] = br_scores.get(sq["nome"], 0)
 
-# Aggiunge le colonne alla lista
 colonne_stat.append("f1")
-colonne_stat.append("br")   
-wb_stat.close()
+colonne_stat.append("br")
+
+wb_stat.close()   
 # === 2. GIOCATORI (INSER DATA) ===
 wb_borr = openpyxl.load_workbook(BORRACHOS_FILE, read_only=True, data_only=True)
 ws_data = wb_borr["INSER DATA"]
