@@ -12,7 +12,7 @@
     .timer { font-size: 3rem; font-weight: bold; color: #e94560; }
     .player-name { font-size: 1.5rem; font-weight: bold; color: #4ecca3; }
     .bidder { color: #f5c542; font-size: 1.2rem; margin: 8px 0; }
-    .bid-input { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+    .bid-input { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
     .bid-input input { width: 100px; padding: 10px; border-radius: 8px; border: none; font-size: 1.1rem; }
     .bid-input button { padding: 10px 20px; border-radius: 8px; border: none; background: #e94560; color: #fff; font-size: 1.1rem; cursor: pointer; }
     .bid-input button:hover { background: #c73650; }
@@ -22,11 +22,17 @@
     #start-btn:hover { background: #3db892; }
     .status { text-align: center; font-size: 1.1rem; color: #888; margin-bottom: 10px; }
     .error { color: #e94560; margin-top: 8px; }
-    select { padding: 10px; border-radius: 8px; border: none; font-size: 1rem; margin: 10px 0; }
+    .credit-display { color: #4ecca3; font-size: 1.1rem; margin-top: 10px; }
+    select { padding: 10px; border-radius: 8px; border: none; font-size: 1rem; margin: 10px 0; width: 100%; max-width: 300px; }
+    .my-rosa { text-align: left; }
+    .my-rosa li { padding: 4px 0; border-bottom: 1px solid #333; font-size: 0.95rem; }
+    .my-rosa button { padding: 3px 8px; border-radius: 5px; border: none; background: #e94560; color: #fff; cursor: pointer; font-size: 0.8rem; margin-left: 8px; }
+    .my-rosa button:hover { background: #c73650; }
+    .section-title { font-size: 1rem; color: #888; margin: 15px 0 5px; }
   </style>
 </head>
 <body>
-  <h1>⚽ Fanta Asta</h1>
+  <h1>⚽ Fanta Asta di Riparazione</h1>
 
   <div class="card" id="login-card">
     <h3>Seleziona la tua squadra</h3>
@@ -34,22 +40,31 @@
     <button id="join-btn" onclick="joinAuction()">Entra in asta</button>
   </div>
 
-  <div class="card" id="auction-card" style="display:none">
-    <div class="player-name" id="player-name"></div>
-    <div class="timer" id="timer">30</div>
-    <div class="bidder" id="current-bidder"></div>
-    <div class="error" id="error"></div>
-    <div class="bid-input">
-      <input type="number" id="bid-amount" placeholder="Offerta" min="1">
-      <button onclick="placeBid()">Rilancia</button>
+  <div id="main-area" style="display:none">
+    <div class="credit-display" id="credit-display"></div>
+
+    <div class="card" id="auction-card">
+      <div class="player-name" id="player-name"></div>
+      <div class="timer" id="timer">30</div>
+      <div class="bidder" id="current-bidder"></div>
+      <div class="error" id="error"></div>
+      <div class="bid-input">
+        <input type="number" id="bid-amount" placeholder="Offerta" min="1">
+        <button onclick="placeBid()">Rilancia</button>
+      </div>
     </div>
-  </div>
 
-  <button id="start-btn" style="display:none" onclick="startAuction()">▶ Avvia Asta</button>
+    <button id="start-btn" onclick="startAuction()">▶ Avvia Asta</button>
 
-  <div class="card">
-    <h3>Giocatori venduti</h3>
-    <ul class="sold-list" id="sold-list"></ul>
+    <div class="card">
+      <h3>La mia rosa</h3>
+      <ul class="my-rosa" id="my-rosa"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Giocatori venduti</h3>
+      <ul class="sold-list" id="sold-list"></ul>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -60,26 +75,33 @@
     );
 
     var mySquadra = null;
+    var myCrediti = 0;
     var currentTimer = 30;
     var timerInterval = null;
     var currentPlayerId = null;
     var currentBid = 0;
     var currentBidder = null;
     var sold = [];
+    var myRosa = [];
 
+    // --- Calcolo recupero crediti ---
+    function calcRecupero(pagato, inSerieA) {
+      if (!inSerieA) return pagato; // 100%
+      var half = pagato / 2;
+      return Math.ceil(half); // 50%, arrotondato per eccesso
+    }
+
+    // --- Carica squadre ---
     async function loadSquadre() {
-      var res = await supabase.from('squadre').select('nome').order('id');
-      var data = res.data;
+      var res = await supabase.from('squadre').select('nome, crediti').order('id');
       var select = document.getElementById('squadra-select');
-      if (data) {
-        data.forEach(function(s) {
+      if (res.data) {
+        res.data.forEach(function(s) {
           var opt = document.createElement('option');
           opt.value = s.nome;
-          opt.textContent = s.nome;
+          opt.textContent = s.nome + ' (' + s.credito + ' cr)';
           select.appendChild(opt);
         });
-      } else {
-        document.getElementById('squadra-select').innerHTML = '<option>Errore: nessuna squadra trovata</option>';
       }
     }
 
@@ -87,22 +109,70 @@
       mySquadra = document.getElementById('squadra-select').value;
       if (!mySquadra) return;
       document.getElementById('login-card').style.display = 'none';
-      document.getElementById('start-btn').style.display = 'block';
-      document.getElementById('auction-card').style.display = 'block';
+      document.getElementById('main-area').style.display = 'block';
       subscribe();
       loadInitialState();
     }
 
     async function loadInitialState() {
+      // Carica crediti
+      var resCred = await supabase.from('squadre').select('crediti').eq('nome', mySquadra);
+      if (resCred.data && resCred.data.length > 0) {
+        myCrediti = resCred.data[0].crediti;
+      }
+      updateCreditDisplay();
+
+      // Carica primo giocatore pending
       var res1 = await supabase.from('players').select('id, nome, ruolo').eq('stato', 'pending').order('id').limit(1);
+      if (res1.data && res1.data.length > 0) {
+        currentPlayerId = res1.data[0].id;
+        document.getElementById('player-name').textContent = res1.data[0].nome + ' (' + res1.data[0].ruolo + ')';
+      }
+
+      // Carica venduti
       var res2 = await supabase.from('players').select('nome, ruolo, vincitore, prezzo_finale').neq('stato', 'pending');
       sold = res2.data || [];
       renderSold();
-      if (res1.data && res1.data.length > 0) {
-        currentPlayerId = res1.data[0].id;
-        document.getElementById('player-name').textContent =
-          res1.data[0].nome + ' (' + res1.data[0].ruolo + ')';
-      }
+
+      // Carica mia rosa
+      loadMyRosa();
+    }
+
+    async function loadMyRosa() {
+      var res = await supabase.from('players')
+        .select('id, nome, ruolo, prezzo_finale, in_serie_a')
+        .eq('vincitore', mySquadra).eq('stato', 'sold');
+      myRosa = res.data || [];
+      renderMyRosa();
+    }
+
+    function renderMyRosa() {
+      var ul = document.getElementById('my-rosa');
+      ul.innerHTML = myRosa.map(function(p) {
+        var recupero = calcRecupero(p.prezzo_finale, p.in_serie_a);
+        return '<li>' + p.nome + ' (' + p.ruolo + ') — ' + p.prezzo_finale + ' cr' +
+          ' <button onclick="scaricaGiocatore(' + p.id + ', ' + p.prezzo_finale + ', ' + p.in_serie_a + ')">Scarta (+ ' + recupero + ')</button></li>';
+      }).join('');
+    }
+
+    async function scaricaGiocatore(playerId, pagato, inSerieA) {
+      var recupero = calcRecupero(pagato, inSerieA);
+      // Rimuove dalla rosa (stato → pending, rimuove vincitore)
+      await supabase.from('players').update({
+        stato: 'pending',
+        vincitore: null,
+        prezzo_finale: null
+      }).eq('id', playerId);
+      // Aggiunge crediti
+      myCrediti += recupero;
+      await supabase.from('squadre').update({ crediti: myCrediti }).eq('nome', mySquadra);
+      updateCreditDisplay();
+      loadMyRosa();
+    }
+
+    function updateCreditDisplay() {
+      document.getElementById('credit-display').textContent =
+        mySquadra + ' — Crediti residui: ' + myCrediti;
     }
 
     function subscribe() {
@@ -113,8 +183,7 @@
             if (bid.player_id !== currentPlayerId) return;
             currentBid = bid.importo;
             currentBidder = bid.squadra;
-            document.getElementById('current-bidder').textContent =
-              currentBidder + ' — ' + currentBid + ' crediti';
+            document.getElementById('current-bidder').textContent = currentBidder + ' — ' + currentBid + ' cr';
             resetTimer(10);
           }
         ).subscribe();
@@ -151,6 +220,12 @@
           vincitore: currentBidder,
           prezzo_finale: currentBid
         }).eq('id', currentPlayerId);
+        // Sottrae crediti alla squadra vincitrice
+        if (currentBidder === mySquadra) {
+          myCrediti -= currentBid;
+          await supabase.from('squadre').update({ crediti: myCrediti }).eq('nome', mySquadra);
+          updateCreditDisplay();
+        }
       } else {
         await supabase.from('players').update({ stato: 'skipped' }).eq('id', currentPlayerId);
       }
@@ -159,6 +234,7 @@
     function handlePlayerDone(player) {
       sold.push({ nome: player.nome, ruolo: player.ruolo, vincitore: player.vincitore, prezzo_finale: player.prezzo_finale });
       renderSold();
+      if (player.vincitore === mySquadra) loadMyRosa();
 
       setTimeout(async function() {
         var res = await supabase.from('players').select('id, nome, ruolo').eq('stato', 'pending').order('id').limit(1);
@@ -166,8 +242,7 @@
           currentPlayerId = res.data[0].id;
           currentBid = 0;
           currentBidder = null;
-          document.getElementById('player-name').textContent =
-            res.data[0].nome + ' (' + res.data[0].ruolo + ')';
+          document.getElementById('player-name').textContent = res.data[0].nome + ' (' + res.data[0].ruolo + ')';
           document.getElementById('current-bidder').textContent = '';
           resetTimer(30);
         } else {
@@ -191,6 +266,11 @@
       }
       if (currentBidder === mySquadra) {
         document.getElementById('error').textContent = 'Sei già tu il rilanciatore corrente';
+        setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
+        return;
+      }
+      if (amount > myCrediti) {
+        document.getElementById('error').textContent = 'Crediti insufficienti! Hai ' + myCrediti + ' cr.';
         setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
         return;
       }
