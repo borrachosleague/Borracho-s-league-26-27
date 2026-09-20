@@ -52,35 +52,38 @@
     <ul class="sold-list" id="sold-list"></ul>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-    const supabase = createClient(
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    var supabase = window.supabase.createClient(
       'https://tlgzvgdxhtiavobyyxze.supabase.co',
       'sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL'
     );
 
-    let mySquadra = null;
-    let currentTimer = 30;
-    let timerInterval = null;
-    let currentPlayerId = null;
-    let currentBid = 0;
-    let currentBidder = null;
-    let sold = [];
+    var mySquadra = null;
+    var currentTimer = 30;
+    var timerInterval = null;
+    var currentPlayerId = null;
+    var currentBid = 0;
+    var currentBidder = null;
+    var sold = [];
 
-    // --- Login: carica le squadre ---
     async function loadSquadre() {
-      const { data } = await supabase.from('squadre').select('nome').order('id');
-      const select = document.getElementById('squadra-select');
-      data.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.nome;
-        opt.textContent = s.nome;
-        select.appendChild(opt);
-      });
+      var res = await supabase.from('squadre').select('nome').order('id');
+      var data = res.data;
+      var select = document.getElementById('squadra-select');
+      if (data) {
+        data.forEach(function(s) {
+          var opt = document.createElement('option');
+          opt.value = s.nome;
+          opt.textContent = s.nome;
+          select.appendChild(opt);
+        });
+      } else {
+        document.getElementById('squadra-select').innerHTML = '<option>Errore: nessuna squadra trovata</option>';
+      }
     }
 
-    window.joinAuction = function() {
+    function joinAuction() {
       mySquadra = document.getElementById('squadra-select').value;
       if (!mySquadra) return;
       document.getElementById('login-card').style.display = 'none';
@@ -88,44 +91,37 @@
       document.getElementById('auction-card').style.display = 'block';
       subscribe();
       loadInitialState();
-    };
+    }
 
     async function loadInitialState() {
-      const { data: players } = await supabase
-        .from('players').select('id, nome, ruolo, stato, vincitore, prezzo_finale')
-        .eq('stato', 'pending').order('id');
-      const { data: soldData } = await supabase
-        .from('players').select('nome, ruolo, vincitore, prezzo_finale')
-        .neq('stato', 'pending');
-      sold = soldData || [];
+      var res1 = await supabase.from('players').select('id, nome, ruolo').eq('stato', 'pending').order('id').limit(1);
+      var res2 = await supabase.from('players').select('nome, ruolo, vincitore, prezzo_finale').neq('stato', 'pending');
+      sold = res2.data || [];
       renderSold();
-      if (players && players.length > 0) {
-        currentPlayerId = players[0].id;
+      if (res1.data && res1.data.length > 0) {
+        currentPlayerId = res1.data[0].id;
         document.getElementById('player-name').textContent =
-          `${players[0].nome} (${players[0].ruolo})`;
+          res1.data[0].nome + ' (' + res1.data[0].ruolo + ')';
       }
     }
 
     function subscribe() {
-      // Ascolta nuovi bid
       supabase.channel('bids-channel')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bids' },
-          (payload) => {
-            const bid = payload.new;
+          function(payload) {
+            var bid = payload.new;
             if (bid.player_id !== currentPlayerId) return;
             currentBid = bid.importo;
             currentBidder = bid.squadra;
             document.getElementById('current-bidder').textContent =
-              `${currentBidder} — ${currentBid} crediti`;
-            // Anti-snipe: reset timer a 10s
+              currentBidder + ' — ' + currentBid + ' crediti';
             resetTimer(10);
           }
         ).subscribe();
 
-      // Ascolta player venduti
       supabase.channel('players-channel')
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'players' },
-          (payload) => {
+          function(payload) {
             if (payload.new.stato === 'sold' || payload.new.stato === 'skipped') {
               handlePlayerDone(payload.new);
             }
@@ -137,7 +133,7 @@
       clearInterval(timerInterval);
       currentTimer = seconds;
       document.getElementById('timer').textContent = currentTimer;
-      timerInterval = setInterval(() => {
+      timerInterval = setInterval(function() {
         currentTimer--;
         document.getElementById('timer').textContent = currentTimer;
         if (currentTimer <= 0) {
@@ -161,49 +157,41 @@
     }
 
     function handlePlayerDone(player) {
-      document.getElementById('status')?.textContent =
-        player.stato === 'sold'
-          ? `${player.nome} venduto a ${player.vincitore} per ${player.prezzo_finale}`
-          : `${player.nome} non venduto`;
       sold.push({ nome: player.nome, ruolo: player.ruolo, vincitore: player.vincitore, prezzo_finale: player.prezzo_finale });
       renderSold();
 
-      // Avanza al prossimo dopo 3 secondi
-      setTimeout(async () => {
-        const { data: next } = await supabase
-          .from('players').select('id, nome, ruolo')
-          .eq('stato', 'pending').order('id').limit(1);
-        if (next && next.length > 0) {
-          currentPlayerId = next[0].id;
+      setTimeout(async function() {
+        var res = await supabase.from('players').select('id, nome, ruolo').eq('stato', 'pending').order('id').limit(1);
+        if (res.data && res.data.length > 0) {
+          currentPlayerId = res.data[0].id;
           currentBid = 0;
           currentBidder = null;
           document.getElementById('player-name').textContent =
-            `${next[0].nome} (${next[0].ruolo})`;
+            res.data[0].nome + ' (' + res.data[0].ruolo + ')';
           document.getElementById('current-bidder').textContent = '';
           resetTimer(30);
         } else {
-          document.getElementById('status')?.textContent = '🏁 Asta terminata!';
+          document.getElementById('timer').textContent = '🏁';
           clearInterval(timerInterval);
         }
       }, 3000);
     }
 
-    window.startAuction = function() {
+    function startAuction() {
       document.getElementById('start-btn').style.display = 'none';
       resetTimer(30);
-    };
+    }
 
-    window.placeBid = async function() {
-      const amount = parseInt(document.getElementById('bid-amount').value);
+    async function placeBid() {
+      var amount = parseInt(document.getElementById('bid-amount').value);
       if (!amount || amount <= currentBid) {
-        document.getElementById('error').textContent =
-          `Devi offrire almeno ${currentBid + 1}`;
-        setTimeout(() => document.getElementById('error').textContent = '', 3000);
+        document.getElementById('error').textContent = 'Devi offrire almeno ' + (currentBid + 1);
+        setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
         return;
       }
       if (currentBidder === mySquadra) {
         document.getElementById('error').textContent = 'Sei già tu il rilanciatore corrente';
-        setTimeout(() => document.getElementById('error').textContent = '', 3000);
+        setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
         return;
       }
       await supabase.from('bids').insert({
@@ -212,18 +200,17 @@
         importo: amount
       });
       document.getElementById('bid-amount').value = '';
-    };
-
-    function renderSold() {
-      const ul = document.getElementById('sold-list');
-      ul.innerHTML = sold.map(s =>
-        s.vincitore
-          ? `<li><strong>${s.nome}</strong> (${s.ruolo}) → ${s.vincitore} — ${s.prezzo_finale} cr</li>`
-          : `<li><strong>${s.nome}</strong> (${s.ruolo}) → non venduto</li>`
-      ).join('');
     }
 
-    // Init
+    function renderSold() {
+      var ul = document.getElementById('sold-list');
+      ul.innerHTML = sold.map(function(s) {
+        return s.vincitore
+          ? '<li><strong>' + s.nome + '</strong> (' + s.ruolo + ') → ' + s.vincitore + ' — ' + s.prezzo_finale + ' cr</li>'
+          : '<li><strong>' + s.nome + '</strong> (' + s.ruolo + ') → non venduto</li>';
+      }).join('');
+    }
+
     loadSquadre();
   </script>
 </body>
