@@ -3,277 +3,455 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fanta Asta — Rose</title>
+  <title>Fanta Asta</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #fff; padding: 15px; }
-    h1 { text-align: center; margin-bottom: 15px; font-size: 1.4rem; }
-    .board {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 15px;
-    }
-    .column {
-      min-width: 210px;
-      max-width: 210px;
-      background: #16213e;
-      border-radius: 10px;
-      padding: 12px;
-      flex-shrink: 0;
-    }
-    .col-header {
-      text-align: center;
-      border-bottom: 2px solid #4ecca3;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-    }
-    .col-header .team-name { font-weight: bold; font-size: 0.95rem; }
-    .col-header .team-crediti { color: #4ecca3; font-size: 1.1rem; font-weight: bold; margin-top: 4px; }
-    .role-group { margin-bottom: 10px; }
-    .role-title {
-      font-size: 0.75rem;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-      border-bottom: 1px solid #333;
-      padding-bottom: 2px;
-    }
-    .player-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 3px 0;
-      font-size: 0.85rem;
-    }
-    .player-row .p-name { flex: 1; }
-    .player-row .p-recovery {
-      color: #f5c542;
-      font-size: 0.75rem;
-      min-width: 30px;
-      text-align: right;
-    }
-    .player-row .p-del {
-      background: none;
-      border: none;
-      color: #e94560;
-      cursor: pointer;
-      font-size: 1rem;
-      padding: 0 4px;
-      line-height: 1;
-    }
+    body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #fff; padding: 10px; }
+    h1 { text-align: center; margin-bottom: 10px; font-size: 1.3rem; }
+    .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: nowrap; }
+    .tab-btn { padding: 8px 16px; border: none; border-radius: 6px; font-size: 0.85rem; cursor: pointer; background: #16213e; color: #888; white-space: nowrap; }
+    .tab-btn.active { background: #4ecca3; color: #1a1a2e; font-weight: bold; }
+    .search-wrap { position: relative; flex: 1; min-width: 150px; max-width: 280px; }
+    .search-wrap input { width: 100%; padding: 8px 10px; border-radius: 6px; border: 2px solid #4ecca3; background: #1a1a2e; color: #fff; font-size: 0.85rem; }
+    .search-wrap input:focus { outline: none; border-color: #f5c542; }
+    .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #16213e; border: 1px solid #333; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 100; display: none; }
+    .search-dropdown div { padding: 6px 10px; cursor: pointer; font-size: 0.85rem; }
+    .search-dropdown div:hover { background: #4ecca3; color: #1a1a2e; }
+    .search-dropdown .s-role { color: #888; font-size: 0.75rem; margin-left: 6px; }
+    .btn-reset-danger { padding: 8px 12px; border: none; border-radius: 6px; background: #e94560; color: #fff; cursor: pointer; font-weight: bold; font-size: 0.8rem; white-space: nowrap; }
+    .btn-reset-danger:hover { background: #c73650; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card { background: #16213e; border-radius: 10px; padding: 15px; margin-bottom: 12px; text-align: center; }
+    .timer { font-size: 2.5rem; font-weight: bold; color: #e94560; }
+    .player-name { font-size: 1.3rem; font-weight: bold; color: #4ecca3; }
+    .bidder { color: #f5c542; font-size: 1.1rem; margin: 6px 0; }
+    .bid-input { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+    .bid-input input { width: 90px; padding: 8px; border-radius: 6px; border: none; font-size: 1rem; }
+    .bid-input button { padding: 8px 16px; border: none; border-radius: 6px; background: #e94560; color: #fff; font-size: 1rem; cursor: pointer; }
+    .bid-input button:hover { background: #c73650; }
+    .btn-sell { margin-top: 8px; padding: 6px 16px; border: none; border-radius: 6px; background: #4ecca3; color: #1a1a2e; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
+    .btn-sell:hover { background: #3db892; }
+    .error { color: #e94560; margin-top: 6px; font-size: 0.9rem; }
+    .sold-list { text-align: left; max-height: 250px; overflow-y: auto; }
+    .sold-list li { padding: 4px 0; border-bottom: 1px solid #333; font-size: 0.85rem; }
+    select { padding: 8px; border-radius: 6px; border: none; font-size: 0.9rem; margin: 8px 0; width: 100%; max-width: 250px; }
+    .board { display: flex; gap: 4px; padding-bottom: 10px; }
+    .column { flex: 1; min-width: 0; background: #16213e; border-radius: 8px; padding: 8px; }
+    .col-header { text-align: center; border-bottom: 2px solid #4ecca3; padding-bottom: 5px; margin-bottom: 8px; }
+    .col-header .team-name { font-weight: bold; font-size: 0.7rem; }
+    .col-header .team-crediti { color: #4ecca3; font-size: 0.9rem; font-weight: bold; margin-top: 2px; }
+    .role-group { margin-bottom: 6px; }
+    .role-title { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; border-bottom: 1px solid #333; padding-bottom: 1px; }
+    .role-title .slots { color: #4ecca3; }
+    .player-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; font-size: 0.75rem; }
+    .player-row .p-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .player-row .p-recovery { color: #f5c542; font-size: 0.65rem; min-width: 22px; text-align: right; }
+    .player-row .p-del { background: none; border: none; color: #e94560; cursor: pointer; font-size: 0.9rem; padding: 0 2px; line-height: 1; }
     .player-row .p-del:hover { color: #ff6b8a; }
-    .add-form {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid #333;
-    }
-    .add-form input, .add-form select {
-      width: 100%;
-      padding: 5px 8px;
-      margin-bottom: 5px;
-      border-radius: 5px;
-      border: 1px solid #333;
-      background: #1a1a2e;
-      color: #fff;
-      font-size: 0.8rem;
-    }
-    .add-form button {
-      width: 100%;
-      padding: 6px;
-      border: none;
-      border-radius: 5px;
-      background: #4ecca3;
-      color: #1a1a2e;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-    .add-form button:hover { background: #3db892; }
-    .empty-role { color: #555; font-size: 0.8rem; font-style: italic; padding: 2px 0; }
+    .empty-role { color: #555; font-size: 0.7rem; font-style: italic; padding: 1px 0; }
   </style>
 </head>
 <body>
-  <h1>⚽ Rose — Asta di Riparazione</h1>
-  <div class="board" id="board"></div>
+  <h1>⚽ Fanta Asta di Riparazione</h1>
+
+  <div class="card" id="login-card">
+    <h3>Seleziona la tua squadra</h3>
+    <select id="squadra-select"></select>
+    <button id="join-btn" onclick="joinAuction()">Entra</button>
+  </div>
+
+  <div id="main-area" style="display:none">
+    <div class="toolbar">
+      <button class="tab-btn active" id="tab-btn-asta" onclick="switchTab('asta')">🔨 Asta</button>
+      <button class="tab-btn" id="tab-btn-rose" onclick="switchTab('rose')">👥 Rose</button>
+      <div class="search-wrap" id="search-wrap">
+        <input type="text" id="search-input" placeholder="Cerca giocatore..." autocomplete="off">
+        <div class="search-dropdown" id="search-dropdown"></div>
+      </div>
+      <button class="btn-reset-danger" onclick="resetAll()">🗑 Reset</button>
+    </div>
+
+    <div class="tab-content active" id="tab-asta">
+      <div class="card" id="auction-card" style="display:none">
+        <div class="player-name" id="player-name"></div>
+        <div class="timer" id="timer">30</div>
+        <div class="bidder" id="current-bidder"></div>
+        <div class="error" id="error"></div>
+        <div class="bid-input">
+          <input type="number" id="bid-amount" placeholder="Offerta" min="1">
+          <button onclick="placeBid()">Rilancia</button>
+        </div>
+        <button class="btn-sell" onclick="sellNow()">✔ Vendi ora</button>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1rem;margin-bottom:8px">Giocatori venduti</h3>
+        <ul class="sold-list" id="sold-list"></ul>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-rose">
+      <div class="board" id="board"></div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    var supabase = window.supabase.createClient(
-      'https://tlgzvgdxhtiavobyyxze.supabase.co',
-      'sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL'
-    );
+  var supabase = window.supabase.createClient(
+    'https://tlgzvgdxhtiavobyyxze.supabase.co',
+    'sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL'
+  );
 
-    var roleOrder = ['POR', 'DIF', 'CENTRO', 'ATT'];
-    var roleLabels = { POR: 'Portieri', DIF: 'Difensori', CENTRO: 'Centrocampisti', ATT: 'Attaccanti' };
+  var ROLE_LIMITS = { POR: 3, DIF: 8, CENTRO: 8, ATT: 6 };
+  var roleOrder = ['POR', 'DIF', 'CENTRO', 'ATT'];
+  var roleLabels = { POR: 'POR', DIF: 'DIF', CENTRO: 'CEN', ATT: 'ATT' };
 
-    function calcRecovery(pagato, inSerieA) {
-      if (!inSerieA) return pagato;
-      return Math.ceil(pagato / 2);
-    }
+  var mySquadra = null;
+  var myCrediti = 0;
+  var myPlayers = [];
+  var allPending = [];
+  var currentTimer = 30;
+  var timerInterval = null;
+  var currentPlayerId = null;
+  var currentBid = 0;
+  var currentBidder = null;
+  var currentPlayerRuolo = null;
 
-    async function loadAll() {
-      // Carica squadre
-      var resSquadre = await supabase.from('squadre').select('nome, crediti').order('id');
-      var squadre = resSquadre.data || [];
+  function calcRecovery(pagato, inSerieA) {
+    if (!inSerieA) return pagato;
+    return Math.ceil(pagato / 2);
+  }
 
-      // Carica tutti i giocatori venduti
-      var resPlayers = await supabase.from('players')
-        .select('id, nome, ruolo, prezzo_finale, in_serie_a, vincitore')
-        .eq('stato', 'sold').order('id');
-      var players = resPlayers.data || [];
+  function countByRole(players) {
+    var counts = { POR: 0, DIF: 0, CENTRO: 0, ATT: 0 };
+    players.forEach(function(p) { if (counts[p.ruolo] !== undefined) counts[p.ruolo]++; });
+    return counts;
+  }
 
-      var board = document.getElementById('board');
-      board.innerHTML = '';
+  function switchTab(tab) {
+    document.getElementById('tab-btn-asta').classList.toggle('active', tab === 'asta');
+    document.getElementById('tab-btn-rose').classList.toggle('active', tab === 'rose');
+    document.getElementById('tab-asta').classList.toggle('active', tab === 'asta');
+    document.getElementById('tab-rose').classList.toggle('active', tab === 'rose');
+    if (tab === 'rose') loadBoard();
+  }
 
-      squadre.forEach(function(sq) {
-        var col = document.createElement('div');
-        col.className = 'column';
-        col.id = 'col-' + sq.nome.replace(/\s+/g, '-');
-
-        // Header
-        var header = document.createElement('div');
-        header.className = 'col-header';
-        header.innerHTML = '<div class="team-name">' + sq.nome + '</div>' +
-          '<div class="team-crediti" id="cred-' + sq.nome.replace(/\s+/g, '-') + '">' + sq.credito + ' cr</div>';
-        col.appendChild(header);
-
-        // Giocatori per ruolo
-        var myPlayers = players.filter(function(p) { return p.vincitore === sq.nome; });
-
-        roleOrder.forEach(function(role) {
-          var rolePlayers = myPlayers.filter(function(p) { return p.ruolo === role; })
-            .sort(function(a, b) {
-              return calcRecovery(b.prezzo_finale, b.in_serie_a) - calcRecovery(a.prezzo_finale, a.in_serie_a);
-            });
-
-          var group = document.createElement('div');
-          group.className = 'role-group';
-          group.innerHTML = '<div class="role-title">' + roleLabels[role] + '</div>';
-
-          if (rolePlayers.length === 0) {
-            group.innerHTML += '<div class="empty-role">—</div>';
-          } else {
-            rolePlayers.forEach(function(p) {
-              var rec = calcRecovery(p.prezzo_finale, p.in_serie_a);
-              var row = document.createElement('div');
-              row.className = 'player-row';
-              row.innerHTML =
-                '<span class="p-name">' + p.nome + '</span>' +
-                '<span class="p-recovery">+' + rec + '</span>' +
-                '<button class="p-del" onclick="releasePlayer(' + p.id + ', \'' + sq.nome + '\', ' + p.prezzo_finale + ', ' + p.in_serie_a + ')">×</button>';
-              group.appendChild(row);
-            });
-          }
-          col.appendChild(group);
-        });
-
-        // Form aggiunta
-        var form = document.createElement('div');
-        form.className = 'add-form';
-        form.innerHTML =
-          '<input type="text" id="new-name-' + sq.nome.replace(/\s+/g, '-') + '" placeholder="Nome giocatore">' +
-          '<select id="new-role-' + sq.nome.replace(/\s+/g, '-') + '">' +
-            '<option value="POR">POR</option>' +
-            '<option value="DIF">DIF</option>' +
-            '<option value="CENTRO">CENTRO</option>' +
-            '<option value="ATT">ATT</option>' +
-          '</select>' +
-          '<input type="number" id="new-cost-' + sq.nome.replace(/\s+/g, '-') + '" placeholder="Costo (cr)" min="0">' +
-          '<button onclick="addPlayer(\'' + sq.nome + '\', ' + sq.credito + ')">+ Aggiungi</button>';
-        col.appendChild(form);
-
-        board.appendChild(col);
+  async function loadSquadre() {
+    var res = await supabase.from('squadre').select('nome, crediti').order('id');
+    var select = document.getElementById('squadra-select');
+    if (res.data) {
+      res.data.forEach(function(s) {
+        var opt = document.createElement('option');
+        opt.value = s.nome;
+        opt.textContent = s.nome + ' (' + s.crediti + ' cr)';
+        select.appendChild(opt);
       });
     }
+  }
 
-    async function releasePlayer(playerId, teamName, pagato, inSerieA) {
-      if (!confirm('Svincolare questo giocatore?')) return;
-      var recovery = calcRecovery(pagato, inSerieA);
+  function joinAuction() {
+    mySquadra = document.getElementById('squadra-select').value;
+    if (!mySquadra) return;
+    document.getElementById('login-card').style.display = 'none';
+    document.getElementById('main-area').style.display = 'block';
+    subscribe();
+    loadInitialState();
+  }
 
-      // Rimuove il giocatore
-      await supabase.from('players').update({
-        stato: 'pending',
-        vincitore: null,
-        prezzo_finale: null
-      }).eq('id', playerId);
+  async function loadInitialState() {
+    var resCred = await supabase.from('squadre').select('crediti').eq('nome', mySquadra);
+    if (resCred.data && resCred.data.length > 0) myCrediti = resCred.data[0].crediti;
+    await loadMyPlayers();
+    await loadPending();
+    refreshSoldList();
+  }
 
-      // Aggiunge crediti alla squadra
-      await supabase.from('squadre').update({ crediti: supabase.rpc('add_crediti', { p_nome: teamName, p_amount: recovery }) });
+  async function loadMyPlayers() {
+    var res = await supabase.from('players')
+      .select('id, nome, ruolo, prezzo_finale, in_serie_a')
+      .eq('vincitore', mySquadra).eq('stato', 'sold');
+    myPlayers = res.data || [];
+  }
 
-      // Fallback: se la function non esiste, facciamo read + update
-      var res = await supabase.from('squadre').select('crediti').eq('nome', teamName);
-      if (res.data && res.data.length > 0) {
-        await supabase.from('squadre').update({ crediti: res.data[0].crediti + recovery }).eq('nome', teamName);
-      }
+  async function loadPending() {
+    var res = await supabase.from('players').select('id, nome, ruolo').eq('stato', 'pending').order('nome');
+    allPending = res.data || [];
+  }
 
-      loadAll();
-    }
+  // FIX: la lista venduti è SEMPRE ricalcolata dal DB, mai pushata in memoria
+  async function refreshSoldList() {
+    var res = await supabase.from('players')
+      .select('nome, ruolo, vincitore, prezzo_finale')
+      .neq('stato', 'pending');
+    var sold = res.data || [];
+    var ul = document.getElementById('sold-list');
+    ul.innerHTML = sold.map(function(s) {
+      return s.vincitore
+        ? '<li><strong>' + s.nome + '</strong> (' + s.ruolo + ') → ' + s.vincitore + ' — ' + s.prezzo_finale + ' cr</li>'
+        : '<li><strong>' + s.nome + '</strong> (' + s.ruolo + ') → non venduto</li>';
+    }).join('');
+  }
 
-    async function addPlayer(teamName, currentCrediti) {
-      var safeName = teamName.replace(/\s+/g, '-');
-      var name = document.getElementById('new-name-' + safeName).value.trim();
-      var role = document.getElementById('new-role-' + safeName).value;
-      var cost = parseInt(document.getElementById('new-cost-' + safeName).value);
+  function initSearch() {
+    var searchInput = document.getElementById('search-input');
+    var searchDropdown = document.getElementById('search-dropdown');
 
-      if (!name) { alert('Inserisci il nome del giocatore'); return; }
-      if (isNaN(cost) || cost < 0) { alert('Inserisci il costo'); return; }
-      if (cost > currentCrediti) { alert('Crediti insufficienti! Hai ' + currentCrediti + ' cr.'); return; }
-
-      // Verifica che il giocatore non sia già in un'altra rosa
-      var existing = await supabase.from('players').select('id, vincitore').eq('nome', name).eq('stato', 'sold');
-      if (existing.data && existing.data.length > 0) {
-        if (!confirm('Il giocatore è già in un\'altra rosa (' + existing.data[0].vincitore + '). Continuare?')) return;
-        // Rimuove dalla vecchia rosa
-        await supabase.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).eq('id', existing.data[0].id);
-      }
-
-      // Cerca se esiste già nel listone (per recuperare ruolo/in_serie_a)
-      var inListone = await supabase.from('players').select('id, ruolo, in_serie_a').eq('nome', name).eq('stato', 'pending');
-
-      if (inListone.data && inListone.data.length > 0) {
-        // Aggiorna il giocatore esistente
-        await supabase.from('players').update({
-          stato: 'sold',
-          vincitore: teamName,
-          prezzo_finale: cost,
-          ruolo: role
-        }).eq('id', inListone.data[0].id);
+    searchInput.addEventListener('input', function() {
+      var q = this.value.trim().toLowerCase();
+      if (q.length < 2) { searchDropdown.style.display = 'none'; return; }
+      var matches = allPending.filter(function(p) { return p.nome.toLowerCase().indexOf(q) !== -1; }).slice(0, 10);
+      if (matches.length === 0) {
+        searchDropdown.innerHTML = '<div style="color:#888">Nessun risultato</div>';
       } else {
-        // Crea nuovo
-        await supabase.from('players').insert({
-          nome: name,
-          ruolo: role,
-          stato: 'sold',
-          vincitore: teamName,
-          prezzo_finale: cost,
-          in_serie_a: true
-        });
+        searchDropdown.innerHTML = matches.map(function(p) {
+          return '<div onmousedown="callPlayer(' + p.id + ')">' + p.nome + '<span class="s-role">' + p.ruolo + '</span></div>';
+        }).join('');
       }
+      searchDropdown.style.display = 'block';
+    });
 
-      // Sottrae crediti
-      var res = await supabase.from('squadre').select('crediti').eq('nome', teamName);
-      if (res.data && res.data.length > 0) {
-        await supabase.from('squadre').update({ crediti: res.data[0].crediti - cost }).eq('nome', teamName);
-      }
+    searchInput.addEventListener('blur', function() {
+      setTimeout(function() { searchDropdown.style.display = 'none'; }, 250);
+    });
+  }
 
-      loadAll();
-    }
+  function callPlayer(playerId) {
+    var player = allPending.find(function(p) { return p.id === playerId; });
+    if (!player) return;
 
-    // Realtime: aggiorna quando qualcuno fa una modifica
-    supabase.channel('board-channel')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'players' },
-        function() { loadAll(); }
+    currentPlayerId = playerId;
+    currentPlayerRuolo = player.ruolo;
+    currentBid = 0;
+    currentBidder = null;
+
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-dropdown').style.display = 'none';
+    document.getElementById('auction-card').style.display = 'block';
+    document.getElementById('player-name').textContent = player.nome + ' (' + player.ruolo + ')';
+    document.getElementById('current-bidder').textContent = '';
+    document.getElementById('error').textContent = '';
+    document.getElementById('timer').textContent = '30';
+
+    supabase.from('bids').insert({ player_id: playerId, squadra: '__CALL__', importo: 0 });
+    resetTimer(30);
+  }
+
+  function subscribe() {
+    supabase.channel('bids-channel')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bids' },
+        function(payload) {
+          var bid = payload.new;
+          if (bid.squadra === '__CALL__') {
+            if (bid.player_id !== currentPlayerId) {
+              var p = allPending.find(function(x) { return x.id === bid.player_id; });
+              if (p) {
+                currentPlayerId = p.id;
+                currentPlayerRuolo = p.ruolo;
+                currentBid = 0;
+                currentBidder = null;
+                document.getElementById('auction-card').style.display = 'block';
+                document.getElementById('player-name').textContent = p.nome + ' (' + p.ruolo + ')';
+                document.getElementById('current-bidder').textContent = '';
+                document.getElementById('error').textContent = '';
+                resetTimer(30);
+              }
+            }
+            return;
+          }
+          if (bid.player_id !== currentPlayerId) return;
+          currentBid = bid.importo;
+          currentBidder = bid.squadra;
+          document.getElementById('current-bidder').textContent = currentBidder + ' — ' + currentBid + ' cr';
+          resetTimer(10);
+        }
+      ).subscribe();
+
+    supabase.channel('players-channel')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'players' },
+        function(payload) {
+          if (payload.new.stato === 'sold' || payload.new.stato === 'skipped') {
+            handlePlayerDone(payload.new);
+          }
+        }
       ).subscribe();
 
     supabase.channel('squadre-channel')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'squadre' },
-        function() { loadAll(); }
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'squadre' },
+        function(payload) {
+          if (payload.new.nome === mySquadra) {
+            myCrediti = payload.new.credito;
+          }
+        }
       ).subscribe();
+  }
 
-    // Init
-    loadAll();
+  function resetTimer(seconds) {
+    clearInterval(timerInterval);
+    currentTimer = seconds;
+    document.getElementById('timer').textContent = currentTimer;
+    timerInterval = setInterval(function() {
+      currentTimer--;
+      document.getElementById('timer').textContent = currentTimer;
+      if (currentTimer <= 0) {
+        clearInterval(timerInterval);
+        sellCurrentPlayer();
+      }
+    }, 1000);
+  }
+
+  async function sellCurrentPlayer() {
+    if (!currentPlayerId) return;
+    if (currentBidder) {
+      await supabase.from('players').update({ stato: 'sold', vincitore: currentBidder, prezzo_finale: currentBid }).eq('id', currentPlayerId);
+      if (currentBidder === mySquadra) {
+        myCrediti -= currentBid;
+        await supabase.from('squadre').update({ crediti: myCrediti }).eq('nome', mySquadra);
+        loadMyPlayers();
+      }
+    } else {
+      await supabase.from('players').update({ stato: 'skipped' }).eq('id', currentPlayerId);
+    }
+  }
+
+  async function sellNow() {
+    await sellCurrentPlayer();
+    clearInterval(timerInterval);
+  }
+
+  function handlePlayerDone(player) {
+    if (player.vincitore === mySquadra) loadMyPlayers();
+    allPending = allPending.filter(function(p) { return p.id !== player.id; });
+    document.getElementById('auction-card').style.display = 'none';
+    document.getElementById('search-input').value = '';
+    clearInterval(timerInterval);
+    refreshSoldList();
+  }
+
+  async function placeBid() {
+    var amount = parseInt(document.getElementById('bid-amount').value);
+    if (!amount || amount <= currentBid) {
+      document.getElementById('error').textContent = 'Devi offrire almeno ' + (currentBid + 1);
+      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
+      return;
+    }
+    if (currentBidder === mySquadra) {
+      document.getElementById('error').textContent = 'Sei già tu il rilanciatore corrente';
+      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
+      return;
+    }
+    var counts = countByRole(myPlayers);
+    if (counts[currentPlayerRuolo] >= ROLE_LIMITS[currentPlayerRuolo]) {
+      document.getElementById('error').textContent = 'Slot ' + currentPlayerRuolo + ' pieno!';
+      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
+      return;
+    }
+    if (amount > myCrediti) {
+      document.getElementById('error').textContent = 'Crediti insufficienti! Hai ' + myCrediti + ' cr.';
+      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
+      return;
+    }
+    await supabase.from('bids').insert({ player_id: currentPlayerId, squadra: mySquadra, importo: amount });
+    document.getElementById('bid-amount').value = '';
+  }
+
+  // FIX: il recupero crediti viene letto dal DB al momento, non dal parametro HTML
+  async function releasePlayer(playerId) {
+    // Leggi il prezzo ATTUALE dal DB
+    var res = await supabase.from('players').select('prezzo_finale, in_serie_a, nome, vincitore').eq('id', playerId);
+    if (!res.data || res.data.length === 0) return;
+    var player = res.data[0];
+    var recovery = calcRecovery(player.prezzo_finale, player.in_serie_a);
+
+    if (!confirm('Svincolare ' + player.nome + '? Recupero: +' + recovery + ' cr')) return;
+
+    await supabase.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).eq('id', playerId);
+
+    var resCred = await supabase.from('squadre').select('crediti').eq('nome', player.vincitore);
+    if (resCred.data && resCred.data.length > 0) {
+      await supabase.from('squadre').update({ crediti: resCred.data[0].crediti + recovery }).eq('nome', player.vincitore);
+    }
+
+    if (player.vincitore === mySquadra) {
+      myCrediti += recovery;
+      loadMyPlayers();
+    }
+    loadPending();
+    loadBoard();
+    refreshSoldList();
+  }
+
+  async function resetAll() {
+    if (!confirm('RESET TOTALE: tutti i giocatori tornano disponibili, crediti ai valori iniziali. Continuare?')) return;
+    if (!confirm('SECONDA CONFERMA: sei sicuro?')) return;
+
+    await supabase.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).in('stato', ['sold', 'skipped']);
+
+    var res = await supabase.from('squadre').select('id, crediti_iniziali');
+    if (res.data) {
+      for (var i = 0; i < res.data.length; i++) {
+        await supabase.from('squadre').update({ crediti: res.data[i].crediti_iniziali }).eq('id', res.data[i].id);
+      }
+    }
+
+    await supabase.from('bids').delete().neq('id', 0);
+
+    await loadPending();
+    await loadMyPlayers();
+    var resCred = await supabase.from('squadre').select('crediti').eq('nome', mySquadra);
+    if (resCred.data && resCred.data.length > 0) myCrediti = resCred.data[0].crediti;
+    document.getElementById('auction-card').style.display = 'none';
+    document.getElementById('search-input').value = '';
+    clearInterval(timerInterval);
+    loadBoard();
+    refreshSoldList();
+    alert('Reset completato.');
+  }
+
+  async function loadBoard() {
+    var resSquadre = await supabase.from('squadre').select('nome, crediti').order('id');
+    var squadre = resSquadre.data || [];
+    var resPlayers = await supabase.from('players').select('id, nome, ruolo, prezzo_finale, in_serie_a, vincitore').eq('stato', 'sold').order('id');
+    var players = resPlayers.data || [];
+
+    var board = document.getElementById('board');
+    board.innerHTML = '';
+
+    squadre.forEach(function(sq) {
+      var col = document.createElement('div');
+      col.className = 'column';
+      col.innerHTML = '<div class="col-header"><div class="team-name">' + sq.nome + '</div><div class="team-crediti">' + sq.crediti + ' cr</div></div>';
+
+      var myPl = players.filter(function(p) { return p.vincitore === sq.nome; });
+      var counts = countByRole(myPl);
+
+      roleOrder.forEach(function(role) {
+        var rolePlayers = myPl.filter(function(p) { return p.ruolo === role; })
+          .sort(function(a, b) { return calcRecovery(b.prezzo_finale, b.in_serie_a) - calcRecovery(a.prezzo_finale, a.in_serie_a); });
+
+        var group = document.createElement('div');
+        group.className = 'role-group';
+        group.innerHTML = '<div class="role-title">' + roleLabels[role] + ' <span class="slots">' + counts[role] + '/' + ROLE_LIMITS[role] + '</span></div>';
+
+        if (rolePlayers.length === 0) {
+          group.innerHTML += '<div class="empty-role">—</div>';
+        } else {
+          rolePlayers.forEach(function(p) {
+            var rec = calcRecovery(p.prezzo_finale, p.in_serie_a);
+            var row = document.createElement('div');
+            row.className = 'player-row';
+            row.innerHTML = '<span class="p-name" title="' + p.nome + '">' + p.nome + '</span><span class="p-recovery">+' + rec + '</span><button class="p-del" onclick="releasePlayer(' + p.id + ')">×</button>';
+            group.appendChild(row);
+          });
+        }
+        col.appendChild(group);
+      });
+
+      board.appendChild(col);
+    });
+  }
+
+  loadSquadre();
+  initSearch();
   </script>
 </body>
 </html>   
