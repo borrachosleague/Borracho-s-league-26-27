@@ -20,6 +20,9 @@
     .search-dropdown .s-role { color: #888; font-size: 0.75rem; margin-left: 6px; }
     .btn-reset-danger { padding: 8px 12px; border: none; border-radius: 6px; background: #e94560; color: #fff; cursor: pointer; font-weight: bold; font-size: 0.8rem; white-space: nowrap; }
     .btn-reset-danger:hover { background: #c73650; }
+    .btn-start { padding: 8px 16px; border: none; border-radius: 6px; background: #4ecca3; color: #1a1a2e; cursor: pointer; font-weight: bold; font-size: 0.85rem; white-space: nowrap; }
+    .btn-start:hover { background: #3db892; }
+    .btn-start:disabled { background: #333; color: #666; cursor: default; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .card { background: #16213e; border-radius: 10px; padding: 15px; margin-bottom: 12px; text-align: center; }
@@ -50,6 +53,8 @@
     .player-row .p-del { background: none; border: none; color: #e94560; cursor: pointer; font-size: 0.9rem; padding: 0 2px; line-height: 1; }
     .player-row .p-del:hover { color: #ff6b8a; }
     .empty-role { color: #555; font-size: 0.7rem; font-style: italic; padding: 1px 0; }
+    .phase-info { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 8px; }
+    .phase-info .active { color: #4ecca3; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -62,6 +67,7 @@
   </div>
 
   <div id="main-area" style="display:none">
+    <div class="phase-info" id="phase-info"></div>
     <div class="toolbar">
       <button class="tab-btn active" id="tab-btn-asta" onclick="switchTab('asta')">🔨 Asta</button>
       <button class="tab-btn" id="tab-btn-rose" onclick="switchTab('rose')">👥 Rose</button>
@@ -69,6 +75,7 @@
         <input type="text" id="search-input" placeholder="Cerca giocatore..." autocomplete="off">
         <div class="search-dropdown" id="search-dropdown"></div>
       </div>
+      <button class="btn-start" id="btn-start" onclick="startAuction()">▶ Inizia Asta</button>
       <button class="btn-reset-danger" onclick="resetAll()">🗑 Reset</button>
     </div>
 
@@ -116,8 +123,11 @@
   var currentBid = 0;
   var currentBidder = null;
   var currentPlayerRuolo = null;
+  var auctionStarted = false;
 
-  function calcRecovery(pagato, inSerieA) {
+  // --- Recupero: prima dell'asta = 50% (o 100% se non in Serie A), dopo = sempre 100% ---
+  function getRecovery(pagato, inSerieA) {
+    if (auctionStarted) return pagato;
     if (!inSerieA) return pagato;
     return Math.ceil(pagato / 2);
   }
@@ -126,6 +136,15 @@
     var counts = { POR: 0, DIF: 0, CENTRO: 0, ATT: 0 };
     players.forEach(function(p) { if (counts[p.ruolo] !== undefined) counts[p.ruolo]++; });
     return counts;
+  }
+
+  function updatePhaseInfo() {
+    var el = document.getElementById('phase-info');
+    if (auctionStarted) {
+      el.innerHTML = '<span class="active">ASTA IN CORSO</span> — X = recupero 100%';
+    } else {
+      el.innerHTML = '<span class="active">FASE PREPARAZIONE</span> — X = recupero 50% (o 100% se non in Serie A)';
+    }
   }
 
   function switchTab(tab) {
@@ -154,6 +173,7 @@
     if (!mySquadra) return;
     document.getElementById('login-card').style.display = 'none';
     document.getElementById('main-area').style.display = 'block';
+    updatePhaseInfo();
     subscribe();
     loadInitialState();
   }
@@ -178,7 +198,6 @@
     allPending = res.data || [];
   }
 
-  // FIX: la lista venduti è SEMPRE ricalcolata dal DB, mai pushata in memoria
   async function refreshSoldList() {
     var res = await supabase.from('players')
       .select('nome, ruolo, vincitore, prezzo_finale')
@@ -216,6 +235,10 @@
   }
 
   function callPlayer(playerId) {
+    if (!auctionStarted) {
+      alert('Premi "▶ Inizia Asta" prima di chiamare un giocatore.');
+      return;
+    }
     var player = allPending.find(function(p) { return p.id === playerId; });
     if (!player) return;
 
@@ -236,11 +259,29 @@
     resetTimer(30);
   }
 
+  async function startAuction() {
+    if (auctionStarted) return;
+    if (!confirm('Iniziare l\'asta? Da questo momento la X darà sempre il 100% dei crediti.')) return;
+    auctionStarted = true;
+    document.getElementById('btn-start').disabled = true;
+    document.getElementById('btn-start').textContent = '✔ Asta attiva';
+    updatePhaseInfo();
+    // Notifica tutti via bid speciale
+    supabase.from('bids').insert({ player_id: 0, squadra: '__START__', importo: 0 });
+  }
+
   function subscribe() {
     supabase.channel('bids-channel')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bids' },
         function(payload) {
           var bid = payload.new;
+          if (bid.squadra === '__START__') {
+            auctionStarted = true;
+            document.getElementById('btn-start').disabled = true;
+            document.getElementById('btn-start').textContent = '✔ Asta attiva';
+            updatePhaseInfo();
+            return;
+          }
           if (bid.squadra === '__CALL__') {
             if (bid.player_id !== currentPlayerId) {
               var p = allPending.find(function(x) { return x.id === bid.player_id; });
@@ -354,15 +395,15 @@
     document.getElementById('bid-amount').value = '';
   }
 
-  // FIX: il recupero crediti viene letto dal DB al momento, non dal parametro HTML
   async function releasePlayer(playerId) {
-    // Leggi il prezzo ATTUALE dal DB
     var res = await supabase.from('players').select('prezzo_finale, in_serie_a, nome, vincitore').eq('id', playerId);
     if (!res.data || res.data.length === 0) return;
     var player = res.data[0];
-    var recovery = calcRecovery(player.prezzo_finale, player.in_serie_a);
+    var recovery = getRecovery(player.prezzo_finale, player.in_serie_a);
 
-    if (!confirm('Svincolare ' + player.nome + '? Recupero: +' + recovery + ' cr')) return;
+    var msg = 'Svincolare ' + player.nome + '?\nRecupero: +' + recovery + ' cr';
+    if (!auctionStarted) msg += '\n(Regola pre-asta: 50%)';
+    if (!confirm(msg)) return;
 
     await supabase.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).eq('id', playerId);
 
@@ -383,6 +424,11 @@
   async function resetAll() {
     if (!confirm('RESET TOTALE: tutti i giocatori tornano disponibili, crediti ai valori iniziali. Continuare?')) return;
     if (!confirm('SECONDA CONFERMA: sei sicuro?')) return;
+
+    auctionStarted = false;
+    document.getElementById('btn-start').disabled = false;
+    document.getElementById('btn-start').textContent = '▶ Inizia Asta';
+    updatePhaseInfo();
 
     await supabase.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).in('stato', ['sold', 'skipped']);
 
@@ -426,7 +472,7 @@
 
       roleOrder.forEach(function(role) {
         var rolePlayers = myPl.filter(function(p) { return p.ruolo === role; })
-          .sort(function(a, b) { return calcRecovery(b.prezzo_finale, b.in_serie_a) - calcRecovery(a.prezzo_finale, a.in_serie_a); });
+          .sort(function(a, b) { return getRecovery(b.prezzo_finale, b.in_serie_a) - getRecovery(a.prezzo_finale, a.in_serie_a); });
 
         var group = document.createElement('div');
         group.className = 'role-group';
@@ -436,7 +482,7 @@
           group.innerHTML += '<div class="empty-role">—</div>';
         } else {
           rolePlayers.forEach(function(p) {
-            var rec = calcRecovery(p.prezzo_finale, p.in_serie_a);
+            var rec = getRecovery(p.prezzo_finale, p.in_serie_a);
             var row = document.createElement('div');
             row.className = 'player-row';
             row.innerHTML = '<span class="p-name" title="' + p.nome + '">' + p.nome + '</span><span class="p-recovery">+' + rec + '</span><button class="p-del" onclick="releasePlayer(' + p.id + ')">×</button>';
