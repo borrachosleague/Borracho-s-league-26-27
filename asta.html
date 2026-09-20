@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fanta Asta</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #fff; padding: 20px; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    .card { background: #16213e; border-radius: 12px; padding: 20px; margin-bottom: 15px; text-align: center; }
+    .timer { font-size: 3rem; font-weight: bold; color: #e94560; }
+    .player-name { font-size: 1.5rem; font-weight: bold; color: #4ecca3; }
+    .bidder { color: #f5c542; font-size: 1.2rem; margin: 8px 0; }
+    .bid-input { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+    .bid-input input { width: 100px; padding: 10px; border-radius: 8px; border: none; font-size: 1.1rem; }
+    .bid-input button { padding: 10px 20px; border-radius: 8px; border: none; background: #e94560; color: #fff; font-size: 1.1rem; cursor: pointer; }
+    .bid-input button:hover { background: #c73650; }
+    .sold-list { text-align: left; max-height: 300px; overflow-y: auto; }
+    .sold-list li { padding: 5px 0; border-bottom: 1px solid #333; }
+    #start-btn { display: block; margin: 20px auto; padding: 15px 40px; font-size: 1.3rem; background: #4ecca3; color: #1a1a2e; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+    #start-btn:hover { background: #3db892; }
+    .status { text-align: center; font-size: 1.1rem; color: #888; margin-bottom: 10px; }
+    .error { color: #e94560; margin-top: 8px; }
+    select { padding: 10px; border-radius: 8px; border: none; font-size: 1rem; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>⚽ Fanta Asta</h1>
+
+  <div class="card" id="login-card">
+    <h3>Seleziona la tua squadra</h3>
+    <select id="squadra-select"></select>
+    <button id="join-btn" onclick="joinAuction()">Entra in asta</button>
+  </div>
+
+  <div class="card" id="auction-card" style="display:none">
+    <div class="player-name" id="player-name"></div>
+    <div class="timer" id="timer">30</div>
+    <div class="bidder" id="current-bidder"></div>
+    <div class="error" id="error"></div>
+    <div class="bid-input">
+      <input type="number" id="bid-amount" placeholder="Offerta" min="1">
+      <button onclick="placeBid()">Rilancia</button>
+    </div>
+  </div>
+
+  <button id="start-btn" style="display:none" onclick="startAuction()">▶ Avvia Asta</button>
+
+  <div class="card">
+    <h3>Giocatori venduti</h3>
+    <ul class="sold-list" id="sold-list"></ul>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabase = createClient(
+      'https://tlgzvgdxhtiavobyyxze.supabase.co',
+      'sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL'
+    );
+
+    let mySquadra = null;
+    let currentTimer = 30;
+    let timerInterval = null;
+    let currentPlayerId = null;
+    let currentBid = 0;
+    let currentBidder = null;
+    let sold = [];
+
+    // --- Login: carica le squadre ---
+    async function loadSquadre() {
+      const { data } = await supabase.from('squadre').select('nome').order('id');
+      const select = document.getElementById('squadra-select');
+      data.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.nome;
+        opt.textContent = s.nome;
+        select.appendChild(opt);
+      });
+    }
+
+    window.joinAuction = function() {
+      mySquadra = document.getElementById('squadra-select').value;
+      if (!mySquadra) return;
+      document.getElementById('login-card').style.display = 'none';
+      document.getElementById('start-btn').style.display = 'block';
+      document.getElementById('auction-card').style.display = 'block';
+      subscribe();
+      loadInitialState();
+    };
+
+    async function loadInitialState() {
+      const { data: players } = await supabase
+        .from('players').select('id, nome, ruolo, stato, vincitore, prezzo_finale')
+        .eq('stato', 'pending').order('id');
+      const { data: soldData } = await supabase
+        .from('players').select('nome, ruolo, vincitore, prezzo_finale')
+        .neq('stato', 'pending');
+      sold = soldData || [];
+      renderSold();
+      if (players && players.length > 0) {
+        currentPlayerId = players[0].id;
+        document.getElementById('player-name').textContent =
+          `${players[0].nome} (${players[0].ruolo})`;
+      }
+    }
+
+    function subscribe() {
+      // Ascolta nuovi bid
+      supabase.channel('bids-channel')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bids' },
+          (payload) => {
+            const bid = payload.new;
+            if (bid.player_id !== currentPlayerId) return;
+            currentBid = bid.importo;
+            currentBidder = bid.squadra;
+            document.getElementById('current-bidder').textContent =
+              `${currentBidder} — ${currentBid} crediti`;
+            // Anti-snipe: reset timer a 10s
+            resetTimer(10);
+          }
+        ).subscribe();
+
+      // Ascolta player venduti
+      supabase.channel('players-channel')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'players' },
+          (payload) => {
+            if (payload.new.stato === 'sold' || payload.new.stato === 'skipped') {
+              handlePlayerDone(payload.new);
+            }
+          }
+        ).subscribe();
+    }
+
+    function resetTimer(seconds) {
+      clearInterval(timerInterval);
+      currentTimer = seconds;
+      document.getElementById('timer').textContent = currentTimer;
+      timerInterval = setInterval(() => {
+        currentTimer--;
+        document.getElementById('timer').textContent = currentTimer;
+        if (currentTimer <= 0) {
+          clearInterval(timerInterval);
+          sellCurrentPlayer();
+        }
+      }, 1000);
+    }
+
+    async function sellCurrentPlayer() {
+      if (!currentPlayerId) return;
+      if (currentBidder) {
+        await supabase.from('players').update({
+          stato: 'sold',
+          vincitore: currentBidder,
+          prezzo_finale: currentBid
+        }).eq('id', currentPlayerId);
+      } else {
+        await supabase.from('players').update({ stato: 'skipped' }).eq('id', currentPlayerId);
+      }
+    }
+
+    function handlePlayerDone(player) {
+      document.getElementById('status')?.textContent =
+        player.stato === 'sold'
+          ? `${player.nome} venduto a ${player.vincitore} per ${player.prezzo_finale}`
+          : `${player.nome} non venduto`;
+      sold.push({ nome: player.nome, ruolo: player.ruolo, vincitore: player.vincitore, prezzo_finale: player.prezzo_finale });
+      renderSold();
+
+      // Avanza al prossimo dopo 3 secondi
+      setTimeout(async () => {
+        const { data: next } = await supabase
+          .from('players').select('id, nome, ruolo')
+          .eq('stato', 'pending').order('id').limit(1);
+        if (next && next.length > 0) {
+          currentPlayerId = next[0].id;
+          currentBid = 0;
+          currentBidder = null;
+          document.getElementById('player-name').textContent =
+            `${next[0].nome} (${next[0].ruolo})`;
+          document.getElementById('current-bidder').textContent = '';
+          resetTimer(30);
+        } else {
+          document.getElementById('status')?.textContent = '🏁 Asta terminata!';
+          clearInterval(timerInterval);
+        }
+      }, 3000);
+    }
+
+    window.startAuction = function() {
+      document.getElementById('start-btn').style.display = 'none';
+      resetTimer(30);
+    };
+
+    window.placeBid = async function() {
+      const amount = parseInt(document.getElementById('bid-amount').value);
+      if (!amount || amount <= currentBid) {
+        document.getElementById('error').textContent =
+          `Devi offrire almeno ${currentBid + 1}`;
+        setTimeout(() => document.getElementById('error').textContent = '', 3000);
+        return;
+      }
+      if (currentBidder === mySquadra) {
+        document.getElementById('error').textContent = 'Sei già tu il rilanciatore corrente';
+        setTimeout(() => document.getElementById('error').textContent = '', 3000);
+        return;
+      }
+      await supabase.from('bids').insert({
+        player_id: currentPlayerId,
+        squadra: mySquadra,
+        importo: amount
+      });
+      document.getElementById('bid-amount').value = '';
+    };
+
+    function renderSold() {
+      const ul = document.getElementById('sold-list');
+      ul.innerHTML = sold.map(s =>
+        s.vincitore
+          ? `<li><strong>${s.nome}</strong> (${s.ruolo}) → ${s.vincitore} — ${s.prezzo_finale} cr</li>`
+          : `<li><strong>${s.nome}</strong> (${s.ruolo}) → non venduto</li>`
+      ).join('');
+    }
+
+    // Init
+    loadSquadre();
+  </script>
+</body>
+</html>   
