@@ -1,433 +1,114 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fanta Asta</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #fff; padding: 10px; }
-    h1 { text-align: center; margin-bottom: 10px; font-size: 1.3rem; }
-    .toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-    .tab-btn { padding: 8px 14px; border: none; border-radius: 6px; font-size: 0.85rem; cursor: pointer; background: #16213e; color: #888; white-space: nowrap; }
-    .tab-btn.active { background: #4ecca3; color: #1a1a2e; font-weight: bold; }
-    .search-wrap { position: relative; flex: 1; min-width: 140px; max-width: 260px; }
-    .search-wrap input { width: 100%; padding: 8px 10px; border-radius: 6px; border: 2px solid #4ecca3; background: #1a1a2e; color: #fff; font-size: 0.85rem; }
-    .search-wrap input:focus { outline: none; border-color: #f5c542; }
-    .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #16213e; border: 1px solid #333; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 100; display: none; }
-    .search-dropdown div { padding: 6px 10px; cursor: pointer; font-size: 0.85rem; }
-    .search-dropdown div:hover { background: #4ecca3; color: #1a1a2e; }
-    .search-dropdown .s-role { color: #888; font-size: 0.75rem; margin-left: 6px; }
-    .btn-start { padding: 8px 14px; border: none; border-radius: 6px; background: #4ecca3; color: #1a1a2e; cursor: pointer; font-weight: bold; font-size: 0.8rem; white-space: nowrap; }
-    .btn-start:disabled { background: #333; color: #666; cursor: default; }
-    .btn-reset { padding: 8px 14px; border: none; border-radius: 6px; background: #f5c542; color: #1a1a2e; cursor: pointer; font-weight: bold; font-size: 0.8rem; white-space: nowrap; }
-    .btn-reset:hover { background: #e0b030; }
-    .btn-new { padding: 8px 14px; border: none; border-radius: 6px; background: #e94560; color: #fff; cursor: pointer; font-weight: bold; font-size: 0.8rem; white-space: nowrap; }
-    .btn-new:hover { background: #c73650; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .card { background: #16213e; border-radius: 10px; padding: 15px; margin-bottom: 12px; text-align: center; }
-    .timer { font-size: 2.5rem; font-weight: bold; color: #e94560; }
-    .player-name { font-size: 1.3rem; font-weight: bold; color: #4ecca3; }
-    .bidder { color: #f5c542; font-size: 1.1rem; margin: 6px 0; }
-    .bid-input { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
-    .bid-input input { width: 90px; padding: 8px; border-radius: 6px; border: none; font-size: 1rem; }
-    .bid-input button { padding: 8px 16px; border: none; border-radius: 6px; background: #e94560; color: #fff; font-size: 1rem; cursor: pointer; }
-    .bid-input button:hover { background: #c73650; }
-    .btn-sell { margin-top: 8px; padding: 6px 16px; border: none; border-radius: 6px; background: #4ecca3; color: #1a1a2e; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
-    .btn-sell:hover { background: #3db892; }
-    .error { color: #e94560; margin-top: 6px; font-size: 0.9rem; }
-    .sold-list { text-align: left; max-height: 250px; overflow-y: auto; }
-    .sold-list li { padding: 4px 0; border-bottom: 1px solid #333; font-size: 0.85rem; }
-    .board { display: flex; gap: 4px; padding-bottom: 10px; }
-    .column { flex: 1; min-width: 0; background: #16213e; border-radius: 8px; padding: 8px; }
-    .col-header { text-align: center; border-bottom: 2px solid #4ecca3; padding-bottom: 5px; margin-bottom: 8px; }
-    .col-header .team-name { font-weight: bold; font-size: 0.7rem; }
-    .col-header .team-crediti { color: #4ecca3; font-size: 0.9rem; font-weight: bold; margin-top: 2px; }
-    .role-group { margin-bottom: 6px; }
-    .role-title { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; border-bottom: 1px solid #333; padding-bottom: 1px; }
-    .role-title .slots { color: #4ecca3; }
-    .player-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; font-size: 0.75rem; }
-    .player-row .p-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .player-row .p-recovery { color: #f5c542; font-size: 0.65rem; min-width: 22px; text-align: right; }
-    .player-row .p-del { background: none; border: none; color: #e94560; cursor: pointer; font-size: 0.9rem; padding: 0 2px; line-height: 1; }
-    .player-row .p-del:hover { color: #ff6b8a; }
-    .empty-role { color: #555; font-size: 0.7rem; font-style: italic; padding: 1px 0; }
-    .phase-info { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 8px; }
-    .phase-info .active { color: #4ecca3; font-weight: bold; }
-    .login-input { width: 100%; max-width: 200px; padding: 10px; border-radius: 8px; border: 2px solid #4ecca3; background: #1a1a2e; color: #fff; font-size: 1rem; text-align: center; margin: 10px 0; }
-    .login-input:focus { outline: none; border-color: #f5c542; }
-    .login-btn { padding: 10px 30px; border: none; border-radius: 8px; background: #4ecca3; color: #1a1a2e; font-size: 1rem; font-weight: bold; cursor: pointer; }
-    .login-btn:hover { background: #3db892; }
-    .login-error { color: #e94560; font-size: 0.9rem; margin-top: 8px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Fanta Asta</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#1a1a2e;color:#fff;padding:10px}
+h1{text-align:center;margin-bottom:10px;font-size:1.3rem}
+.toolbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab-btn{padding:8px 14px;border:none;border-radius:6px;font-size:.85rem;cursor:pointer;background:#16213e;color:#888;white-space:nowrap}
+.tab-btn.active{background:#4ecca3;color:#1a1a2e;font-weight:bold}
+.search-wrap{position:relative;flex:1;min-width:140px;max-width:260px}
+.search-wrap input{width:100%;padding:8px 10px;border-radius:6px;border:2px solid #4ecca3;background:#1a1a2e;color:#fff;font-size:.85rem}
+.search-dropdown{position:absolute;top:100%;left:0;right:0;background:#16213e;border:1px solid #333;border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;z-index:100;display:none}
+.search-dropdown div{padding:6px 10px;cursor:pointer;font-size:.85rem}
+.search-dropdown div:hover{background:#4ecca3;color:#1a1a2e}
+.btn-start{padding:8px 14px;border:none;border-radius:6px;background:#4ecca3;color:#1a1a2e;cursor:pointer;font-weight:bold;font-size:.8rem}
+.btn-start:disabled{background:#333;color:#666;cursor:default}
+.btn-reset{padding:8px 14px;border:none;border-radius:6px;background:#f5c542;color:#1a1a2e;cursor:pointer;font-weight:bold;font-size:.8rem}
+.btn-new{padding:8px 14px;border:none;border-radius:6px;background:#e94560;color:#fff;cursor:pointer;font-weight:bold;font-size:.8rem}
+.tab-content{display:none}.tab-content.active{display:block}
+.card{background:#16213e;border-radius:10px;padding:15px;margin-bottom:12px;text-align:center}
+.timer{font-size:2.5rem;font-weight:bold;color:#e94560}
+.player-name{font-size:1.3rem;font-weight:bold;color:#4ecca3}
+.bidder{color:#f5c542;font-size:1.1rem;margin:6px 0}
+.bid-input{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.bid-input input{width:90px;padding:8px;border-radius:6px;border:none;font-size:1rem}
+.bid-input button{padding:8px 16px;border:none;border-radius:6px;background:#e94560;color:#fff;font-size:1rem;cursor:pointer}
+.btn-sell{margin-top:8px;padding:6px 16px;border:none;border-radius:6px;background:#4ecca3;color:#1a1a2e;cursor:pointer;font-weight:bold}
+.error{color:#e94560;margin-top:6px;font-size:.9rem}
+.sold-list{text-align:left;max-height:250px;overflow-y:auto}
+.sold-list li{padding:4px 0;border-bottom:1px solid #333;font-size:.85rem}
+.board{display:flex;gap:4px;padding-bottom:10px}
+.column{flex:1;min-width:0;background:#16213e;border-radius:8px;padding:8px}
+.col-header{text-align:center;border-bottom:2px solid #4ecca3;padding-bottom:5px;margin-bottom:8px}
+.col-header .team-name{font-weight:bold;font-size:.7rem}
+.col-header .team-crediti{color:#4ecca3;font-size:.9rem;font-weight:bold;margin-top:2px}
+.role-group{margin-bottom:6px}
+.role-title{font-size:.65rem;color:#888;text-transform:uppercase;margin-bottom:2px;border-bottom:1px solid #333;padding-bottom:1px}
+.role-title .slots{color:#4ecca3}
+.player-row{display:flex;align-items:center;justify-content:space-between;padding:2px 0;font-size:.75rem}
+.player-row .p-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-row .p-recovery{color:#f5c542;font-size:.65rem;min-width:22px;text-align:right}
+.player-row .p-del{background:none;border:none;color:#e94560;cursor:pointer;font-size:.9rem;padding:0 2px}
+.empty-role{color:#555;font-size:.7rem;font-style:italic;padding:1px 0}
+.phase-info{text-align:center;font-size:.8rem;color:#888;margin-bottom:8px}
+.phase-info .active{color:#4ecca3;font-weight:bold}
+select{padding:8px;border-radius:6px;border:none;font-size:.9rem;margin:8px 0;width:100%;max-width:250px}
+</style>
 </head>
 <body>
-  <h1>⚽ Fanta Asta di Riparazione</h1>
-
-  <div class="card" id="login-card">
-    <h3>Inserisci la tua password</h3>
-    <input type="password" class="login-input" id="password-input" placeholder="Password" maxlength="6">
-    <br>
-    <button class="login-btn" onclick="joinAuction()">Entra</button>
-    <div class="login-error" id="login-error"></div>
-  </div>
-
-  <div id="main-area" style="display:none">
-    <div class="phase-info" id="phase-info"></div>
-    <div class="toolbar">
-      <button class="tab-btn active" id="tab-btn-asta" onclick="switchTab('asta')">🔨 Asta</button>
-      <button class="tab-btn" id="tab-btn-rose" onclick="switchTab('rose')">👥 Rose</button>
-      <div class="search-wrap" id="search-wrap">
-        <input type="text" id="search-input" placeholder="Cerca giocatore..." autocomplete="off">
-        <div class="search-dropdown" id="search-dropdown"></div>
-      </div>
-      <button class="btn-start" id="btn-start" onclick="startAuction()">▶ Inizia</button>
-      <button class="btn-reset" onclick="resetToSnapshot()">↩️ Reset</button>
-      <button class="btn-new" onclick="newAuction()">🆕 Nuova</button>
-    </div>
-
-    <div class="tab-content active" id="tab-asta">
-      <div class="card" id="auction-card" style="display:none">
-        <div class="player-name" id="player-name"></div>
-        <div class="timer" id="timer">30</div>
-        <div class="bidder" id="current-bidder"></div>
-        <div class="error" id="error"></div>
-        <div class="bid-input">
-          <input type="number" id="bid-amount" placeholder="Offerta" min="1">
-          <button onclick="placeBid()">Rilancia</button>
-        </div>
-        <button class="btn-sell" onclick="sellNow()">✔ Vendi ora</button>
-      </div>
-      <div class="card">
-        <h3 style="font-size:1rem;margin-bottom:8px">Giocatori venduti</h3>
-        <ul class="sold-list" id="sold-list"></ul>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tab-rose">
-      <div class="board" id="board"></div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script>
-  var supabase = window.supabase.createClient(
-    'https://tlgzvgdxhtiavobyyxze.supabase.co',
-    'sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL'
-  );
-
-  var ROLE_LIMITS = { POR: 3, DIF: 8, CENTRO: 8, ATT: 6 };
-  var roleOrder = ['POR', 'DIF', 'CENTRO', 'ATT'];
-  var roleLabels = { POR: 'POR', DIF: 'DIF', CENTRO: 'CEN', ATT: 'ATT' };
-
-  var mySquadra = null;
-  var myCrediti = 0;
-  var myPlayers = [];
-  var allPending = [];
-  var currentTimer = 30;
-  var timerInterval = null;
-  var currentPlayerId = null;
-  var currentBid = 0;
-  var currentBidder = null;
-  var currentPlayerRuolo = null;
-  var auctionStarted = false;
-
-  function getRecovery(pagato, inSerieA) {
-    if (auctionStarted) return pagato;
-    if (!inSerieA) return pagato;
-    return Math.ceil(pagato / 2);
-  }
-
-  function countByRole(players) {
-    var counts = { POR: 0, DIF: 0, CENTRO: 0, ATT: 0 };
-    players.forEach(function(p) { if (counts[p.ruolo] !== undefined) counts[p.ruolo]++; });
-    return counts;
-  }
-
-  function updatePhaseInfo() {
-    var el = document.getElementById('phase-info');
-    if (auctionStarted) {
-      el.innerHTML = '<span class="active">ASTA IN CORSO</span> — X = 100%';
-    } else {
-      el.innerHTML = '<span class="active">PREPARAZIONE</span> — X = 50% (100% se non in Serie A)';
-    }
-  }
-
-  function switchTab(tab) {
-    document.getElementById('tab-btn-asta').classList.toggle('active', tab === 'asta');
-    document.getElementById('tab-btn-rose').classList.toggle('active', tab === 'rose');
-    document.getElementById('tab-asta').classList.toggle('active', tab === 'asta');
-    document.getElementById('tab-rose').classList.toggle('active', tab === 'rose');
-    if (tab === 'rose') loadBoard();
-  }
-
-  async function joinAuction() {
-    var pwd = document.getElementById('password-input').value.trim().toLowerCase();
-    if (!pwd) return;
-    var res = await supabase.from('passwords').select('squadra_id').eq('password', pwd).limit(1);
-    if (!res.data || res.data.length === 0) {
-      document.getElementById('login-error').textContent = 'Password non valida.';
-      return;
-    }
-    var sqId = res.data[0].squadra_id;
-    var resSq = await supabase.from('squadre').select('nome').eq('id', sqId);
-    if (!resSq.data || resSq.data.length === 0) {
-      document.getElementById('login-error').textContent = 'Errore interno.';
-      return;
-    }
-    mySquadra = resSq.data[0].nome;
-    document.getElementById('login-card').style.display = 'none';
-    document.getElementById('main-area').style.display = 'block';
-    updatePhaseInfo();
-    subscribe();
-    loadInitialState();
-  }
-
-  async function loadInitialState() {
-    var resCred = await supabase.from('squadre').select('crediti').eq('nome', mySquadra);
-    if (resCred.data && resCred.data.length > 0) myCrediti = resCred.data[0].crediti;
-    await loadMyPlayers();
-    await loadPending();
-    refreshSoldList();
-  }
-
-  async function loadMyPlayers() {
-    var res = await supabase.from('players')
-      .select('id, nome, ruolo, prezzo_finale, in_serie_a')
-      .eq('vincitore', mySquadra).eq('stato', 'sold');
-    myPlayers = res.data || [];
-  }
-
-  async function loadPending() {
-    var res = await supabase.from('players').select('id, nome, ruolo').eq('stato', 'pending').order('nome');
-    allPending = res.data || [];
-  }
-
-  async function refreshSoldList() {
-    var res = await supabase.from('players')
-      .select('nome, ruolo, vincitore, prezzo_finale')
-      .neq('stato', 'pending');
-    var sold = res.data || [];
-    var ul = document.getElementById('sold-list');
-    ul.innerHTML = sold.map(function(s) {
-      return s.vincitore
-        ? '<li><strong>' + s.nome + '</strong> (' + s.ruolo + ') → ' + s.vincitore + ' — ' + s.prezzo_finale + ' cr</li>'
-        : '<li><strong>' + s.nome + '</strong> (' + s.ruolo + ') → non venduto</li>';
-    }).join('');
-  }
-
-  function initSearch() {
-    var searchInput = document.getElementById('search-input');
-    var searchDropdown = document.getElementById('search-dropdown');
-    searchInput.addEventListener('input', function() {
-      var q = this.value.trim().toLowerCase();
-      if (q.length < 2) { searchDropdown.style.display = 'none'; return; }
-      var matches = allPending.filter(function(p) { return p.nome.toLowerCase().indexOf(q) !== -1; }).slice(0, 10);
-      if (matches.length === 0) {
-        searchDropdown.innerHTML = '<div style="color:#888">Nessun risultato</div>';
-      } else {
-        searchDropdown.innerHTML = matches.map(function(p) {
-          return '<div onmousedown="callPlayer(' + p.id + ')">' + p.nome + '<span class="s-role">' + p.ruolo + '</span></div>';
-        }).join('');
-      }
-      searchDropdown.style.display = 'block';
-    });
-    searchInput.addEventListener('blur', function() {
-      setTimeout(function() { searchDropdown.style.display = 'none'; }, 250);
-    });
-  }
-
-  function callPlayer(playerId) {
-    if (!auctionStarted) {
-      alert('Premi "▶ Inizia" prima di chiamare un giocatore.');
-      return;
-    }
-    var player = allPending.find(function(p) { return p.id === playerId; });
-    if (!player) return;
-    currentPlayerId = playerId;
-    currentPlayerRuolo = player.ruolo;
-    currentBid = 0;
-    currentBidder = null;
-    document.getElementById('search-input').value = '';
-    document.getElementById('search-dropdown').style.display = 'none';
-    document.getElementById('auction-card').style.display = 'block';
-    document.getElementById('player-name').textContent = player.nome + ' (' + player.ruolo + ')';
-    document.getElementById('current-bidder').textContent = '';
-    document.getElementById('error').textContent = '';
-    document.getElementById('timer').textContent = '30';
-    supabase.from('bids').insert({ player_id: playerId, squadra: '__CALL__', importo: 0 });
-    resetTimer(30);
-  }
-
-  async function startAuction() {
-    if (auctionStarted) return;
-    if (!confirm('Iniziare l\'asta? Da ora la X darà sempre 100%.')) return;
-    auctionStarted = true;
-    document.getElementById('btn-start').disabled = true;
-    document.getElementById('btn-start').textContent = '✔ Attiva';
-    updatePhaseInfo();
-    supabase.from('bids').insert({ player_id: 0, squadra: '__START__', importo: 0 });
-  }
-
-  function subscribe() {
-    supabase.channel('bids-channel')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bids' },
-        function(payload) {
-          var bid = payload.new;
-          if (bid.squadra === '__START__') {
-            auctionStarted = true;
-            document.getElementById('btn-start').disabled = true;
-            document.getElementById('btn-start').textContent = '✔ Attiva';
-            updatePhaseInfo();
-            return;
-          }
-          if (bid.squadra === '__CALL__') {
-            if (bid.player_id !== currentPlayerId) {
-              var p = allPending.find(function(x) { return x.id === bid.player_id; });
-              if (p) {
-                currentPlayerId = p.id;
-                currentPlayerRuolo = p.ruolo;
-                currentBid = 0;
-                currentBidder = null;
-                document.getElementById('auction-card').style.display = 'block';
-                document.getElementById('player-name').textContent = p.nome + ' (' + p.ruolo + ')';
-                document.getElementById('current-bidder').textContent = '';
-                document.getElementById('error').textContent = '';
-                resetTimer(30);
-              }
-            }
-            return;
-          }
-          if (bid.player_id !== currentPlayerId) return;
-          currentBid = bid.importo;
-          currentBidder = bid.squadra;
-          document.getElementById('current-bidder').textContent = currentBidder + ' — ' + currentBid + ' cr';
-          resetTimer(10);
-        }
-      ).subscribe();
-
-    supabase.channel('players-channel')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'players' },
-        function(payload) {
-          if (payload.new.stato === 'sold' || payload.new.stato === 'skipped') {
-            handlePlayerDone(payload.new);
-          }
-        }
-      ).subscribe();
-
-    supabase.channel('squadre-channel')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'squadre' },
-        function(payload) {
-          if (payload.new.nome === mySquadra) {
-            myCrediti = payload.new.credito;
-          }
-        }
-      ).subscribe();
-  }
-
-  function resetTimer(seconds) {
-    clearInterval(timerInterval);
-    currentTimer = seconds;
-    document.getElementById('timer').textContent = currentTimer;
-    timerInterval = setInterval(function() {
-      currentTimer--;
-      document.getElementById('timer').textContent = currentTimer;
-      if (currentTimer <= 0) {
-        clearInterval(timerInterval);
-        sellCurrentPlayer();
-      }
-    }, 1000);
-  }
-
-  async function sellCurrentPlayer() {
-    if (!currentPlayerId) return;
-    if (currentBidder) {
-      await supabase.from('players').update({ stato: 'sold', vincitore: currentBidder, prezzo_finale: currentBid }).eq('id', currentPlayerId);
-      if (currentBidder === mySquadra) {
-        myCrediti -= currentBid;
-        await supabase.from('squadre').update({ crediti: myCrediti }).eq('nome', mySquadra);
-        loadMyPlayers();
-      }
-    } else {
-      await supabase.from('players').update({ stato: 'skipped' }).eq('id', currentPlayerId);
-    }
-  }
-
-  async function sellNow() {
-    await sellCurrentPlayer();
-    clearInterval(timerInterval);
-  }
-
-  function handlePlayerDone(player) {
-    if (player.vincitore === mySquadra) loadMyPlayers();
-    allPending = allPending.filter(function(p) { return p.id !== player.id; });
-    document.getElementById('auction-card').style.display = 'none';
-    document.getElementById('search-input').value = '';
-    clearInterval(timerInterval);
-    refreshSoldList();
-  }
-
-  async function placeBid() {
-    var amount = parseInt(document.getElementById('bid-amount').value);
-    if (!amount || amount <= currentBid) {
-      document.getElementById('error').textContent = 'Devi offrire almeno ' + (currentBid + 1);
-      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
-      return;
-    }
-    if (currentBidder === mySquadra) {
-      document.getElementById('error').textContent = 'Sei già tu il rilanciatore corrente';
-      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
-      return;
-    }
-    var counts = countByRole(myPlayers);
-    if (counts[currentPlayerRuolo] >= ROLE_LIMITS[currentPlayerRuolo]) {
-      document.getElementById('error').textContent = 'Slot ' + currentPlayerRuolo + ' pieno!';
-      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
-      return;
-    }
-    if (amount > myCrediti) {
-      document.getElementById('error').textContent = 'Crediti insufficienti! Hai ' + myCrediti + ' cr.';
-      setTimeout(function() { document.getElementById('error').textContent = ''; }, 3000);
-      return;
-    }
-    await supabase.from('bids').insert({ player_id: currentPlayerId, squadra: mySquadra, importo: amount });
-    document.getElementById('bid-amount').value = '';
-  }
-
-  async function releasePlayer(playerId) {
-    var res = await supabase.from('players').select('prezzo_finale, in_serie_a, nome, vincitore').eq('id', playerId);
-    if (!res.data || res.data.length === 0) return;
-    var player = res.data[0];
-    var recovery = getRecovery(player.prezzo_finale, player.in_serie_a);
-    var msg = 'Svincolare ' + player.nome + '?\nRecupero: +' + recovery + ' cr';
-    if (!auctionStarted) msg += '\n(Regola pre-asta: 50%)';
-    if (!confirm(msg)) return;
-    await supabase.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).eq('id', playerId);
-    var resCred = await supabase.from('squadre').select('crediti').eq('nome', player.vincitore);
-    if (resCred.data && resCred.data.length > 0) {
-      await supabase.from('squadre').update({ crediti: resCred.data[0].crediti + recovery }).eq('nome', player.vincitore);
-    }
-    if (player.vincitore === mySquadra) {
-      myCrediti += recovery;
-      loadMyPlayers();
-    }
-    loadPending();
-    loadBoard();
-    refreshSoldList();
-  }
-
-  async function resetToSnapshot() {
-    if (!confirm('Ripristinare lo stato iniziale? I giocatori tornano dove erano prima dell\'asta.')) return;
-    var snapPlayers = await supabase.from('snapshot_players').select('player_id, stato, vincitore, prezzo_finale');
-    if (snapPlayers.data) {
-      for (var i = 0; i < snapPlayers.data.length; i++) {
-        var sp = snapPlayers.data[i];
-        await supabase.from('players').update({ stato: sp.stato, vincitore: sp.vincitore, prezzo_finale: sp.prezzo_finale }).eq('id', sp.player_id);
-      }
-    }
-    var snapSquadre = await supabase.from('snapshot_squadre').select('squadra_id, crediti');
-    if (snapSquadre.data) {
-      for (var j = 0; j < snapSquadre.data.length; j++) {
-        var ss = snapSquadre.data[j];
-        await supabase.from('squadre').update({ crediti: ss.credi   
+<h1>⚽ Fanta Asta di Riparazione</h1>
+<div class="card" id="login-card">
+<h3>Seleziona la tua squadra</h3>
+<select id="squadra-select"></select><br>
+<button class="btn-start" onclick="joinAuction()">Entra</button>
+</div>
+<div id="main-area" style="display:none">
+<div class="phase-info" id="phase-info"></div>
+<div class="toolbar">
+<button class="tab-btn active" id="tab-btn-asta" onclick="switchTab('asta')">🔨 Asta</button>
+<button class="tab-btn" id="tab-btn-rose" onclick="switchTab('rose')">👥 Rose</button>
+<div class="search-wrap"><input type="text" id="search-input" placeholder="Cerca giocatore..." autocomplete="off"><div class="search-dropdown" id="search-dropdown"></div></div>
+<button class="btn-start" id="btn-start" onclick="startAuction()">▶ Inizia</button>
+<button class="btn-reset" onclick="resetToSnapshot()">↩️ Reset</button>
+<button class="btn-new" onclick="newAuction()">🆕 Nuova</button>
+</div>
+<div class="tab-content active" id="tab-asta">
+<div class="card" id="auction-card" style="display:none">
+<div class="player-name" id="player-name"></div>
+<div class="timer" id="timer">30</div>
+<div class="bidder" id="current-bidder"></div>
+<div class="error" id="error"></div>
+<div class="bid-input"><input type="number" id="bid-amount" placeholder="Offerta" min="1"><button onclick="placeBid()">Rilancia</button></div>
+<button class="btn-sell" onclick="sellNow()">✔ Vendi ora</button>
+</div>
+<div class="card"><h3 style="font-size:1rem;margin-bottom:8px">Giocatori venduti</h3><ul class="sold-list" id="sold-list"></ul></div>
+</div>
+<div class="tab-content" id="tab-rose"><div class="board" id="board"></div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var sb=window.supabase.createClient('https://tlgzvgdxhtiavobyyxze.supabase.co','sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL');
+var RL={POR:3,DIF:8,CENTRO:8,ATT:6},rO=['POR','DIF','CENTRO','ATT'],rL={POR:'POR',DIF:'DIF',CENTRO:'CEN',ATT:'ATT'};
+var myS=null,myC=0,myP=[],allP=[],cT=30,tI=null,cPI=null,cB=0,cBD=null,cPR=null,aS=false;
+function gR(p,a){if(aS)return p;if(!a)return p;return Math.ceil(p/2)}
+function cBR(pl){var c={POR:0,DIF:0,CENTRO:0,ATT:0};pl.forEach(function(p){if(c[p.ruolo]!==undefined)c[p.ruolo]++});return c}
+function uPI(){document.getElementById('phase-info').innerHTML=aS?'<span class="active">ASTA IN CORSO</span> — X=100%':'<span class="active">PREPARAZIONE</span> — X=50%'}
+function switchTab(t){document.getElementById('tab-btn-asta').classList.toggle('active',t==='asta');document.getElementById('tab-btn-rose').classList.toggle('active',t==='rose');document.getElementById('tab-asta').classList.toggle('active',t==='asta');document.getElementById('tab-rose').classList.toggle('active',t==='rose');if(t==='rose')loadBoard()}
+async function loadSquadre(){var r=await sb.from('squadre').select('nome,crediti').order('id');var sel=document.getElementById('squadra-select');if(r.data)r.data.forEach(function(s){var o=document.createElement('option');o.value=s.nome;o.textContent=s.nome+' ('+s.credi+' cr)';sel.appendChild(o)})}
+function joinAuction(){myS=document.getElementById('squadra-select').value;if(!myS)return;document.getElementById('login-card').style.display='none';document.getElementById('main-area').style.display='block';uPI();subscribe();loadInit()}
+async function loadInit(){var r=await sb.from('squadre').select('crediti').eq('nome',myS);if(r.data&&r.data.length>0)myC=r.data[0].crediti;await loadMP();await loadPend();refreshSold()}
+async function loadMP(){var r=await sb.from('players').select('id,nome,ruolo,prezzo_finale,in_serie_a').eq('vincitore',myS).eq('stato','sold');myP=r.data||[]}
+async function loadPend(){var r=await sb.from('players').select('id,nome,ruolo').eq('stato','pending').order('nome');allP=r.data||[]}
+async function refreshSold(){var r=await sb.from('players').select('nome,ruolo,vincitore,prezzo_finale').neq('stato','pending');var s=r.data||[];document.getElementById('sold-list').innerHTML=s.map(function(x){return x.vincitore?'<li><strong>'+x.nome+'</strong> ('+x.ruolo+') → '+x.vincitore+' — '+x.prezzo_finale+' cr</li>':'<li><strong>'+x.nome+'</strong> ('+x.ruolo+') → non venduto</li>'}).join('')}
+function initSearch(){var si=document.getElementById('search-input'),sd=document.getElementById('search-dropdown');si.addEventListener('input',function(){var q=this.value.trim().toLowerCase();if(q.length<2){sd.style.display='none';return}var m=allP.filter(function(p){return p.nome.toLowerCase().indexOf(q)!==-1}).slice(0,10);sd.innerHTML=m.length===0?'<div style="color:#888">Nessun risultato</div>':m.map(function(p){return '<div onmousedown="callP('+p.id+')">'+p.nome+' <span style="color:#888;font-size:.75rem">'+p.ruolo+'</span></div>'}).join('');sd.style.display='block'});si.addEventListener('blur',function(){setTimeout(function(){sd.style.display='none'},250)})}
+function callP(id){if(!aS){alert('Premi ▶ Inizia prima.');return}var p=allP.find(function(x){return x.id===id});if(!p)return;cPI=id;cPR=p.ruolo;cB=0;cBD=null;document.getElementById('search-input').value='';document.getElementById('search-dropdown').style.display='none';document.getElementById('auction-card').style.display='block';document.getElementById('player-name').textContent=p.nome+' ('+p.ruolo+')';document.getElementById('current-bidder').textContent='';document.getElementById('error').textContent='';document.getElementById('timer').textContent='30';sb.from('bids').insert({player_id:id,squadra:'__CALL__',importo:0});resetT(30)}
+async function startAuction(){if(aS)return;if(!confirm('Iniziare? Da ora X=100%.'))return;aS=true;document.getElementById('btn-start').disabled=true;document.getElementById('btn-start').textContent='✔ Attiva';uPI();sb.from('bids').insert({player_id:0,squadra:'__START__',importo:0})}
+function subscribe(){sb.channel('bc').on('postgres_changes',{event:'INSERT',schema:'public',table:'bids'},function(py){var b=py.new;if(b.squadra==='__START__'){aS=true;document.getElementById('btn-start').disabled=true;document.getElementById('btn-start').textContent='✔ Attiva';uPI();return}if(b.squadra==='__CALL__'){if(b.player_id!==cPI){var p=allP.find(function(x){return x.id===b.player_id});if(p){cPI=p.id;cPR=p.ruolo;cB=0;cBD=null;document.getElementById('auction-card').style.display='block';document.getElementById('player-name').textContent=p.nome+' ('+p.ruolo+')';document.getElementById('current-bidder').textContent='';document.getElementById('error').textContent='';resetT(30)}}return}if(b.player_id!==cPI)return;cB=b.importo;cBD=b.squadra;document.getElementById('current-bidder').textContent=cBD+' — '+cB+' cr';resetT(10)}).subscribe();sb.channel('pc').on('postgres_changes',{event:'UPDATE',schema:'public',table:'players'},function(py){if(py.new.stato==='sold'||py.new.stato==='skipped')handleDone(py.new)}).subscribe();sb.channel('sc').on('postgres_changes',{event:'UPDATE',schema:'public',table:'squadre'},function(py){if(py.new.nome===myS)myC=py.new.credi}).subscribe()}
+function resetT(s){clearInterval(tI);cT=s;document.getElementById('timer').textContent=cT;tI=setInterval(function(){cT--;document.getElementById('timer').textContent=cT;if(cT<=0){clearInterval(tI);sellCP()}},1000)}
+async function sellCP(){if(!cPI)return;if(cBD){await sb.from('players').update({stato:'sold',vincitore:cBD,prezzo_finale:cB}).eq('id',cPI);if(cBD===myS){myC-=cB;await sb.from('squadre').update({crediti:myC}).eq('nome',myS);loadMP()}}else{await sb.from('players').update({stato:'skipped'}).eq('id',cPI)}}
+async function sellNow(){await sellCP();clearInterval(tI)}
+function handleDone(p){if(p.vincitore===myS)loadMP();allP=allP.filter(function(x){return x.id!==p.id});document.getElementById('auction-card').style.display='none';document.getElementById('search-input').value='';clearInterval(tI);refreshSold()}
+async function placeBid(){var a=parseInt(document.getElementById('bid-amount').value);if(!a||a<=cB){document.getElementById('error').textContent='Minimo '+(cB+1);setTimeout(function(){document.getElementById('error').textContent=''},3000);return}if(cBD===myS){document.getElementById('error').textContent='Sei già tu';setTimeout(function(){document.getElementById('error').textContent=''},3000);return}var c=cBR(myP);if(c[cPR]>=RL[cPR]){document.getElementById('error').textContent='Slot '+cPR+' pieno!';setTimeout(function(){document.getElementById('error').textContent=''},3000);return}if(a>myC){document.getElementById('error').textContent='Crediti insufficienti! Hai '+myC;setTimeout(function(){document.getElementById('error').textContent=''},3000);return}await sb.from('bids').insert({player_id:cPI,squadra:myS,importo:a});document.getElementById('bid-amount').value=''}
+async function releaseP(id){var r=await sb.from('players').select('prezzo_finale,in_serie_a,nome,vincitore').eq('id',id);if(!r.data||r.data.length===0)return;var p=r.data[0],rec=gR(p.prezzo_finale,p.in_serie_a);var msg='Svincolare '+p.nome+'?\nRecupero: +'+rec+' cr';if(!aS)msg+='\n(Pre-asta: 50%)';if(!confirm(msg))return;await sb.from('players').update({stato:'pending',vincitore:null,prezzo_finale:null}).eq('id',id);var rc=await sb.from('squadre').select('crediti').eq('nome',p.vincitore);if(rc.data&&rc.data.length>0)await sb.from('squadre').update({crediti:rc.data[0].crediti+rec}).eq('nome',p.vincitore);if(p.vincitore===myS){myC+=rec;loadMP()}loadPend();loadBoard();refreshSold()}
+async function resetToSnapshot(){if(!confirm('Ripristinare stato iniziale?'))return;var sp=await sb.from('snapshot_players').select('player_id,stato,vincitore,prezzo_finale');if(sp.data)for(var i=0;i<sp.data.length;i++){var s=sp.data[i];await sb.from('players').update({stato:s.stato,vincitore:s.vincitore,prezzo_finale:s.prezzo_finale}).eq('id',s.player_id)}var ss=await sb.from('snapshot_squadre').select('squadra_id,crediti');if(ss.data)for(var j=0;j<ss.data.length;j++){var q=ss.data[j];await sb.from('squadre').update({crediti:q.credi}).eq('id',q.squadra_id)}await sb.from('bids').delete().neq('id',0);await loadPend();await loadMP();refreshSold();loadBoard();document.getElementById('auction-card').style.display='none';document.getElementById('search-input').value='';clearInterval(tI);aS=false;document.getElementById('btn-start').disabled=false;document.getElementById('btn-start').textContent='▶ Inizia';uPI();alert('Reset completato.')}
+async function newAuction(){if(!confirm('NUOVA ASTA: 500 cr per tutte. Sicuro?'))return;if(!confirm('Confermi?'))return;await sb.from('players').update({stato:'pending',vincitore:null,prezzo_finale:null}).in('stato',['sold','skipped']);await sb.from('squadre').update({crediti:500}).neq('id',0);await sb.from('bids').delete().neq('id',0);await loadPend();await loadMP();refreshSold();loadBoard();document.getElementById('auction-card').style.display='none';document.getElementById('search-input').value='';clearInterval(tI);aS=false;document.getElementById('btn-start').disabled=false;document.getElementById('btn-start').textContent='▶ Inizia';uPI();alert('Pronto.')}
+async function loadBoard(){var rs=await sb.from('squadre').select('nome,crediti').order('id');var sq=rs.data||[];var rp=await sb.from('players').select('id,nome,ruolo,prezzo_finale,in_serie_a,vincitore').eq('stato','sold').order('id');var pl=rp.data||[];var bd=document.getElementById('board');bd.innerHTML='';sq.forEach(function(s){var col=document.createElement('div');col.className='column';col.innerHTML='<div class="col-header"><div class="team-name">'+s.nome+'</div><div class="team-crediti">'+s.credi+' cr</div></div>';var mp=pl.filter(function(p){return p.vincitore===s.nome});var c=cBR(mp);rO.forEach(function(role){var rp2=mp.filter(function(p){return p.ruolo===role}).sort(function(a,b){return gR(b.prezzo_finale,b.in_serie_a)-gR(a.prezzo_finale,a.in_serie_a)});var g=document.createElement('div');g.className='role-group';g.innerHTML='<div class="role-title">'+rL[role]+' <span class="slots">'+c[role]+'/'+RL[role]+'</span></div>';if(rp2.length===0){g.innerHTML+='<div class="empty-role">—</div>'}else{rp2.forEach(function(p){var rec=gR(p.prezzo_finale,p.in_serie_a);var row=document.createElement('div');row.className='player-row';row.innerHTML='<span class="p-name" title="'+p.nome+'">'+p.nome+'</span><span class="p-recovery">+'+rec+'</span><button class="p-del" onclick="releaseP('+p.id+')">×</button>';g.appendChild(row)})}col.appendChild(g)});bd.appendChild(col)})}
+loadSquadre();initSearch();
+</script>
+</body>
+</html>   
