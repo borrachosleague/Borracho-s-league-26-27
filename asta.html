@@ -341,7 +341,21 @@ async function releasePlayer(playerId) {
 
 async function resetToSnapshot() {
   if (!confirm('Ripristinare lo stato iniziale?')) return;
-  await sb.rpc('reset_all');
+  var sp = await sb.from('snapshot_players').select('player_id, stato, vincitore, prezzo_finale');
+  if (sp.data) {
+    var updates = sp.data.map(function(s) {
+      return { id: s.player_id, stato: s.stato, vincitore: s.vincitore, prezzo_finale: s.prezzo_finale };
+    });
+    await sb.from('players').upsert(updates);
+  }
+  var ss = await sb.from('snapshot_squadre').select('squadra_id, crediti');
+  if (ss.data) {
+    var sqUpdates = ss.data.map(function(q) {
+      return { id: q.squadra_id, crediti: q.crediti };
+    });
+    await sb.from('squadre').upsert(sqUpdates);
+  }
+  await sb.from('bids').delete().neq('id', 0);
   await loadPending(); await loadMyPlayers(); refreshSoldList(); loadBoard();
   document.getElementById('auction-card').style.display = 'none';
   document.getElementById('search-input').value = '';
@@ -350,7 +364,7 @@ async function resetToSnapshot() {
   document.getElementById('btn-start').textContent = '▶ Inizia';
   updatePhaseInfo();
   alert('Reset completato.');
-}
+}   
 async function newAuction() {
   if (!confirm('NUOVA ASTA: 500 cr per tutte. Sicuro?')) return;
   if (!confirm('Confermi?')) return;
