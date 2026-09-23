@@ -273,16 +273,16 @@ function resetTimer(seconds) {
 async function sellCurrentPlayer() {
   if (!currentPlayerId) return;
   if (currentBidder) {
-    await sb.from('players').update({ stato: 'sold', vincitore: currentBidder, prezzo_finale: currentBid }).eq('id', currentPlayerId);
-    if (currentBidder === mySquadra) {
-      mycrediti -= currentBid;
-      await sb.from('squadre').update({ crediti: mycrediti }).eq('nome', mySquadra);
-      loadMyPlayers();
-    }
+    var r = await sb.from('players')
+      .update({ stato: 'sold', vincitore: currentBidder, prezzo_finale: currentBid })
+      .eq('id', currentPlayerId).eq('stato', 'pending');
+    if (!r.data || r.data.length === 0) return;
+    await sb.rpc('decrement_crediti', { sq: currentBidder, imp: currentBid });
+    if (currentBidder === mySquadra) { mycrediti -= currentBid; loadMyPlayers(); }
   } else {
-    await sb.from('players').update({ stato: 'skipped' }).eq('id', currentPlayerId);
+    await sb.from('players').update({ stato: 'skipped' }).eq('id', currentPlayerId).eq('stato', 'pending');
   }
-}
+}   
 
 async function sellNow() { await sellCurrentPlayer(); clearInterval(timerInterval); }
 
@@ -330,47 +330,36 @@ async function releasePlayer(playerId) {
   var msg = 'Svincolare ' + p.nome + '?\nRecupero: +' + rec + ' cr';
   if (!auctionStarted) msg += '\n(Regola pre-asta: 50%)';
   if (!confirm(msg)) return;
-  await sb.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).eq('id', playerId);
-  var rc = await sb.from('squadre').select('crediti').eq('nome', p.vincitore);
+  var r = await sb.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).eq('id', playerId).eq('stato', 'sold');
+  if (!r.data || r.data.length === 0) return;   
+     var rc = await sb.from('squadre').select('crediti').eq('nome', p.vincitore);
   if (rc.data && rc.data.length > 0) {
     await sb.from('squadre').update({ crediti: rc.data[0].crediti + rec }).eq('nome', p.vincitore);
-  }
+  }      
   if (p.vincitore === mySquadra) { mycrediti += rec; loadMyPlayers(); }
   loadPending(); loadBoard(); refreshSoldList();
 }
 
 async function resetToSnapshot() {
   if (!confirm('Ripristinare lo stato iniziale?')) return;
-  var sp = await sb.from('snapshot_players').select('player_id, stato, vincitore, prezzo_finale');
-  if (sp.data) {
-    var updates = sp.data.map(function(s) {
-      return { id: s.player_id, stato: s.stato, vincitore: s.vincitore, prezzo_finale: s.prezzo_finale };
-    });
-    await sb.from('players').upsert(updates);
+  try {
+    var r = await sb.rpc('reset_all');
+    if (r.error) { alert('ERRORE: ' + r.error.message); return; }
+    await loadPending(); await loadMyPlayers(); refreshSoldList(); loadBoard();
+    document.getElementById('auction-card').style.display = 'none';
+    document.getElementById('search-input').value = '';
+    clearInterval(timerInterval); auctionStarted = false;
+    document.getElementById('btn-start').disabled = false;
+    document.getElementById('btn-start').textContent = '▶ Inizia';
+    updatePhaseInfo();
+    alert('Reset completato.');
+  } catch(e) {
+    alert('ERRORE: ' + e.message);
   }
-  var ss = await sb.from('snapshot_squadre').select('squadra_id, crediti');
-  if (ss.data) {
-    var sqUpdates = ss.data.map(function(q) {
-      return { id: q.squadra_id, crediti: q.crediti };
-    });
-    await sb.from('squadre').upsert(sqUpdates);
-  }
-  await sb.from('bids').delete().neq('id', 0);
-  await loadPending(); await loadMyPlayers(); refreshSoldList(); loadBoard();
-  document.getElementById('auction-card').style.display = 'none';
-  document.getElementById('search-input').value = '';
-  clearInterval(timerInterval); auctionStarted = false;
-  document.getElementById('btn-start').disabled = false;
-  document.getElementById('btn-start').textContent = '▶ Inizia';
-  updatePhaseInfo();
-  alert('Reset completato.');
-}   
-async function newAuction() {
+}   async function newAuction() {
   if (!confirm('NUOVA ASTA: 500 cr per tutte. Sicuro?')) return;
   if (!confirm('Confermi?')) return;
-  await sb.from('players').update({ stato: 'pending', vincitore: null, prezzo_finale: null }).in('stato', ['sold', 'skipped']);
-  await sb.from('squadre').update({ crediti: 500 }).neq('id', 0);
-  await sb.from('bids').delete().neq('id', 0);
+    await sb.rpc('new_auction');   
   await loadPending(); await loadMyPlayers(); refreshSoldList(); loadBoard();
   document.getElementById('auction-card').style.display = 'none';
   document.getElementById('search-input').value = '';
@@ -422,14 +411,3 @@ initSearch();
 </script>
 </body>
 </html>   
-
-
-
-
-
-
-
-
-
-
-
