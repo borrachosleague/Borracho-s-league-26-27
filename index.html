@@ -578,14 +578,9 @@ function resizeSelect(sel) {
 }
 
 function showPage(page, btn) {
-    document.querySelectorAll('.page').forEach(function(p) {
-        p.classList.remove('active');
-        p.style.display = 'none';
-    });
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
-    var target = document.getElementById('page-' + page);
-    target.classList.add('active');
-    target.style.display = 'block';
+    document.getElementById('page-' + page).classList.add('active');
     if (btn) btn.classList.add('active');
     document.body.classList.toggle('home-active', page === 'home');
 }
@@ -625,6 +620,15 @@ function showSubPage(sub, btn) {
 function getVal(obj, criterio) {
     if (criterio === 'dr') return obj.gf - obj.gs;
     return obj[criterio] || 0;
+}
+
+function sortPlayersBy(metric, role) {
+    return datiGiocatori
+        .filter(function(g) { return !role || g.ruolo === role; })
+        .sort(function(a, b) {
+            var diff = (b[metric] || 0) - (a[metric] || 0);
+            return diff !== 0 ? diff : (b.prestit || 0) - (a.prestit || 0);
+        });
 }
 
 function logoUrl(nome) {
@@ -741,39 +745,12 @@ function updateBest11() {
     var container = document.getElementById('pitch-best11');
     container.querySelectorAll('.pitch-player').forEach(function(el) { el.remove(); });
 
-    var players = [];
-
-    var portieri = datiGiocatori.filter(function(g) { return g.ruolo === 'p'; });
-    portieri.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    if (portieri.length > 0) players.push(portieri[0]);
-
-    var dif = datiGiocatori.filter(function(g) { return g.ruolo === 'd'; });
-    dif.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    players = players.concat(dif.slice(0, nDif));
-
-    var cen = datiGiocatori.filter(function(g) { return g.ruolo === 'c'; });
-    cen.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    players = players.concat(cen.slice(0, nCen));
-
-    var att = datiGiocatori.filter(function(g) { return g.ruolo === 'a'; });
-    att.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    players = players.concat(att.slice(0, nAtt));
+    var portieri = sortPlayersBy(bestMetric, 'p');
+    var players = portieri.length ? [portieri[0]] : [];
+    players = players
+        .concat(sortPlayersBy(bestMetric, 'd').slice(0, nDif))
+        .concat(sortPlayersBy(bestMetric, 'c').slice(0, nCen))
+        .concat(sortPlayersBy(bestMetric, 'a').slice(0, nAtt));
 
     var groups = [
         { list: players.slice(0, 1), x: 8 },
@@ -835,7 +812,6 @@ fetch("dati.json")
         updateClassifica();
         populateHomeLoghi();
         updateGiocatori(); resizeSelect(document.getElementById('criterio-giocatori'));
-        updateSquadre();
         if (datiRisultati.length > 0) updateRisultati();
         updateBest11();
     })
