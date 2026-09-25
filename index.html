@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BORRACHO'S LEAGUE 25-26</title>
+    <title>BORRACHO'S LEAGUE</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
@@ -41,7 +41,7 @@
         .page.active { display: block; }
 
         #page-home.active {
-            position: fixed; top: 10; left: 10;
+            position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             padding: 0; margin: 0;
             background: url('logo.png') no-repeat center center;
@@ -92,8 +92,6 @@
             margin-bottom: 8px; cursor: pointer; display: block; width: 130px;
         }
         .criterio-select:focus { outline: none; border-color: #e94560; }
-
-        .classifica-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
         .giocatori-layout {
             display: flex;
@@ -190,8 +188,6 @@
             font-weight: 800;
             color: #e94560;
         }
-
-        #sub-squadre .classifica-grid { margin-left: 140px; }
         #sub-giocatori td:last-child,
         #sub-squadre td:last-child { text-align: center; min-width: 35px; max-width: 55px; }
 
@@ -395,7 +391,7 @@
         <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <div>
             <div class="logo-text">BORRACHO'S <span>LEAGUE</span></div>
-            <div class="logo-sub">STAGIONE 25-26</div>
+            <div class="logo-sub">STAGIONE 26-27</div>
         </div>
     </div>
     <div class="nav">
