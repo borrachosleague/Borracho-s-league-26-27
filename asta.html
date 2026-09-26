@@ -999,3 +999,2127 @@ async function switchTab(tab) {
   );
 
   document.getElementById(
+    'tab-asta'
+  ).classList.toggle(
+    'active',
+    tab === 'asta'
+  );
+
+  document.getElementById(
+    'tab-rose'
+  ).classList.toggle(
+    'active',
+    tab === 'rose'
+  );
+
+
+  if (tab === 'rose') {
+    await loadBoard();
+  } else {
+    await Promise.all([loadPending(),loadMyPlayers(),refreshSoldList()]);
+  }
+
+}
+
+
+/* =========================================================
+   LOGIN SOLO PASSWORD + ACCESSO APP
+   ========================================================= */
+
+async function login() {
+  var password = document.getElementById('login-password').value;
+  var err = document.getElementById('login-error');
+  err.textContent = '';
+  if (!password) { err.textContent = 'Inserisci la password.'; return; }
+
+  var sess = await sb.auth.getSession();
+  if (!sess.data || !sess.data.session) {
+    var a = await sb.auth.signInAnonymously();
+    if (a.error) {
+      err.textContent = 'Accesso tecnico non disponibile: ' + a.error.message + '. Verifica che Anonymous Sign-Ins sia attivo in Supabase.';
+      return;
+    }
+  }
+
+  var r = await sb.rpc('league_login', { p_password: password });
+  if (r.error) {
+    err.textContent = 'Password non valida.';
+    return;
+  }
+  document.getElementById('login-password').value = '';
+  await enterLeagueApp(r.data);
+}
+
+async function enterLeagueApp(profile) {
+  if (!profile || !profile.squadra) {
+    document.getElementById('login-error').textContent = 'Sessione di lega non valida.';
+    return;
+  }
+  sessionUser = true;
+  myRole = profile.ruolo || 'player';
+  var teamsFromDb = Array.isArray(profile.squadre) ? profile.squadre : [];
+  var savedTeam = localStorage.getItem('fanta_selected_team');
+  var savedTeamAllowed = savedTeam && teamsFromDb.some(function(t){ return t.squadra === savedTeam; });
+  mySquadra = savedTeamAllowed ? savedTeam : profile.squadra;
+  availableTeams = teamsFromDb.length ? teamsFromDb : [{squadra:mySquadra,access_type:'primary'}];
+  localStorage.setItem('fanta_selected_team', mySquadra);
+
+  document.getElementById('login-card').style.display = 'none';
+  document.getElementById('main-area').style.display = 'block';
+  ['btn-reset','btn-new','btn-start','search-wrap','btn-sell'].forEach(function(id){
+    document.getElementById(id).style.display = myRole === 'admin' ? '' : 'none';
+  });
+  setupTeamSelector(availableTeams);
+  await loadHome();
+  updatePhaseInfo(); updateTeamInfo(); subscribe(); await loadInitialState();
+}
+
+/* =========================================================
+   HOME / PASSAGGIO ADMIN
+   ========================================================= */
+var homeLeagueState = null;
+
+function hideMainPages(){
+  ['home-page','auction-page','preauction-page','corrections-page'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+}
+async function openAuctionPage(){
+  hideMainPages(); document.getElementById('auction-page').style.display='block';
+  updatePhaseInfo(); updateTeamInfo();
+  await Promise.all([loadTeams(),loadPending(),loadMyPlayers(),refreshSoldList()]);
+  var rose=document.getElementById('tab-rose'); if(rose&&rose.classList.contains('active'))await loadBoard();
+}
+function openHomePage(){
+  hideMainPages(); document.getElementById('home-page').style.display='block'; loadHome();
+}
+async function openPreAuctionPage(){
+  hideMainPages(); document.getElementById('preauction-page').style.display='block'; await loadPreAuctionTeams();
+}
+async function loadPreAuctionTeams(){
+  var msg=document.getElementById('preauction-message'),sel=document.getElementById('preauction-team'); msg.textContent=''; sel.innerHTML='';
+  var state=await sb.rpc('league_auction_phase');
+  if(state.error){msg.textContent='Errore fase asta: '+state.error.message;return;}
+  if(state.data&&state.data.started && !state.data.paused_preauction){msg.textContent='L’asta è in corso. Un Admin può usare “⏸ Torna a PRE-ASTA” per riaprire temporaneamente gli svincoli.';document.getElementById('preauction-list').innerHTML='';return;}
+  var r=await sb.rpc('league_preauction_teams');
+  if(r.error){msg.textContent='Errore: '+r.error.message;return;}
+  (r.data||[]).forEach(function(t){var o=document.createElement('option');o.value=t.squadra;o.textContent=t.squadra+(t.access_type==='delegated'?' — delegata':'');sel.appendChild(o);});
+  await loadPreAuctionRoster();
+}
+var lastPreAuctionSignature = null;
+async function loadPreAuctionRoster(){
+  var team=document.getElementById('preauction-team').value,list=document.getElementById('preauction-list'),msg=document.getElementById('preauction-message'),creditsEl=document.getElementById('preauction-credits');
+  msg.textContent='';
+  if(!team){list.innerHTML='';creditsEl.textContent='';lastPreAuctionSignature=null;return;}
+
+  var results=await Promise.all([
+    sb.rpc('league_preauction_roster',{p_squadra:team}),
+    getFrontendState().then(function(data){return {data:data,error:null};}).catch(function(error){return {data:null,error:error};})
+  ]);
+  var r=results[0], state=results[1];
+  if(r.error){msg.textContent='Errore rosa: '+r.error.message;return;}
+  if(state.error){msg.textContent='Errore crediti: '+state.error.message;return;}
+
+  var sq=(state.data.squadre||[]).find(function(x){return x.nome===team;});
+  var credits=sq?Number(sq.crediti||0):0;
+  var freshRoster=(r.data||[]).filter(function(p){return !locallyReleasedPlayerIds.has(Number(p.id));});
+
+  // Polling attivo, ma niente ridisegno se rosa e crediti non sono cambiati.
+  var signature=JSON.stringify({team:team,credits:credits,roster:freshRoster});
+  if(signature===lastPreAuctionSignature)return;
+  lastPreAuctionSignature=signature;
+
+  creditsEl.textContent=team+' — Crediti disponibili: '+credits;
+  if(!freshRoster.length){list.innerHTML='<div class="home-status">Nessun giocatore in rosa.</div>';return;}
+  list.innerHTML=freshRoster.map(function(p){var rec=getRecovery(p.prezzo_finale,p.in_serie_a);return '<div class="preauction-row" data-preauction-id="'+Number(p.id)+'"><span><span class="preauction-role">'+escapeHtml(p.ruolo)+'</span> '+escapeHtml(p.nome)+'</span><span>'+Number(p.prezzo_finale||0)+' cr</span><span>+'+Number(rec)+' cr</span><button class="btn-reset" onclick="releasePreAuctionPlayer('+Number(p.id)+',\''+String(team).replace(/'/g,"\\'")+'\')">Svincola</button></div>';}).join('');
+}
+async function releasePreAuctionPlayer(id,team){
+  var r=await sb.rpc('league_preauction_roster',{p_squadra:team});
+  if(r.error)return alert('Errore rosa: '+r.error.message);
+  var player=(r.data||[]).find(function(p){return Number(p.id)===Number(id);});
+  if(!player)return alert('Giocatore non trovato.');
+  var rec=getRecovery(player.prezzo_finale,player.in_serie_a); if(!confirm('Svincolare '+player.nome+' da '+team+'?\nRecupero: +'+rec+' cr'))return;
+  var x=await sb.rpc('release_preauction_player',{p_player_id:id,p_squadra:team}); if(x.error)return alert('Errore svincolo: '+x.error.message);
+  locallyReleasedPlayerIds.add(Number(id)); locallyRestoredReleaseIds.delete(Number(id));
+  var row=document.querySelector('[data-preauction-id="'+Number(id)+'"]'); if(row)row.remove();
+  // Remove stale data immediately and refresh every affected view.
+  await refreshFrontendAfterMutation({preauction:true});
+}
+
+
+async function openCorrectionsPage(){
+  if(myRole!=='admin'){alert('Solo Admin.');return;}
+  hideMainPages(); document.getElementById('corrections-page').style.display='block'; await loadCorrectionsPage();
+}
+async function loadHome(){
+  var r=await sb.rpc('league_home_state');
+  if(r.error){ document.getElementById('home-identity').textContent='Errore Home: '+r.error.message; return; }
+  homeLeagueState=r.data||{};
+  myRole=homeLeagueState.ruolo||myRole;
+  var correctionHomeBtn=document.getElementById('home-corrections-btn');if(correctionHomeBtn)correctionHomeBtn.style.display=myRole==='admin'?'':'none';
+  var phaseHome=await sb.rpc('league_auction_phase');
+  if(!phaseHome.error && phaseHome.data){
+    auctionStarted=phaseHome.data.started===true;
+    auctionPausedPreauction=phaseHome.data.paused_preauction===true;
+  }
+  updatePausePreauctionButton();
+  var isSuper=homeLeagueState.is_super_admin===true;
+  document.getElementById('home-identity').innerHTML='Sei entrato come <strong>'+escapeHtml(homeLeagueState.squadra||'')+'</strong>'+(isSuper?' — <span class="admin-badge">SUPER ADMIN</span>':(myRole==='admin'?' — <span class="admin-badge">ADMIN</span>':''));
+  var admins=homeLeagueState.admin_aggiuntivi||[];
+  document.getElementById('admin-status').innerHTML='👑 Super Admin permanente: <strong>'+escapeHtml(homeLeagueState.super_admin||'—')+'</strong>'+(admins.length?' · Admin aggiuntivi: <strong>'+admins.map(escapeHtml).join(', ')+'</strong>':' · Nessun admin aggiuntivo');
+  document.getElementById('admin-transfer-box').style.display=isSuper?'block':'none';
+  document.getElementById('home-admin-tools').style.display=myRole==='admin'?'block':'none';
+  document.getElementById('admin-accept-box').style.display='none';
+  var sel=document.getElementById('admin-target-team'); sel.innerHTML='';
+  (homeLeagueState.squadre||[]).forEach(function(t){ if(t!==homeLeagueState.super_admin && admins.indexOf(t)<0){var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);} });
+  var list=document.getElementById('coadmin-list');
+  if(list){ list.innerHTML=admins.length?admins.map(function(t){return '<div class="delegation-item"><span>🛡 '+escapeHtml(t)+'</span>'+(isSuper?' <button class="btn-reset" onclick="removeAdmin(\''+String(t).replace(/'/g,"\\'")+'\')">Revoca Admin</button>':'')+'</div>';}).join(''):''; }
+  ['btn-reset','btn-new','btn-start','search-wrap','btn-sell'].forEach(function(id){ var el=document.getElementById(id); if(el)el.style.display=myRole==='admin'?'':'none'; });
+  
+  if(myRole==='admin') await loadDelegationPanel();
+}
+async function addAdmin(){
+  var team=document.getElementById('admin-target-team').value,e=document.getElementById('admin-transfer-error');e.textContent='';
+  if(!team){e.textContent='Seleziona una squadra.';return;}
+  var r=await sb.rpc('superadmin_add_admin',{p_squadra:team});
+  if(r.error){e.textContent='Errore: '+r.error.message;return;} await loadHome();
+}
+async function removeAdmin(team){
+  var e=document.getElementById('admin-transfer-error');e.textContent='';
+  var r=await sb.rpc('superadmin_remove_admin',{p_squadra:team});
+  if(r.error){e.textContent='Errore: '+r.error.message;return;} await loadHome();
+}
+async function proposeAdmin(){ return addAdmin(); }
+async function acceptAdmin(){ return; }
+
+/* =========================================================
+   GESTIONE DELEGHE E PASSWORD ADMIN
+   ========================================================= */
+var delegationMembers = [];
+var delegationRows = [];
+
+function initDelegationButtons() {
+  document.getElementById('btn-add-delegation').onclick = function(){ addDelegation(); };
+  document.getElementById('btn-clear-delegations').onclick = function(){ clearAllDelegations(); };
+  document.getElementById('btn-set-password').onclick = function(){ setTeamPassword(); };
+  document.getElementById('btn-propose-admin').onclick = function(){ proposeAdmin(); };
+  
+}
+
+async function loadDelegationPanel() {
+  if (myRole !== 'admin') { document.getElementById('home-admin-tools').style.display='none'; return; }
+  initDelegationButtons();
+  var panel=document.getElementById('home-admin-tools'), error=document.getElementById('delegation-error');
+  panel.style.display='block'; error.textContent='';
+  var members=await sb.rpc('admin_list_league_teams');
+  var delegations=await sb.rpc('admin_list_team_delegations');
+  if (members.error) { error.textContent='Errore squadre: '+members.error.message; return; }
+  if (delegations.error) { error.textContent='Errore deleghe: '+delegations.error.message; return; }
+  delegationMembers=Array.isArray(members.data)?members.data:[];
+  delegationRows=Array.isArray(delegations.data)?delegations.data:[];
+  var us=document.getElementById('delegation-user'), ts=document.getElementById('delegation-team'), ps=document.getElementById('password-team');
+  us.innerHTML=''; ts.innerHTML=''; ps.innerHTML='';
+  var managingTeams = new Set(delegationRows.map(function(r){ return r.squadra_principale; }));
+  var managedTeams = new Set(delegationRows.map(function(r){ return r.squadra_delegata; }));
+  delegationMembers.forEach(function(m){
+    // Una squadra già gestita da altri non può diventare a sua volta gestore: niente catene.
+    if(!managedTeams.has(m.squadra)){
+      var ou=document.createElement('option'); ou.value=m.squadra; ou.textContent=m.squadra; us.appendChild(ou);
+    }
+    // Una squadra che sta già gestendo qualcuno non può comparire tra le squadre da gestire.
+    if(!managingTeams.has(m.squadra)){
+      var ot=document.createElement('option'); ot.value=m.squadra; ot.textContent=m.squadra; ts.appendChild(ot);
+    }
+    var op=document.createElement('option'); op.value=m.squadra; op.textContent=m.squadra; ps.appendChild(op);
+  });
+  renderDelegationList();
+}
+
+function renderDelegationList() {
+  var el=document.getElementById('delegation-list');
+  if(!delegationRows.length){ el.innerHTML='<span style="color:#aaa">Nessuna delega attiva.</span>'; return; }
+  el.innerHTML=delegationRows.map(function(row,index){
+    return '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #333">'+
+      '<span>'+escapeHtml(row.squadra_principale)+' → <strong>'+escapeHtml(row.squadra_delegata)+'</strong></span>'+
+      '<button class="tab-btn" onclick="removeDelegation('+index+')">OFF</button></div>';
+  }).join('');
+}
+
+async function addDelegation(){
+  var e=document.getElementById('delegation-error'), a=document.getElementById('delegation-user').value, b=document.getElementById('delegation-team').value;
+  e.textContent=''; if(!a||!b){e.textContent='Seleziona entrambe le squadre.';return;} if(a===b){e.textContent='Una squadra gestisce già se stessa.';return;}
+  var r=await sb.rpc('admin_set_team_delegation',{p_squadra_principale:a,p_squadra_delegata:b});
+  if(r.error){e.textContent='Errore delega: '+r.error.message;return;} await loadDelegationPanel();
+}
+async function removeSelectedDelegation(){
+  var a=document.getElementById('delegation-user').value,b=document.getElementById('delegation-team').value,e=document.getElementById('delegation-error');
+  if(!a||!b){e.textContent='Seleziona entrambe le squadre.';return;}
+  var r=await sb.rpc('admin_remove_team_delegation',{p_squadra_principale:a,p_squadra_delegata:b});
+  if(r.error){e.textContent='Errore rimozione: '+r.error.message;return;} await loadDelegationPanel();
+}
+async function clearAllDelegations(){
+  var e=document.getElementById('delegation-error'); e.textContent='';
+  if(!delegationRows.length){ e.textContent='Non ci sono deleghe attive.'; return; }
+  if(!confirm('Disabilitare tutte le '+delegationRows.length+' deleghe attive?')) return;
+  var r=await sb.rpc('admin_clear_all_team_delegations');
+  if(r.error){e.textContent='Errore: '+r.error.message;return;}
+  await loadDelegationPanel();
+}
+async function removeDelegation(index){
+  var row=delegationRows[index]; if(!row)return;
+  var r=await sb.rpc('admin_remove_team_delegation',{p_squadra_principale:row.squadra_principale,p_squadra_delegata:row.squadra_delegata});
+  if(r.error){document.getElementById('delegation-error').textContent='Errore rimozione: '+r.error.message;return;} await loadDelegationPanel();
+}
+async function setTeamPassword(){
+  var team=document.getElementById('password-team').value, pw=document.getElementById('password-new').value, e=document.getElementById('password-error'); e.textContent='';
+  if(!team||pw.length<4){e.textContent='Password: almeno 4 caratteri.';return;}
+  var r=await sb.rpc('admin_set_team_password',{p_squadra:team,p_password:pw});
+  if(r.error){e.textContent='Errore: '+r.error.message;return;} document.getElementById('password-new').value=''; e.textContent='Password salvata per '+team+'.';
+}
+
+/* =========================================================
+   SINCRONIZZAZIONE RUOLO / SVINCOLI PRE-ASTA / CORREZIONI ADMIN
+   ========================================================= */
+var roleSyncBusy=false;
+async function syncLeagueRole(){
+  if(!sessionUser||roleSyncBusy)return; roleSyncBusy=true;
+  try{
+    var r=await sb.rpc('league_home_state'); if(r.error||!r.data)return;
+    var newRole=r.data.ruolo||'player';
+    if(newRole!==myRole){
+      myRole=newRole;
+      var p=await sb.rpc('get_my_team');
+      if(!p.error&&p.data){
+        availableTeams=Array.isArray(p.data.squadre)?p.data.squadre:availableTeams;
+        if(!availableTeams.some(function(t){return t.squadra===mySquadra;})) mySquadra=p.data.squadra;
+        setupTeamSelector(availableTeams);
+      }
+      ['btn-reset','btn-new','btn-start','search-wrap','btn-sell'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display=myRole==='admin'?'':'none';});
+      var cb=document.getElementById('home-corrections-btn');if(cb)cb.style.display=myRole==='admin'?'':'none';
+      if(document.getElementById('home-page').style.display!=='none') await loadHome();
+    }
+  }finally{roleSyncBusy=false;}
+}
+setInterval(syncLeagueRole,3000);
+
+async function refreshFrontendAfterMutation(options){
+  options=options||{};
+  var jobs=[];
+  jobs.push(loadSelectedTeamData());
+  jobs.push(loadPending());
+  jobs.push(refreshSoldList());
+  if(options.preauction && document.getElementById('preauction-page').style.display!=='none') jobs.push(loadPreAuctionRoster());
+  if(options.corrections && myRole==='admin' && document.getElementById('corrections-page').style.display!=='none') jobs.push(loadCorrectionsPage());
+  var rose=document.getElementById('tab-rose'); if(document.getElementById('auction-page').style.display!=='none'&&rose&&rose.classList.contains('active'))jobs.push(loadBoard());
+  await Promise.all(jobs);
+  await syncAuctionState();
+  // Second read shortly after the write: protects the UI from a delayed browser/PostgREST refresh.
+  setTimeout(function(){
+    refreshSoldList();
+    loadSelectedTeamData();
+    loadPending();
+    if(options.preauction && document.getElementById('preauction-page').style.display!=='none') loadPreAuctionRoster();
+    if(options.corrections && myRole==='admin' && document.getElementById('corrections-page').style.display!=='none') loadCorrectionsPage();
+    var rose=document.getElementById('tab-rose'); if(document.getElementById('auction-page').style.display!=='none'&&rose&&rose.classList.contains('active'))loadBoard();
+    confirmLocalMutationsFromDb();
+    syncAuctionState();
+  },450);
+}
+
+async function loadCorrectionsPage(){
+  var grid=document.getElementById('corrections-grid'),relGrid=document.getElementById('release-corrections-grid'),msg=document.getElementById('corrections-message');
+  if(!grid||!relGrid)return; msg.textContent='';
+  var fs; try{fs=await getFrontendState();}catch(e){msg.textContent='Errore: '+e.message;return;}
+  var rp=await sb.rpc('admin_current_auction_purchases');
+  var rr=await sb.rpc('admin_current_preauction_releases');
+  if(rp.error||rr.error){msg.textContent='Errore: '+(rp.error||rr.error).message;return;}
+  var purchases=(rp.data||[]).filter(function(m){return !locallyCancelledPurchaseIds.has(Number(m.player_id));});
+  var releases=(rr.data||[]).filter(function(m){return !locallyRestoredReleaseIds.has(Number(m.player_id));});
+  grid.innerHTML=''; relGrid.innerHTML='';
+  (fs.squadre||[]).forEach(function(sq){
+    var col=document.createElement('div');col.className='correction-team';
+    var mine=purchases.filter(function(m){return m.squadra===sq.nome;});
+    var html='<h4>'+escapeHtml(sq.nome)+'</h4>';
+    html+=mine.length?mine.map(function(m){return '<div class="correction-player" data-purchase-id="'+Number(m.player_id)+'"><span>'+escapeHtml(m.player_name)+' <small>— '+Number(m.prezzo||0)+' cr</small></span><button class="p-del" title="Annulla acquisto" onclick="cancelPurchase('+Number(m.player_id)+')">×</button></div>';}).join(''):'<div class="movements-empty">—</div>';
+    col.innerHTML=html;grid.appendChild(col);
+
+    var rcol=document.createElement('div');rcol.className='correction-team';
+    var rMine=releases.filter(function(m){return m.squadra===sq.nome;});
+    var rhtml='<h4>'+escapeHtml(sq.nome)+'</h4>';
+    rhtml+=rMine.length?rMine.map(function(m){return '<div class="correction-player" data-release-id="'+Number(m.player_id)+'"><span>'+escapeHtml(m.player_name)+' <small>— recuperati '+Number(m.crediti_recuperati||0)+' cr</small></span><button class="p-del" title="Ripristina svincolo" onclick="restorePreAuctionRelease('+Number(m.player_id)+')">↩</button></div>';}).join(''):'<div class="movements-empty">—</div>';
+    rcol.innerHTML=rhtml;relGrid.appendChild(rcol);
+  });
+}
+async function cancelPurchase(id){
+  var r=await sb.rpc('admin_current_auction_purchases'); if(r.error)return alert('Errore: '+r.error.message);
+  var p=(r.data||[]).find(function(x){return Number(x.player_id)===Number(id);}); if(!p)return alert('Acquisto non trovato.');
+  if(!confirm('ANNULLARE QUESTO ACQUISTO?\n\n'+p.player_name+'\nSquadra: '+p.squadra+'\nPrezzo: '+Number(p.prezzo||0)+' cr\n\nIl giocatore tornerà disponibile da zero e i crediti saranno restituiti.'))return;
+  var x=await sb.rpc('admin_cancel_purchase',{p_player_id:id}); if(x.error)return alert('Errore: '+x.error.message);
+  // Optimistic UI: remove immediately, then force a complete refresh.
+  locallyCancelledPurchaseIds.add(Number(id));
+  var row=document.querySelector('[data-purchase-id="'+Number(id)+'"]'); if(row)row.remove();
+  document.querySelectorAll('#movements-board .movements-item').forEach(function(el){if(el.dataset&&el.dataset.playerId==String(id)&&el.dataset.eventType==='purchase')el.remove();});
+  await refreshFrontendAfterMutation({corrections:true});
+}
+
+async function restorePreAuctionRelease(id){
+  var rr=await sb.rpc('admin_current_preauction_releases');
+  if(rr.error)return alert('Errore: '+rr.error.message);
+  var m=(rr.data||[]).find(function(x){return Number(x.player_id)===Number(id);});
+  if(!m)return alert('Svincolo non trovato o non più ripristinabile.');
+  if(!confirm('RIPRISTINARE QUESTO SVINCOLO?\n\n'+m.player_name+'\nSquadra: '+m.squadra+'\nCrediti da sottrarre: '+Number(m.crediti_recuperati||0)+' cr\n\nIl giocatore tornerà nella rosa originaria.'))return;
+  var x=await sb.rpc('admin_restore_preauction_release',{p_player_id:id});
+  if(x.error)return alert('Errore ripristino: '+x.error.message);
+  locallyRestoredReleaseIds.add(Number(id)); locallyReleasedPlayerIds.delete(Number(id));
+  var row=document.querySelector('[data-release-id="'+Number(id)+'"]'); if(row)row.remove();
+  document.querySelectorAll('#movements-board .movements-item').forEach(function(el){if(el.dataset&&el.dataset.playerId==String(id)&&el.dataset.eventType==='release')el.remove();});
+  await refreshFrontendAfterMutation({corrections:true,preauction:true});
+}
+
+/* =========================================================
+   SESSIONE
+   ========================================================= */
+async function restoreSession(){
+  var s=await sb.auth.getSession();
+  if(!s.data||!s.data.session)return;
+  var r=await sb.rpc('league_restore_session');
+  if(!r.error&&r.data&&r.data.squadra) await enterLeagueApp(r.data);
+}
+async function logout(){
+  clearInterval(timerInterval);
+  localStorage.removeItem('fanta_selected_team');
+  await sb.rpc('league_logout');
+  await sb.auth.signOut();
+  location.reload();
+}
+
+/* =========================================================
+   CARICAMENTO DATI
+   ========================================================= */
+
+async function loadInitialState() {
+
+  await loadSelectedTeamData();
+
+  await Promise.all([
+    loadPending(),
+    refreshSoldList()
+  ]);
+
+  await restoreAuctionState();
+
+  updatePhaseInfo();
+
+  updateTeamInfo();
+
+
+  setInterval(
+    refreshAuthoritativeTimer,
+    1000
+  );
+
+  setInterval(
+    refreshLightweightLists,
+    3000
+  );
+
+}
+
+
+async function loadSelectedTeamData() {
+  if (!mySquadra) return;
+  try {
+    var st=await getFrontendState();
+    var sq=st.squadre.find(function(x){return x.nome===mySquadra;});
+    mycrediti=sq?Number(sq.crediti||0):0;
+    myPlayers=st.players.filter(function(p){return p.vincitore===mySquadra&&p.stato==='sold';});
+    updateTeamInfo();
+  } catch(e) {
+    showError('Errore caricamento squadra: '+e.message);
+  }
+}
+
+
+/* =========================================================
+   STATO ASTA
+   ========================================================= */
+
+async function restoreAuctionState() {
+
+  await syncAuctionState();
+
+
+  if (auctionStarted) {
+
+    document.getElementById(
+      'btn-start'
+    ).disabled =
+      true;
+
+    document.getElementById(
+      'btn-start'
+    ).textContent =
+      '✔ Attiva';
+
+  }
+
+}
+
+
+async function syncAuctionState() {
+
+  var r =
+    await sb.rpc(
+      'get_auction_snapshot'
+    );
+
+
+  if (
+    r.error ||
+    !r.data
+  ) {
+
+    return;
+  }
+
+
+  var st =
+    r.data;
+
+  var phase = await sb.rpc('league_auction_phase');
+  if (!phase.error && phase.data) auctionPausedPreauction = phase.data.paused_preauction === true;
+
+
+  if (st.started_at) {
+
+    auctionStarted =
+      true;
+
+    document.getElementById(
+      'btn-start'
+    ).disabled =
+      true;
+
+    document.getElementById(
+      'btn-start'
+    ).textContent =
+      '✔ Attiva';
+
+  } else {
+
+    auctionStarted =
+      false;
+
+  }
+
+  // Aggiorna i pulsanti solo DOPO aver determinato lo stato reale dell'asta.
+  updatePausePreauctionButton();
+
+
+  if (!st.active_player_id) {
+
+    if (
+      currentPlayerId !== null
+    ) {
+
+      currentPlayerId =
+        null;
+
+      currentPlayerRuolo =
+        null;
+
+      currentBid =
+        0;
+
+      currentBidder =
+        null;
+
+      clearInterval(
+        timerInterval
+      );
+
+      document.getElementById(
+        'auction-card'
+      ).style.display =
+        'none';
+
+    }
+
+    return;
+  }
+
+
+  var p =
+    allPending.find(
+      function(x) {
+
+        return x.id ===
+          st.active_player_id;
+
+      }
+    );
+
+
+  if (!p) {
+
+    await loadPending();
+
+    p =
+      allPending.find(
+        function(x) {
+
+          return x.id ===
+            st.active_player_id;
+
+        }
+      );
+
+  }
+
+
+  if (!p) {
+    return;
+  }
+
+
+  currentPlayerId =
+    p.id;
+
+  currentPlayerRuolo =
+    p.ruolo;
+
+  currentBid =
+    Number(
+      st.current_bid || 0
+    );
+
+  currentBidder =
+    st.current_bidder || null;
+
+
+  document.getElementById(
+    'auction-card'
+  ).style.display =
+    'block';
+
+  document.getElementById(
+    'player-name'
+  ).textContent =
+    p.nome +
+    ' (' +
+    p.ruolo +
+    ')';
+
+  document.getElementById(
+    'current-bidder'
+  ).textContent =
+    currentBidder
+      ? currentBidder +
+        ' — ' +
+        currentBid +
+        ' cr'
+      : '';
+
+
+  syncAuthoritativeTimer(st);
+}
+
+
+/* =========================================================
+   REFRESH LEGGERO
+   ========================================================= */
+
+var visibleRefreshBusy = false;
+var lastBoardSignature = null;
+
+async function refreshLightweightLists() {
+
+  if (!mySquadra || visibleRefreshBusy || actionBusy) {
+    return;
+  }
+
+  visibleRefreshBusy = true;
+  try {
+    // Dati comuni sempre aggiornati.
+    await Promise.all([loadPending(), loadMyPlayers()]);
+    updateTeamInfo();
+
+    // Aggiorna ANCHE la pagina che l’utente sta guardando, senza F5
+    // e senza dover cambiare pagina. Questo copre anche modifiche fatte
+    // da un altro partecipante/sessione.
+    var auctionPage = document.getElementById('auction-page');
+    var prePage = document.getElementById('preauction-page');
+    var correctionsPage = document.getElementById('corrections-page');
+    var homePage = document.getElementById('home-page');
+    var rose = document.getElementById('tab-rose');
+
+    if (auctionPage && auctionPage.style.display !== 'none') {
+      await refreshSoldList();
+      if (rose && rose.classList.contains('active')) {
+        await loadBoard();
+      }
+    }
+
+    if (prePage && prePage.style.display !== 'none') {
+      await loadPreAuctionRoster();
+    }
+
+    if (correctionsPage && correctionsPage.style.display !== 'none' && myRole === 'admin') {
+      await loadCorrectionsPage();
+    }
+
+    // La Home cambia soprattutto per stato asta/admin: non serve ridisegnarla
+    // ogni 3 secondi, ma riallineiamo lo stato dell’asta.
+    if (homePage && homePage.style.display !== 'none') {
+      await syncAuctionState();
+    }
+
+    await confirmLocalMutationsFromDb();
+  } finally {
+    visibleRefreshBusy = false;
+  }
+}
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+function syncAuthoritativeTimer(state) {
+
+  if (
+    !state ||
+    !state.active_player_id ||
+    !state.active_called_at
+  ) {
+
+    return;
+  }
+
+
+  var base =
+    state.last_bid_at ||
+    state.active_called_at;
+
+  var duration =
+    state.last_bid_at
+      ? 10000
+      : 30000;
+
+
+  var remaining =
+    Math.max(
+      0,
+      Math.ceil(
+        (
+          new Date(base).getTime() +
+          duration -
+          Date.now()
+        ) / 1000
+      )
+    );
+
+
+  clearInterval(
+    timerInterval
+  );
+
+
+  currentTimer =
+    remaining;
+
+
+  document.getElementById(
+    'timer'
+  ).textContent =
+    currentTimer;
+
+
+  if (remaining <= 0) {
+
+    if (myRole === 'admin') {
+      sellCurrentPlayer();
+    }
+
+    return;
+  }
+
+
+  timerInterval =
+    setInterval(
+      function() {
+
+        currentTimer =
+          Math.max(
+            0,
+            Math.ceil(
+              (
+                new Date(base).getTime() +
+                duration -
+                Date.now()
+              ) / 1000
+            )
+          );
+
+
+        document.getElementById(
+          'timer'
+        ).textContent =
+          currentTimer;
+
+
+        if (
+          currentTimer <= 0
+        ) {
+
+          clearInterval(
+            timerInterval
+          );
+
+          if (
+            myRole === 'admin'
+          ) {
+
+            sellCurrentPlayer();
+
+          }
+
+        }
+
+      },
+      250
+    );
+}
+
+
+/* =========================================================
+   GIOCATORI
+   ========================================================= */
+
+async function loadMyPlayers() {
+  if (!mySquadra) { myPlayers=[]; return; }
+  try {
+    var st=await getFrontendState();
+    myPlayers=st.players.filter(function(p){return p.vincitore===mySquadra&&p.stato==='sold';});
+    var sq=st.squadre.find(function(x){return x.nome===mySquadra;});
+    if(sq)mycrediti=Number(sq.crediti||0);
+  } catch(e) { showError('Errore rosa: '+e.message); }
+}
+
+async function loadPending() {
+  try {
+    var st=await getFrontendState();
+    allPending=st.players.filter(function(p){return p.stato==='pending';}).map(function(p){return {id:p.id,nome:p.nome,ruolo:p.ruolo};}).sort(function(a,b){return a.nome.localeCompare(b.nome);});
+  } catch(e) { showError('Errore disponibili: '+e.message); }
+}
+
+async function refreshSoldList() {
+  var board=document.getElementById('movements-board');
+  if(!board)return;
+
+  var fs; try{fs=await getFrontendState();}catch(e){board.innerHTML='<div class="error">'+escapeHtml(e.message)+'</div>';return;}
+  var rm=await sb.rpc('league_auction_movements');
+  if(rm.error){
+    board.innerHTML='<div class="error">'+escapeHtml(rm.error.message)+'</div>';
+    return;
+  }
+
+  var movements=(rm.data||[]).filter(function(m){var id=Number(m.player_id); if(m.event_type==='release'&&locallyRestoredReleaseIds.has(id))return false; if(m.event_type==='purchase'&&locallyCancelledPurchaseIds.has(id))return false; return true;});
+  board.innerHTML='';
+  (fs.squadre||[]).forEach(function(sq){
+    var mine=movements.filter(function(m){return m.squadra===sq.nome;});
+    var releases=mine.filter(function(m){return m.event_type==='release';});
+    var purchases=mine.filter(function(m){return m.event_type==='purchase';});
+    var col=document.createElement('div');
+    col.className='movements-team';
+    var html='<h4>'+escapeHtml(sq.nome)+'</h4>';
+    html+='<div class="movements-title">Svincolati pre-asta</div>';
+    html+=releases.length?releases.map(function(m){return '<div class="movements-item" data-event-type="release" data-player-id="'+Number(m.player_id)+'">↩ '+escapeHtml(m.player_name)+' <small>('+escapeHtml(m.ruolo||'')+')</small></div>';}).join(''):'<div class="movements-empty">—</div>';
+    html+='<div class="movements-title">Acquistati in asta</div>';
+    html+=purchases.length?purchases.map(function(m){return '<div class="movements-item" data-event-type="purchase" data-player-id="'+Number(m.player_id)+'">✓ '+escapeHtml(m.player_name)+' <small>('+escapeHtml(m.ruolo||'')+')</small> — '+Number(m.prezzo||0)+' cr</div>';}).join(''):'<div class="movements-empty">—</div>';
+    col.innerHTML=html;
+    board.appendChild(col);
+  });
+}
+
+
+/* =========================================================
+   RICERCA
+   ========================================================= */
+
+function initSearch() {
+
+  var si =
+    document.getElementById(
+      'search-input'
+    );
+
+  var sd =
+    document.getElementById(
+      'search-dropdown'
+    );
+
+
+  si.addEventListener(
+    'input',
+    function() {
+
+      var q =
+        this.value
+          .trim()
+          .toLowerCase();
+
+
+      if (q.length < 2) {
+
+        sd.style.display =
+          'none';
+
+        return;
+      }
+
+
+      var m =
+        allPending
+          .filter(
+            function(p) {
+
+              return p.nome
+                .toLowerCase()
+                .indexOf(q) !== -1;
+
+            }
+          )
+          .slice(0,10);
+
+
+      sd.innerHTML =
+        m.length === 0
+
+          ? '<div style="color:#888">Nessun risultato</div>'
+
+          : m.map(
+              function(p) {
+
+                return (
+                  '<div onmousedown="callPlayer(' +
+                  Number(p.id) +
+                  ')">' +
+                  escapeHtml(p.nome) +
+                  ' <span class="s-role">' +
+                  escapeHtml(p.ruolo) +
+                  '</span></div>'
+                );
+
+              }
+            ).join('');
+
+
+      sd.style.display =
+        'block';
+
+    }
+  );
+
+
+  si.addEventListener(
+    'blur',
+    function() {
+
+      setTimeout(
+        function() {
+
+          sd.style.display =
+            'none';
+
+        },
+        250
+      );
+
+    }
+  );
+}
+
+
+/* =========================================================
+   CHIAMATA GIOCATORE
+   ========================================================= */
+
+async function callPlayer(playerId) {
+
+  if (
+    myRole !== 'admin'
+  ) {
+
+    return;
+  }
+
+
+  if (
+    !auctionStarted ||
+    auctionPausedPreauction ||
+    actionBusy
+  ) {
+
+    if (!auctionStarted) {
+
+      alert(
+        'Premi ▶ Inizia prima.'
+      );
+
+    }
+
+    return;
+  }
+
+
+  var p =
+    allPending.find(
+      function(x) {
+
+        return x.id ===
+          playerId;
+
+      }
+    );
+
+
+  if (!p) {
+    return;
+  }
+
+
+  actionBusy =
+    true;
+
+
+  var r =
+    await sb.rpc(
+      'call_player_with_opening_bid',
+      {
+        p_player_id: playerId,
+        p_squadra: mySquadra
+      }
+    );
+
+
+  actionBusy =
+    false;
+
+
+  if (r.error) {
+
+    showError(
+      r.error.message
+    );
+
+    return;
+  }
+
+
+  currentPlayerId =
+    p.id;
+
+  currentPlayerRuolo =
+    p.ruolo;
+
+  currentBid =
+    1;
+
+  currentBidder =
+    mySquadra;
+
+
+  document.getElementById(
+    'search-input'
+  ).value =
+    '';
+
+  document.getElementById(
+    'search-dropdown'
+  ).style.display =
+    'none';
+
+  document.getElementById(
+    'auction-card'
+  ).style.display =
+    'block';
+
+  document.getElementById(
+    'player-name'
+  ).textContent =
+    p.nome +
+    ' (' +
+    p.ruolo +
+    ')';
+
+  document.getElementById(
+    'current-bidder'
+  ).textContent =
+    mySquadra + ' — 1 cr';
+
+  document.getElementById(
+    'error'
+  ).textContent =
+    '';
+
+  document.getElementById(
+    'bid-amount'
+  ).value =
+    '';
+
+
+  resetTimer(30);
+}
+
+
+function updatePausePreauctionButton(){
+  var buttons=[document.getElementById('btn-pause-preauction'),document.getElementById('home-pause-preauction')];
+  buttons.forEach(function(b){
+    if(!b)return;
+    if(myRole!=='admin' || !auctionStarted){b.style.display='none';return;}
+    b.style.display='';
+    b.textContent=auctionPausedPreauction?'▶ Riprendi ASTA':'⏸ Torna a PRE-ASTA';
+  });
+}
+
+async function togglePreAuctionPause(){
+  if(myRole!=='admin' || actionBusy)return;
+  var question=auctionPausedPreauction
+    ? 'Riprendere l’asta? Gli svincoli pre-asta verranno nuovamente bloccati.'
+    : 'Sospendere temporaneamente l’asta e tornare agli Svincoli pre-asta? Gli acquisti, i crediti e i movimenti già effettuati NON verranno cancellati.';
+  if(!confirm(question))return;
+  actionBusy=true;
+  var r=await sb.rpc(auctionPausedPreauction?'admin_resume_auction':'admin_pause_to_preauction');
+  actionBusy=false;
+  if(r.error){alert('Errore: '+r.error.message);return;}
+  auctionPausedPreauction=!auctionPausedPreauction;
+  updatePausePreauctionButton(); updatePhaseInfo();
+  if(auctionPausedPreauction){ await openPreAuctionPage(); }
+  else { await openAuctionPage(); await syncAuctionState(); }
+}
+
+/* =========================================================
+   START ASTA
+   ========================================================= */
+
+async function startAuction() {
+
+  if (
+    myRole !== 'admin' ||
+    auctionStarted ||
+    actionBusy
+  ) {
+
+    return;
+  }
+
+
+  if (
+    !confirm(
+      "Iniziare l'asta? Da ora X = 100%."
+    )
+  ) {
+
+    return;
+  }
+
+
+  actionBusy =
+    true;
+
+
+  var r =
+    await sb.rpc(
+      'start_auction'
+    );
+
+
+  actionBusy =
+    false;
+
+
+  if (r.error) {
+
+    alert(
+      'Errore avvio asta: ' +
+      r.error.message
+    );
+
+    return;
+  }
+
+
+  auctionStarted =
+    true;
+
+
+  document.getElementById(
+    'btn-start'
+  ).disabled =
+    true;
+
+  document.getElementById(
+    'btn-start'
+  ).textContent =
+    '✔ Attiva';
+
+
+  updatePhaseInfo();
+
+  await syncAuctionState();
+}
+
+
+/* =========================================================
+   REALTIME
+   ========================================================= */
+
+function subscribe() {
+
+  if (
+    subscriptionsReady
+  ) {
+
+    return;
+  }
+
+
+  subscriptionsReady =
+    true;
+
+
+  sb.channel(
+    'bids-ch'
+  )
+
+  .on(
+    'postgres_changes',
+    {
+      event:'INSERT',
+      schema:'public',
+      table:'bids'
+    },
+
+    async function(payload) {
+
+      var b =
+        payload.new;
+
+
+      if (
+        b.squadra ===
+        '__START__'
+      ) {
+
+        auctionStarted =
+          true;
+
+        document.getElementById(
+          'btn-start'
+        ).disabled =
+          true;
+
+        document.getElementById(
+          'btn-start'
+        ).textContent =
+          '✔ Attiva';
+
+        updatePhaseInfo();
+
+        return;
+      }
+
+
+      if (
+        b.squadra ===
+        '__CALL__'
+      ) {
+
+        var p =
+          allPending.find(
+            function(x) {
+
+              return x.id ===
+                b.player_id;
+
+            }
+          );
+
+
+        if (p) {
+
+          currentPlayerId =
+            p.id;
+
+          currentPlayerRuolo =
+            p.ruolo;
+
+          currentBid =
+            0;
+
+          currentBidder =
+            null;
+
+
+          document.getElementById(
+            'auction-card'
+          ).style.display =
+            'block';
+
+          document.getElementById(
+            'player-name'
+          ).textContent =
+            p.nome +
+            ' (' +
+            p.ruolo +
+            ')';
+
+          document.getElementById(
+            'current-bidder'
+          ).textContent =
+            '';
+
+          document.getElementById(
+            'error'
+          ).textContent =
+            '';
+
+
+          await syncAuctionState();
+
+        }
+
+        return;
+      }
+
+
+      if (
+        b.player_id !==
+        currentPlayerId
+      ) {
+
+        return;
+      }
+
+
+      currentBid =
+        b.importo;
+
+      currentBidder =
+        b.squadra;
+
+
+      document.getElementById(
+        'current-bidder'
+      ).textContent =
+        currentBidder +
+        ' — ' +
+        currentBid +
+        ' cr';
+
+    }
+  )
+  .subscribe();
+
+
+  sb.channel(
+    'players-ch'
+  )
+
+  .on(
+    'postgres_changes',
+    {
+      event:'UPDATE',
+      schema:'public',
+      table:'players'
+    },
+
+    function(payload) {
+
+      if (
+        payload.new.stato === 'sold' ||
+        payload.new.stato === 'skipped'
+      ) {
+
+        handlePlayerDone(
+          payload.new
+        );
+
+      }
+
+    }
+  )
+  .subscribe();
+
+
+  sb.channel(
+    'squadre-ch'
+  )
+
+  .on(
+    'postgres_changes',
+    {
+      event:'UPDATE',
+      schema:'public',
+      table:'squadre'
+    },
+
+    async function(payload) {
+
+      if (
+        payload.new.nome ===
+        mySquadra
+      ) {
+
+        mycrediti =
+          payload.new.crediti;
+
+        updateTeamInfo();
+
+      }
+
+    }
+  )
+  .subscribe();
+
+}
+
+
+/* =========================================================
+   TIMER COMPATIBILITÀ
+   ========================================================= */
+
+function resetTimer(seconds) {
+
+  clearInterval(
+    timerInterval
+  );
+
+  currentTimer =
+    seconds;
+
+  document.getElementById(
+    'timer'
+  ).textContent =
+    currentTimer;
+}
+
+
+/* =========================================================
+   TIMER AUTOREVOLE
+   ========================================================= */
+
+var authoritativeRefreshBusy = false;
+
+async function refreshAuthoritativeTimer() {
+
+  // Deve interrogare sempre lo stato autorevole, anche quando questo browser
+  // non ha ancora un giocatore attivo. In questo modo una chiamata effettuata
+  // da un altro partecipante viene scoperta e visualizzata automaticamente.
+  if (!mySquadra || authoritativeRefreshBusy || actionBusy) {
+    return;
+  }
+
+  authoritativeRefreshBusy = true;
+  try {
+    await syncAuctionState();
+  } finally {
+    authoritativeRefreshBusy = false;
+  }
+}
+
+
+/* =========================================================
+   VENDITA
+   ========================================================= */
+
+async function sellCurrentPlayer() {
+
+  if (
+    myRole !== 'admin' ||
+    auctionPausedPreauction ||
+    !currentPlayerId ||
+    actionBusy
+  ) {
+
+    return;
+  }
+
+
+  actionBusy =
+    true;
+
+
+  var playerId =
+    currentPlayerId;
+
+
+  var r =
+    await sb.rpc(
+      'sell_player_tracked',
+      {
+        p_player_id: playerId,
+        p_manual: false
+      }
+    );
+
+
+  actionBusy =
+    false;
+
+
+  if (r.error) {
+
+    showError(
+      'Vendita: ' +
+      r.error.message
+    );
+
+    return;
+  }
+
+  await refreshFrontendAfterMutation({corrections:true});
+
+}
+
+
+async function sellNow() {
+
+  if (
+    myRole !== 'admin' ||
+    auctionPausedPreauction ||
+    !currentPlayerId ||
+    actionBusy
+  ) {
+
+    return;
+  }
+
+
+  actionBusy =
+    true;
+
+
+  var playerId =
+    currentPlayerId;
+
+
+  var r =
+    await sb.rpc(
+      'sell_player_tracked',
+      {
+        p_player_id: playerId,
+        p_manual: true
+      }
+    );
+
+
+  actionBusy =
+    false;
+
+
+  if (r.error) {
+
+    showError(
+      'Vendita: ' +
+      r.error.message
+    );
+
+    return;
+  }
+
+  await refreshFrontendAfterMutation({corrections:true});
+
+}
+
+
+/* =========================================================
+   FINE GIOCATORE
+   ========================================================= */
+
+async function handlePlayerDone(player) {
+
+  if (
+    player.vincitore ===
+    mySquadra
+  ) {
+
+    await loadMyPlayers();
+
+  }
+
+
+  allPending =
+    allPending.filter(
+      function(p) {
+
+        return p.id !==
+          player.id;
+
+      }
+    );
+
+
+  if (
+    player.id ===
+    currentPlayerId
+  ) {
+
+    currentPlayerId =
+      null;
+
+    currentPlayerRuolo =
+      null;
+
+    currentBid =
+      0;
+
+    currentBidder =
+      null;
+
+
+    document.getElementById(
+      'auction-card'
+    ).style.display =
+      'none';
+
+    document.getElementById(
+      'bid-amount'
+    ).value =
+      '';
+
+  }
+
+
+  document.getElementById(
+    'search-input'
+  ).value =
+    '';
+
+
+  clearInterval(
+    timerInterval
+  );
+
+
+  await refreshSoldList();
+
+
+  await loadPending();
+
+  await loadBoard();
+
+  await syncAuctionState();
+
+  updateTeamInfo();
+}
+
+
+/* =========================================================
+   OFFERTA
+   ========================================================= */
+
+async function placeBid() {
+
+  if (
+    !auctionStarted ||
+    auctionPausedPreauction ||
+    !currentPlayerId ||
+    actionBusy
+  ) {
+
+    return;
+  }
+
+
+  var amount =
+    parseInt(
+      document.getElementById(
+        'bid-amount'
+      ).value,
+      10
+    );
+
+
+  if (
+    !amount ||
+    amount <= currentBid
+  ) {
+
+    showError(
+      'Minimo ' +
+      (currentBid + 1)
+    );
+
+    return;
+  }
+
+
+  actionBusy =
+    true;
+
+
+  var r =
+    await sb.rpc(
+      'place_bid_as_team',
+      {
+        p_player_id:
+          currentPlayerId,
+
+        p_squadra:
+          mySquadra,
+
+        p_importo:
+          amount
+      }
+    );
+
+
+  actionBusy =
+    false;
+
+
+  if (r.error) {
+
+    showError(
+      'Offerta rifiutata: ' +
+      r.error.message
+    );
+
+    return;
+  }
+
+
+  currentBid =
+    amount;
+
+  currentBidder =
+    mySquadra;
+
+
+  document.getElementById(
+    'current-bidder'
+  ).textContent =
+    currentBidder +
+    ' — ' +
+    currentBid +
+    ' cr';
+
+
+  document.getElementById(
+    'bid-amount'
+  ).value =
+    '';
+
+
+  await syncAuctionState();
+}
+
+
+/* =========================================================
+   SVINCOLO
+   ========================================================= */
+
+async function releasePlayer(playerId) {
+  var st;
+  try { st=await getFrontendState(); } catch(e) { alert('Errore: '+e.message); return; }
+  var p=st.players.find(function(x){return Number(x.id)===Number(playerId);});
+  if(!p){ alert('Giocatore non trovato.'); return; }
+
+  if (
+    p.vincitore !==
+    mySquadra
+  ) {
+
+    alert(
+      'Puoi svincolare solo i giocatori della tua squadra.'
+    );
+
+    return;
+  }
+
+
+  var rec =
+    getRecovery(
+      p.prezzo_finale,
+      p.in_serie_a
+    );
+
+
+  var msg =
+    'Svincolare ' +
+    p.nome +
+    '?\nRecupero: +' +
+    rec +
+    ' cr';
+
+
+  if (!auctionStarted) {
+
+    msg +=
+      '\n(Regola pre-asta: 50%)';
+
+  }
+
+
+  if (!confirm(msg)) {
+    return;
+  }
+
+
+  actionBusy =
+    true;
+
+
+  var x =
+    await sb.rpc(
+      'release_player_as_team',
+      {
+        p_player_id:
+          playerId,
+
+        p_squadra:
+          mySquadra
+      }
+    );
+
+
+  actionBusy =
+    false;
+
+
+  if (x.error) {
+
+    alert(
+      'Errore svincolo: ' +
+      x.error.message
+    );
+
+    return;
+  }
+
+
+  currentBid =
+    0;
+
+  currentBidder =
+    null;
+
+  currentPlayerId =
+    null;
+
+
+  await loadSelectedTeamData();
+
+  await loadPending();
+
+  await loadBoard();
+
+  await refreshSoldList();
+
+  updateTeamInfo();
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+async function resetToSnapshot() {
+
+  if (
+    myRole !== 'admin'
+  ) {
+
+    return;
+  }
+
+
+  if (
+    !confirm(
+      'Ripristinare lo stato iniziale?'
+    )
+  ) {
+
+    return;
+  }
+
+
+  try {
+
+    var r =
+      await sb.rpc(
+        'admin_reset_auction'
+      );
+
+
+    if (r.error) {
+
+      alert(
+        'ERRORE: ' +
+        r.error.message
+      );
+
+      return;
+    }
+
+    await sb.rpc('admin_clear_auction_movements');
+
+    await loadPending();
+
+    await loadSelectedTeamData();
+
+    await refreshSoldList();
+
+    await loadBoard();
+
+
+    document.getElementById(
+      'auction-card'
+    ).style.display =
+      'none';
+
+    document.getElementById(
+      'search-input'
+    ).value =
+      '';
+
+
+    clearInterval(
+      timerInterval
+    );
+
+
+    auctionStarted =
+      false;
+
+
+    document.getElementById(
+      'btn-start'
+    ).disabled =
+      false;
+
+    document.getElementById(
+      'btn-start'
+    ).textContent =
+      '▶ Inizia';
+
+
+    updatePhaseInfo();
+
+    updateTeamInfo();
+
+
+    alert(
+      'Reset completato.'
+    );
+
+
+  } catch(e) {
+
+    alert(
+      'ERRORE: ' +
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   NUOVA ASTA
+   ========================================================= */
+
+async function newAuction() {
+
+  if (
+    myRole !== 'admin'
+  ) {
+
+    return;
+  }
+
+
+  if (
+    !confirm(
+      'NUOVA ASTA: 500 cr per tutte. Sicuro?'
+    )
+  ) {
+
+    return;
+  }
+
+
+  if (
+    !confirm(
+      'Confermi?'
+    )
+  ) {
+
+    return;
+  }
+
+
+  var nr =
+    await sb.rpc(
+      'admin_new_auction'
+    );
+
+
+  if (nr.error) {
+
+    alert(
+      'ERRORE nuova asta: ' +
+      nr.error.message
+    );
+
+    return;
+  }
+
+  await sb.rpc('admin_clear_auction_movements');
+
+  await loadPending();
+
+  await loadSelectedTeamData();
+
+  await refreshSoldList();
+
+  await loadBoard();
+
+
+  document.getElementById(
+    'auction-card'
+  ).style.display =
+    'none';
+
+  document.getElementById(
+    'search-input'
+  ).value =
+    '';
+
+
+  clearInterval(
+    timerInterval
+  );
+
+
+  auctionStarted =
+    false;
+
+
+  document.getElementById(
+    'btn-start'
+  ).disabled =
+    false;
+
+  document.getElementById(
+    'btn-start'
+  ).textContent =
+    '▶ Inizia';
+
+
+  updatePhaseInfo();
+
+  updateTeamInfo();
+
+
+  alert(
+    'Pronto. 500 cr per tutte.'
+  );
+
+}
+
+
+/* =========================================================
+   TAB ROSE
+   ========================================================= */
+
+async function loadBoard() {
+
+  var board = document.getElementById('board');
+  var firstLoad = (lastBoardSignature === null && !board.children.length);
+  if (firstLoad) board.innerHTML = '<div class="home-status">Caricamento rose...</div>';
+
+  var r = await sb.rpc('league_all_rosters');
+
+  if (r.error) {
+    board.innerHTML = '<div class="error">Errore rose: ' + escapeHtml(r.error.message) + '</div>';
+    lastBoardSignature = null;
+    return;
+  }
+
+  var data = r.data || {};
+  var squadre = Array.isArray(data.squadre) ? data.squadre : [];
+  var players = Array.isArray(data.players) ? data.players : [];
+
+  players = players.filter(function(p){
+    var id=Number(p.id);
+    return !locallyReleasedPlayerIds.has(id) && !locallyCancelledPurchaseIds.has(id);
+  });
+
+  // Il polling continua, ma il DOM viene ridisegnato solo se i dati sono cambiati.
+  var boardSignature = JSON.stringify({squadre:squadre,players:players,auctionStarted:auctionStarted});
+  if (boardSignature === lastBoardSignature) return;
+  lastBoardSignature = boardSignature;
+  board.innerHTML = '';
+
+  if (!squadre.length) {
+    board.innerHTML = '<div class="home-status">Nessuna squadra disponibile.</div>';
+    return;
+  }
+
+  squadre.forEach(function(sq) {
+    var col = document.createElement('div');
+    col.className = 'column';
+    col.innerHTML =
+      '<div class="col-header">' +
+        '<div class="team-name">' + escapeHtml(sq.nome) + '</div>' +
+        '<div class="team-crediti">' + Number(sq.crediti || 0) + ' cr</div>' +
+      '</div>';
+
+    var myPl = players.filter(function(p) { return p.vincitore === sq.nome; });
+    var counts = countByRole(myPl);
+
+    rO.forEach(function(role) {
+      var rolePlayers = myPl.filter(function(p) {
+        return p.ruolo === role;
+      }).sort(function(a,b) {
+        return getRecovery(b.prezzo_finale,b.in_serie_a) - getRecovery(a.prezzo_finale,a.in_serie_a);
+      });
+
+      var group = document.createElement('div');
+      group.className = 'role-group';
+      group.innerHTML = '<div class="role-title">' + rL[role] +
+        ' <span class="slots">' + counts[role] + '/' + RL[role] + '</span></div>';
+
+      if (!rolePlayers.length) {
+        group.innerHTML += '<div class="empty-role">—</div>';
+      } else {
+        rolePlayers.forEach(function(p) {
+          var rec = getRecovery(p.prezzo_finale,p.in_serie_a);
+          var row = document.createElement('div');
+          row.className = 'player-row';
+          row.innerHTML = '<span class="p-name" title="' + escapeHtml(p.nome) + '">' + escapeHtml(p.nome) + '</span>' +
+            '<span class="p-recovery">+' + Number(rec) + '</span>';
+          group.appendChild(row);
+        });
+      }
+      col.appendChild(group);
+    });
+    board.appendChild(col);
+  });
+}
+
+/* =========================================================
+   AVVIO
+   ========================================================= */
+
+initSearch();
+
+
+restoreSession();
+
+</script>
+
+</body>
+</html>
