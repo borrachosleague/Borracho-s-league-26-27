@@ -44,7 +44,7 @@
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             padding: 0; margin: 0;
-            background: url('../logo.png') no-repeat center center;
+            background: url('logo.png') no-repeat center center;
             background-size: cover;
             z-index: 0;
         }
@@ -150,6 +150,14 @@
         #sub-squadre th:nth-child(3) { max-width: 120px; }
         #sub-squadre th:nth-child(4) { max-width: 60px; }
         #page-statistiche { padding-top: 0; }
+        .stats-overview { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-top:14px; }
+        .stats-card { background:#161625; border:1px solid #2b2b42; border-radius:12px; padding:16px; min-height:112px; }
+        .stats-card-label { color:#999; font-size:.78em; text-transform:uppercase; letter-spacing:.7px; margin-bottom:8px; }
+        .stats-card-main { display:flex; align-items:center; gap:10px; }
+        .stats-card-main img { width:38px; height:38px; object-fit:contain; }
+        .stats-card-name { font-weight:700; color:#fff; line-height:1.15; }
+        .stats-card-value { color:#e94560; font-size:1.35em; font-weight:800; margin-top:4px; }
+        .stats-note { margin-top:14px; color:#888; font-size:.82em; line-height:1.45; }
 
         #sub-giocatori .criterio-select {
             width: auto;
@@ -388,7 +396,7 @@
 
 <div class="header">
     <div class="logo">
-        <img src="../logo.png" alt="Logo" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <div>
             <div class="logo-text">BORRACHO'S <span>LEAGUE</span></div>
             <div class="logo-sub">STAGIONE 26-27</div>
@@ -444,11 +452,17 @@
 <div id="page-statistiche" class="page">
     <h2 class="page-title">Statistiche</h2>
     <div class="subnav">
-        <button class="subnav-btn active" onclick="showSubPage('giocatori', this)">Giocatori</button>
+        <button class="subnav-btn active" onclick="showSubPage('panoramica', this)">Panoramica</button>
+        <button class="subnav-btn" onclick="showSubPage('giocatori', this)">Giocatori</button>
         <button class="subnav-btn" onclick="showSubPage('squadre', this)">Squadre</button>
     </div>
 
-    <div id="sub-giocatori" class="subpage active">
+    <div id="sub-panoramica" class="subpage active">
+        <div id="stats-overview" class="stats-overview"></div>
+        <div class="stats-note">Panoramica calcolata esclusivamente dai dati già presenti. Le statistiche dei giocatori continuano a considerare solo le prestazioni da fantatitolare.</div>
+    </div>
+
+    <div id="sub-giocatori" class="subpage">
         <div class="giocatori-layout">
             <div class="giocatori-controls">
                 <input type="text" id="ricerca-giocatori" placeholder="Cerca giocatore..." oninput="updateGiocatori()" class="ricerca-input">
@@ -611,8 +625,9 @@ function populateHomeLoghi() {
 }
 
 function showSubPage(sub, btn) {
-    document.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
-    document.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    var page = document.getElementById('page-statistiche');
+    page.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
+    page.querySelectorAll(':scope > .subnav .subnav-btn').forEach(function(b) { b.classList.remove('active'); });
     document.getElementById('sub-' + sub).classList.add('active');
     btn.classList.add('active');
 }
@@ -632,7 +647,7 @@ function sortPlayersBy(metric, role) {
 }
 
 function logoUrl(nome) {
-    return "../loghi finiti/" + nome.toLowerCase().replace(/ /g, "-") + ".png";
+    return "loghi finiti/" + nome.toLowerCase().replace(/ /g, "-") + ".png";
 }
 
 function updateClassifica() {
@@ -687,6 +702,53 @@ function updateGiocatori() {
         var pos = posizioni[sorted.indexOf(g)];
         tbody.innerHTML += '<tr><td class="pos">' + pos + '</td><td class="logo-cell"><img src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'"></td><td>' + g.nome + '</td><td>' + g.squadra + '</td><td>' + (g[criterio]||0) + '</td></tr>';
     });
+}
+
+function updatePanoramica() {
+    var box = document.getElementById('stats-overview');
+    if (!box || !datiStatSquadre.length) return;
+
+    function leader(metric, ascending) {
+        return datiStatSquadre.slice().sort(function(a,b) {
+            var av = Number(a.dati[metric] || 0), bv = Number(b.dati[metric] || 0);
+            return ascending ? av - bv : bv - av;
+        })[0];
+    }
+    function card(label, sq, metric, suffix) {
+        if (!sq) return '';
+        var val = Number(sq.dati[metric] || 0);
+        return '<div class="stats-card"><div class="stats-card-label">' + label + '</div>'
+            + '<div class="stats-card-main"><img src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'">'
+            + '<div><div class="stats-card-name">' + sq.nome + '</div><div class="stats-card-value">' + val + (suffix || '') + '</div></div></div></div>';
+    }
+
+    var bestTotal = leader('pt tot', false);
+    var bestBonus = leader('bonus', false);
+    var bestMod = leader('pt mod', false);
+    var bestDay = leader('pt max', false);
+    var bestIdeal = leader('tot best', false);
+    var f1 = leader('f1', false);
+    var br = leader('br', false);
+
+    var efficiency = datiStatSquadre.map(function(sq) {
+        var reale = Number(sq.dati['pt tot'] || 0);
+        var ideale = Number(sq.dati['tot best'] || 0);
+        return { nome:sq.nome, value: ideale > 0 ? (reale / ideale) * 100 : 0 };
+    }).sort(function(a,b){ return b.value-a.value; })[0];
+
+    var effCard = efficiency ? '<div class="stats-card"><div class="stats-card-label">Efficienza formazione</div>'
+        + '<div class="stats-card-main"><img src="' + logoUrl(efficiency.nome) + '" onerror="this.style.display=\'none\'">'
+        + '<div><div class="stats-card-name">' + efficiency.nome + '</div><div class="stats-card-value">' + efficiency.value.toFixed(1) + '%</div></div></div></div>' : '';
+
+    box.innerHTML =
+        card('Fantapunti', bestTotal, 'pt tot') +
+        card('Bonus / malus', bestBonus, 'bonus') +
+        card('Modificatore difesa', bestMod, 'pt mod') +
+        card('Miglior giornata', bestDay, 'pt max') +
+        card('Potenziale Best 11', bestIdeal, 'tot best') +
+        effCard +
+        card('Formula 1', f1, 'f1') +
+        card('Battle Royale', br, 'br');
 }
 
 function updateSquadre() {
@@ -785,7 +847,7 @@ function updateBest11() {
 }
 
 // === CARICA DATI ===
-fetch("../dati.json")
+fetch("dati.json")
     .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
     .then(function(d) {
         datiSquadre = d.squadre;
@@ -811,6 +873,7 @@ fetch("../dati.json")
 
         updateClassifica();
         populateHomeLoghi();
+        updatePanoramica();
         updateGiocatori(); resizeSelect(document.getElementById('criterio-giocatori'));
         if (datiRisultati.length > 0) updateRisultati();
         updateBest11();
