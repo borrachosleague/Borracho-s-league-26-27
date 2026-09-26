@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BORRACHO'S LEAGUE 25-26</title>
+    <title>BORRACHO'S LEAGUE 26-27</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
@@ -41,7 +41,7 @@
         .page.active { display: block; }
 
         #page-home.active {
-            position: fixed; top: 10; left: 10;
+            position: fixed; top: 10px; left: 10px;
             width: 100vw; height: 100vh;
             padding: 0; margin: 0;
             background: url('logo.png') no-repeat center center;
@@ -305,34 +305,41 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1px;
+            gap: 2px;
             z-index: 2;
         }
+        .pitch-player .pp-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
         .pitch-player .pp-logo {
-            width: 50px; height: 50px;
+            width: 58px; height: 58px;
+            flex: 0 0 auto;
         }
         .pitch-player .pp-name {
-            font-size: 0.85em;
-            font-weight: 700;
+            font-size: 1em;
+            font-weight: 800;
             color: #fff;
             text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            background: rgba(0,0,0,0.7);
-            padding: 1px 5px;
-            border-radius: 3px;
+            background: rgba(0,0,0,0.72);
+            padding: 2px 7px;
+            border-radius: 4px;
             white-space: nowrap;
-            max-width: 120px;
+            max-width: 145px;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .pitch-player .pp-val {
-            font-size: 0.75em;
+            font-size: 0.9em;
             font-weight: 800;
             color: #ffd700;
             text-shadow: 0 1px 2px rgba(0,0,0,0.9);
         }
         .pitch-player .pp-ruolo {
-            font-size: 0.6em;
-            color: #aaa;
+            font-size: 0.65em;
+            color: #ddd;
             text-shadow: 0 1px 2px rgba(0,0,0,0.9);
         }
 
@@ -382,11 +389,22 @@
             .home-loghi img { width: 45px !important; height: 45px !important; }
             .home-logo-right { right: 18% !important; }
             .home-nav { right: 50%; transform: translateX(50%); }
-            .pitch-player .pp-logo { width: 35px; height: 35px; }
-            .pitch-player .pp-name { font-size: 0.7em; max-width: 70px; }
-            .pitch-player .pp-val { font-size: 0.65em; }
+            .pitch-player .pp-main { gap: 3px; }
+            .pitch-player .pp-logo { width: 39px; height: 39px; }
+            .pitch-player .pp-name { font-size: 0.76em; max-width: 82px; padding: 1px 4px; }
+            .pitch-player .pp-val { font-size: 0.72em; }
         }
-    </style>
+
+    
+        #tabella-giocatori tbody tr.riga-svincolato > td {
+            background-color: #1688F8 !important;
+            color: #FFFFFF !important;
+        }
+        #tabella-giocatori tbody tr.riga-svincolato:hover > td {
+            background-color: #0F7FEA !important;
+            color: #FFFFFF !important;
+        }
+</style>
 </head>
 <body>
 
@@ -395,7 +413,7 @@
         <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         <div>
             <div class="logo-text">BORRACHO'S <span>LEAGUE</span></div>
-            <div class="logo-sub">STAGIONE 25-26</div>
+            <div class="logo-sub">STAGIONE 26-27</div>
         </div>
     </div>
     <div class="nav">
@@ -420,6 +438,11 @@
 
 <!-- CLASSIFICA -->
 <div id="page-classifica" class="page">
+    <select class="criterio-select" id="tipo-classifica" onchange="updateClassifica(); resizeSelect(this)">
+        <option value="classifica">Classifica</option>
+        <option value="f1">F1</option>
+        <option value="br">Battle Royale</option>
+    </select>
     <div class="table-container">
         <table id="tabella-classifica">
             <thead>
@@ -456,21 +479,16 @@
         <div class="giocatori-layout">
             <div class="giocatori-controls">
                 <input type="text" id="ricerca-giocatori" placeholder="Cerca giocatore..." oninput="updateGiocatori()" class="ricerca-input">
-                <select class="criterio-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)">
-                    <option value="mediavototit">Media Voto Tit</option>
-                    <option value="fvototit">Fantamedia Tit</option>
-                    <option value="goltit">Gol Tit</option>
-                    <option value="assisttit">Assist Tit</option>
-                    <option value="golsubititit">Gol Subiti Tit</option>
-                    <option value="cleansheettit">Clean Sheet Tit</option>
-                    <option value="rigtit">Rigori Segnati Tit</option>
-                    <option value="risgsbtit">Rigori Sbagliati Tit</option>
-                    <option value="rigpartit">Rigori Parati Tit</option>
-                    <option value="autgoltit">Autogol Tit</option>
-                    <option value="ammtit">Ammonizioni Tit</option>
-                    <option value="esptit">Espulsioni Tit</option>
-                    <option value="prestit">Presenze Tit</option>
+                <select class="criterio-select" id="gruppo-giocatori" onchange="cambiaGruppoGiocatori(); resizeSelect(this)">
+                    <option value="borracho">Rosa Borracho</option>
+                    <option value="seriea">Tutti Serie A</option>
+                    <option value="svincolati">Svincolati</option>
                 </select>
+                <select class="criterio-select" id="tipo-giocatori" onchange="popolaCriteriGiocatori(); resizeSelect(this)">
+                    <option value="titolari">Titolari</option>
+                    <option value="totali">Totali</option>
+                </select>
+                <select class="criterio-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)"></select>
             </div>
             <div class="table-container">
                 <table id="tabella-giocatori">
@@ -484,10 +502,16 @@
     <div id="sub-squadre" class="subpage">
         <div class="giocatori-layout">
             <div class="giocatori-controls">
+                <select class="criterio-select" id="categoria-squadre" onchange="popolaCriteriSquadre(); resizeSelect(this)">
+                    <option value="reali">Reali</option>
+                    <option value="bonus-malus">Bonus Malus</option>
+                    <option value="best">Best</option>
+                </select>
                 <select class="criterio-select" id="criterio-squadre2" onchange="updateSquadre(); resizeSelect(this)"></select>
                 <div id="desc-sq" class="desc-riquadro"></div>
             </div>
             <div class="sq-dati">
+                <h3 style="margin:0 0 10px 0; text-align:center;">Statistiche Squadre</h3>
                 <div id="titolo-sq" class="titolo-riquadro"></div>
                 <div class="table-container">
                     <table id="tabella-sq">
@@ -505,6 +529,18 @@
     <h2 class="page-title">Best 11</h2>
     <div class="best11-layout">
         <div class="best11-controls">
+            <div class="best11-label">Gruppo</div>
+            <div class="subnav best11-v" id="best-gruppo">
+                <button class="subnav-btn active" onclick="setBestGruppo('borracho', this)">Rosa Borracho</button>
+                <button class="subnav-btn" onclick="setBestGruppo('seriea', this)">Tutti Serie A</button>
+            </div>
+            <div id="best-tipo-wrap">
+                <div class="best11-label">Voti</div>
+                <div class="subnav best11-v" id="best-tipo">
+                    <button class="subnav-btn active" onclick="setBestTipo('titolari', this)">Titolari</button>
+                    <button class="subnav-btn" onclick="setBestTipo('totali', this)">Totali</button>
+                </div>
+            </div>
             <div class="best11-label">Metrica</div>
             <div class="subnav best11-v" id="best-metrica">
                 <button class="subnav-btn active" onclick="setBestMetric('mediavototit', this)">Media Voto</button>
@@ -536,6 +572,9 @@
 <script>
 let datiSquadre = [];
 let datiGiocatori = [];
+let datiGiocatoriSerieA = [];
+let datiGiocatoriSvincolati = [];
+let mappaBorrachoPerNome = Object.create(null);
 let datiRisultati = [];
 let datiStatSquadre = [];
 
@@ -546,6 +585,7 @@ var definizioni = {
     "pt tot": { titolo: "Punti Totali", desc: "Punti fantavoto" },
     "class": { titolo: "Classifica", desc: "Posizione in classifica" },
     "gol cl": { titolo: "Gol", desc: "Gol in classifica" },
+    "gol subiti": { titolo: "Gol Subiti", desc: "Gol subiti in classifica" },
     "gol r": { titolo: "Gol reali", desc: "Gol segnati realmente dai calciatori titolari" },
     "ass": { titolo: "Assist", desc: "Assist totali della squadra" },
     "amm": { titolo: "Ammonizioni", desc: "Cartellini gialli totali" },
@@ -580,6 +620,7 @@ function resizeSelect(sel) {
     var len = opt ? opt.text.length : 0;
     sel.style.width = Math.max(120, len * 9 + 55) + 'px';
 }
+
 
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
@@ -621,7 +662,8 @@ function populateHomeLoghi() {
 
 function showSubPage(sub, btn) {
     document.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
-    document.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    var statsNav = document.querySelector('#page-statistiche > .subnav');
+    if (statsNav) statsNav.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
     document.getElementById('sub-' + sub).classList.add('active');
     btn.classList.add('active');
 }
@@ -636,35 +678,170 @@ function logoUrl(nome) {
 }
 
 function updateClassifica() {
-    var sorted = datiSquadre.slice().sort(function(a, b) {
-        if (b.pt !== a.pt) return b.pt - a.pt;
-        return b.pt_totali - a.pt_totali;
-    });
-    var tbody = document.querySelector('#tabella-classifica tbody');
+    var tipoEl = document.getElementById('tipo-classifica');
+    var tipo = tipoEl ? tipoEl.value : 'classifica';
+    var table = document.getElementById('tabella-classifica');
+    var thead = table.querySelector('thead');
+    var tbody = table.querySelector('tbody');
     tbody.innerHTML = '';
-    sorted.forEach(function(sq, i) {
-        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + sq.pt + '</td><td>' + sq.v + '</td><td>' + sq.n + '</td><td>' + sq.p + '</td><td>' + sq.gf + '</td><td>' + sq.gs + '</td><td>' + sq.dr + '</td><td>' + sq.pt_totali + '</td></tr>';
+
+    if (tipo === 'classifica') {
+        thead.innerHTML = '<tr><th>Pos</th><th></th><th>Squadra</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt Totali</th></tr>';
+        var sorted = datiSquadre.slice().sort(function(a, b) {
+            if (b.pt !== a.pt) return b.pt - a.pt;
+            return b.pt_totali - a.pt_totali;
+        });
+        sorted.forEach(function(sq, i) {
+            tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + sq.pt + '</td><td>' + sq.v + '</td><td>' + sq.n + '</td><td>' + sq.p + '</td><td>' + sq.gf + '</td><td>' + sq.gs + '</td><td>' + sq.dr + '</td><td>' + sq.pt_totali + '</td></tr>';
+        });
+        return;
+    }
+
+    var titolo = tipo === 'f1' ? 'Punti F1' : 'Punti Battle Royale';
+    thead.innerHTML = '<tr><th>Pos</th><th></th><th>Squadra</th><th>' + titolo + '</th></tr>';
+    var sortedSpeciale = datiStatSquadre.slice().sort(function(a, b) {
+        return Number((b.dati && b.dati[tipo]) || 0) - Number((a.dati && a.dati[tipo]) || 0);
     });
+    sortedSpeciale.forEach(function(sq, i) {
+        var valore = Number((sq.dati && sq.dati[tipo]) || 0);
+        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + valore + '</td></tr>';
+    });
+}
+
+var criteriGiocatori = {
+    "titolari": [
+        ["mediavototit", "Media Voto Tit"], ["fvototit", "Fantamedia Tit"],
+        ["goltit", "Gol Tit"], ["assisttit", "Assist Tit"], ["golsubititit", "Gol Subiti Tit"],
+        ["cleansheettit", "Clean Sheet Tit"], ["rigtit", "Rigori Segnati Tit"],
+        ["risgsbtit", "Rigori Sbagliati Tit"], ["rigpartit", "Rigori Parati Tit"],
+        ["autgoltit", "Autogol Tit"], ["ammtit", "Ammonizioni Tit"],
+        ["esptit", "Espulsioni Tit"], ["prestit", "Presenze Tit"]
+    ],
+    "totali": [
+        ["mediavototot", "Media Voto Tot"], ["fvototot", "Fantamedia Tot"],
+        ["goltot", "Gol Tot"], ["assisttot", "Assist Tot"], ["golsubititot", "Gol Subiti Tot"],
+        ["cleansheettot", "Clean Sheet Tot"], ["rigtot", "Rigori Segnati Tot"],
+        ["risgsbtot", "Rigori Sbagliati Tot"], ["rigpartot", "Rigori Parati Tot"],
+        ["autgoltot", "Autogol Tot"], ["ammtot", "Ammonizioni Tot"],
+        ["esptot", "Espulsioni Tot"]
+    ]
+};
+
+function cambiaGruppoGiocatori() {
+    var gruppo = document.getElementById('gruppo-giocatori').value;
+    var tipo = document.getElementById('tipo-giocatori');
+    if (gruppo === 'borracho') {
+        tipo.style.display = '';
+        if (tipo.value !== 'titolari' && tipo.value !== 'totali') tipo.value = 'titolari';
+    } else {
+        tipo.value = 'totali';
+        tipo.style.display = 'none';
+    }
+    popolaCriteriGiocatori();
+}
+
+function elencoGiocatoriAttivo() {
+    var gruppo = document.getElementById('gruppo-giocatori').value;
+    if (gruppo === 'seriea') return datiGiocatoriSerieA;
+    if (gruppo === 'svincolati') return datiGiocatoriSvincolati;
+    return datiGiocatori;
+}
+
+function popolaCriteriGiocatori() {
+    var tipo = document.getElementById('tipo-giocatori').value;
+    var sel = document.getElementById('criterio-giocatori');
+    sel.innerHTML = '';
+    criteriGiocatori[tipo].forEach(function(item) {
+        var opt = document.createElement('option');
+        opt.value = item[0];
+        opt.textContent = item[1];
+        sel.appendChild(opt);
+    });
+    resizeSelect(sel);
+    updateGiocatori();
 }
 
 function updateGiocatori() {
     var criterio = document.getElementById('criterio-giocatori').value;
+    if (!criterio) return;
     var label = document.getElementById('criterio-giocatori').options[document.getElementById('criterio-giocatori').selectedIndex].text;
     document.getElementById('head-gioc').textContent = label;
+    var headGioc = document.getElementById('head-gioc');
+    var headRow = headGioc.parentElement;
+    var oldPres = document.getElementById('head-presenze-gioc');
+    if (oldPres) oldPres.remove();
+    var mediaKeysHeader = ['mediavototit', 'fvototit', 'mediavototot', 'fvototot'];
+    if (mediaKeysHeader.indexOf(criterio) !== -1) {
+        var thPres = document.createElement('th');
+        thPres.id = 'head-presenze-gioc';
+        thPres.textContent = 'Presenze';
+        headRow.appendChild(thPres);
+    }
     var ricerca = document.getElementById('ricerca-giocatori').value.toLowerCase().trim();
+    var elencoAttivo = elencoGiocatoriAttivo();
 
-    var sorted = datiGiocatori.slice().sort(function(a, b) { return (b[criterio]||0) - (a[criterio]||0); });
+    // Media Voto e Fantamedia: ordinamento corretto per affidabilità (Bayes).
+    // Il valore corretto NON viene mostrato: serve solo per la posizione in classifica.
+    var criteriMedia = ['mediavototit', 'fvototit', 'mediavototot', 'fvototot'];
+    var isMedia = criteriMedia.indexOf(criterio) !== -1;
+    var presKeyMedia = criterio === 'mediavototit' ? 'prestit' :
+                       criterio === 'fvototit' ? 'presfvtit' :
+                       criterio === 'mediavototot' ? 'prestot' : 'presfvtot';
+    var K_AFFIDABILITA = 5;
+
+    var mediaGenerale = 0;
+    if (isMedia) {
+        var sommaPesata = 0, presenzeTotali = 0;
+        elencoAttivo.forEach(function(g) {
+            var p = Number(g[presKeyMedia] || 0);
+            var m = Number(g[criterio] || 0);
+            if (p > 0 && m > 0) {
+                sommaPesata += m * p;
+                presenzeTotali += p;
+            }
+        });
+        mediaGenerale = presenzeTotali > 0 ? sommaPesata / presenzeTotali : 0;
+    }
+
+    function valoreOrdinamento(g) {
+        var valore = Number(g[criterio] || 0);
+        if (!isMedia) return valore;
+        var p = Number(g[presKeyMedia] || 0);
+        if (p <= 0) return 0;
+        return (p / (p + K_AFFIDABILITA)) * valore +
+               (K_AFFIDABILITA / (p + K_AFFIDABILITA)) * mediaGenerale;
+    }
+
+    var sorted = elencoAttivo.slice().sort(function(a, b) {
+        var diff = valoreOrdinamento(b) - valoreOrdinamento(a);
+        if (Math.abs(diff) > 0.0000001) return diff;
+        return Number(b[presKeyMedia] || 0) - Number(a[presKeyMedia] || 0);
+    });
+
+    var isPortiere = criterio.indexOf('golsubiti') === 0 || criterio.indexOf('cleansheet') === 0 || criterio.indexOf('rigpar') === 0;
+    var noPortiere = criterio.indexOf('gol') === 0 && criterio.indexOf('golsubiti') !== 0 ||
+                     criterio.indexOf('assist') === 0 || criterio.indexOf('rig') === 0 && criterio.indexOf('rigpar') !== 0 ||
+                     criterio.indexOf('autgol') === 0 || criterio === 'autgoltit' ||
+                     criterio.indexOf('pres') === 0;
+
+    // Non mostrare in classifica giocatori senza almeno una partita/voto valido.
+    // Titolari -> presenze da titolare; Totali/Serie A/Svincolati -> presenze totali.
+    var presKeyClassifica = criterio.endsWith('tot') ? 'prestot' : 'prestit';
+    sorted = sorted.filter(function(g) {
+        return Number(g[presKeyClassifica] || 0) > 0;
+    });
 
     var filtered;
     if (ricerca) {
         filtered = sorted.filter(function(g) { return g.nome.toLowerCase().indexOf(ricerca) !== -1; });
-    } else if (soloPortieri.indexOf(criterio) !== -1) {
-        if (criterio === 'golsubititit') {
-            filtered = sorted.filter(function(g) { return g.ruolo === 'p' && g.prestit > 0; });
+    } else if (isPortiere) {
+        if (criterio.indexOf('golsubiti') === 0) {
+            var presKey = criterio.endsWith('tot') ? 'prestot' : 'prestit';
+            filtered = sorted.filter(function(g) { return g.ruolo === 'p' && (g[presKey]||0) > 0; });
         } else {
             filtered = sorted.filter(function(g) { return g.ruolo === 'p' && (g[criterio]||0) > 0; });
         }
-    } else if (noPortieri.indexOf(criterio) !== -1) {
+    } else if (noPortiere) {
         filtered = sorted.filter(function(g) { return g.ruolo !== 'p' && (g[criterio]||0) > 0; });
     } else {
         filtered = sorted.filter(function(g) { return (g[criterio]||0) > 0; });
@@ -672,21 +849,106 @@ function updateGiocatori() {
 
     var posizioni = [];
     for (var k = 0; k < sorted.length; k++) {
-        if (k === 0) {
-            posizioni.push(1);
-        } else if ((sorted[k][criterio]||0) === (sorted[k-1][criterio]||0)) {
-            posizioni.push(posizioni[k-1]);
-        } else {
-            posizioni.push(k + 1);
+        if (k === 0) posizioni.push(1);
+        else {
+            var curr = valoreOrdinamento(sorted[k]);
+            var prev = valoreOrdinamento(sorted[k-1]);
+            if (Math.abs(curr - prev) < 0.0000001) posizioni.push(posizioni[k-1]);
+            else posizioni.push(k + 1);
         }
     }
 
     var tbody = document.querySelector('#tabella-giocatori tbody');
-    tbody.innerHTML = '';
+    var righeHtml = [];
     filtered.forEach(function(g) {
         var pos = posizioni[sorted.indexOf(g)];
-        tbody.innerHTML += '<tr><td class="pos">' + pos + '</td><td class="logo-cell"><img src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'"></td><td>' + g.nome + '</td><td>' + g.squadra + '</td><td>' + (g[criterio]||0) + '</td></tr>';
+        var valoreMostrato = (g[criterio] || 0);
+        var presenzeMostrate = isMedia ? Number(g[presKeyMedia] || 0) : '';
+        var gruppoAttivo = document.getElementById('gruppo-giocatori').value;
+        var logoCell = '<td class="logo-cell"></td>';
+
+        if (gruppoAttivo === 'borracho') {
+            logoCell = '<td class="logo-cell"><img src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'"></td>';
+        } else if (gruppoAttivo === 'seriea') {
+            // Nei "Tutti Serie A" evidenzia chi appartiene a una rosa Borracho
+            // mostrando il logo della relativa fantasquadra.
+            var nomeNorm = String(g.nome || '').trim().toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]/g, '');
+            var squadraBorracho = mappaBorrachoPerNome[nomeNorm];
+            var borracho = !!squadraBorracho;
+            if (borracho) {
+                logoCell = '<td class="logo-cell"><img src="' + logoUrl(squadraBorracho) + '" title="' + squadraBorracho + '" onerror="this.style.display=\'none\'"></td>';
+            }
+        }
+        var classeRiga = '';
+        if (gruppoAttivo === 'seriea' && !borracho) classeRiga = ' class="riga-svincolato"';
+        if (gruppoAttivo === 'svincolati') classeRiga = ' class="riga-svincolato"';
+        righeHtml.push('<tr' + classeRiga + '><td class="pos">' + pos + '</td>' + logoCell + '<td>' + g.nome + '</td><td>' + g.squadra + '</td><td>' + valoreMostrato + '</td>' + (isMedia ? '<td>' + presenzeMostrate + '</td>' : '') + '</tr>');
     });
+    tbody.innerHTML = righeHtml.join('');
+}
+
+
+var categorieSquadre = {
+    "reali": ["pt", "bonus", "pt mod", "pt tot", "gol cl", "gol subiti", "pt max", "pt min"],
+    "bonus-malus": ["gol r", "ass", "amm", "esp", "clnsht", "autogol", "rig f", "rig sb", "rig par", "gol d", "gol c", "gol a"],
+    "best": ["pt best", "bonus best", "mod dif best", "tot best", "diff pt", "diff bonus", "diff mod", "diff tot pt"]
+};
+
+function popolaCriteriSquadre() {
+    var categoria = document.getElementById('categoria-squadre').value;
+    var sel = document.getElementById('criterio-squadre2');
+    var criteri = categorieSquadre[categoria] || [];
+    sel.innerHTML = '';
+    criteri.forEach(function(c) {
+        var def = definizioni[c] || { titolo: c };
+        sel.innerHTML += '<option value="' + c + '">' + def.titolo + '</option>';
+    });
+    if (criteri.length) {
+        updateSquadre();
+        resizeSelect(sel);
+    }
+}
+
+function normalizzaNomeSquadra(nome) {
+    var n = String(nome || '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]/g, '');
+
+    var alias = {
+        'tricchetracht': 'tricchetrachtfrancoforte',
+        'tricchetrachtfrankfurt': 'tricchetrachtfrancoforte',
+        'tricchetrachtfrancoforte': 'tricchetrachtfrancoforte',
+        'sestoasensio': 'sestoasensio',
+        'ilsestoasensio': 'sestoasensio',
+        'pesciculini': 'pesciculini',
+        'pesciculinifc': 'pesciculini',
+        'atlimprovvisato': 'atlimprovvisato',
+        'atleticoimprovvisato': 'atlimprovvisato'
+    };
+    return alias[n] || n;
+}
+
+function nomeSquadraPerLogoStatistiche(nome) {
+    var chiave = normalizzaNomeSquadra(nome);
+    var trovata = datiSquadre.find(function(s) {
+        return normalizzaNomeSquadra(s.nome) === chiave;
+    });
+    return trovata ? trovata.nome : nome;
+}
+
+function valoreStatSquadra(sq, criterio) {
+    if (criterio === 'gol subiti') {
+        var chiave = normalizzaNomeSquadra(sq.nome);
+        var classifica = datiSquadre.find(function(s) {
+            return normalizzaNomeSquadra(s.nome) === chiave;
+        });
+        return classifica ? Number(classifica.gs || 0) : 0;
+    }
+    return Number((sq.dati && sq.dati[criterio]) || 0);
 }
 
 function updateSquadre() {
@@ -698,16 +960,17 @@ function updateSquadre() {
 
     var ascending = (criterio === 'pt min');
     var sorted = datiStatSquadre.slice().sort(function(a, b) {
-        var va = a.dati[criterio]||0, vb = b.dati[criterio]||0;
+        var va = valoreStatSquadra(a, criterio), vb = valoreStatSquadra(b, criterio);
         return ascending ? va - vb : vb - va;
     });
 
     var tbody = document.querySelector('#tabella-sq tbody');
     tbody.innerHTML = '';
     sorted.forEach(function(sq, i) {
-        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + (sq.dati[criterio]||0) + '</td></tr>';
+        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + valoreStatSquadra(sq, criterio) + '</td></tr>';
     });
 }
+
 
 function updateRisultati() {
     var idx = document.getElementById('sel-risultati').selectedIndex;
@@ -721,11 +984,31 @@ function updateRisultati() {
 }
 
 // === BEST 11 ===
-var bestMetric = 'mediavototit';
+var bestGruppo = 'borracho';
+var bestMetricTipo = 'media';
+var bestTipo = 'titolari';
 var bestModulo = '352';
 
+function setBestGruppo(gruppo, btn) {
+    bestGruppo = gruppo;
+    btn.parentElement.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+
+    // In Tutti Serie A esistono solo i voti totali: nascondiamo Titolari/Totali.
+    var tipoWrap = document.getElementById('best-tipo-wrap');
+    if (tipoWrap) tipoWrap.style.display = gruppo === 'seriea' ? 'none' : '';
+    updateBest11();
+}
+
+function setBestTipo(tipo, btn) {
+    bestTipo = tipo;
+    btn.parentElement.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    updateBest11();
+}
+
 function setBestMetric(metric, btn) {
-    bestMetric = metric;
+    bestMetricTipo = metric.indexOf('fvoto') === 0 ? 'fanta' : 'media';
     btn.parentElement.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
     updateBest11();
@@ -741,43 +1024,58 @@ function setBestModulo(modulo, btn) {
 function updateBest11() {
     var nums = bestModulo.split('').map(Number);
     var nDif = nums[0], nCen = nums[1], nAtt = nums[2];
-
     var container = document.getElementById('pitch-best11');
     container.querySelectorAll('.pitch-player').forEach(function(el) { el.remove(); });
 
+    // Rosa Borracho: scelta fra voti da titolare e voti totali Serie A.
+    // Tutti Serie A: solo voti totali Voto Statistico FC e comprende anche gli svincolati.
+    var isSerieA = bestGruppo === 'seriea';
+    var usaTotali = isSerieA || bestTipo === 'totali';
+    var elencoBest = isSerieA ? datiGiocatoriSerieA : datiGiocatori;
+    var bestMetric = bestMetricTipo === 'fanta'
+        ? (usaTotali ? 'fvototot' : 'fvototit')
+        : (usaTotali ? 'mediavototot' : 'mediavototit');
+    var presKeyBest = bestMetricTipo === 'fanta'
+        ? (usaTotali ? 'presfvtot' : 'presfvtit')
+        : (usaTotali ? 'prestot' : 'prestit');
+
+    var K_BEST11 = 5;
+    var sommaPesataBest = 0, presenzeTotaliBest = 0;
+    elencoBest.forEach(function(g) {
+        var p = Number(g[presKeyBest] || 0);
+        var m = Number(g[bestMetric] || 0);
+        if (p > 0 && m > 0) {
+            sommaPesataBest += m * p;
+            presenzeTotaliBest += p;
+        }
+    });
+    var mediaGeneraleBest = presenzeTotaliBest > 0 ? sommaPesataBest / presenzeTotaliBest : 0;
+
+    function valoreBestBayes(g) {
+        var p = Number(g[presKeyBest] || 0);
+        var m = Number(g[bestMetric] || 0);
+        if (p <= 0 || m <= 0) return -Infinity;
+        return (p / (p + K_BEST11)) * m + (K_BEST11 / (p + K_BEST11)) * mediaGeneraleBest;
+    }
+    function ordinaBest(a, b) {
+        var diff = valoreBestBayes(b) - valoreBestBayes(a);
+        if (Math.abs(diff) > 0.0000001) return diff;
+        return Number(b[presKeyBest] || 0) - Number(a[presKeyBest] || 0);
+    }
+    function perRuolo(ruolo) {
+        return elencoBest.filter(function(g) {
+            return String(g.ruolo || '').toLowerCase().slice(0,1) === ruolo
+                && Number(g[presKeyBest] || 0) > 0
+                && Number(g[bestMetric] || 0) > 0;
+        }).sort(ordinaBest);
+    }
+
     var players = [];
-
-    var portieri = datiGiocatori.filter(function(g) { return g.ruolo === 'p'; });
-    portieri.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
+    var portieri = perRuolo('p');
     if (portieri.length > 0) players.push(portieri[0]);
-
-    var dif = datiGiocatori.filter(function(g) { return g.ruolo === 'd'; });
-    dif.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    players = players.concat(dif.slice(0, nDif));
-
-    var cen = datiGiocatori.filter(function(g) { return g.ruolo === 'c'; });
-    cen.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    players = players.concat(cen.slice(0, nCen));
-
-    var att = datiGiocatori.filter(function(g) { return g.ruolo === 'a'; });
-    att.sort(function(a, b) {
-        var va = a[bestMetric] || 0, vb = b[bestMetric] || 0;
-        if (vb !== va) return vb - va;
-        return (b.prestit || 0) - (a.prestit || 0);
-    });
-    players = players.concat(att.slice(0, nAtt));
+    players = players.concat(perRuolo('d').slice(0, nDif));
+    players = players.concat(perRuolo('c').slice(0, nCen));
+    players = players.concat(perRuolo('a').slice(0, nAtt));
 
     var groups = [
         { list: players.slice(0, 1), x: 8 },
@@ -790,22 +1088,30 @@ function updateBest11() {
         var n = grp.list.length;
         var margin = (gi === 3 && n === 2) ? 35 : 15;
         grp.list.forEach(function(g, i) {
-            var y;
-            if (n === 1) y = 50;
-            else y = margin + i * ((100 - 2 * margin) / (n - 1));
-
+            var y = n === 1 ? 50 : margin + i * ((100 - 2 * margin) / (n - 1));
             var el = document.createElement('div');
             el.className = 'pitch-player';
             el.style.left = grp.x + '%';
             el.style.top = y + '%';
-
             var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
-            el.innerHTML =
-                '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">'
+            var logo = '';
+            if (isSerieA) {
+                var nomeNormBest = String(g.nome || '').trim().toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]/g, '');
+                var squadraBorrachoBest = mappaBorrachoPerNome[nomeNormBest];
+                if (squadraBorrachoBest) {
+                    logo = '<img class="pp-logo" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
+                }
+            } else {
+                logo = '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
+            }
+            el.innerHTML = '<div class="pp-main">'
                 + '<span class="pp-name">' + g.nome + '</span>'
-                + '<span class="pp-val">' + (g[bestMetric]||0) + '</span>'
-                + '<span class="pp-ruolo">' + rl + '</span>';
-
+                + logo
+                + '</div>'
+                + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
+                + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span>';
             container.appendChild(el);
         });
     });
@@ -816,19 +1122,24 @@ fetch("dati.json")
     .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
     .then(function(d) {
         datiSquadre = d.squadre;
-        datiGiocatori = d.giocatori;
+        datiGiocatori = d.giocatori || [];
+        datiGiocatoriSerieA = d.giocatori_seriea || [];
+        datiGiocatoriSvincolati = d.giocatori_svincolati || [];
+
+        // Cache per riconoscere istantaneamente i giocatori già nelle rose Borracho.
+        mappaBorrachoPerNome = Object.create(null);
+        datiGiocatori.forEach(function(bg) {
+            var bn = String(bg.nome || '').trim().toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]/g, '');
+            if (bn) mappaBorrachoPerNome[bn] = bg.squadra;
+        });
+
         datiRisultati = d.risultati || [];
         datiStatSquadre = d.stat_squadre || [];
-        var colStat = d.stat_colonne || [];
         var selSq = document.getElementById('criterio-squadre2');
-        selSq.innerHTML = '';
-        colStat.forEach(function(c) {
-            if (c) {
-                var label = (definizioni[c] && definizioni[c].titolo) ? definizioni[c].titolo : c;
-                selSq.innerHTML += '<option value="' + c + '">' + label + '</option>';
-            }
-        });
-        if (colStat.length > 0) { updateSquadre(); resizeSelect(selSq); }
+        popolaCriteriSquadre();
+        resizeSelect(document.getElementById('categoria-squadre'));
 
         var selR = document.getElementById('sel-risultati');
         selR.innerHTML = '';
@@ -838,7 +1149,9 @@ fetch("dati.json")
 
         updateClassifica();
         populateHomeLoghi();
-        updateGiocatori(); resizeSelect(document.getElementById('criterio-giocatori'));
+        cambiaGruppoGiocatori();
+        resizeSelect(document.getElementById('gruppo-giocatori'));
+        resizeSelect(document.getElementById('criterio-giocatori'));
         updateSquadre();
         if (datiRisultati.length > 0) updateRisultati();
         updateBest11();
