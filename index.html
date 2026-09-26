@@ -422,7 +422,7 @@
         <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
         <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
-        <button class="nav-btn" onclick="location.href='asta.html'">🔨 Asta</button>
+        <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
 </div>
 
@@ -434,8 +434,13 @@
         <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
         <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
-        <button class="nav-btn" onclick="location.href='asta.html'">🔨 Asta</button>
+        <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
+</div>
+
+<!-- ASTA -->
+<div id="page-asta" class="page" style="padding:0;max-width:none;">
+    <iframe id="asta-frame" src="asta.html" title="Asta Borrachos League" style="width:100%;height:calc(100vh - 82px);min-height:720px;border:0;border-radius:10px;background:#1a1a2e;display:block;"></iframe>
 </div>
 
 <!-- CLASSIFICA -->
