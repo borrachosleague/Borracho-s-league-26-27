@@ -727,7 +727,12 @@ body.asta-embedded > #main-header { display:none !important; }
         id="error">
       </div>
 
-      <div class="bid-input">
+      <div id="poor-bid-message" style="display:none;margin:10px 0;padding:12px;border-radius:10px;background:#4a1620;color:#fff;text-align:center;font-weight:900;font-size:1.15rem;">
+        💸 SEI UN POVERACCIO<br>
+        <span id="poor-bid-detail" style="font-size:.78rem;font-weight:700;color:#ffd6dc;"></span>
+      </div>
+
+      <div class="bid-input" id="bid-controls">
 
         <input
           type="number"
@@ -1730,6 +1735,7 @@ async function syncAuctionState() {
 
 
   syncAuthoritativeTimer(st);
+  await updateBidAffordability();
 }
 
 
@@ -2780,6 +2786,27 @@ function getMaxSpendable(credits, soldCount) {
   var totalSlots = Number(RL.POR || 0) + Number(RL.DIF || 0) + Number(RL.CENTRO || 0) + Number(RL.ATT || 0);
   var remaining = Math.max(0, totalSlots - Number(soldCount || 0));
   return Math.max(0, Number(credits || 0) - Math.max(0, remaining - 1));
+}
+
+async function updateBidAffordability() {
+  var controls=document.getElementById('bid-controls');
+  var poor=document.getElementById('poor-bid-message');
+  var detail=document.getElementById('poor-bid-detail');
+  if(!controls||!poor)return;
+  if(!currentPlayerId||!mySquadra){controls.style.display='';poor.style.display='none';return;}
+  try{
+    var st=await getFrontendState();
+    var sold=st.players.filter(function(p){return p.vincitore===mySquadra&&p.stato==='sold';}).length;
+    var sq=st.squadre.find(function(x){return x.nome===mySquadra;});
+    var credits=sq?Number(sq.crediti||0):Number(mycrediti||0);
+    mycrediti=credits;
+    var max=getMaxSpendable(credits,sold);
+    var minimum=Number(currentBid||0)+1;
+    var blocked=max<minimum;
+    controls.style.display=blocked?'none':'';
+    poor.style.display=blocked?'block':'none';
+    if(detail)detail.textContent=blocked?('Massimo spendibile: '+max+' cr · servono almeno '+minimum+' cr'):'';
+  }catch(e){controls.style.display='';poor.style.display='none';}
 }
 
 async function quickBid(step) {
