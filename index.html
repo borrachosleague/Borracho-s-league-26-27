@@ -937,6 +937,7 @@ function showPage(page, btn) {
 
 function populateHomeLoghi() {
     var container = document.getElementById('home-loghi');
+    if (!container) return;
     container.innerHTML = '';
     var n = datiSquadre.length;
     var perColonna = 5;
