@@ -1083,8 +1083,8 @@ function updateRisultati() {
     var tbody = document.querySelector('#tabella-risultati tbody');
     tbody.innerHTML = '';
     g.partite.forEach(function(p) {
-        var casa = '<div class="ris-team casa"><span>' + p.casa + '</span><img class="ris-logo" src="' + logoUrl(p.casa) + '" onerror="this.style.display=\'none\'"></div>';
-        var trasferta = '<div class="ris-team trasferta"><img class="ris-logo" src="' + logoUrl(p.trasferta) + '" onerror="this.style.display=\'none\'"><span>' + p.trasferta + '</span></div>';
+        var casa = '<div class="ris-team casa"><span>' + p.casa + '</span><img class="ris-logo" src="' + logoUrl(p.casa) + '" onerror="this.remove()"></div>';
+        var trasferta = '<div class="ris-team trasferta"><img class="ris-logo" src="' + logoUrl(p.trasferta) + '" onerror="this.remove()"><span>' + p.trasferta + '</span></div>';
         tbody.innerHTML += '<tr><td>' + casa + '</td><td>' + p.pt_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_trasferta + '</td><td>' + p.pt_trasferta + '</td><td>' + trasferta + '</td></tr>';
     });
 }
