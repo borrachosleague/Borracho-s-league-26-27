@@ -309,6 +309,16 @@
             padding: 7px 5px;
             font-size: 0.72em;
         }
+        .best11-presenze-control {
+            margin-top: 2px;
+            padding: 6px 4px;
+            background: #161625;
+            border: 1px solid #333;
+            border-radius: 6px;
+        }
+        .best11-presenze-control input[type="range"] { width: 100%; cursor: pointer; }
+        .best11-presenze-value { color: #ffd700; font-size: .82em; font-weight: 900; text-align: center; margin-top: 2px; }
+        .best11-presenze-info { color: #999; font-size: .58em; line-height: 1.2; text-align: center; margin-top: 2px; }
         .best11-bench {
             background: #161625;
             border: 2px solid #333;
@@ -675,6 +685,12 @@
             <div class="subnav best11-v" id="best-metrica">
                 <button class="subnav-btn active" onclick="setBestMetric('mediavototit', this)">Media Voto</button>
                 <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
+            </div>
+            <div class="best11-label">Presenze minime</div>
+            <div class="best11-presenze-control">
+                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)">
+                <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
+                <div class="best11-presenze-info" id="best-presenze-info"></div>
             </div>
             <div class="best11-label">Modulo</div>
             <div class="subnav best11-v" id="best-modulo">
@@ -1141,6 +1157,25 @@ var bestGruppo = 'borracho';
 var bestMetricTipo = 'media';
 var bestTipo = 'titolari';
 var bestModulo = '352';
+var bestPresenzePct = 50;
+
+function setBestPresenzePct(valore) {
+    bestPresenzePct = Math.max(0, Math.min(100, Number(valore) || 0));
+    var out = document.getElementById('best-presenze-pct-val');
+    if (out) out.textContent = bestPresenzePct;
+    updateBest11();
+}
+
+function giornateGiocateBest11() {
+    var n = 0;
+    datiRisultati.forEach(function(g) {
+        if (g && g.partite && g.partite.some(function(p) {
+            return Number(p.pt_casa || 0) !== 0 || Number(p.pt_trasferta || 0) !== 0 ||
+                   Number(p.gol_casa || 0) !== 0 || Number(p.gol_trasferta || 0) !== 0;
+        })) n++;
+    });
+    return n;
+}
 
 function setBestGruppo(gruppo, btn) {
     bestGruppo = gruppo;
@@ -1215,10 +1250,15 @@ function updateBest11() {
         if (Math.abs(diff) > 0.0000001) return diff;
         return Number(b[presKeyBest] || 0) - Number(a[presKeyBest] || 0);
     }
+    var giornateGiocate = giornateGiocateBest11();
+    var presenzeMinime = bestPresenzePct <= 0 ? 1 : Math.ceil(giornateGiocate * bestPresenzePct / 100);
+    var infoPres = document.getElementById('best-presenze-info');
+    if (infoPres) infoPres.textContent = giornateGiocate + ' giornate · min ' + presenzeMinime + ' presenze';
+
     function perRuolo(ruolo) {
         return elencoBest.filter(function(g) {
             return String(g.ruolo || '').toLowerCase().slice(0,1) === ruolo
-                && Number(g[presKeyBest] || 0) > 0
+                && Number(g[presKeyBest] || 0) >= presenzeMinime
                 && Number(g[bestMetric] || 0) > 0;
         }).sort(ordinaBest);
     }
