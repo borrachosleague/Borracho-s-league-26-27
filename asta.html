@@ -687,6 +687,16 @@ body.asta-embedded > #main-header { display:none !important; }
           Rilancia
         </button>
 
+        <button type="button" onclick="quickBid(1)" title="Rilancia di 1 credito">
+          +1
+        </button>
+        <button type="button" onclick="quickBid(5)" title="Rilancia di 5 crediti">
+          +5
+        </button>
+        <button type="button" onclick="quickBid(10)" title="Rilancia di 10 crediti">
+          +10
+        </button>
+
       </div>
 
       <button
@@ -2708,6 +2718,24 @@ async function handlePlayerDone(player) {
 /* =========================================================
    OFFERTA
    ========================================================= */
+
+async function quickBid(step) {
+  if (!currentPlayerId) {
+    alert('Offerta non disponibile: nessun giocatore attivo.');
+    return;
+  }
+
+  var incremento = Number(step || 0);
+  if (![1, 5, 10].includes(incremento)) return;
+
+  // Il bottone rappresenta un rilancio rispetto all'offerta corrente.
+  // Esempio: offerta 7 -> +5 invia direttamente 12.
+  document.getElementById('bid-amount').value =
+    Number(currentBid || 0) + incremento;
+
+  await placeBid();
+}
+
 
 async function placeBid() {
 
