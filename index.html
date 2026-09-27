@@ -103,7 +103,7 @@
         .home-nav .nav-btn:hover { background: #e94560; }
 
         .home-layout-tools {
-            position: fixed; top: 8px; right: 8px; z-index: 1000;
+            position: fixed !important; top: 8px !important; right: 8px !important; left: auto !important; bottom: auto !important; z-index: 99999;
             display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
             max-width: 430px;
         }
@@ -737,6 +737,7 @@
         <button type="button" onclick="toggleHomeEditor()">✥ SPOSTA</button>
         <button type="button" onclick="resizeSelectedHome(-0.05)">− PICCOLO</button>
         <button type="button" onclick="resizeSelectedHome(0.05)">+ GRANDE</button>
+        <button type="button" onclick="confirmHomeLayout()">✓ CONFERMA</button>
         <button type="button" onclick="copyHomeLayout()">📋 COPIA POSIZIONI</button>
     </div>
     <div class="home-size-hint">Modalità modifica: clicca un elemento, trascinalo. Usa −/+ per ridimensionare il PNG selezionato.</div>
@@ -1079,6 +1080,15 @@ function homeLayoutData() {
         };
     });
     return data;
+}
+
+function confirmHomeLayout() {
+    homeEditorOn = false;
+    document.body.classList.remove('home-editing');
+    homeSelected = null;
+    homeDrag = null;
+    homeEditableElements().forEach(function(x) { x.style.outlineColor = ''; });
+    alert('Posizione confermata sullo schermo. Ora premi COPIA POSIZIONI e incollami il testo in chat.');
 }
 
 function copyHomeLayout() {
