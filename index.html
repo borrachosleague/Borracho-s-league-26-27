@@ -288,8 +288,8 @@
 
 
         #page-classifica .classifica-menu-board {
-            position:absolute; left:0.8vw; top:5.5vh; width:25vw; max-width:350px;
-            height:82vh; max-height:650px;
+            position:absolute; left:0.2vw; top:1.5vh; width:32vw; max-width:none;
+            height:92vh; max-height:none;
             background:url('assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp') center/100% 100% no-repeat;
             z-index:4; pointer-events:auto;
         }
@@ -298,6 +298,7 @@
             display:flex; flex-direction:column; gap:1vh;
         }
         #page-classifica .classifica-menu-btn {
+            position:relative; z-index:6;
             width:100%; aspect-ratio:1.15/1; padding:0; border:0; border-radius:0; background-color:transparent;
             background-position:center; background-size:contain; background-repeat:no-repeat; color:transparent;
             font-size:0; box-shadow:none;
@@ -1123,7 +1124,8 @@ function layoutPointerDown(e){
     var r=el.getBoundingClientRect();
     layoutDrag={el:el,dx:e.clientX-r.left,dy:e.clientY-r.top};
     el.style.position='fixed'; el.style.left=r.left+'px'; el.style.top=r.top+'px';
-    el.style.right='auto'; el.style.bottom='auto'; el.style.margin='0'; el.style.zIndex='50000';
+    el.style.right='auto'; el.style.bottom='auto'; el.style.margin='0';
+    el.style.zIndex = el.classList.contains('classifica-menu-board') ? '4' : '50000';
     el.style.width=r.width+'px';
 }
 function layoutPointerMove(e){
