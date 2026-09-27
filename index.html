@@ -239,7 +239,18 @@
         #sub-squadre .table-container { margin-left: 0; margin-top: 0; }
         #sub-squadre .sq-dati { transform: translateY(-70px); }
         #sub-squadre #tabella-sq th,
-        #sub-squadre #tabella-sq td { white-space: nowrap; }
+        #sub-squadre #tabella-sq td,
+        #sub-squadre #tabella-sq-2 th,
+        #sub-squadre #tabella-sq-2 td { white-space: nowrap; }
+        .squadre-tabelle-doppie {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            width: 900px;
+            max-width: 100%;
+        }
+        .squadre-tabelle-doppie .table-container { width: 100%; max-width: none !important; margin: 0 !important; }
+        .squadre-tabelle-doppie table { width: 100%; }
         #sub-squadre td:nth-child(3) { max-width: 120px; }
         #sub-squadre td:nth-child(4) { max-width: 60px; text-align: center; }
         #sub-squadre th:nth-child(3) { max-width: 120px; }
@@ -705,14 +716,19 @@
             <div class="sq-dati">
                 <h3 id="titolo-statistiche-squadre" style="margin:0 0 10px 0; text-align:center;">Statistiche Squadre</h3>
                 <div id="titolo-sq" class="titolo-riquadro"></div>
-                <div class="table-container">
-                    <table id="tabella-sq">
-                        <thead><tr>
-                            <th>Pos</th><th></th><th>Squadra</th><th class="head-sq-stat"></th>
-                            <th>Pos</th><th></th><th>Squadra</th><th class="head-sq-stat"></th>
-                        </tr></thead>
-                        <tbody></tbody>
-                    </table>
+                <div class="squadre-tabelle-doppie">
+                    <div class="table-container">
+                        <table id="tabella-sq">
+                            <thead><tr><th>Pos</th><th></th><th>Squadra</th><th class="head-sq-stat"></th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabella-sq-2">
+                            <thead><tr><th>Pos</th><th></th><th>Squadra</th><th class="head-sq-stat"></th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1241,17 +1257,15 @@ function updateSquadre() {
         return ascending ? va - vb : vb - va;
     });
 
-    var tbody = document.querySelector('#tabella-sq tbody');
-    tbody.innerHTML = '';
-    for (var i = 0; i < 5; i++) {
-        var sx = sorted[i];
-        var dx = sorted[i + 5];
-        function celleSquadra(sq, pos) {
-            if (!sq) return '<td></td><td></td><td></td><td></td>';
-            return '<td class="pos">' + pos + '</td><td class="logo-cell"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + valoreStatSquadra(sq, criterio) + '</td>';
-        }
-        tbody.innerHTML += '<tr>' + celleSquadra(sx, i + 1) + celleSquadra(dx, i + 6) + '</tr>';
-    }
+    var tbody1 = document.querySelector('#tabella-sq tbody');
+    var tbody2 = document.querySelector('#tabella-sq-2 tbody');
+    tbody1.innerHTML = '';
+    tbody2.innerHTML = '';
+    sorted.forEach(function(sq, i) {
+        var riga = '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + valoreStatSquadra(sq, criterio) + '</td></tr>';
+        if (i < 5) tbody1.innerHTML += riga;
+        else tbody2.innerHTML += riga;
+    });
 }
 
 
