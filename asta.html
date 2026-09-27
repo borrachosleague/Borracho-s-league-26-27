@@ -486,6 +486,18 @@ body.asta-embedded > #main-header { display:none !important; }
 
 <body>
 <script>
+function goToCampionato() {
+  try {
+    if (window.self !== window.top && window.parent && typeof window.parent.showPage === 'function') {
+      var btn = window.parent.document.querySelector('.header .nav-btn[onclick*="classifica"]');
+      window.parent.showPage('classifica', btn);
+      return;
+    }
+  } catch(e) {}
+  window.location.href = 'index.html';
+}
+</script>
+<script>
 (function(){
   try {
     if (window.self !== window.top) document.body.classList.add('asta-embedded');
@@ -522,7 +534,7 @@ body.asta-embedded > #main-header { display:none !important; }
       <div class="home-status" id="home-identity"></div>
       <div class="home-actions">
         <button class="btn-start" onclick="openAuctionPage()">🔨 Entra nell'Asta</button>
-        <button class="tab-btn" onclick="location.href='index.html'">🏆 Campionato</button>
+        <button class="tab-btn" onclick="goToCampionato()">🏆 Campionato</button>
         <button class="tab-btn" onclick="openPreAuctionPage()">✂ Svincoli pre-asta</button>
         <button class="tab-btn" id="home-corrections-btn" style="display:none" onclick="openCorrectionsPage()">🛠 Correzioni</button>
         <button class="btn-reset" id="home-pause-preauction" style="display:none" onclick="togglePreAuctionPause()">⏸ Torna a PRE-ASTA</button>
