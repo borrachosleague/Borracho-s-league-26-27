@@ -1012,7 +1012,7 @@ function startHomeDrag(e) {
     var r = el.getBoundingClientRect();
     homeDrag = { el: el, dx: e.clientX - r.left, dy: e.clientY - r.top };
     el.style.position = 'fixed';
-    el.style.transform = 'none';
+    if (!el.classList.contains('home-nav')) el.style.transform = 'none';
     el.style.right = 'auto';
     el.style.bottom = 'auto';
     el.style.left = r.left + 'px';
@@ -1042,8 +1042,21 @@ function stopHomeDrag() { homeDrag = null; }
 
 function resizeSelectedHome(delta) {
     if (!homeEditorOn || !homeSelected) return;
-    if (homeSelected.classList.contains('home-nav')) return;
     var r = homeSelected.getBoundingClientRect();
+
+    if (homeSelected.classList.contains('home-nav')) {
+        var currentScale = parseFloat(homeSelected.dataset.editorScale || '1');
+        var newScale = Math.max(0.45, Math.min(2.2, currentScale * (1 + delta)));
+        var left = r.left;
+        var top = r.top;
+        homeSelected.dataset.editorScale = newScale.toFixed(4);
+        homeSelected.style.transformOrigin = 'top left';
+        homeSelected.style.transform = 'scale(' + newScale + ')';
+        homeSelected.style.left = left + 'px';
+        homeSelected.style.top = top + 'px';
+        return;
+    }
+
     var nw = Math.max(80, Math.min(window.innerWidth, r.width * (1 + delta)));
     homeSelected.style.position = 'fixed';
     homeSelected.style.width = nw + 'px';
