@@ -699,7 +699,7 @@
                 <div id="desc-sq" class="desc-riquadro"></div>
             </div>
             <div class="sq-dati">
-                <h3 style="margin:0 0 10px 0; text-align:center;">Statistiche Squadre</h3>
+                <h3 id="titolo-statistiche-squadre" style="margin:0 0 10px 0; text-align:center;">Statistiche Squadre</h3>
                 <div id="titolo-sq" class="titolo-riquadro"></div>
                 <div class="table-container">
                     <table id="tabella-sq">
@@ -1223,6 +1223,8 @@ function updateSquadre() {
     var criterio = document.getElementById('criterio-squadre2').value;
     var def = definizioni[criterio] || { titolo: criterio, desc: "" };
     document.getElementById('titolo-sq').textContent = def.titolo;
+    var titoloStatsSquadre = document.getElementById('titolo-statistiche-squadre');
+    if (titoloStatsSquadre) titoloStatsSquadre.textContent = def.titolo;
     document.getElementById('desc-sq').textContent = def.desc;
     document.getElementById('head-sq').textContent = def.titolo;
 
