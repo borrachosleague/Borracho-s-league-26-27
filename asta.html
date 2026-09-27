@@ -1545,6 +1545,10 @@ async function syncAuctionState() {
 
   }
 
+  // Ogni sessione deve aggiornare subito la fase mostrata quando lo stato
+  // autorevole cambia (es. l'admin avvia l'asta da un altro browser).
+  updatePhaseInfo();
+
   // Aggiorna i pulsanti solo DOPO aver determinato lo stato reale dell'asta.
   updatePausePreauctionButton();
 
