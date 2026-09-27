@@ -943,7 +943,34 @@ function getVal(obj, criterio) {
 }
 
 function logoUrl(nome) {
-    return "loghi finiti/" + nome.toLowerCase().replace(/ /g, "-") + ".png";
+    var key = String(nome || '')
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]/g, '');
+
+    var loghi = {
+        'aspipperia': 'as-pipperia.png',
+        'pipperia': 'as-pipperia.png',
+        'acasparaghese': 'ac-asparaghese.png',
+        'asparaghese': 'ac-asparaghese.png',
+        'atleticoimprovvisato': 'atletico-improvvisato.png',
+        'atlimprovvisato': 'atletico-improvvisato.png',
+        'fcinternazioanale': 'fc-internazioanale.png',
+        'internazioanale': 'fc-internazioanale.png',
+        'ilsestoasensio': 'sesto-asensio.png',
+        'sestoasensio': 'sesto-asensio.png',
+        'partizandegrado': 'partizan-degrado.png',
+        'pesciculinifc': 'pesciculini-fc.png',
+        'pesciculini': 'pesciculini-fc.png',
+        'sangria': 'san-gria.png',
+        'shark': 'shark.png',
+        'tricchetrachtfrancoforte': 'tricchetracht-francoforte.png',
+        'tricchetrachtfrankfurt': 'tricchetracht-francoforte.png',
+        'tricchetracht': 'tricchetracht-francoforte.png',
+        'tricchettracht': 'tricchetracht-francoforte.png'
+    };
+
+    return 'loghi finiti/' + (loghi[key] || key + '.png');
 }
 
 function setTipoClassifica(tipo, btn) {
