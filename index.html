@@ -268,6 +268,17 @@
         }
 
         #sub-squadre .classifica-grid { margin-left: 140px; }
+        .stats-choice-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+        .stats-choice-btn {
+            border:2px solid #ffd700; border-radius:6px; background:#ffd700; color:#000;
+            font-weight:800; font-size:.76em; padding:7px 9px; cursor:pointer;
+        }
+        .stats-choice-btn:hover { background:#ffea55; }
+        .stats-choice-btn.active { background:#000; color:#ffd700; }
+        .stats-criteria { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+        .stats-criteria .stats-choice-btn { font-size:.7em; padding:6px 7px; }
+        .stats-filter-label { font-size:.68em; font-weight:800; color:#e94560; text-transform:uppercase; margin:7px 0 4px; }
+        .stats-hidden-select { display:none !important; }
         #sub-giocatori td:last-child,
         #sub-squadre td:last-child { text-align: center; min-width: 35px; max-width: 55px; }
 
@@ -619,16 +630,31 @@
         <div class="giocatori-layout">
             <div class="giocatori-controls">
                 <input type="text" id="ricerca-giocatori" placeholder="Cerca giocatore..." oninput="updateGiocatori()" class="ricerca-input">
-                <select class="criterio-select" id="gruppo-giocatori" onchange="cambiaGruppoGiocatori(); resizeSelect(this)">
+                <select class="criterio-select stats-hidden-select" id="gruppo-giocatori" onchange="cambiaGruppoGiocatori(); resizeSelect(this)">
                     <option value="borracho">Rosa Borracho</option>
                     <option value="seriea">Tutti Serie A</option>
                     <option value="svincolati">Svincolati</option>
                 </select>
-                <select class="criterio-select" id="tipo-giocatori" onchange="popolaCriteriGiocatori(); resizeSelect(this)">
+                <select class="criterio-select stats-hidden-select" id="tipo-giocatori" onchange="popolaCriteriGiocatori(); resizeSelect(this)">
                     <option value="titolari">Titolari</option>
                     <option value="totali">Totali</option>
                 </select>
-                <select class="criterio-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)"></select>
+                <select class="criterio-select stats-hidden-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)"></select>
+                <div class="stats-filter-label">Gruppo</div>
+                <div class="stats-choice-row" id="stats-gruppo-btns">
+                    <button class="stats-choice-btn active" onclick="setStatsGruppo('borracho',this)">Rosa Borracho</button>
+                    <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Tutti Serie A</button>
+                    <button class="stats-choice-btn" onclick="setStatsGruppo('svincolati',this)">Svincolati</button>
+                </div>
+                <div id="stats-tipo-wrap">
+                    <div class="stats-filter-label">Voti</div>
+                    <div class="stats-choice-row" id="stats-tipo-btns">
+                        <button class="stats-choice-btn active" onclick="setStatsTipo('titolari',this)">Titolari</button>
+                        <button class="stats-choice-btn" onclick="setStatsTipo('totali',this)">Totali</button>
+                    </div>
+                </div>
+                <div class="stats-filter-label">Statistica</div>
+                <div class="stats-criteria" id="stats-criteri-giocatori"></div>
             </div>
             <div class="table-container">
                 <table id="tabella-giocatori">
@@ -642,12 +668,20 @@
     <div id="sub-squadre" class="subpage">
         <div class="giocatori-layout">
             <div class="giocatori-controls">
-                <select class="criterio-select" id="categoria-squadre" onchange="popolaCriteriSquadre(); resizeSelect(this)">
+                <select class="criterio-select stats-hidden-select" id="categoria-squadre" onchange="popolaCriteriSquadre(); resizeSelect(this)">
                     <option value="reali">Reali</option>
                     <option value="bonus-malus">Bonus Malus</option>
                     <option value="best">Best</option>
                 </select>
-                <select class="criterio-select" id="criterio-squadre2" onchange="updateSquadre(); resizeSelect(this)"></select>
+                <select class="criterio-select stats-hidden-select" id="criterio-squadre2" onchange="updateSquadre(); resizeSelect(this)"></select>
+                <div class="stats-filter-label">Categoria</div>
+                <div class="stats-choice-row" id="stats-categoria-btns">
+                    <button class="stats-choice-btn active" onclick="setStatsCategoria('reali',this)">Reali</button>
+                    <button class="stats-choice-btn" onclick="setStatsCategoria('bonus-malus',this)">Bonus / Malus</button>
+                    <button class="stats-choice-btn" onclick="setStatsCategoria('best',this)">Best</button>
+                </div>
+                <div class="stats-filter-label">Statistica</div>
+                <div class="stats-criteria" id="stats-criteri-squadre"></div>
                 <div id="desc-sq" class="desc-riquadro"></div>
             </div>
             <div class="sq-dati">
@@ -885,15 +919,75 @@ var criteriGiocatori = {
     ]
 };
 
+function attivaStatsBtn(containerId, btn) {
+    var box = document.getElementById(containerId);
+    if (box) box.querySelectorAll('.stats-choice-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+}
+function setStatsGruppo(valore, btn) {
+    document.getElementById('gruppo-giocatori').value = valore;
+    attivaStatsBtn('stats-gruppo-btns', btn);
+    cambiaGruppoGiocatori();
+}
+function setStatsTipo(valore, btn) {
+    document.getElementById('tipo-giocatori').value = valore;
+    attivaStatsBtn('stats-tipo-btns', btn);
+    popolaCriteriGiocatori();
+}
+function setStatsCriterioGiocatore(valore, btn) {
+    document.getElementById('criterio-giocatori').value = valore;
+    attivaStatsBtn('stats-criteri-giocatori', btn);
+    updateGiocatori();
+}
+function renderStatsCriteriGiocatori() {
+    var tipo = document.getElementById('tipo-giocatori').value;
+    var box = document.getElementById('stats-criteri-giocatori');
+    if (!box) return;
+    box.innerHTML = '';
+    criteriGiocatori[tipo].forEach(function(item, i) {
+        var b = document.createElement('button');
+        b.className = 'stats-choice-btn' + (i === 0 ? ' active' : '');
+        b.textContent = item[1].replace(' Tit','').replace(' Tot','');
+        b.onclick = function() { setStatsCriterioGiocatore(item[0], b); };
+        box.appendChild(b);
+    });
+}
+function setStatsCategoria(valore, btn) {
+    document.getElementById('categoria-squadre').value = valore;
+    attivaStatsBtn('stats-categoria-btns', btn);
+    popolaCriteriSquadre();
+}
+function setStatsCriterioSquadra(valore, btn) {
+    document.getElementById('criterio-squadre2').value = valore;
+    attivaStatsBtn('stats-criteri-squadre', btn);
+    updateSquadre();
+}
+function renderStatsCriteriSquadre() {
+    var categoria = document.getElementById('categoria-squadre').value;
+    var box = document.getElementById('stats-criteri-squadre');
+    if (!box) return;
+    box.innerHTML = '';
+    (categorieSquadre[categoria] || []).forEach(function(key, i) {
+        var b = document.createElement('button');
+        b.className = 'stats-choice-btn' + (i === 0 ? ' active' : '');
+        b.textContent = (definizioni[key] || {titolo:key}).titolo;
+        b.onclick = function() { setStatsCriterioSquadra(key, b); };
+        box.appendChild(b);
+    });
+}
+
 function cambiaGruppoGiocatori() {
     var gruppo = document.getElementById('gruppo-giocatori').value;
     var tipo = document.getElementById('tipo-giocatori');
+    var tipoWrapBtns = document.getElementById('stats-tipo-wrap');
     if (gruppo === 'borracho') {
         tipo.style.display = '';
+        if (tipoWrapBtns) tipoWrapBtns.style.display = '';
         if (tipo.value !== 'titolari' && tipo.value !== 'totali') tipo.value = 'titolari';
     } else {
         tipo.value = 'totali';
         tipo.style.display = 'none';
+        if (tipoWrapBtns) tipoWrapBtns.style.display = 'none';
     }
     popolaCriteriGiocatori();
 }
@@ -916,6 +1010,7 @@ function popolaCriteriGiocatori() {
         sel.appendChild(opt);
     });
     resizeSelect(sel);
+    renderStatsCriteriGiocatori();
     updateGiocatori();
 }
 
@@ -1064,6 +1159,7 @@ function popolaCriteriSquadre() {
         sel.innerHTML += '<option value="' + c + '">' + def.titolo + '</option>';
     });
     if (criteri.length) {
+        renderStatsCriteriSquadre();
         updateSquadre();
         resizeSelect(sel);
     }
