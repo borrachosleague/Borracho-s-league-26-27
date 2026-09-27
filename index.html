@@ -250,7 +250,44 @@
             max-width: 100%;
         }
         .squadre-tabelle-doppie .table-container { width: 100%; max-width: none !important; margin: 0 !important; }
-        .squadre-tabelle-doppie table { width: 100%; }
+        .squadre-tabelle-doppie table { width: 100%; table-layout: fixed; }
+        /* Statistiche squadre: usa tutta la larghezza, senza scroll orizzontale. */
+        #sub-squadre .giocatori-layout {
+            grid-template-columns: 180px minmax(0, 1fr);
+            gap: 48px;
+            width: 100%;
+            max-width: none;
+            padding-right: 18px;
+            box-sizing: border-box;
+        }
+        #sub-squadre .sq-dati { width: 100%; max-width: none; }
+        #sub-squadre .squadre-tabelle-doppie {
+            width: 100%;
+            max-width: none;
+            gap: 32px;
+        }
+        #sub-squadre .squadre-tabelle-doppie .table-container {
+            overflow-x: visible;
+            min-width: 0;
+        }
+        #sub-squadre .squadre-tabelle-doppie table {
+            font-size: 1.08em;
+        }
+        #sub-squadre .squadre-tabelle-doppie th,
+        #sub-squadre .squadre-tabelle-doppie td {
+            padding-left: 10px;
+            padding-right: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #sub-squadre .squadre-tabelle-doppie th:nth-child(1),
+        #sub-squadre .squadre-tabelle-doppie td:nth-child(1) { width: 9%; text-align: center; }
+        #sub-squadre .squadre-tabelle-doppie th:nth-child(2),
+        #sub-squadre .squadre-tabelle-doppie td:nth-child(2) { width: 12%; text-align: center; }
+        #sub-squadre .squadre-tabelle-doppie th:nth-child(3),
+        #sub-squadre .squadre-tabelle-doppie td:nth-child(3) { width: 52%; max-width: none; }
+        #sub-squadre .squadre-tabelle-doppie th:nth-child(4),
+        #sub-squadre .squadre-tabelle-doppie td:nth-child(4) { width: 27%; max-width: none; text-align: center; font-weight: 800; }
         #sub-squadre td:nth-child(3) { max-width: 120px; }
         #sub-squadre td:nth-child(4) { max-width: 60px; text-align: center; }
         #sub-squadre th:nth-child(3) { max-width: 120px; }
