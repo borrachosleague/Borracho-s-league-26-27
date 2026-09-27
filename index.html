@@ -251,6 +251,81 @@
         }
         .classifica-table-wrap { min-width: 0; }
 
+
+        /* BORRACHO'S - CLASSIFICA A LIVELLI */
+        #page-classifica {
+            position: relative;
+            max-width: none;
+            min-height: calc(100vh - 82px);
+            overflow: hidden;
+            background: #17131a url('assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.png') center center / cover no-repeat;
+        }
+        #page-classifica .classifica-layout {
+            position: relative;
+            z-index: 2;
+            display: block;
+            min-height: calc(100vh - 82px);
+        }
+        #page-classifica .classifica-board {
+            position: absolute;
+            left: 28vw;
+            top: 2vh;
+            width: 64vw;
+            max-width: 980px;
+            aspect-ratio: 1 / 1;
+            background: url('assets/borrachos/backgrounds/classifica/classifica-lavagna.png') center / contain no-repeat;
+            pointer-events: none;
+            z-index: 2;
+        }
+        #page-classifica .classifica-table-wrap {
+            position: absolute;
+            left: 34vw;
+            top: 29vh;
+            width: 52vw;
+            max-width: 800px;
+            z-index: 3;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            overflow: visible;
+        }
+        #page-classifica #tabella-classifica { background: transparent; font-size: .78rem; }
+        #page-classifica #tabella-classifica thead { background: rgba(214,164,32,.88); color:#17120b; }
+        #page-classifica #tabella-classifica th,
+        #page-classifica #tabella-classifica td { padding: 5px 4px; border-color: rgba(242,231,190,.22); }
+        #page-classifica #tabella-classifica tbody tr { background: rgba(10,35,31,.28); }
+        #page-classifica #tabella-classifica tbody tr:nth-child(even) { background: rgba(255,255,255,.035); }
+        #page-classifica .classifica-menu {
+            position: absolute;
+            left: 2vw;
+            top: 9vh;
+            width: 22vw;
+            max-width: 300px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+        }
+        #page-classifica .classifica-menu-btn {
+            width: 100%;
+            aspect-ratio: 1.15 / 1;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            color: transparent;
+            font-size: 0;
+            box-shadow: none;
+        }
+        #page-classifica .classifica-menu-btn:nth-child(1) { background-image:url('assets/borrachos/navigation/classifica/classifica-tasto.png'); }
+        #page-classifica .classifica-menu-btn:nth-child(2) { background-image:url('assets/borrachos/navigation/classifica/formula1-tasto.png'); }
+        #page-classifica .classifica-menu-btn:nth-child(3) { background-image:url('assets/borrachos/navigation/classifica/battle-royale-tasto.png'); }
+        #page-classifica .classifica-menu-btn:hover { background-color:transparent; transform:scale(1.03); filter:brightness(1.08); }
+        #page-classifica .classifica-menu-btn.active { background-color:transparent; border:0; filter:drop-shadow(0 0 8px #ffd54a); }
+
         @media (max-width: 700px) {
             .classifica-layout { grid-template-columns: 1fr; gap: 12px; }
             .classifica-menu { flex-direction: row; flex-wrap: wrap; }
@@ -791,6 +866,7 @@
 <div id="page-classifica" class="page">
     <input type="hidden" id="tipo-classifica" value="classifica">
     <div class="classifica-layout">
+        <div class="classifica-board" aria-hidden="true"></div>
         <div class="classifica-menu">
             <button class="classifica-menu-btn active" onclick="setTipoClassifica('classifica', this)">Classifica</button>
             <button class="classifica-menu-btn" onclick="setTipoClassifica('f1', this)">Formula 1</button>
@@ -1037,7 +1113,7 @@ function currentLayoutPage(){
 function pageLayoutTargets(){
     var p=currentLayoutPage(); if(!p)return [];
     var selectors={
-        'page-classifica':['.classifica-menu','.classifica-table-wrap'],
+        'page-classifica':['.classifica-board','.classifica-menu-btn','.classifica-table-wrap'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
         'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
