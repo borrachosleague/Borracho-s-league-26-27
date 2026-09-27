@@ -252,79 +252,52 @@
         .classifica-table-wrap { min-width: 0; }
 
 
-        /* BORRACHO'S - CLASSIFICA A LIVELLI */
+        /* BORRACHO'S - CLASSIFICA: lavagna + dati = un solo componente */
         #page-classifica {
-            position: relative;
-            max-width: none;
-            min-height: calc(100vh - 82px);
-            overflow: hidden;
-            background: #17131a url('assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.png') center center / cover no-repeat;
+            position: relative; max-width:none; min-height:calc(100vh - 82px); overflow:hidden;
+            background:#17131a url('assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.png') center/cover no-repeat;
         }
-        #page-classifica .classifica-layout {
-            position: relative;
-            z-index: 2;
-            display: block;
-            min-height: calc(100vh - 82px);
-        }
+        #page-classifica .classifica-layout { position:relative; z-index:2; display:block; min-height:calc(100vh - 82px); }
         #page-classifica .classifica-board {
-            position: absolute;
-            left: 28vw;
-            top: 2vh;
-            width: 64vw;
-            max-width: 980px;
-            aspect-ratio: 1 / 1;
-            background: url('assets/borrachos/backgrounds/classifica/classifica-lavagna.png') center / contain no-repeat;
-            pointer-events: none;
-            z-index: 2;
+            position:absolute; left:28vw; top:2vh; width:64vw; max-width:980px; aspect-ratio:1/1;
+            background:url('assets/borrachos/backgrounds/classifica/classifica-lavagna.png') center/contain no-repeat;
+            z-index:2;
         }
         #page-classifica .classifica-table-wrap {
-            position: absolute;
-            left: 34vw;
-            top: 29vh;
-            width: 52vw;
-            max-width: 800px;
-            z-index: 3;
-            background: transparent;
-            border: 0;
-            box-shadow: none;
-            overflow: visible;
+            position:absolute; left:10%; top:36%; width:80%; height:48%; z-index:3;
+            background:transparent; border:0; box-shadow:none; overflow:visible; margin:0; padding:0;
         }
-        #page-classifica #tabella-classifica { background: transparent; font-size: .78rem; }
-        #page-classifica #tabella-classifica thead { background: rgba(214,164,32,.88); color:#17120b; }
-        #page-classifica #tabella-classifica th,
-        #page-classifica #tabella-classifica td { padding: 5px 4px; border-color: rgba(242,231,190,.22); }
-        #page-classifica #tabella-classifica tbody tr { background: rgba(10,35,31,.28); }
-        #page-classifica #tabella-classifica tbody tr:nth-child(even) { background: rgba(255,255,255,.035); }
+        #page-classifica #tabella-classifica {
+            width:100%; height:100%; table-layout:fixed; background:transparent;
+            color:#f2ead2; font-family:'Trebuchet MS','Segoe UI',sans-serif;
+            font-size:clamp(8px,.72vw,13px); text-shadow:0 1px 1px #000;
+        }
+        #page-classifica #tabella-classifica thead { background:transparent; color:#e5bd55; }
+        #page-classifica #tabella-classifica th {
+            padding:2px 2px 5px; border:0; border-bottom:1px solid rgba(239,224,181,.48);
+            font-weight:900; text-transform:uppercase;
+        }
+        #page-classifica #tabella-classifica td {
+            padding:2px; border:0; border-bottom:1px solid rgba(239,224,181,.18);
+            background:transparent;
+        }
+        #page-classifica #tabella-classifica tbody tr,
+        #page-classifica #tabella-classifica tbody tr:nth-child(even) { background:transparent; }
+        #page-classifica #tabella-classifica img { max-height:24px; width:auto; }
         #page-classifica .classifica-menu {
-            position: absolute;
-            left: 2vw;
-            top: 9vh;
-            width: 22vw;
-            max-width: 300px;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            gap: 1vh;
+            position:absolute; left:2vw; top:9vh; width:22vw; max-width:300px; z-index:5;
+            display:flex; flex-direction:column; gap:1vh;
         }
         #page-classifica .classifica-menu-btn {
-            width: 100%;
-            aspect-ratio: 1.15 / 1;
-            padding: 0;
-            border: 0;
-            border-radius: 0;
-            background-color: transparent;
-            background-position: center;
-            background-size: contain;
-            background-repeat: no-repeat;
-            color: transparent;
-            font-size: 0;
-            box-shadow: none;
+            width:100%; aspect-ratio:1.15/1; padding:0; border:0; border-radius:0; background-color:transparent;
+            background-position:center; background-size:contain; background-repeat:no-repeat; color:transparent;
+            font-size:0; box-shadow:none;
         }
-        #page-classifica .classifica-menu-btn:nth-child(1) { background-image:url('assets/borrachos/navigation/classifica/classifica-tasto.png'); }
-        #page-classifica .classifica-menu-btn:nth-child(2) { background-image:url('assets/borrachos/navigation/classifica/formula1-tasto.png'); }
-        #page-classifica .classifica-menu-btn:nth-child(3) { background-image:url('assets/borrachos/navigation/classifica/battle-royale-tasto.png'); }
-        #page-classifica .classifica-menu-btn:hover { background-color:transparent; transform:scale(1.03); filter:brightness(1.08); }
-        #page-classifica .classifica-menu-btn.active { background-color:transparent; border:0; filter:drop-shadow(0 0 8px #ffd54a); }
+        #page-classifica .classifica-menu-btn:nth-child(1){background-image:url('assets/borrachos/navigation/classifica/classifica-tasto.png')}
+        #page-classifica .classifica-menu-btn:nth-child(2){background-image:url('assets/borrachos/navigation/classifica/formula1-tasto.png')}
+        #page-classifica .classifica-menu-btn:nth-child(3){background-image:url('assets/borrachos/navigation/classifica/battle-royale-tasto.png')}
+        #page-classifica .classifica-menu-btn:hover{background-color:transparent;transform:scale(1.03);filter:brightness(1.08)}
+        #page-classifica .classifica-menu-btn.active{background-color:transparent;border:0;filter:drop-shadow(0 0 8px #ffd54a)}
 
         @media (max-width: 700px) {
             .classifica-layout { grid-template-columns: 1fr; gap: 12px; }
@@ -866,19 +839,20 @@
 <div id="page-classifica" class="page">
     <input type="hidden" id="tipo-classifica" value="classifica">
     <div class="classifica-layout">
-        <div class="classifica-board" aria-hidden="true"></div>
         <div class="classifica-menu">
             <button class="classifica-menu-btn active" onclick="setTipoClassifica('classifica', this)">Classifica</button>
             <button class="classifica-menu-btn" onclick="setTipoClassifica('f1', this)">Formula 1</button>
             <button class="classifica-menu-btn" onclick="setTipoClassifica('br', this)">Battle Royale</button>
         </div>
-        <div class="table-container classifica-table-wrap">
-            <table id="tabella-classifica">
-                <thead>
-                    <tr><th>Pos</th><th></th><th>Squadra</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt Totali</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="classifica-board">
+            <div class="table-container classifica-table-wrap">
+                <table id="tabella-classifica">
+                    <thead>
+                        <tr><th>Pos</th><th></th><th>Squadra</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt Totali</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -1113,7 +1087,7 @@ function currentLayoutPage(){
 function pageLayoutTargets(){
     var p=currentLayoutPage(); if(!p)return [];
     var selectors={
-        'page-classifica':['.classifica-board','.classifica-menu-btn','.classifica-table-wrap'],
+        'page-classifica':['.classifica-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
         'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
