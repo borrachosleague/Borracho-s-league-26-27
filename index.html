@@ -102,35 +102,45 @@
         }
         .home-nav .nav-btn:hover { background: #e94560; }
 
-        .home-layout-tools {
-            position: fixed !important; top: 8px !important; right: 8px !important; left: auto !important; bottom: auto !important; z-index: 99999;
-            display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
-            max-width: 430px;
+        /* Home layout definitivo - riferimento 1536x735 */
+        .home-league {
+            position: fixed;
+            left: 46.94vw;
+            top: 0;
+            width: 48.31vw;
+            height: auto;
+            max-height: none;
+            object-fit: contain;
+            transform: none;
         }
-        .home-layout-tools button {
-            background: rgba(8,8,17,.92); color: #fff; border: 1px solid #e94560;
-            border-radius: 6px; padding: 7px 10px; font-weight: 700; cursor: pointer;
+        .home-aperol {
+            position: fixed;
+            left: 2.93vw;
+            top: 3.54vh;
+            bottom: auto;
+            width: 35.09vw;
+            height: auto;
+            max-height: none;
+            object-fit: contain;
+            transform: none;
         }
-        body.home-editing .home-league,
-        body.home-editing .home-aperol,
-        body.home-editing .home-nav {
-            outline: 2px dashed #ffd54a;
-            outline-offset: 3px;
-            cursor: move;
-            user-select: none;
-            touch-action: none;
+        .home-nav {
+            position: fixed;
+            left: 8.98vw;
+            top: 37.82vh;
+            bottom: auto;
+            right: auto;
+            width: 21.16vw;
+            height: auto;
+            transform: none;
+            gap: 6px;
         }
-        body.home-editing .home-league,
-        body.home-editing .home-aperol { pointer-events: auto; }
-        body.home-editing .home-branding { pointer-events: none; }
-        body.home-editing .home-nav { pointer-events: auto; }
-        body.home-editing .home-nav .nav-btn { pointer-events: none; }
-        .home-size-hint {
-            position: fixed; top: 48px; right: 8px; z-index: 1000;
-            display: none; max-width: 390px; padding: 6px 9px; border-radius: 5px;
-            background: rgba(8,8,17,.9); color: #ddd; font-size: .76em;
+        .home-nav .nav-btn {
+            flex: 1 1 auto;
+            min-height: 0;
         }
-        body.home-editing .home-size-hint { display: block; }
+
+
 
 
         .page-title { font-size: 1.3em; font-weight: 800; color: #fff; margin-bottom: 2px; padding-bottom: 3px; border-bottom: 2px solid #e94560; display: inline-block; }
@@ -641,11 +651,6 @@
             .nav-btn { padding: 8px 12px; font-size: 0.8em; }
             .logo-text { font-size: 1.1em; }
             .logo img { width: 35px; height: 35px; }
-            .home-nav { left: 5px; right: auto; bottom: 5px; width: 155px; gap: 4px; }
-            .home-nav .nav-btn { padding: 6px 7px; font-size: 0.68em; }
-            .home-branding { inset: 0; padding-left: 0; }
-            .home-aperol { left: 5px; bottom: 190px; width: 155px; max-height: 120px; }
-            .home-league { width: 94vw; height: 96vh; }
             .table-container { font-size: 0.85em; }
             th, td { padding: 3px 5px; font-size: 0.85em; }
             .logo-cell img { width: 30px; height: 30px; }
@@ -678,11 +683,6 @@
         }
 
         @media (max-width: 480px) {
-            .home-branding { inset: 0; padding-left: 0; }
-            .home-aperol { left: 4px; bottom: 170px; width: 125px; max-height: 105px; }
-            .home-league { width: 96vw; height: 96vh; }
-            .home-nav { left: 4px; right: auto; top: auto; bottom: 4px; transform: none; flex-direction: column; flex-wrap: nowrap; width: 125px; gap: 3px; }
-            .home-nav .nav-btn { padding: 5px 4px; font-size: .60em; }
             .pitch-player .pp-main { min-width: 128px; max-width: 145px; height: 48px; gap: 4px; padding: 3px 5px 3px 7px; }
             .pitch-player .pp-logo { width: 38px; height: 38px; flex-basis: 38px; }
             .pitch-player .pp-name { font-size: 0.85em; }
@@ -733,14 +733,6 @@
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
         <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
-    <div class="home-layout-tools">
-        <button type="button" onclick="toggleHomeEditor()">✥ SPOSTA</button>
-        <button type="button" onclick="resizeSelectedHome(-0.05)">− PICCOLO</button>
-        <button type="button" onclick="resizeSelectedHome(0.05)">+ GRANDE</button>
-        <button type="button" onclick="confirmHomeLayout()">✓ CONFERMA</button>
-        <button type="button" onclick="copyHomeLayout()">📋 COPIA POSIZIONI</button>
-    </div>
-    <div class="home-size-hint">Modalità modifica: clicca un elemento, trascinalo. Usa −/+ per ridimensionare il PNG selezionato.</div>
 </div>
 
 <!-- ASTA -->
@@ -979,137 +971,6 @@ function resizeSelect(sel) {
 
 document.body.classList.add('home-active');
 
-
-var homeEditorOn = false;
-var homeSelected = null;
-var homeDrag = null;
-
-function homeEditableElements() {
-    return [
-        document.querySelector('.home-league'),
-        document.querySelector('.home-aperol'),
-        document.querySelector('.home-nav')
-    ].filter(Boolean);
-}
-
-function toggleHomeEditor() {
-    homeEditorOn = !homeEditorOn;
-    document.body.classList.toggle('home-editing', homeEditorOn);
-    if (!homeEditorOn) homeSelected = null;
-}
-
-function selectHomeElement(el) {
-    homeSelected = el;
-    homeEditableElements().forEach(function(x) {
-        x.style.outlineColor = x === el ? '#55ff88' : '#ffd54a';
-    });
-}
-
-function startHomeDrag(e) {
-    if (!homeEditorOn) return;
-    var el = e.currentTarget;
-    selectHomeElement(el);
-    e.preventDefault();
-    var r = el.getBoundingClientRect();
-    homeDrag = { el: el, dx: e.clientX - r.left, dy: e.clientY - r.top };
-    el.style.position = 'fixed';
-    if (!el.classList.contains('home-nav')) el.style.transform = 'none';
-    el.style.right = 'auto';
-    el.style.bottom = 'auto';
-    el.style.left = r.left + 'px';
-    el.style.top = r.top + 'px';
-    if (el.classList.contains('home-league')) {
-        el.style.height = 'auto';
-        el.style.width = r.width + 'px';
-    }
-    if (el.classList.contains('home-aperol')) {
-        el.style.height = 'auto';
-        el.style.width = r.width + 'px';
-        el.style.maxHeight = 'none';
-    }
-}
-
-function moveHomeDrag(e) {
-    if (!homeDrag) return;
-    var el = homeDrag.el;
-    var r = el.getBoundingClientRect();
-    var x = Math.max(0, Math.min(window.innerWidth - r.width, e.clientX - homeDrag.dx));
-    var y = Math.max(0, Math.min(window.innerHeight - r.height, e.clientY - homeDrag.dy));
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-}
-
-function stopHomeDrag() { homeDrag = null; }
-
-function resizeSelectedHome(delta) {
-    if (!homeEditorOn || !homeSelected) return;
-    var r = homeSelected.getBoundingClientRect();
-
-    if (homeSelected.classList.contains('home-nav')) {
-        var currentScale = parseFloat(homeSelected.dataset.editorScale || '1');
-        var newScale = Math.max(0.45, Math.min(2.2, currentScale * (1 + delta)));
-        var left = r.left;
-        var top = r.top;
-        homeSelected.dataset.editorScale = newScale.toFixed(4);
-        homeSelected.style.transformOrigin = 'top left';
-        homeSelected.style.transform = 'scale(' + newScale + ')';
-        homeSelected.style.left = left + 'px';
-        homeSelected.style.top = top + 'px';
-        return;
-    }
-
-    var nw = Math.max(80, Math.min(window.innerWidth, r.width * (1 + delta)));
-    homeSelected.style.position = 'fixed';
-    homeSelected.style.width = nw + 'px';
-    homeSelected.style.height = 'auto';
-    homeSelected.style.maxHeight = 'none';
-}
-
-function homeLayoutData() {
-    var data = {};
-    homeEditableElements().forEach(function(el) {
-        var r = el.getBoundingClientRect();
-        var key = el.classList.contains('home-league') ? 'BORRACHOS' :
-                  el.classList.contains('home-aperol') ? 'APEROL' : 'PULSANTI';
-        data[key] = {
-            x: Math.round(r.left),
-            y: Math.round(r.top),
-            width: Math.round(r.width),
-            height: Math.round(r.height),
-            viewport: Math.round(window.innerWidth) + 'x' + Math.round(window.innerHeight)
-        };
-    });
-    return data;
-}
-
-function confirmHomeLayout() {
-    homeEditorOn = false;
-    document.body.classList.remove('home-editing');
-    homeSelected = null;
-    homeDrag = null;
-    homeEditableElements().forEach(function(x) { x.style.outlineColor = ''; });
-    alert('Posizione confermata sullo schermo. Ora premi COPIA POSIZIONI e incollami il testo in chat.');
-}
-
-function copyHomeLayout() {
-    var txt = 'HOME LAYOUT\\n' + JSON.stringify(homeLayoutData(), null, 2);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(function() {
-            alert('Posizioni copiate. Incollale nella chat.');
-        }).catch(function() { prompt('Copia questo testo e incollalo nella chat:', txt); });
-    } else {
-        prompt('Copia questo testo e incollalo nella chat:', txt);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    homeEditableElements().forEach(function(el) {
-        el.addEventListener('pointerdown', startHomeDrag);
-    });
-    document.addEventListener('pointermove', moveHomeDrag);
-    document.addEventListener('pointerup', stopHomeDrag);
-    document.addEventListener('pointercancel', stopHomeDrag);
-});
 
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
