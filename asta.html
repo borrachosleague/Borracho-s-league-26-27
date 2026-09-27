@@ -2140,6 +2140,11 @@ async function callPlayer(playerId) {
   }
 
 
+  if (amount > maxSpendableForBid) {
+    alert('Offerta troppo alta. Massimo spendibile: ' + maxSpendableForBid + ' crediti. Devi conservare 1 credito per ogni giocatore ancora da comprare.');
+    return;
+  }
+
   actionBusy =
     true;
 
@@ -2771,6 +2776,12 @@ async function handlePlayerDone(player) {
    OFFERTA
    ========================================================= */
 
+function getMaxSpendable(credits, soldCount) {
+  var totalSlots = Number(RL.POR || 0) + Number(RL.DIF || 0) + Number(RL.CENTRO || 0) + Number(RL.ATT || 0);
+  var remaining = Math.max(0, totalSlots - Number(soldCount || 0));
+  return Math.max(0, Number(credits || 0) - Math.max(0, remaining - 1));
+}
+
 async function quickBid(step) {
   if (!currentPlayerId) {
     alert('Offerta non disponibile: nessun giocatore attivo.');
@@ -2799,6 +2810,10 @@ async function placeBid() {
       return p.vincitore === mySquadra && p.stato === 'sold';
     });
     var roleCounts = countByRole(freshPlayersForBid);
+    var freshTeamForBid = freshStateForBid.squadre.find(function(x) { return x.nome === mySquadra; });
+    var freshCreditsForBid = freshTeamForBid ? Number(freshTeamForBid.crediti || 0) : Number(mycrediti || 0);
+    var maxSpendableForBid = getMaxSpendable(freshCreditsForBid, freshPlayersForBid.length);
+    mycrediti = freshCreditsForBid;
     if (
       currentPlayerRuolo &&
       RL[currentPlayerRuolo] !== undefined &&
