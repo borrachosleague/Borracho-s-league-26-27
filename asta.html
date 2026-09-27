@@ -1247,7 +1247,9 @@ async function addDelegation(){
   var e=document.getElementById('delegation-error'), a=document.getElementById('delegation-user').value, b=document.getElementById('delegation-team').value;
   e.textContent=''; if(!a||!b){e.textContent='Seleziona entrambe le squadre.';return;} if(a===b){e.textContent='Una squadra gestisce già se stessa.';return;}
   var r=await sb.rpc('admin_set_team_delegation',{p_squadra_principale:a,p_squadra_delegata:b});
-  if(r.error){e.textContent='Errore delega: '+r.error.message;return;} await loadDelegationPanel();
+  if(r.error){e.textContent='Errore delega: '+r.error.message;return;}
+  await loadDelegationPanel();
+  await refreshManagedTeams();
 }
 async function removeSelectedDelegation(){
   var a=document.getElementById('delegation-user').value,b=document.getElementById('delegation-team').value,e=document.getElementById('delegation-error');
@@ -1279,6 +1281,27 @@ async function setTeamPassword(){
    SINCRONIZZAZIONE RUOLO / SVINCOLI PRE-ASTA / CORREZIONI ADMIN
    ========================================================= */
 var roleSyncBusy=false;
+
+async function refreshManagedTeams(){
+  if(!sessionUser)return;
+  var p=await sb.rpc('get_my_team');
+  if(p.error||!p.data)return;
+  var teams=Array.isArray(p.data.squadre)?p.data.squadre:[];
+  if(!teams.length && p.data.squadra) teams=[{squadra:p.data.squadra,access_type:'owner'}];
+
+  var oldSignature=availableTeams.map(function(t){return t.squadra+'|'+(t.access_type||'');}).sort().join(',');
+  var newSignature=teams.map(function(t){return t.squadra+'|'+(t.access_type||'');}).sort().join(',');
+
+  if(oldSignature!==newSignature){
+    if(!teams.some(function(t){return t.squadra===mySquadra;})) mySquadra=p.data.squadra||teams[0].squadra;
+    setupTeamSelector(teams);
+    await loadSelectedTeamData();
+    updateTeamInfo();
+    var rose=document.getElementById('tab-rose');
+    if(document.getElementById('auction-page').style.display!=='none'&&rose&&rose.classList.contains('active')) await loadBoard();
+  }
+}
+
 async function syncLeagueRole(){
   if(!sessionUser||roleSyncBusy)return; roleSyncBusy=true;
   try{
@@ -1286,16 +1309,11 @@ async function syncLeagueRole(){
     var newRole=r.data.ruolo||'player';
     if(newRole!==myRole){
       myRole=newRole;
-      var p=await sb.rpc('get_my_team');
-      if(!p.error&&p.data){
-        availableTeams=Array.isArray(p.data.squadre)?p.data.squadre:availableTeams;
-        if(!availableTeams.some(function(t){return t.squadra===mySquadra;})) mySquadra=p.data.squadra;
-        setupTeamSelector(availableTeams);
-      }
       ['btn-reset','btn-new','btn-start','search-wrap','btn-sell'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display=myRole==='admin'?'':'none';});
       var cb=document.getElementById('home-corrections-btn');if(cb)cb.style.display=myRole==='admin'?'':'none';
       if(document.getElementById('home-page').style.display!=='none') await loadHome();
     }
+    await refreshManagedTeams();
   }finally{roleSyncBusy=false;}
 }
 setInterval(syncLeagueRole,3000);
