@@ -2659,6 +2659,22 @@ async function handlePlayerDone(player) {
 
 async function placeBid() {
 
+  // Controllo locale immediato: evita un clic "muto" quando la rosa
+  // ha già tutti gli slot del ruolo del giocatore in asta.
+  var roleCounts = countByRole(myPlayers);
+  if (
+    currentPlayerRuolo &&
+    RL[currentPlayerRuolo] !== undefined &&
+    Number(roleCounts[currentPlayerRuolo] || 0) >= Number(RL[currentPlayerRuolo])
+  ) {
+    showError(
+      'Impossibile acquistare: hai già tutti gli slot ' +
+      rL[currentPlayerRuolo] +
+      ' occupati.'
+    );
+    return;
+  }
+
   if (
     !auctionStarted ||
     auctionPausedPreauction ||
