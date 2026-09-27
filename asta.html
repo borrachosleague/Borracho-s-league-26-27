@@ -2025,6 +2025,30 @@ async function callPlayer(playerId) {
     return;
   }
 
+  // La chiamata assegna subito l'offerta iniziale di 1 credito alla squadra
+  // dell'admin: quindi controlliamo gli slot già al momento della scelta.
+  try {
+    var freshStateForCall = await getFrontendState();
+    var freshPlayersForCall = freshStateForCall.players.filter(function(x) {
+      return x.vincitore === mySquadra && x.stato === 'sold';
+    });
+    var callRoleCounts = countByRole(freshPlayersForCall);
+    if (
+      p.ruolo &&
+      RL[p.ruolo] !== undefined &&
+      Number(callRoleCounts[p.ruolo] || 0) >= Number(RL[p.ruolo])
+    ) {
+      alert(
+        'Impossibile chiamare ' + p.nome + ': hai già tutti gli slot ' +
+        rL[p.ruolo] + ' occupati.'
+      );
+      return;
+    }
+  } catch(e) {
+    alert('Impossibile verificare gli slot della rosa: ' + e.message);
+    return;
+  }
+
 
   actionBusy =
     true;
