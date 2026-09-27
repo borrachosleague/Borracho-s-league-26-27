@@ -2659,19 +2659,28 @@ async function handlePlayerDone(player) {
 
 async function placeBid() {
 
-  // Controllo locale immediato: evita un clic "muto" quando la rosa
-  // ha già tutti gli slot del ruolo del giocatore in asta.
-  var roleCounts = countByRole(myPlayers);
-  if (
-    currentPlayerRuolo &&
-    RL[currentPlayerRuolo] !== undefined &&
-    Number(roleCounts[currentPlayerRuolo] || 0) >= Number(RL[currentPlayerRuolo])
-  ) {
-    showError(
-      'Impossibile acquistare: hai già tutti gli slot ' +
-      rL[currentPlayerRuolo] +
-      ' occupati.'
-    );
+  // Prima di ogni rilancio rilegge la rosa dal DB: il controllo degli slot
+  // non deve dipendere da una copia locale eventualmente non aggiornata.
+  try {
+    var freshStateForBid = await getFrontendState();
+    var freshPlayersForBid = freshStateForBid.players.filter(function(p) {
+      return p.vincitore === mySquadra && p.stato === 'sold';
+    });
+    var roleCounts = countByRole(freshPlayersForBid);
+    if (
+      currentPlayerRuolo &&
+      RL[currentPlayerRuolo] !== undefined &&
+      Number(roleCounts[currentPlayerRuolo] || 0) >= Number(RL[currentPlayerRuolo])
+    ) {
+      alert(
+        'Impossibile acquistare: hai già tutti gli slot ' +
+        rL[currentPlayerRuolo] +
+        ' occupati.'
+      );
+      return;
+    }
+  } catch(e) {
+    alert('Impossibile verificare gli slot della rosa: ' + e.message);
     return;
   }
 
