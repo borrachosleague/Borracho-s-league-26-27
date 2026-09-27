@@ -1167,14 +1167,20 @@ function setBestPresenzePct(valore) {
 }
 
 function giornateGiocateBest11() {
-    var n = 0;
-    datiRisultati.forEach(function(g) {
-        if (g && g.partite && g.partite.some(function(p) {
-            return Number(p.pt_casa || 0) !== 0 || Number(p.pt_trasferta || 0) !== 0 ||
-                   Number(p.gol_casa || 0) !== 0 || Number(p.gol_trasferta || 0) !== 0;
-        })) n++;
+    if (bestGruppo === 'seriea') {
+        var maxPresenze = 0;
+        datiGiocatoriSerieA.forEach(function(g) {
+            var p = Math.max(Number(g.prestot || 0), Number(g.presfvtot || 0));
+            if (p > maxPresenze) maxPresenze = p;
+        });
+        return maxPresenze;
+    }
+    var maxGiornateBorracho = 0;
+    datiSquadre.forEach(function(s) {
+        var g = Number(s.g || 0);
+        if (g > maxGiornateBorracho) maxGiornateBorracho = g;
     });
-    return n;
+    return maxGiornateBorracho;
 }
 
 function setBestGruppo(gruppo, btn) {
