@@ -102,6 +102,37 @@
         }
         .home-nav .nav-btn:hover { background: #e94560; }
 
+        .home-layout-tools {
+            position: fixed; top: 8px; right: 8px; z-index: 1000;
+            display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
+            max-width: 430px;
+        }
+        .home-layout-tools button {
+            background: rgba(8,8,17,.92); color: #fff; border: 1px solid #e94560;
+            border-radius: 6px; padding: 7px 10px; font-weight: 700; cursor: pointer;
+        }
+        body.home-editing .home-league,
+        body.home-editing .home-aperol,
+        body.home-editing .home-nav {
+            outline: 2px dashed #ffd54a;
+            outline-offset: 3px;
+            cursor: move;
+            user-select: none;
+            touch-action: none;
+        }
+        body.home-editing .home-league,
+        body.home-editing .home-aperol { pointer-events: auto; }
+        body.home-editing .home-branding { pointer-events: none; }
+        body.home-editing .home-nav { pointer-events: auto; }
+        body.home-editing .home-nav .nav-btn { pointer-events: none; }
+        .home-size-hint {
+            position: fixed; top: 48px; right: 8px; z-index: 1000;
+            display: none; max-width: 390px; padding: 6px 9px; border-radius: 5px;
+            background: rgba(8,8,17,.9); color: #ddd; font-size: .76em;
+        }
+        body.home-editing .home-size-hint { display: block; }
+
+
         .page-title { font-size: 1.3em; font-weight: 800; color: #fff; margin-bottom: 2px; padding-bottom: 3px; border-bottom: 2px solid #e94560; display: inline-block; }
 
         .subnav { display: flex; gap: 5px; margin-bottom: 2px; flex-wrap: wrap; }
@@ -702,6 +733,13 @@
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
         <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
+    <div class="home-layout-tools">
+        <button type="button" onclick="toggleHomeEditor()">✥ SPOSTA</button>
+        <button type="button" onclick="resizeSelectedHome(-0.05)">− PICCOLO</button>
+        <button type="button" onclick="resizeSelectedHome(0.05)">+ GRANDE</button>
+        <button type="button" onclick="copyHomeLayout()">📋 COPIA POSIZIONI</button>
+    </div>
+    <div class="home-size-hint">Modalità modifica: clicca un elemento, trascinalo. Usa −/+ per ridimensionare il PNG selezionato.</div>
 </div>
 
 <!-- ASTA -->
@@ -939,6 +977,116 @@ function resizeSelect(sel) {
 
 
 document.body.classList.add('home-active');
+
+
+var homeEditorOn = false;
+var homeSelected = null;
+var homeDrag = null;
+
+function homeEditableElements() {
+    return [
+        document.querySelector('.home-league'),
+        document.querySelector('.home-aperol'),
+        document.querySelector('.home-nav')
+    ].filter(Boolean);
+}
+
+function toggleHomeEditor() {
+    homeEditorOn = !homeEditorOn;
+    document.body.classList.toggle('home-editing', homeEditorOn);
+    if (!homeEditorOn) homeSelected = null;
+}
+
+function selectHomeElement(el) {
+    homeSelected = el;
+    homeEditableElements().forEach(function(x) {
+        x.style.outlineColor = x === el ? '#55ff88' : '#ffd54a';
+    });
+}
+
+function startHomeDrag(e) {
+    if (!homeEditorOn) return;
+    var el = e.currentTarget;
+    selectHomeElement(el);
+    e.preventDefault();
+    var r = el.getBoundingClientRect();
+    homeDrag = { el: el, dx: e.clientX - r.left, dy: e.clientY - r.top };
+    el.style.position = 'fixed';
+    el.style.transform = 'none';
+    el.style.right = 'auto';
+    el.style.bottom = 'auto';
+    el.style.left = r.left + 'px';
+    el.style.top = r.top + 'px';
+    if (el.classList.contains('home-league')) {
+        el.style.height = 'auto';
+        el.style.width = r.width + 'px';
+    }
+    if (el.classList.contains('home-aperol')) {
+        el.style.height = 'auto';
+        el.style.width = r.width + 'px';
+        el.style.maxHeight = 'none';
+    }
+}
+
+function moveHomeDrag(e) {
+    if (!homeDrag) return;
+    var el = homeDrag.el;
+    var r = el.getBoundingClientRect();
+    var x = Math.max(0, Math.min(window.innerWidth - r.width, e.clientX - homeDrag.dx));
+    var y = Math.max(0, Math.min(window.innerHeight - r.height, e.clientY - homeDrag.dy));
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+}
+
+function stopHomeDrag() { homeDrag = null; }
+
+function resizeSelectedHome(delta) {
+    if (!homeEditorOn || !homeSelected) return;
+    if (homeSelected.classList.contains('home-nav')) return;
+    var r = homeSelected.getBoundingClientRect();
+    var nw = Math.max(80, Math.min(window.innerWidth, r.width * (1 + delta)));
+    homeSelected.style.position = 'fixed';
+    homeSelected.style.width = nw + 'px';
+    homeSelected.style.height = 'auto';
+    homeSelected.style.maxHeight = 'none';
+}
+
+function homeLayoutData() {
+    var data = {};
+    homeEditableElements().forEach(function(el) {
+        var r = el.getBoundingClientRect();
+        var key = el.classList.contains('home-league') ? 'BORRACHOS' :
+                  el.classList.contains('home-aperol') ? 'APEROL' : 'PULSANTI';
+        data[key] = {
+            x: Math.round(r.left),
+            y: Math.round(r.top),
+            width: Math.round(r.width),
+            height: Math.round(r.height),
+            viewport: Math.round(window.innerWidth) + 'x' + Math.round(window.innerHeight)
+        };
+    });
+    return data;
+}
+
+function copyHomeLayout() {
+    var txt = 'HOME LAYOUT\\n' + JSON.stringify(homeLayoutData(), null, 2);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function() {
+            alert('Posizioni copiate. Incollale nella chat.');
+        }).catch(function() { prompt('Copia questo testo e incollalo nella chat:', txt); });
+    } else {
+        prompt('Copia questo testo e incollalo nella chat:', txt);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    homeEditableElements().forEach(function(el) {
+        el.addEventListener('pointerdown', startHomeDrag);
+    });
+    document.addEventListener('pointermove', moveHomeDrag);
+    document.addEventListener('pointerup', stopHomeDrag);
+    document.addEventListener('pointercancel', stopHomeDrag);
+});
 
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
