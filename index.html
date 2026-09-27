@@ -287,6 +287,12 @@
         body.layout-editing #page-classifica .classifica-chalk-data { outline-offset:2px; }
 
 
+        #page-classifica .classifica-menu-board {
+            position:absolute; left:1.2vw; top:6.5vh; width:24vw; max-width:330px;
+            aspect-ratio:1024/1536;
+            background:url('assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp') center/contain no-repeat;
+            z-index:4; pointer-events:auto;
+        }
         #page-classifica .classifica-menu {
             position:absolute; left:2vw; top:9vh; width:22vw; max-width:300px; z-index:5;
             display:flex; flex-direction:column; gap:1vh;
@@ -842,6 +848,7 @@
 <div id="page-classifica" class="page">
     <input type="hidden" id="tipo-classifica" value="classifica">
     <div class="classifica-layout">
+        <div class="classifica-menu-board" aria-hidden="true"></div>
         <div class="classifica-menu">
             <button class="classifica-menu-btn active" onclick="setTipoClassifica('classifica', this)">Classifica</button>
             <button class="classifica-menu-btn" onclick="setTipoClassifica('f1', this)">Formula 1</button>
@@ -1088,7 +1095,7 @@ function currentLayoutPage(){
 function pageLayoutTargets(){
     var p=currentLayoutPage(); if(!p)return [];
     var selectors={
-        'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-menu-btn'],
+        'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-menu-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
         'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
