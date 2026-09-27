@@ -102,6 +102,28 @@
         }
         .home-nav .nav-btn:hover { background: #e94560; }
 
+        .home-layout-tools {
+            position: fixed !important; top: 8px !important; right: 8px !important;
+            left: auto !important; bottom: auto !important; z-index: 99999;
+            display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 500px;
+        }
+        .home-layout-tools button {
+            background: rgba(8,8,17,.94); color: #fff; border: 1px solid #e94560;
+            border-radius: 6px; padding: 7px 10px; font-weight: 700; cursor: pointer;
+        }
+        body.home-editing .home-league,
+        body.home-editing .home-aperol,
+        body.home-editing .home-nav {
+            outline: 2px dashed #ffd54a; outline-offset: 3px;
+            cursor: move; user-select: none; touch-action: none;
+        }
+        body.home-editing .home-league,
+        body.home-editing .home-aperol { pointer-events: auto; }
+        body.home-editing .home-branding { pointer-events: none; }
+        body.home-editing .home-nav { pointer-events: auto; }
+        body.home-editing .home-nav .nav-btn { pointer-events: none; }
+
+
         /* Home layout definitivo - riferimento 1536x735 */
         .home-league {
             position: fixed;
@@ -733,6 +755,13 @@
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
         <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
+    <div class="home-layout-tools">
+        <button type="button" onclick="toggleHomeEditor()">✥ SPOSTA</button>
+        <button type="button" onclick="resizeSelectedHome(-0.05)">− PICCOLO</button>
+        <button type="button" onclick="resizeSelectedHome(0.05)">+ GRANDE</button>
+        <button type="button" onclick="confirmHomeLayout()">✓ CONFERMA</button>
+        <button type="button" onclick="copyHomeLayout()">📋 COPIA POSIZIONI</button>
+    </div>
 </div>
 
 <!-- ASTA -->
@@ -971,6 +1000,80 @@ function resizeSelect(sel) {
 
 document.body.classList.add('home-active');
 
+
+
+var homeEditorOn = false;
+var homeSelected = null;
+var homeDrag = null;
+
+function homeEditableElements() {
+    return [document.querySelector('.home-league'), document.querySelector('.home-aperol'), document.querySelector('.home-nav')].filter(Boolean);
+}
+function toggleHomeEditor() {
+    homeEditorOn = !homeEditorOn;
+    document.body.classList.toggle('home-editing', homeEditorOn);
+    if (!homeEditorOn) homeSelected = null;
+}
+function selectHomeElement(el) {
+    homeSelected = el;
+    homeEditableElements().forEach(function(x) { x.style.outlineColor = x === el ? '#55ff88' : '#ffd54a'; });
+}
+function startHomeDrag(e) {
+    if (!homeEditorOn) return;
+    var el=e.currentTarget; selectHomeElement(el); e.preventDefault();
+    var r=el.getBoundingClientRect();
+    homeDrag={el:el,dx:e.clientX-r.left,dy:e.clientY-r.top};
+    el.style.position='fixed'; el.style.right='auto'; el.style.bottom='auto';
+    if (!el.classList.contains('home-nav')) el.style.transform='none';
+    el.style.left=r.left+'px'; el.style.top=r.top+'px';
+    if (!el.classList.contains('home-nav')) { el.style.width=r.width+'px'; el.style.height='auto'; el.style.maxHeight='none'; }
+}
+function moveHomeDrag(e) {
+    if(!homeDrag)return;
+    var el=homeDrag.el,r=el.getBoundingClientRect();
+    el.style.left=Math.max(0,Math.min(window.innerWidth-r.width,e.clientX-homeDrag.dx))+'px';
+    el.style.top=Math.max(0,Math.min(window.innerHeight-r.height,e.clientY-homeDrag.dy))+'px';
+}
+function stopHomeDrag(){homeDrag=null;}
+function resizeSelectedHome(delta){
+    if(!homeEditorOn||!homeSelected)return;
+    var r=homeSelected.getBoundingClientRect();
+    if(homeSelected.classList.contains('home-nav')){
+        var s=parseFloat(homeSelected.dataset.editorScale||'1');
+        s=Math.max(.45,Math.min(2.2,s*(1+delta)));
+        homeSelected.dataset.editorScale=s.toFixed(4);
+        homeSelected.style.transformOrigin='top left';
+        homeSelected.style.transform='scale('+s+')';
+        return;
+    }
+    homeSelected.style.width=Math.max(80,Math.min(window.innerWidth,r.width*(1+delta)))+'px';
+    homeSelected.style.height='auto'; homeSelected.style.maxHeight='none';
+}
+function confirmHomeLayout(){
+    homeEditorOn=false; document.body.classList.remove('home-editing');
+    homeSelected=null; homeDrag=null;
+    homeEditableElements().forEach(function(x){x.style.outlineColor='';});
+}
+function homeLayoutData(){
+    var data={};
+    homeEditableElements().forEach(function(el){
+        var r=el.getBoundingClientRect();
+        var key=el.classList.contains('home-league')?'BORRACHOS':el.classList.contains('home-aperol')?'APEROL':'PULSANTI';
+        data[key]={x:Math.round(r.left),y:Math.round(r.top),width:Math.round(r.width),height:Math.round(r.height),viewport:Math.round(innerWidth)+'x'+Math.round(innerHeight)};
+    });
+    return data;
+}
+function copyHomeLayout(){
+    var txt='HOME LAYOUT\\n'+JSON.stringify(homeLayoutData(),null,2);
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){alert('Posizioni copiate. Incollale nella chat.');}).catch(function(){prompt('Copia questo testo:',txt);});
+    else prompt('Copia questo testo:',txt);
+}
+document.addEventListener('DOMContentLoaded',function(){
+    homeEditableElements().forEach(function(el){el.addEventListener('pointerdown',startHomeDrag);});
+    document.addEventListener('pointermove',moveHomeDrag);
+    document.addEventListener('pointerup',stopHomeDrag);
+    document.addEventListener('pointercancel',stopHomeDrag);
+});
 
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
