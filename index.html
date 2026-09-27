@@ -165,6 +165,23 @@
 
 
 
+
+        .layout-editor-tools {
+            position: fixed; top: 8px; right: 8px; z-index: 100000;
+            display: none; gap: 5px; flex-wrap: wrap; justify-content: flex-end;
+            max-width: 560px;
+        }
+        body:not(.home-active) .layout-editor-tools { display: flex; }
+        .layout-editor-tools button {
+            background: rgba(8,8,17,.95); color: #fff; border: 1px solid #e94560;
+            border-radius: 6px; padding: 6px 9px; font-size: .78em; font-weight: 700; cursor: pointer;
+        }
+        body.layout-editing .layout-editable {
+            outline: 2px dashed #ffd54a !important; outline-offset: 3px;
+            cursor: move !important; user-select: none; touch-action: none;
+        }
+        body.layout-editing .layout-editable.layout-selected { outline-color: #55ff88 !important; }
+
         .page-title { font-size: 1.3em; font-weight: 800; color: #fff; margin-bottom: 2px; padding-bottom: 3px; border-bottom: 2px solid #e94560; display: inline-block; }
 
         .subnav { display: flex; gap: 5px; margin-bottom: 2px; flex-wrap: wrap; }
@@ -945,6 +962,14 @@
     </div>
 </div>
 
+<div class="layout-editor-tools">
+    <button type="button" onclick="toggleLayoutEditor()">✥ MODIFICA</button>
+    <button type="button" onclick="resizeLayoutSelected(-0.05)">− PICCOLO</button>
+    <button type="button" onclick="resizeLayoutSelected(0.05)">+ GRANDE</button>
+    <button type="button" onclick="confirmLayoutEditor()">✓ CONFERMA</button>
+    <button type="button" onclick="copyPageLayout()">📋 COPIA LAYOUT</button>
+</div>
+
 <script>
 let datiSquadre = [];
 let datiGiocatori = [];
@@ -1001,6 +1026,86 @@ function resizeSelect(sel) {
 document.body.classList.add('home-active');
 
 
+
+
+var layoutEditorOn=false, layoutSelected=null, layoutDrag=null;
+
+function currentLayoutPage(){
+    return Array.from(document.querySelectorAll('.page')).find(function(p){return p.classList.contains('active') && p.id!=='page-home';}) || null;
+}
+function pageLayoutTargets(){
+    var p=currentLayoutPage(); if(!p)return [];
+    var selectors={
+        'page-classifica':['.classifica-menu','.classifica-table-wrap'],
+        'page-risultati':['.page-title','#risultati-giornate','.table-container'],
+        'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
+        'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
+    };
+    var arr=selectors[p.id]||[];
+    var seen=[];
+    arr.forEach(function(s){p.querySelectorAll(s).forEach(function(el){if(el.offsetParent!==null && seen.indexOf(el)<0)seen.push(el);});});
+    return seen;
+}
+function refreshLayoutTargets(){
+    document.querySelectorAll('.layout-editable').forEach(function(x){x.classList.remove('layout-editable','layout-selected');});
+    if(!layoutEditorOn)return;
+    pageLayoutTargets().forEach(function(el){el.classList.add('layout-editable');});
+}
+function toggleLayoutEditor(){
+    layoutEditorOn=!layoutEditorOn; document.body.classList.toggle('layout-editing',layoutEditorOn);
+    layoutSelected=null; refreshLayoutTargets();
+}
+function layoutPointerDown(e){
+    if(!layoutEditorOn)return;
+    var el=e.target.closest('.layout-editable'); if(!el)return;
+    e.preventDefault(); e.stopPropagation();
+    document.querySelectorAll('.layout-selected').forEach(function(x){x.classList.remove('layout-selected');});
+    layoutSelected=el; el.classList.add('layout-selected');
+    var r=el.getBoundingClientRect();
+    layoutDrag={el:el,dx:e.clientX-r.left,dy:e.clientY-r.top};
+    el.style.position='fixed'; el.style.left=r.left+'px'; el.style.top=r.top+'px';
+    el.style.right='auto'; el.style.bottom='auto'; el.style.margin='0'; el.style.zIndex='50000';
+    el.style.width=r.width+'px';
+}
+function layoutPointerMove(e){
+    if(!layoutDrag)return;
+    var el=layoutDrag.el,r=el.getBoundingClientRect();
+    el.style.left=Math.max(0,Math.min(innerWidth-r.width,e.clientX-layoutDrag.dx))+'px';
+    el.style.top=Math.max(0,Math.min(innerHeight-r.height,e.clientY-layoutDrag.dy))+'px';
+}
+function layoutPointerUp(){layoutDrag=null;}
+function resizeLayoutSelected(delta){
+    if(!layoutEditorOn||!layoutSelected)return;
+    var r=layoutSelected.getBoundingClientRect();
+    var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
+    layoutSelected.style.width=nw+'px';
+    if(layoutSelected.tagName==='IMG')layoutSelected.style.height='auto';
+}
+function confirmLayoutEditor(){
+    layoutEditorOn=false; document.body.classList.remove('layout-editing');
+    document.querySelectorAll('.layout-editable').forEach(function(x){x.classList.remove('layout-editable','layout-selected');});
+    layoutSelected=null; layoutDrag=null;
+}
+function layoutElementName(el,i){
+    if(el.id)return '#'+el.id;
+    var cls=Array.from(el.classList).filter(function(x){return x!=='layout-editable'&&x!=='layout-selected';})[0];
+    return cls?'.'+cls:'ELEMENTO_'+(i+1);
+}
+function copyPageLayout(){
+    var p=currentLayoutPage(); if(!p)return;
+    var data={page:p.id.replace('page-',''),viewport:Math.round(innerWidth)+'x'+Math.round(innerHeight),elements:{}};
+    pageLayoutTargets().forEach(function(el,i){
+        var r=el.getBoundingClientRect();
+        data.elements[layoutElementName(el,i)]={x:Math.round(r.left),y:Math.round(r.top),width:Math.round(r.width),height:Math.round(r.height)};
+    });
+    var txt='PAGE LAYOUT\\n'+JSON.stringify(data,null,2);
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){alert('Layout copiato. Incollalo nella chat.');}).catch(function(){prompt('Copia questo testo:',txt);});
+    else prompt('Copia questo testo:',txt);
+}
+document.addEventListener('pointerdown',layoutPointerDown,true);
+document.addEventListener('pointermove',layoutPointerMove);
+document.addEventListener('pointerup',layoutPointerUp);
+document.addEventListener('pointercancel',layoutPointerUp);
 
 var homeEditorOn = false;
 var homeSelected = null;
@@ -1086,6 +1191,7 @@ function showPage(page, btn) {
     target.style.display = 'block';
     if (btn) btn.classList.add('active');
     document.body.classList.toggle('home-active', page === 'home');
+    if (layoutEditorOn) { layoutEditorOn = false; document.body.classList.remove('layout-editing'); refreshLayoutTargets(); }
 }
 
 function populateHomeLoghi() {
@@ -1120,6 +1226,7 @@ function showSubPage(sub, btn) {
     if (statsNav) statsNav.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
     document.getElementById('sub-' + sub).classList.add('active');
     btn.classList.add('active');
+    if (layoutEditorOn) refreshLayoutTargets();
 }
 
 function getVal(obj, criterio) {
