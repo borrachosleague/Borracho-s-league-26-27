@@ -183,8 +183,38 @@
         }
         .sq-dati { flex: 1; }
 
-        #tabella-risultati td { font-size: 1.1em; text-align: center; }
-        #tabella-risultati th { font-size: 0.9em; text-align: center; }
+        .risultati-giornate {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0 0 18px 0;
+        }
+        .giornata-btn {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 7px;
+            border: 2px solid #ffd700;
+            border-radius: 6px;
+            background: #ffd700;
+            color: #000;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .giornata-btn:hover { background: #ffea55; border-color: #fff0a0; color: #000; }
+        .giornata-btn.active { background: #000; border-color: #ffd700; color: #ffd700; }
+        #page-risultati .table-container { width: 100%; max-width: none; }
+        #tabella-risultati { width: 100%; }
+        #tabella-risultati td { font-size: 1.15em; text-align: center; padding-top: 12px; padding-bottom: 12px; }
+        #tabella-risultati th { font-size: 0.95em; text-align: center; }
+        #tabella-risultati .ris-team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+        #tabella-risultati .ris-team.casa { justify-content: flex-end; }
+        #tabella-risultati .ris-team.trasferta { justify-content: flex-start; }
+        #tabella-risultati .ris-logo { width: 38px; height: 38px; object-fit: contain; flex: 0 0 38px; }
 
         #sub-squadre .titolo-riquadro { display: none; }
         #sub-squadre .table-container { margin-left: 140px; margin-top: -110px; }
@@ -507,7 +537,8 @@
 <!-- RISULTATI -->
 <div id="page-risultati" class="page">
     <h2 class="page-title">Risultati</h2>
-    <select class="criterio-select" id="sel-risultati" onchange="updateRisultati()"></select>
+    <input type="hidden" id="sel-risultati" value="0">
+    <div class="risultati-giornate" id="risultati-giornate"></div>
     <div class="table-container">
         <table id="tabella-risultati">
             <thead>
@@ -1031,14 +1062,25 @@ function updateSquadre() {
 }
 
 
+function setGiornataRisultati(idx, btn) {
+    var sel = document.getElementById('sel-risultati');
+    if (sel) sel.value = idx;
+    document.querySelectorAll('.giornata-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    updateRisultati();
+}
+
 function updateRisultati() {
-    var idx = document.getElementById('sel-risultati').selectedIndex;
-    if (idx < 0 || idx >= datiRisultati.length) return;
+    var sel = document.getElementById('sel-risultati');
+    var idx = sel ? parseInt(sel.value, 10) : 0;
+    if (!Number.isFinite(idx) || idx < 0 || idx >= datiRisultati.length) return;
     var g = datiRisultati[idx];
     var tbody = document.querySelector('#tabella-risultati tbody');
     tbody.innerHTML = '';
     g.partite.forEach(function(p) {
-        tbody.innerHTML += '<tr><td>' + p.casa + '</td><td>' + p.pt_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_trasferta + '</td><td>' + p.pt_trasferta + '</td><td>' + p.trasferta + '</td></tr>';
+        var casa = '<div class="ris-team casa"><span>' + p.casa + '</span><img class="ris-logo" src="' + logoUrl(p.casa) + '" onerror="this.style.display=\\'none\\'"></div>';
+        var trasferta = '<div class="ris-team trasferta"><img class="ris-logo" src="' + logoUrl(p.trasferta) + '" onerror="this.style.display=\\'none\\'"><span>' + p.trasferta + '</span></div>';
+        tbody.innerHTML += '<tr><td>' + casa + '</td><td>' + p.pt_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_trasferta + '</td><td>' + p.pt_trasferta + '</td><td>' + trasferta + '</td></tr>';
     });
 }
 
@@ -1201,10 +1243,15 @@ fetch("dati.json")
         resizeSelect(document.getElementById('categoria-squadre'));
 
         var selR = document.getElementById('sel-risultati');
-        selR.innerHTML = '';
-        datiRisultati.forEach(function(g, i) {
-            selR.innerHTML += '<option value="' + i + '">' + g.giornata + '\u00aa Giornata</option>';
-        });
+        var giornateWrap = document.getElementById('risultati-giornate');
+        if (selR) selR.value = '0';
+        if (giornateWrap) {
+            giornateWrap.innerHTML = '';
+            for (var gi = 0; gi < 36; gi++) {
+                var disponibile = gi < datiRisultati.length;
+                giornateWrap.innerHTML += '<button class="giornata-btn' + (gi === 0 ? ' active' : '') + '" onclick="setGiornataRisultati(' + gi + ', this)"' + (disponibile ? '' : ' disabled style="opacity:.35;cursor:not-allowed"') + '>' + (gi + 1) + '</button>';
+            }
+        }
 
         updateClassifica();
         populateHomeLoghi();
