@@ -278,16 +278,18 @@
             font-size:clamp(11px,.92vw,17px); font-weight:800; text-shadow:0 1px 2px #000;
         }
         #page-classifica .classifica-special-data .chalk-row {
-            grid-template-columns:14% 66% 20% !important;
+            grid-template-columns:10% 54% 18% !important;
+            justify-content:start;
         }
         #page-classifica .classifica-special-data .chalk-pos {
             display:none;
         }
         #page-classifica .classifica-special-data .chalk-team {
-            padding-left:3%; font-size:1.18em; font-weight:900;
+            padding-left:2%; padding-right:3%; font-size:1.12em; font-weight:900;
+            white-space:nowrap; overflow:visible; text-overflow:clip;
         }
         #page-classifica .classifica-special-data .chalk-pt {
-            color:#ffd84c; font-weight:1000;
+            color:#ffd84c; font-weight:1000; text-align:center;
         }
         #page-classifica .chalk-row {
             min-height:0; display:grid; align-items:center;
@@ -297,6 +299,9 @@
         #page-classifica .chalk-row .chalk-team {
             text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-left:2%;
             font-size:1.18em; font-weight:900;
+        }
+        #page-classifica .classifica-special-data .chalk-row .chalk-team {
+            overflow:visible; text-overflow:clip;
         }
         #page-classifica .chalk-row .chalk-logo img {
             display:block; margin:auto; width:auto; height:clamp(18px,2.05vw,31px); max-width:90%; object-fit:contain;
