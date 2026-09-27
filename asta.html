@@ -2718,13 +2718,20 @@ async function placeBid() {
     return;
   }
 
-  if (
-    !auctionStarted ||
-    auctionPausedPreauction ||
-    !currentPlayerId ||
-    actionBusy
-  ) {
-
+  if (!auctionStarted) {
+    alert('Offerta non disponibile: l’asta non risulta avviata in questa sessione.');
+    return;
+  }
+  if (auctionPausedPreauction) {
+    alert('Offerta non disponibile: fase PRE-ASTA attiva.');
+    return;
+  }
+  if (!currentPlayerId) {
+    alert('Offerta non disponibile: nessun giocatore attivo.');
+    return;
+  }
+  if (actionBusy) {
+    alert('Attendi un istante: è già in corso un’altra operazione.');
     return;
   }
 
@@ -2743,9 +2750,9 @@ async function placeBid() {
     amount <= currentBid
   ) {
 
-    showError(
-      'Minimo ' +
-      (currentBid + 1)
+    alert(
+      'Offerta non valida. Inserisci almeno ' +
+      (currentBid + 1) + ' crediti.'
     );
 
     return;
@@ -2778,7 +2785,7 @@ async function placeBid() {
 
   if (r.error) {
 
-    showError(
+    alert(
       'Offerta rifiutata: ' +
       r.error.message
     );
