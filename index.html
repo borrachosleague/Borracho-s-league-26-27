@@ -277,12 +277,23 @@
         #page-classifica .chalk-row > span { min-width:0; text-align:center; line-height:1; }
         #page-classifica .chalk-row .chalk-team {
             text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-left:2%;
+            font-size:1.18em; font-weight:900;
         }
         #page-classifica .chalk-row .chalk-logo img {
-            display:block; margin:auto; width:auto; height:clamp(14px,1.65vw,25px); max-width:90%; object-fit:contain;
+            display:block; margin:auto; width:auto; height:clamp(18px,2.05vw,31px); max-width:90%; object-fit:contain;
         }
         #page-classifica .chalk-row .chalk-pos { display:none; }
         #page-classifica .chalk-row .chalk-pt { color:#ffd84c; font-weight:1000; }
+        #page-classifica .chalk-row.chalk-row-speciale {
+            grid-template-columns:12% 68% 20% !important;
+        }
+        #page-classifica .chalk-row.chalk-row-speciale .chalk-team {
+            padding-left:4%; font-size:1.18em;
+        }
+        #page-classifica .chalk-row.chalk-row-speciale .chalk-logo {
+            display:none;
+        }
+
         #page-classifica #tabella-classifica[hidden] { display:none!important; }
         body.layout-editing #page-classifica .classifica-chalk-data { outline-offset:2px; }
 
@@ -1382,10 +1393,8 @@ function updateClassifica() {
         var valore = Number((sq.dati && sq.dati[tipo]) || 0);
         var row = document.createElement('div');
         row.className = 'chalk-row chalk-row-speciale';
-        row.style.gridTemplateColumns = '8% 10% 57% 25%';
         row.innerHTML =
             '<span class="chalk-pos">' + (i+1) + '</span>' +
-            '<span class="chalk-logo"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></span>' +
             '<span class="chalk-team">' + sq.nome + '</span>' +
             '<span class="chalk-pt">' + valore + '</span>';
         chalk.appendChild(row);
