@@ -275,14 +275,16 @@
         .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
 
         /* === BEST 11 LAYOUT === */
+        #page-best11 { max-width: 1500px; }
         .best11-layout {
-            display: flex;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: 95px minmax(720px, 1fr) 230px;
+            gap: 14px;
             align-items: flex-start;
             margin-top: 0;
         }
         .best11-controls {
-            flex: 0 0 110px;
+            width: 95px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -304,9 +306,37 @@
         .subnav.best11-v .subnav-btn {
             width: 100%;
             text-align: center;
-            padding: 8px 10px;
-            font-size: 0.8em;
+            padding: 7px 5px;
+            font-size: 0.72em;
         }
+        .best11-bench {
+            background: #161625;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 9px;
+        }
+        .best11-bench-title {
+            color: #ffd700;
+            font-size: .9em;
+            font-weight: 900;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+        .bench-player {
+            display: grid;
+            grid-template-columns: 34px minmax(0,1fr) 30px 38px;
+            gap: 6px;
+            align-items: center;
+            min-height: 42px;
+            padding: 4px 3px;
+            border-bottom: 1px solid #303040;
+        }
+        .bench-player:last-child { border-bottom: 0; }
+        .bench-logo { width: 32px; height: 32px; object-fit: contain; }
+        .bench-name { font-size: .74em; font-weight: 800; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bench-role { font-size: .65em; font-weight: 800; color: #aaa; text-align: center; }
+        .bench-vote { font-size: .82em; font-weight: 900; color: #ffd700; text-align: right; }
 
         /* === PITCH BEST 11 === */
         .pitch-container {
@@ -460,13 +490,15 @@
             #sub-giocatori .criterio-select,
             #sub-squadre .criterio-select { float: none; width: 100%; }
             .page-title { font-size: 1.1em; }
-            .best11-layout { flex-direction: column; }
+            .best11-layout { display: flex; flex-direction: column; }
             .best11-controls {
+                width: 100%;
                 flex: none;
                 flex-direction: row;
                 flex-wrap: wrap;
                 gap: 10px;
             }
+            .best11-bench { width: 100%; }
             .subnav.best11-v { flex-direction: row; flex-wrap: wrap; }
             .subnav.best11-v .subnav-btn { width: auto; }
             .pitch-container { max-width: 100%; }
@@ -663,6 +695,10 @@
                 <div class="pitch-penalty-left"></div>
                 <div class="pitch-penalty-right"></div>
             </div>
+        </div>
+        <div class="best11-bench">
+            <div class="best11-bench-title">Panchina Best 11</div>
+            <div id="best11-bench-list"></div>
         </div>
     </div>
 </div>
@@ -1193,6 +1229,37 @@ function updateBest11() {
     players = players.concat(perRuolo('d').slice(0, nDif));
     players = players.concat(perRuolo('c').slice(0, nCen));
     players = players.concat(perRuolo('a').slice(0, nAtt));
+
+    var titolariSet = new Set(players);
+    var bench = []
+        .concat(perRuolo('p').filter(function(g) { return !titolariSet.has(g); }).slice(0, 1))
+        .concat(perRuolo('d').filter(function(g) { return !titolariSet.has(g); }).slice(0, 3))
+        .concat(perRuolo('c').filter(function(g) { return !titolariSet.has(g); }).slice(0, 3))
+        .concat(perRuolo('a').filter(function(g) { return !titolariSet.has(g); }).slice(0, 3));
+
+    var benchList = document.getElementById('best11-bench-list');
+    if (benchList) {
+        benchList.innerHTML = '';
+        bench.forEach(function(g) {
+            var rlBench = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
+            var squadraLogoBench = g.squadra;
+            if (isSerieA) {
+                var nomeNormBench = String(g.nome || '').trim().toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]/g, '');
+                squadraLogoBench = mappaBorrachoPerNome[nomeNormBench] || '';
+            }
+            var logoBench = squadraLogoBench
+                ? '<img class="bench-logo" src="' + logoUrl(squadraLogoBench) + '" onerror="this.remove()">'
+                : '<span></span>';
+            benchList.innerHTML += '<div class="bench-player">'
+                + logoBench
+                + '<span class="bench-name" title="' + g.nome + '">' + g.nome + '</span>'
+                + '<span class="bench-role">' + rlBench + '</span>'
+                + '<span class="bench-vote">' + (g[bestMetric] || 0) + '</span>'
+                + '</div>';
+        });
+    }
 
     var groups = [
         { list: players.slice(0, 1), x: 8 },
