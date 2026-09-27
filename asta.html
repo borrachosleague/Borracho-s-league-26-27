@@ -1752,6 +1752,24 @@ function syncAuthoritativeTimer(state) {
       ? 10000
       : 30000;
 
+  // Calibra il countdown sull'orologio del server Supabase.
+  // Il backend decide la scadenza con now(), quindi usare solo Date.now()
+  // può mostrare ancora 1-2 secondi quando per il server il timer è già finito.
+  var serverNow =
+    state.server_now ||
+    state.now ||
+    state.current_time ||
+    null;
+
+  var clockOffset =
+    serverNow
+      ? new Date(serverNow).getTime() - Date.now()
+      : 0;
+
+  var authoritativeNow = function() {
+    return Date.now() + clockOffset;
+  };
+
 
   var remaining =
     Math.max(
@@ -1760,7 +1778,7 @@ function syncAuthoritativeTimer(state) {
         (
           new Date(base).getTime() +
           duration -
-          Date.now()
+          authoritativeNow()
         ) / 1000
       )
     );
@@ -1802,7 +1820,7 @@ function syncAuthoritativeTimer(state) {
               (
                 new Date(base).getTime() +
                 duration -
-                Date.now()
+                authoritativeNow()
               ) / 1000
             )
           );
