@@ -20,6 +20,7 @@
             z-index: 100;
         }
         body.home-active .header { display: none; }
+        body:has(#page-home.active) .header { display: none; }
 
         .logo { display: flex; align-items: center; gap: 15px; }
         .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #e94560; }
@@ -59,8 +60,8 @@
             pointer-events: none;
         }
         .home-league {
-            width: min(76vw, 1050px);
-            height: min(92vh, 900px);
+            width: min(92vw, 1180px);
+            height: min(96vh, 940px);
             object-fit: contain;
             object-position: center;
             filter: drop-shadow(0 16px 30px rgba(0,0,0,.7));
@@ -611,9 +612,9 @@
             .logo img { width: 35px; height: 35px; }
             .home-nav { left: 5px; right: auto; bottom: 5px; width: 155px; gap: 4px; }
             .home-nav .nav-btn { padding: 6px 7px; font-size: 0.68em; }
-            .home-branding { inset: 0; padding-left: 155px; }
+            .home-branding { inset: 0; padding-left: 0; }
             .home-aperol { left: 5px; bottom: 190px; width: 155px; max-height: 120px; }
-            .home-league { width: calc(100vw - 165px); height: 96vh; }
+            .home-league { width: 94vw; height: 96vh; }
             .table-container { font-size: 0.85em; }
             th, td { padding: 3px 5px; font-size: 0.85em; }
             .logo-cell img { width: 30px; height: 30px; }
@@ -646,9 +647,9 @@
         }
 
         @media (max-width: 480px) {
-            .home-branding { inset: 0; padding-left: 125px; }
+            .home-branding { inset: 0; padding-left: 0; }
             .home-aperol { left: 4px; bottom: 170px; width: 125px; max-height: 105px; }
-            .home-league { width: calc(100vw - 132px); height: 96vh; }
+            .home-league { width: 96vw; height: 96vh; }
             .home-nav { left: 4px; right: auto; top: auto; bottom: 4px; transform: none; flex-direction: column; flex-wrap: nowrap; width: 125px; gap: 3px; }
             .home-nav .nav-btn { padding: 5px 4px; font-size: .60em; }
             .pitch-player .pp-main { min-width: 128px; max-width: 145px; height: 48px; gap: 4px; padding: 3px 5px 3px 7px; }
@@ -936,6 +937,8 @@ function resizeSelect(sel) {
     sel.style.width = Math.max(120, len * 9 + 55) + 'px';
 }
 
+
+document.body.classList.add('home-active');
 
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
