@@ -2165,11 +2165,8 @@ async function callPlayer(playerId) {
 
 
   if (r.error) {
-
-    showError(
-      r.error.message
-    );
-
+    alert('Impossibile chiamare il giocatore: ' + r.error.message);
+    showError(r.error.message);
     return;
   }
 
