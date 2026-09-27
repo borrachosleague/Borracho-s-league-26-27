@@ -184,8 +184,8 @@
         .sq-dati { flex: 1; }
 
         .risultati-giornate {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(18, minmax(34px, 1fr));
             gap: 6px;
             margin: 0 0 18px 0;
         }
@@ -201,7 +201,12 @@
             cursor: pointer;
         }
         .giornata-btn:hover { background: #ffea55; border-color: #fff0a0; color: #000; }
+        .giornata-btn.future { background: #666; border-color: #888; color: #fff; }
+        .giornata-btn.future:hover { background: #777; border-color: #aaa; color: #fff; }
         .giornata-btn.active { background: #000; border-color: #ffd700; color: #ffd700; }
+        @media (max-width: 900px) {
+            .risultati-giornate { grid-template-columns: repeat(9, minmax(34px, 1fr)); }
+        }
         #page-risultati .table-container { width: 100%; max-width: none; }
         #tabella-risultati { width: 100%; }
         #tabella-risultati td { font-size: 1.15em; text-align: center; padding-top: 12px; padding-bottom: 12px; }
@@ -1248,8 +1253,13 @@ fetch("dati.json")
         if (giornateWrap) {
             giornateWrap.innerHTML = '';
             for (var gi = 0; gi < 36; gi++) {
-                var disponibile = gi < datiRisultati.length;
-                giornateWrap.innerHTML += '<button class="giornata-btn' + (gi === 0 ? ' active' : '') + '" onclick="setGiornataRisultati(' + gi + ', this)"' + (disponibile ? '' : ' disabled style="opacity:.35;cursor:not-allowed"') + '>' + (gi + 1) + '</button>';
+                var giornataDati = datiRisultati[gi];
+                var giocata = !!(giornataDati && giornataDati.partite && giornataDati.partite.some(function(p) {
+                    return Number(p.pt_casa || 0) !== 0 || Number(p.pt_trasferta || 0) !== 0 ||
+                           Number(p.gol_casa || 0) !== 0 || Number(p.gol_trasferta || 0) !== 0;
+                }));
+                var classiGiornata = 'giornata-btn' + (gi === 0 ? ' active' : '') + (giocata ? '' : ' future');
+                giornateWrap.innerHTML += '<button class="' + classiGiornata + '" onclick="setGiornataRisultati(' + gi + ', this)">' + (gi + 1) + '</button>';
             }
         }
 
