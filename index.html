@@ -250,6 +250,121 @@
             color: #ffd700;
         }
         .classifica-table-wrap { min-width: 0; }
+
+        /* PROVA TEMA BORRACHO'S - CLASSIFICA */
+        #page-classifica {
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        #page-classifica .classifica-layout {
+            grid-template-columns: 190px minmax(0, 1fr);
+            gap: 30px;
+            padding-top: 18px;
+        }
+        #page-classifica .classifica-menu {
+            gap: 14px;
+            padding: 0 7px;
+        }
+        #page-classifica .classifica-menu-btn {
+            position: relative;
+            width: 150px;
+            height: 116px;
+            margin: 0 auto;
+            padding: 46px 13px 13px;
+            border: 3px solid #c99a32;
+            border-radius: 48% 48% 18px 18px / 26% 26% 18px 18px;
+            background:
+                linear-gradient(90deg, transparent 42%, rgba(255,255,255,.08) 48%, transparent 54%),
+                linear-gradient(180deg, #301a15 0 20%, #5a2d20 21% 100%);
+            color: #f5df9a;
+            box-shadow: inset 0 0 0 3px #17101a, 0 7px 14px rgba(0,0,0,.45);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: .82em;
+            line-height: 1.05;
+            letter-spacing: .6px;
+            text-shadow: 0 1px 2px #000;
+            overflow: visible;
+        }
+        #page-classifica .classifica-menu-btn::before {
+            content: '';
+            position: absolute;
+            top: -15px; left: 50%; transform: translateX(-50%);
+            width: 48px; height: 31px;
+            border: 3px solid #c99a32;
+            border-bottom: 0;
+            border-radius: 7px 7px 0 0;
+            background: #21151b;
+            box-shadow: inset 0 0 0 2px #5a2d20;
+        }
+        #page-classifica .classifica-menu-btn::after {
+            content: 'BORRACHO’S';
+            position: absolute;
+            left: 14px; right: 14px; top: 42px;
+            padding: 17px 4px 7px;
+            border: 1px solid #d8b75c;
+            border-radius: 50%;
+            background: #111a35;
+            color: #d8b75c;
+            font-size: .58em;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+        #page-classifica .classifica-menu-btn:hover {
+            transform: rotate(-1.5deg) scale(1.025);
+            background:
+                linear-gradient(90deg, transparent 42%, rgba(255,255,255,.11) 48%, transparent 54%),
+                linear-gradient(180deg, #3c2119 0 20%, #713726 21% 100%);
+            border-color: #f0ca63;
+            color: #fff0b3;
+        }
+        #page-classifica .classifica-menu-btn.active {
+            background:
+                linear-gradient(90deg, transparent 42%, rgba(255,255,255,.10) 48%, transparent 54%),
+                linear-gradient(180deg, #171327 0 20%, #17234a 21% 100%);
+            border-color: #f0ca63;
+            color: #fff;
+            box-shadow: inset 0 0 0 3px #5e1f2b, 0 0 18px rgba(240,202,99,.28);
+        }
+        #page-classifica .classifica-table-wrap {
+            padding: 10px;
+            border: 2px solid #b68b36;
+            border-radius: 14px;
+            background:
+                linear-gradient(rgba(12,16,31,.96),rgba(17,23,43,.96)),
+                repeating-linear-gradient(0deg,transparent 0 27px,rgba(255,255,255,.025) 28px);
+            box-shadow: inset 0 0 0 4px #271a1c, 0 12px 25px rgba(0,0,0,.38);
+        }
+        #page-classifica #tabella-classifica {
+            background: transparent;
+            border-radius: 8px;
+        }
+        #page-classifica #tabella-classifica thead {
+            background: #5e1f2b;
+        }
+        #page-classifica #tabella-classifica th {
+            color: #f1d37a;
+            border-bottom: 2px solid #c99a32;
+            font-family: Georgia, 'Times New Roman', serif;
+            letter-spacing: .7px;
+        }
+        #page-classifica #tabella-classifica td {
+            border-bottom: 1px solid rgba(216,183,92,.16);
+            color: #eee5cf;
+        }
+        #page-classifica #tabella-classifica tbody tr:nth-child(even) {
+            background: rgba(255,255,255,.025);
+        }
+        #page-classifica #tabella-classifica tbody tr:hover {
+            background: rgba(201,154,50,.10);
+        }
+        #page-classifica #tabella-classifica .pos {
+            color: #d8b75c;
+        }
+        #page-classifica #tabella-classifica .logo-cell img {
+            border: 2px solid #b68b36;
+            background: #111a35;
+            object-fit: contain;
+        }
+
         @media (max-width: 700px) {
             .classifica-layout { grid-template-columns: 1fr; gap: 12px; }
             .classifica-menu { flex-direction: row; flex-wrap: wrap; }
