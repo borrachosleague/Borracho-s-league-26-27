@@ -1355,6 +1355,14 @@ function setTipoClassifica(tipo, btn) {
     if (tipoEl) tipoEl.value = tipo;
     document.querySelectorAll('.classifica-menu-btn').forEach(function(b) { b.classList.remove('active'); });
     if (btn) btn.classList.add('active');
+
+    var board = document.querySelector('#page-classifica .classifica-board');
+    if (board) {
+        var img = tipo === 'classifica'
+            ? 'assets/borrachos/backgrounds/classifica/classifica-lavagna.png'
+            : 'assets/borrachos/backgrounds/classifica/classifica-3-colonne.webp';
+        board.style.backgroundImage = 'url("' + img + '")';
+    }
     updateClassifica();
 }
 
