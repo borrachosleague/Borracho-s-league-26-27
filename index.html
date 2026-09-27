@@ -171,9 +171,9 @@
         #sub-giocatori #tabella-giocatori th,
         #sub-giocatori #tabella-giocatori td { padding-left: 8px; padding-right: 8px; }
         #sub-squadre .giocatori-layout { grid-template-columns: 180px minmax(0, 560px); gap: 105px; }
-        #sub-squadre .sq-dati { width: 100%; max-width: 560px; }
+        #sub-squadre .sq-dati { width: 100%; max-width: 900px; }
         #sub-squadre .giocatori-controls { position: static; }
-        #sub-squadre .table-container { max-width: 560px; }
+        #sub-squadre .table-container { max-width: 900px; }
 
         .titolo-riquadro {
             background: #16213e;
@@ -238,6 +238,8 @@
         #sub-squadre .titolo-riquadro { display: none; }
         #sub-squadre .table-container { margin-left: 0; margin-top: 0; }
         #sub-squadre .sq-dati { transform: translateY(-70px); }
+        #sub-squadre #tabella-sq th,
+        #sub-squadre #tabella-sq td { white-space: nowrap; }
         #sub-squadre td:nth-child(3) { max-width: 120px; }
         #sub-squadre td:nth-child(4) { max-width: 60px; text-align: center; }
         #sub-squadre th:nth-child(3) { max-width: 120px; }
@@ -705,7 +707,10 @@
                 <div id="titolo-sq" class="titolo-riquadro"></div>
                 <div class="table-container">
                     <table id="tabella-sq">
-                        <thead><tr><th>Pos</th><th></th><th>Squadra</th><th id="head-sq"></th></tr></thead>
+                        <thead><tr>
+                            <th>Pos</th><th></th><th>Squadra</th><th class="head-sq-stat"></th>
+                            <th>Pos</th><th></th><th>Squadra</th><th class="head-sq-stat"></th>
+                        </tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -1228,7 +1233,7 @@ function updateSquadre() {
     var titoloStatsSquadre = document.getElementById('titolo-statistiche-squadre');
     if (titoloStatsSquadre) titoloStatsSquadre.textContent = def.titolo;
     document.getElementById('desc-sq').textContent = def.desc;
-    document.getElementById('head-sq').textContent = def.titolo;
+    document.querySelectorAll('.head-sq-stat').forEach(function(el) { el.textContent = def.titolo; });
 
     var ascending = (criterio === 'pt min');
     var sorted = datiStatSquadre.slice().sort(function(a, b) {
@@ -1238,9 +1243,15 @@ function updateSquadre() {
 
     var tbody = document.querySelector('#tabella-sq tbody');
     tbody.innerHTML = '';
-    sorted.forEach(function(sq, i) {
-        tbody.innerHTML += '<tr><td class="pos">' + (i+1) + '</td><td class="logo-cell"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + valoreStatSquadra(sq, criterio) + '</td></tr>';
-    });
+    for (var i = 0; i < 5; i++) {
+        var sx = sorted[i];
+        var dx = sorted[i + 5];
+        function celleSquadra(sq, pos) {
+            if (!sq) return '<td></td><td></td><td></td><td></td>';
+            return '<td class="pos">' + pos + '</td><td class="logo-cell"><img src="' + logoUrl(nomeSquadraPerLogoStatistiche(sq.nome)) + '" onerror="this.style.display=\'none\'"></td><td>' + sq.nome + '</td><td>' + valoreStatSquadra(sq, criterio) + '</td>';
+        }
+        tbody.innerHTML += '<tr>' + celleSquadra(sx, i + 1) + celleSquadra(dx, i + 6) + '</tr>';
+    }
 }
 
 
