@@ -270,6 +270,25 @@
             color:#f5efda; font-family:'Trebuchet MS','Segoe UI',sans-serif;
             font-size:clamp(11px,.92vw,17px); font-weight:800; text-shadow:0 1px 2px #000;
         }
+        
+        #page-classifica .classifica-special-data {
+            position:absolute; left:10.5%; top:39.0%; width:80%; height:49.5%; z-index:3;
+            display:none; grid-template-rows:repeat(10,minmax(0,1fr));
+            color:#f5efda; font-family:'Trebuchet MS','Segoe UI',sans-serif;
+            font-size:clamp(11px,.92vw,17px); font-weight:800; text-shadow:0 1px 2px #000;
+        }
+        #page-classifica .classifica-special-data .chalk-row {
+            grid-template-columns:14% 66% 20% !important;
+        }
+        #page-classifica .classifica-special-data .chalk-pos {
+            display:none;
+        }
+        #page-classifica .classifica-special-data .chalk-team {
+            padding-left:3%; font-size:1.18em; font-weight:900;
+        }
+        #page-classifica .classifica-special-data .chalk-pt {
+            color:#ffd84c; font-weight:1000;
+        }
         #page-classifica .chalk-row {
             min-height:0; display:grid; align-items:center;
             grid-template-columns:7% 31% 7.75% 7.75% 7.75% 7.75% 7.75% 7.75% 7.75% 7.75%;
@@ -868,6 +887,7 @@
         </div>
         <div class="classifica-board">
             <div id="classifica-chalk-data" class="classifica-chalk-data"></div>
+            <div id="classifica-special-data" class="classifica-special-data"></div>
             <table id="tabella-classifica" hidden><thead></thead><tbody></tbody></table>
         </div>
     </div>
@@ -1107,7 +1127,7 @@ function currentLayoutPage(){
 function pageLayoutTargets(){
     var p=currentLayoutPage(); if(!p)return [];
     var selectors={
-        'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-menu-board','.classifica-menu-btn'],
+        'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-special-data','.classifica-menu-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
         'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
@@ -1370,10 +1390,14 @@ function updateClassifica() {
     var tipoEl = document.getElementById('tipo-classifica');
     var tipo = tipoEl ? tipoEl.value : 'classifica';
     var chalk = document.getElementById('classifica-chalk-data');
-    if (!chalk) return;
+    var special = document.getElementById('classifica-special-data');
+    if (!chalk || !special) return;
     chalk.innerHTML = '';
+    special.innerHTML = '';
 
     if (tipo === 'classifica') {
+        chalk.style.display = 'grid';
+        special.style.display = 'none';
         var sorted = datiSquadre.slice().sort(function(a, b) {
             if (b.pt !== a.pt) return b.pt - a.pt;
             return b.pt_totali - a.pt_totali;
@@ -1394,6 +1418,8 @@ function updateClassifica() {
         return;
     }
 
+    chalk.style.display = 'none';
+    special.style.display = 'grid';
     var sortedSpeciale = datiStatSquadre.slice().sort(function(a, b) {
         return Number((b.dati && b.dati[tipo]) || 0) - Number((a.dati && a.dati[tipo]) || 0);
     });
@@ -1405,7 +1431,7 @@ function updateClassifica() {
             '<span class="chalk-pos">' + (i+1) + '</span>' +
             '<span class="chalk-team">' + sq.nome + '</span>' +
             '<span class="chalk-pt">' + valore + '</span>';
-        chalk.appendChild(row);
+        special.appendChild(row);
     });
 }
 
