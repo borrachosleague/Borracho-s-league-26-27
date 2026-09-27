@@ -51,38 +51,51 @@
         }
         .home-branding {
             position: absolute;
-            inset: 0 220px 0 0;
+            inset: 0 0 155px 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: clamp(6px, 1.2vh, 14px);
             z-index: 2;
             pointer-events: none;
         }
         .home-aperol {
-            width: min(68vw, 760px);
-            max-height: 25vh;
+            position: absolute;
+            left: 50%;
+            bottom: -126px;
+            transform: translateX(-50%);
+            width: min(92vw, 1050px);
+            height: 120px;
             object-fit: contain;
-            filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+            object-position: center;
+            filter: drop-shadow(0 7px 16px rgba(0,0,0,.55));
         }
         .home-league {
-            width: min(66vw, 700px);
-            max-height: 66vh;
+            width: min(88vw, 980px);
+            height: min(78vh, 780px);
             object-fit: contain;
-            filter: drop-shadow(0 14px 26px rgba(0,0,0,.65));
+            filter: drop-shadow(0 16px 30px rgba(0,0,0,.7));
         }
 
         .home-nav {
-            position: absolute; right: 30px; top: 50%;
-            transform: translateY(-50%);
-            display: flex; flex-direction: column; gap: 15px; z-index: 10;
+            position: absolute;
+            left: 50%;
+            right: auto;
+            bottom: 12px;
+            top: auto;
+            transform: translateX(-50%);
+            width: min(96vw, 1000px);
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
         }
         .home-nav .nav-btn {
-            background: rgba(26,26,46,0.85); border: 2px solid #e94560; color: #fff;
-            padding: 12px 25px; font-size: 1em; font-weight: 600;
+            background: rgba(26,26,46,0.92); border: 2px solid #e94560; color: #fff;
+            padding: 10px 20px; font-size: .92em; font-weight: 700;
             text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
             border-radius: 6px; transition: all 0.3s; backdrop-filter: blur(5px);
+            white-space: nowrap;
         }
         .home-nav .nav-btn:hover { background: #e94560; }
 
@@ -594,11 +607,11 @@
             .nav-btn { padding: 8px 12px; font-size: 0.8em; }
             .logo-text { font-size: 1.1em; }
             .logo img { width: 35px; height: 35px; }
-            .home-nav { right: 10px; gap: 8px; }
-            .home-nav .nav-btn { padding: 8px 15px; font-size: 0.85em; }
-            .home-branding { inset: 0 150px 0 0; }
-            .home-aperol { width: min(72vw, 620px); }
-            .home-league { width: min(70vw, 600px); }
+            .home-nav { left: 50%; right: auto; bottom: 8px; gap: 6px; width: 98vw; }
+            .home-nav .nav-btn { padding: 8px 11px; font-size: 0.78em; }
+            .home-branding { inset: 0 0 140px 0; }
+            .home-aperol { width: 96vw; height: 105px; bottom: -110px; }
+            .home-league { width: 94vw; height: min(76vh, 690px); }
             .table-container { font-size: 0.85em; }
             th, td { padding: 3px 5px; font-size: 0.85em; }
             .logo-cell img { width: 30px; height: 30px; }
@@ -631,11 +644,11 @@
         }
 
         @media (max-width: 480px) {
-            .home-branding { inset: 0 0 115px 0; justify-content: center; gap: 2px; }
-            .home-aperol { width: 94vw; max-height: 22vh; }
-            .home-league { width: 92vw; max-height: 58vh; }
-            .home-nav { right: 50%; top: auto; bottom: 10px; transform: translateX(50%); flex-direction: row; flex-wrap: wrap; justify-content: center; width: 96vw; gap: 5px; }
-            .home-nav .nav-btn { padding: 7px 9px; font-size: .72em; }
+            .home-branding { inset: 0 0 170px 0; }
+            .home-aperol { width: 98vw; height: 90px; bottom: -105px; }
+            .home-league { width: 98vw; height: min(70vh, 570px); }
+            .home-nav { left: 50%; right: auto; top: auto; bottom: 7px; transform: translateX(-50%); flex-direction: row; flex-wrap: wrap; justify-content: center; width: 98vw; gap: 4px; }
+            .home-nav .nav-btn { padding: 6px 8px; font-size: .68em; }
             .pitch-player .pp-main { min-width: 128px; max-width: 145px; height: 48px; gap: 4px; padding: 3px 5px 3px 7px; }
             .pitch-player .pp-logo { width: 38px; height: 38px; flex-basis: 38px; }
             .pitch-player .pp-name { font-size: 0.85em; }
