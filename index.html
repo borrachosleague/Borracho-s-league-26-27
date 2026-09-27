@@ -137,12 +137,14 @@
         }
 
         .giocatori-layout {
-            display: flex;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: 310px minmax(0, 760px);
+            gap: 22px;
             align-items: flex-start;
+            justify-content: start;
         }
         .giocatori-controls {
-            flex: 0 0 140px;
+            width: 310px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -159,7 +161,12 @@
         }
         .ricerca-input:focus { outline: none; border-color: #e94560; }
         .giocatori-controls .criterio-select { width: 100%; margin-bottom: 0; }
-        .giocatori-layout .table-container { flex: 1; margin-left: 0; }
+        .giocatori-layout .table-container { width: 100%; max-width: 760px; margin-left: 0; }
+        #sub-giocatori #tabella-giocatori { width: 100%; }
+        #sub-giocatori #tabella-giocatori th,
+        #sub-giocatori #tabella-giocatori td { padding-left: 8px; padding-right: 8px; }
+        #sub-squadre .giocatori-layout { grid-template-columns: 310px minmax(0, 620px); }
+        #sub-squadre .sq-dati { width: 100%; max-width: 620px; }
 
         .titolo-riquadro {
             background: #16213e;
@@ -222,7 +229,7 @@
         #tabella-risultati .ris-logo { width: 38px; height: 38px; object-fit: contain; flex: 0 0 38px; }
 
         #sub-squadre .titolo-riquadro { display: none; }
-        #sub-squadre .table-container { margin-left: 140px; margin-top: -110px; }
+        #sub-squadre .table-container { margin-left: 0; margin-top: 0; }
         #sub-squadre td:nth-child(3) { max-width: 120px; }
         #sub-squadre td:nth-child(4) { max-width: 60px; text-align: center; }
         #sub-squadre th:nth-child(3) { max-width: 120px; }
@@ -275,8 +282,8 @@
         }
         .stats-choice-btn:hover { background:#ffea55; }
         .stats-choice-btn.active { background:#000; color:#ffd700; }
-        .stats-criteria { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
-        .stats-criteria .stats-choice-btn { font-size:.7em; padding:6px 7px; }
+        .stats-criteria { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+        .stats-criteria .stats-choice-btn { font-size:.72em; padding:6px 8px; }
         .stats-filter-label { font-size:.68em; font-weight:800; color:#e94560; text-transform:uppercase; margin:7px 0 4px; }
         .stats-hidden-select { display:none !important; }
         #sub-giocatori td:last-child,
