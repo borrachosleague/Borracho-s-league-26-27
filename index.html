@@ -41,12 +41,36 @@
         .page.active { display: block; }
 
         #page-home.active {
-            position: fixed; top: 10px; left: 10px;
+            position: fixed; inset: 0;
             width: 100vw; height: 100vh;
             padding: 0; margin: 0;
-            background: url('logo.png') no-repeat center center;
-            background-size: cover;
+            background:
+                radial-gradient(circle at 43% 46%, rgba(38,54,96,.72) 0%, rgba(15,15,26,.94) 56%, #080811 100%);
             z-index: 0;
+            overflow: hidden;
+        }
+        .home-branding {
+            position: absolute;
+            inset: 0 220px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(6px, 1.2vh, 14px);
+            z-index: 2;
+            pointer-events: none;
+        }
+        .home-aperol {
+            width: min(68vw, 760px);
+            max-height: 25vh;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+        }
+        .home-league {
+            width: min(66vw, 700px);
+            max-height: 66vh;
+            object-fit: contain;
+            filter: drop-shadow(0 14px 26px rgba(0,0,0,.65));
         }
 
         .home-nav {
@@ -572,7 +596,9 @@
             .logo img { width: 35px; height: 35px; }
             .home-nav { right: 10px; gap: 8px; }
             .home-nav .nav-btn { padding: 8px 15px; font-size: 0.85em; }
-            .home-loghi img { width: 60px; height: 60px; }
+            .home-branding { inset: 0 150px 0 0; }
+            .home-aperol { width: min(72vw, 620px); }
+            .home-league { width: min(70vw, 600px); }
             .table-container { font-size: 0.85em; }
             th, td { padding: 3px 5px; font-size: 0.85em; }
             .logo-cell img { width: 30px; height: 30px; }
@@ -605,9 +631,11 @@
         }
 
         @media (max-width: 480px) {
-            .home-loghi img { width: 45px !important; height: 45px !important; }
-            .home-logo-right { right: 18% !important; }
-            .home-nav { right: 50%; transform: translateX(50%); }
+            .home-branding { inset: 0 0 115px 0; justify-content: center; gap: 2px; }
+            .home-aperol { width: 94vw; max-height: 22vh; }
+            .home-league { width: 92vw; max-height: 58vh; }
+            .home-nav { right: 50%; top: auto; bottom: 10px; transform: translateX(50%); flex-direction: row; flex-wrap: wrap; justify-content: center; width: 96vw; gap: 5px; }
+            .home-nav .nav-btn { padding: 7px 9px; font-size: .72em; }
             .pitch-player .pp-main { min-width: 128px; max-width: 145px; height: 48px; gap: 4px; padding: 3px 5px 3px 7px; }
             .pitch-player .pp-logo { width: 38px; height: 38px; flex-basis: 38px; }
             .pitch-player .pp-name { font-size: 0.85em; }
@@ -647,7 +675,10 @@
 
 <!-- HOME -->
 <div id="page-home" class="page active">
-    <div class="home-loghi" id="home-loghi"></div>
+    <div class="home-branding">
+        <img class="home-aperol" src="aperol definitiva.png" alt="Serie Aperol - Lega Fantacalcio Lombadostana 2026-2027">
+        <img class="home-league" src="borrachos-league-logo-10-squadre.png" alt="Borracho's League">
+    </div>
     <div class="home-nav">
         <button class="nav-btn" onclick="showPage('classifica', this)">Classifica</button>
         <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
