@@ -138,13 +138,13 @@
 
         .giocatori-layout {
             display: grid;
-            grid-template-columns: 310px minmax(0, 760px);
-            gap: 22px;
+            grid-template-columns: 620px minmax(0, 700px);
+            gap: 38px;
             align-items: flex-start;
             justify-content: start;
         }
         .giocatori-controls {
-            width: 310px;
+            width: 620px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -161,12 +161,12 @@
         }
         .ricerca-input:focus { outline: none; border-color: #e94560; }
         .giocatori-controls .criterio-select { width: 100%; margin-bottom: 0; }
-        .giocatori-layout .table-container { width: 100%; max-width: 760px; margin-left: 0; }
+        .giocatori-layout .table-container { width: 100%; max-width: 700px; margin-left: 0; }
         #sub-giocatori #tabella-giocatori { width: 100%; }
         #sub-giocatori #tabella-giocatori th,
         #sub-giocatori #tabella-giocatori td { padding-left: 8px; padding-right: 8px; }
-        #sub-squadre .giocatori-layout { grid-template-columns: 310px minmax(0, 620px); }
-        #sub-squadre .sq-dati { width: 100%; max-width: 620px; }
+        #sub-squadre .giocatori-layout { grid-template-columns: 620px minmax(0, 560px); gap: 38px; }
+        #sub-squadre .sq-dati { width: 100%; max-width: 560px; }
 
         .titolo-riquadro {
             background: #16213e;
@@ -275,15 +275,15 @@
         }
 
         #sub-squadre .classifica-grid { margin-left: 140px; }
-        .stats-choice-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+        .stats-choice-row { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; margin-bottom:8px; }
         .stats-choice-btn {
             border:2px solid #ffd700; border-radius:6px; background:#ffd700; color:#000;
-            font-weight:800; font-size:.76em; padding:7px 9px; cursor:pointer;
+            font-weight:800; font-size:.72em; padding:7px 4px; cursor:pointer; min-width:0; width:100%;
         }
         .stats-choice-btn:hover { background:#ffea55; }
         .stats-choice-btn.active { background:#000; color:#ffd700; }
-        .stats-criteria { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
-        .stats-criteria .stats-choice-btn { font-size:.72em; padding:6px 8px; }
+        .stats-criteria { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:4px; margin-top:4px; }
+        .stats-criteria .stats-choice-btn { font-size:.62em; padding:6px 2px; white-space:normal; line-height:1.05; }
         .stats-filter-label { font-size:.68em; font-weight:800; color:#e94560; text-transform:uppercase; margin:7px 0 4px; }
         .stats-hidden-select { display:none !important; }
         #sub-giocatori td:last-child,
