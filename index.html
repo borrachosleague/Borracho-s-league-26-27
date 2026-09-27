@@ -268,7 +268,7 @@
             position:absolute; left:15.9%; top:39.5%; width:74.4%; height:49.0%; z-index:3;
             display:grid; grid-template-rows:repeat(10,minmax(0,1fr));
             color:#f5efda; font-family:'Trebuchet MS','Segoe UI',sans-serif;
-            font-size:clamp(8px,.70vw,13px); font-weight:800; text-shadow:0 1px 2px #000;
+            font-size:clamp(11px,.92vw,17px); font-weight:800; text-shadow:0 1px 2px #000;
         }
         #page-classifica .chalk-row {
             min-height:0; display:grid; align-items:center;
@@ -284,6 +284,8 @@
         #page-classifica .chalk-row .chalk-pos { display:none; }
         #page-classifica .chalk-row .chalk-pt { color:#ffd84c; font-weight:1000; }
         #page-classifica #tabella-classifica[hidden] { display:none!important; }
+        body.layout-editing #page-classifica .classifica-chalk-data { outline-offset:2px; }
+
 
         #page-classifica .classifica-menu {
             position:absolute; left:2vw; top:9vh; width:22vw; max-width:300px; z-index:5;
@@ -1082,7 +1084,7 @@ function currentLayoutPage(){
 function pageLayoutTargets(){
     var p=currentLayoutPage(); if(!p)return [];
     var selectors={
-        'page-classifica':['.classifica-board','.classifica-menu-btn'],
+        'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
         'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
