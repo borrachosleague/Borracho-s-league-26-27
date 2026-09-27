@@ -430,10 +430,27 @@ select{
 @media(max-width:900px){.correction-page-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1050px){.movements-board{grid-template-columns:repeat(2,minmax(150px,1fr))}}
 @media(max-width:600px){.movements-board{grid-template-columns:1fr}}
+/* Quando l'asta è incorporata nel sito principale, nasconde eventuali header/nav ereditati o iniettati. */
+body.asta-embedded > header,
+body.asta-embedded > nav,
+body.asta-embedded > .site-header,
+body.asta-embedded > #site-header,
+body.asta-embedded > .main-header,
+body.asta-embedded > #main-header { display:none !important; }
+
 </style>
 </head>
 
 <body>
+<script>
+(function(){
+  try {
+    if (window.self !== window.top) document.body.classList.add('asta-embedded');
+  } catch(e) {
+    document.body.classList.add('asta-embedded');
+  }
+})();
+</script>
 
 <h1>⚽ Fanta Asta di Riparazione</h1>
 
