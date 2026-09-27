@@ -139,12 +139,17 @@
         .giocatori-layout {
             display: grid;
             grid-template-columns: 180px minmax(0, 700px);
-            gap: 70px;
+            gap: 105px;
             align-items: flex-start;
             justify-content: start;
+            padding-left: 8px;
         }
         .giocatori-controls {
             width: 180px;
+            position: sticky;
+            top: 8px;
+            align-self: start;
+            z-index: 5;
             display: flex;
             flex-direction: column;
             gap: 4px;
@@ -165,8 +170,14 @@
         #sub-giocatori #tabella-giocatori { width: 100%; }
         #sub-giocatori #tabella-giocatori th,
         #sub-giocatori #tabella-giocatori td { padding-left: 8px; padding-right: 8px; }
-        #sub-squadre .giocatori-layout { grid-template-columns: 180px minmax(0, 560px); gap: 70px; }
+        #sub-squadre .giocatori-layout { grid-template-columns: 180px minmax(0, 560px); gap: 105px; }
         #sub-squadre .sq-dati { width: 100%; max-width: 560px; }
+        #sub-squadre .giocatori-controls { position: static; }
+        #sub-squadre .table-container { max-width: 560px; }
+        #sub-squadre #tabella-sq th,
+        #sub-squadre #tabella-sq td { padding-top: 5px; padding-bottom: 5px; line-height: 1.05; font-size: .82em; }
+        #sub-squadre #tabella-sq .logo-cell img { width: 30px; height: 30px; }
+        #sub-squadre .desc-riquadro { padding: 5px 8px; margin-top: 5px; min-height: 28px; font-size: .7em; }
 
         .titolo-riquadro {
             background: #16213e;
