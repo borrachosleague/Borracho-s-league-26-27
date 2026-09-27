@@ -1338,9 +1338,9 @@ function updateBest11() {
             }
             el.innerHTML = '<div class="pp-main">'
                 + '<span class="pp-name">' + g.nome + '</span>'
+                + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
                 + logo
                 + '</div>'
-                + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
                 + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span>';
             container.appendChild(el);
         });
