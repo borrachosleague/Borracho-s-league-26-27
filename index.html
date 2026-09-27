@@ -1014,6 +1014,10 @@
     <button type="button" onclick="toggleLayoutEditor()">✥ MODIFICA</button>
     <button type="button" onclick="resizeLayoutSelected(-0.05)">− PICCOLO</button>
     <button type="button" onclick="resizeLayoutSelected(0.05)">+ GRANDE</button>
+    <button type="button" onclick="resizeLayoutAxis('height',-0.05)">↕ RIGHE −</button>
+    <button type="button" onclick="resizeLayoutAxis('height',0.05)">↕ RIGHE +</button>
+    <button type="button" onclick="resizeLayoutAxis('width',-0.05)">↔ COLONNE −</button>
+    <button type="button" onclick="resizeLayoutAxis('width',0.05)">↔ COLONNE +</button>
     <button type="button" onclick="confirmLayoutEditor()">✓ CONFERMA</button>
     <button type="button" onclick="copyPageLayout()">📋 COPIA LAYOUT</button>
 </div>
@@ -1128,6 +1132,19 @@ function resizeLayoutSelected(delta){
     var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
     layoutSelected.style.width=nw+'px';
     if(layoutSelected.tagName==='IMG')layoutSelected.style.height='auto';
+}
+function resizeLayoutAxis(axis,delta){
+    if(!layoutEditorOn||!layoutSelected)return;
+    var r=layoutSelected.getBoundingClientRect();
+    if(axis==='height'){
+        var nh=Math.max(60,Math.min(innerHeight,r.height*(1+delta)));
+        layoutSelected.style.height=nh+'px';
+        layoutSelected.style.aspectRatio='auto';
+    }else{
+        var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
+        layoutSelected.style.width=nw+'px';
+        layoutSelected.style.aspectRatio='auto';
+    }
 }
 function confirmLayoutEditor(){
     layoutEditorOn=false; document.body.classList.remove('layout-editing');
