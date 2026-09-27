@@ -2146,11 +2146,6 @@ async function callPlayer(playerId) {
   }
 
 
-  if (amount > maxSpendableForBid) {
-    alert('Offerta troppo alta. Massimo spendibile: ' + maxSpendableForBid + ' crediti. Devi conservare 1 credito per ogni giocatore ancora da comprare.');
-    return;
-  }
-
   actionBusy =
     true;
 
@@ -2898,6 +2893,11 @@ async function placeBid() {
     return;
   }
 
+
+  if (amount > maxSpendableForBid) {
+    alert('Offerta troppo alta. Massimo spendibile: ' + maxSpendableForBid + ' crediti. Devi conservare 1 credito per ogni giocatore ancora da comprare.');
+    return;
+  }
 
   actionBusy =
     true;
