@@ -402,7 +402,7 @@ dati = {
     "stat_colonne": colonne_stat
 }   
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    json.dump(dati, f, ensure_ascii=False, indent=2)
+    json.dump(dati, f, ensure_ascii=False, separators=(',', ':'))
 
 # TEST: mostra i primi 3 punti
 for s in squadre[:3]:
