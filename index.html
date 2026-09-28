@@ -1830,6 +1830,101 @@
         #page-best11 .best11-hover-stat strong{margin-top:7px;color:#f7f4ed;font-family:"Arial Black",Arial,sans-serif;font-size:27px;line-height:1;text-shadow:0 2px 2px #000}
         #page-best11 .best11-hover-stat-best strong{color:#e9ad31}
         #page-best11 .bench-player{cursor:default}
+
+        /* === BEST 11 · HOVER BORRACHO'S A MANETTA === */
+        #page-best11 .best11-hover-card{
+            width:630px!important;height:258px!important;
+            background:
+                radial-gradient(circle at 9% 15%,rgba(255,190,55,.16) 0 2px,transparent 3px),
+                radial-gradient(circle at 91% 84%,rgba(255,190,55,.14) 0 2px,transparent 3px),
+                repeating-linear-gradient(112deg,transparent 0 17px,rgba(255,255,255,.018) 18px,transparent 19px 31px),
+                radial-gradient(ellipse at 72% 22%,rgba(171,105,18,.20),transparent 31%),
+                linear-gradient(165deg,#29241b 0%,#11100d 42%,#050505 100%)!important;
+            border:4px solid #17120b!important;
+            border-radius:14px!important;
+            outline:2px solid #9d6b21!important;
+            outline-offset:-7px!important;
+            box-shadow:
+                inset 0 0 0 1px #e0ad4b,
+                inset 0 0 34px #000,
+                inset 0 -14px 24px rgba(0,0,0,.8),
+                0 10px 28px rgba(0,0,0,.88)!important;
+        }
+        #page-best11 .best11-hover-card::before,
+        #page-best11 .best11-hover-card::after{
+            content:"";position:absolute;z-index:8;width:9px;height:9px;border-radius:50%;
+            background:radial-gradient(circle at 35% 30%,#e2b85c,#6c4514 55%,#241608 70%);
+            box-shadow:0 1px 2px #000;
+        }
+        #page-best11 .best11-hover-card::before{left:12px;top:12px}
+        #page-best11 .best11-hover-card::after{right:12px;bottom:12px}
+        #page-best11 .best11-hover-top{
+            height:136px!important;grid-template-columns:142px 1fr!important;
+            padding:13px 23px 9px!important;
+            border-bottom:3px solid #7d5520!important;
+            box-shadow:0 2px 0 #171009,inset 0 -1px 0 #c48d35!important;
+        }
+        #page-best11 .best11-hover-logo{
+            width:116px!important;height:116px!important;
+            padding:6px!important;
+            background:radial-gradient(circle,rgba(255,204,89,.12),rgba(0,0,0,.18) 67%,transparent 68%)!important;
+            filter:drop-shadow(0 4px 4px #000) drop-shadow(0 0 5px rgba(210,150,44,.35))!important;
+        }
+        #page-best11 .best11-hover-main{padding-left:20px!important}
+        #page-best11 .best11-hover-name{
+            color:#fff8e9!important;
+            font-family:"Arial Black","Arial Narrow",Arial,sans-serif!important;
+            font-size:33px!important;font-style:italic!important;font-weight:1000!important;
+            letter-spacing:-1.2px!important;
+            text-shadow:2px 2px 0 #000,-1px -1px 0 rgba(177,116,27,.45),0 3px 5px #000!important;
+        }
+        #page-best11 .best11-hover-team{
+            display:inline-block!important;margin-top:7px!important;padding:3px 9px!important;
+            color:#e7b94f!important;background:#0b0a08!important;
+            border-left:4px solid #b47b25!important;border-right:1px solid #5d411e!important;
+            font-family:"Arial Narrow",Arial,sans-serif!important;font-size:13px!important;
+            font-weight:1000!important;font-style:italic!important;letter-spacing:1px!important;
+            text-shadow:0 1px 2px #000!important;
+        }
+        #page-best11 .best11-hover-role{
+            margin-top:9px!important;min-width:118px!important;padding:5px 15px!important;
+            border:2px solid #130d09!important;border-radius:3px!important;
+            font-family:"Arial Black",Arial,sans-serif!important;font-size:12px!important;font-style:italic!important;
+            box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),2px 2px 0 #000!important;
+            transform:skew(-5deg)!important;
+        }
+        #page-best11 .best11-hover-stats{
+            height:114px!important;padding:9px 15px 12px!important;
+            background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(0,0,0,.22))!important;
+        }
+        #page-best11 .best11-hover-stat{
+            position:relative!important;border-left:2px solid #4f391c!important;
+            box-shadow:inset 1px 0 rgba(190,139,54,.16)!important;
+        }
+        #page-best11 .best11-hover-stat:first-child{border-left:0!important;box-shadow:none!important}
+        #page-best11 .best11-hover-stat span{
+            color:#c9b68e!important;font-family:"Arial Narrow",Arial,sans-serif!important;
+            font-size:10px!important;font-weight:1000!important;font-style:italic!important;
+            letter-spacing:.8px!important;text-shadow:0 1px 2px #000!important;
+        }
+        #page-best11 .best11-hover-stat strong{
+            margin-top:7px!important;color:#f6efe0!important;
+            font-family:"Arial Black",Arial,sans-serif!important;font-size:30px!important;
+            text-shadow:2px 2px 0 #000,0 0 6px rgba(255,187,57,.16)!important;
+        }
+        #page-best11 .best11-hover-stat-best{
+            margin:4px 8px!important;border:2px solid #3d280c!important;border-radius:7px!important;
+            background:linear-gradient(145deg,#e8b33f 0%,#a96d13 58%,#654006 100%)!important;
+            box-shadow:inset 0 0 0 2px rgba(255,226,128,.28),inset 0 -7px 12px rgba(70,37,0,.35),2px 3px 0 #000!important;
+        }
+        #page-best11 .best11-hover-stat-best span{color:#241505!important;text-shadow:0 1px rgba(255,225,132,.45)!important}
+        #page-best11 .best11-hover-stat-best strong{color:#171008!important;text-shadow:0 1px rgba(255,226,128,.55)!important}
+        #page-best11 .pitch-player .pp-main{cursor:pointer!important}
+        #page-best11 .bench-player{
+            cursor:pointer!important;
+            transition:transform .1s ease,filter .1s ease!important;
+        }
+        #page-best11 .bench-player:hover{transform:translateX(-3px)!important;filter:brightness(1.18)!important}
 </style>
 
 </head>
