@@ -1078,6 +1078,15 @@
             flex:0 0 25.714286vh !important;
             margin:0 !important;
         }
+
+        /* Layout editor: durante MODIFICA gli elementi selezionati devono poter
+           superare i valori !important del layout congelato. */
+        body.layout-editing #page-classifica .layout-editable {
+            pointer-events:auto !important;
+        }
+        body.layout-editing #page-classifica .layout-editable.layout-selected {
+            position:fixed !important;
+        }
 </style>
 </head>
 <body>
@@ -1413,16 +1422,20 @@ function layoutPointerDown(e){
     layoutSelected=el; el.classList.add('layout-selected');
     var r=el.getBoundingClientRect();
     layoutDrag={el:el,dx:e.clientX-r.left,dy:e.clientY-r.top};
-    el.style.position='fixed'; el.style.left=r.left+'px'; el.style.top=r.top+'px';
-    el.style.right='auto'; el.style.bottom='auto'; el.style.margin='0';
+    el.style.setProperty('position','fixed','important');
+    el.style.setProperty('left',r.left+'px','important');
+    el.style.setProperty('top',r.top+'px','important');
+    el.style.setProperty('right','auto','important');
+    el.style.setProperty('bottom','auto','important');
+    el.style.setProperty('margin','0','important');
     el.style.zIndex = el.classList.contains('classifica-menu-board') ? '4' : '50000';
-    el.style.width=r.width+'px';
+    el.style.setProperty('width',r.width+'px','important');
 }
 function layoutPointerMove(e){
     if(!layoutDrag)return;
     var el=layoutDrag.el,r=el.getBoundingClientRect();
-    el.style.left=Math.max(0,Math.min(innerWidth-r.width,e.clientX-layoutDrag.dx))+'px';
-    el.style.top=Math.max(0,Math.min(innerHeight-r.height,e.clientY-layoutDrag.dy))+'px';
+    el.style.setProperty('left',Math.max(0,Math.min(innerWidth-r.width,e.clientX-layoutDrag.dx))+'px','important');
+    el.style.setProperty('top',Math.max(0,Math.min(innerHeight-r.height,e.clientY-layoutDrag.dy))+'px','important');
 }
 function layoutPointerUp(){layoutDrag=null;}
 function resizeLayoutSelected(delta){
@@ -1437,12 +1450,12 @@ function resizeLayoutAxis(axis,delta){
     var r=layoutSelected.getBoundingClientRect();
     if(axis==='height'){
         var nh=Math.max(60,Math.min(innerHeight,r.height*(1+delta)));
-        layoutSelected.style.height=nh+'px';
-        layoutSelected.style.aspectRatio='auto';
+        layoutSelected.style.setProperty('height',nh+'px','important');
+        layoutSelected.style.setProperty('aspect-ratio','auto','important');
     }else{
         var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
-        layoutSelected.style.width=nw+'px';
-        layoutSelected.style.aspectRatio='auto';
+        layoutSelected.style.setProperty('width',nw+'px','important');
+        layoutSelected.style.setProperty('aspect-ratio','auto','important');
     }
 }
 function confirmLayoutEditor(){
