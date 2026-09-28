@@ -845,6 +845,85 @@
 
         #page-best11 .pitch-lines { display:none !important; }
         #page-best11 .best11-layout { position:relative; z-index:2; }
+
+        /* === BEST 11 · SANTIAGO BERNABEER === */
+        #page-best11 { height:calc(100vh - 82px); min-height:620px; background-position:center center; }
+        #page-best11 .best11-layout {
+            display:block;
+            position:relative;
+            width:100%;
+            height:100%;
+            margin:0;
+        }
+        #page-best11 .best11-controls {
+            position:absolute;
+            left:3.2%;
+            top:17%;
+            width:15.5%;
+            max-height:70%;
+            overflow:auto;
+            padding:8px 10px;
+            gap:4px;
+            z-index:6;
+            background:rgba(5,8,14,.42);
+            border-radius:12px;
+            scrollbar-width:thin;
+        }
+        #page-best11 .best11-label { color:#f4d36a; font-size:.68em; margin-top:2px; }
+        #page-best11 .subnav.best11-v { gap:3px; margin-bottom:4px; }
+        #page-best11 .subnav.best11-v .subnav-btn {
+            padding:5px 4px;
+            font-size:.68em;
+            background:rgba(9,14,24,.82);
+        }
+        #page-best11 .best11-presenze-control { padding:4px; margin:0 0 3px; background:rgba(9,14,24,.78); }
+        #page-best11 #pitch-best11 {
+            position:absolute;
+            left:23.5%;
+            top:31%;
+            width:54%;
+            height:53%;
+            aspect-ratio:auto;
+            overflow:visible;
+            z-index:5;
+        }
+        #page-best11 .best11-bench {
+            position:absolute;
+            right:2.8%;
+            top:20%;
+            width:17%;
+            max-height:66%;
+            overflow:auto;
+            z-index:6;
+            padding:7px;
+            background:rgba(5,8,14,.48);
+            border:1px solid rgba(242,199,73,.45);
+            border-radius:12px;
+        }
+        #page-best11 .best11-bench-title { font-size:.78em; margin-bottom:4px; }
+        #page-best11 .bench-player { grid-template-columns:26px minmax(0,1fr) 26px 32px; min-height:32px; gap:4px; padding:2px; }
+        #page-best11 .bench-logo { width:25px; height:25px; }
+        #page-best11 .bench-name { font-size:.65em; }
+        #page-best11 .bench-role { font-size:.55em; }
+        #page-best11 .bench-vote { font-size:.7em; }
+        #page-best11 .pitch-player .pp-main {
+            min-width:112px;
+            max-width:145px;
+            height:38px;
+            padding:2px 4px 2px 7px;
+            gap:4px;
+            border-width:1px;
+            border-radius:7px;
+            background:rgba(0,0,0,.76);
+        }
+        #page-best11 .pitch-player .pp-logo { width:31px; height:31px; flex-basis:31px; }
+        #page-best11 .pitch-player .pp-name { font-size:.78em; }
+        #page-best11 .pitch-player .pp-val { font-size:.78em; line-height:1; }
+        #page-best11 .pitch-player .pp-ruolo { font-size:.5em; line-height:1; }
+        @media (max-width:1000px) {
+            #page-best11 .pitch-player .pp-main { min-width:90px; max-width:110px; }
+            #page-best11 .pitch-player .pp-name { font-size:.66em; }
+        }
 </style>
 </head>
 <body>
