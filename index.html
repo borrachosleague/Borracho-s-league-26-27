@@ -2648,22 +2648,27 @@ function updateBest11() {
         });
     }
 
+    // Schieramento verticale sul campo:
+    // POR in alto, poi DIF, CEN e ATT in basso.
+    // Le percentuali lasciano margine per tenere interamente le card dentro il terreno.
     var groups = [
-        { list: players.slice(0, 1), x: 8 },
-        { list: players.slice(1, 1 + nDif), x: 30 },
-        { list: players.slice(1 + nDif, 1 + nDif + nCen), x: 55 },
-        { list: players.slice(1 + nDif + nCen), x: 82 }
+        { list: players.slice(0, 1), y: 10 },
+        { list: players.slice(1, 1 + nDif), y: 35 },
+        { list: players.slice(1 + nDif, 1 + nDif + nCen), y: 62 },
+        { list: players.slice(1 + nDif + nCen), y: 88 }
     ];
 
-    groups.forEach(function(grp, gi) {
+    groups.forEach(function(grp) {
         var n = grp.list.length;
-        var margin = (gi === 3 && n === 2) ? 35 : 15;
+        // Le card sono larghe fino a ~154px: 13%-87% evita lo sbordo
+        // anche nei reparti da 4/5 giocatori sul pitch corrente.
+        var marginX = n >= 5 ? 13 : (n === 4 ? 15 : (n === 3 ? 22 : (n === 2 ? 34 : 50)));
         grp.list.forEach(function(g, i) {
-            var y = n === 1 ? 50 : margin + i * ((100 - 2 * margin) / (n - 1));
+            var x = n === 1 ? 50 : marginX + i * ((100 - 2 * marginX) / (n - 1));
             var el = document.createElement('div');
             el.className = 'pitch-player';
-            el.style.left = grp.x + '%';
-            el.style.top = y + '%';
+            el.style.left = x + '%';
+            el.style.top = grp.y + '%';
             var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
             var logo = '';
             if (isSerieA) {
