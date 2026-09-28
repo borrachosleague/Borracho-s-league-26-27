@@ -1314,6 +1314,52 @@
             text-align:center !important;
             color:#ffd84c !important;
         }
+
+        /* === F1 / BATTLE · GRIGLIA UGUALE ALLA LAVAGNA ===
+           Overlay sull'intera larghezza: POS resta vuoto; logo+nome in SQUADRA; punti in PUNTI. */
+        #page-classifica .classifica-board #classifica-special-data {
+            position:absolute !important;
+            left:0 !important;
+            top:35.0% !important;
+            width:100% !important;
+            height:64.0% !important;
+            margin:0 !important;
+            padding:0 !important;
+        }
+        #page-classifica #classifica-special-data .chalk-row,
+        #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale {
+            display:grid !important;
+            grid-template-columns:17.5% 7% 58% 17.5% !important;
+            width:100% !important;
+            height:100% !important;
+            align-items:center !important;
+            margin:0 !important;
+            padding:0 !important;
+        }
+        #page-classifica #classifica-special-data .chalk-pos-spacer {
+            display:block !important;
+            width:100% !important;
+            height:100% !important;
+        }
+        #page-classifica #classifica-special-data .chalk-logo {
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            width:100% !important;
+            height:100% !important;
+        }
+        #page-classifica #classifica-special-data .chalk-team {
+            padding-left:5px !important;
+            text-align:left !important;
+        }
+        #page-classifica #classifica-special-data .chalk-pt {
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            width:100% !important;
+            height:100% !important;
+            text-align:center !important;
+        }
 </style>
 
 </head>
@@ -1968,6 +2014,7 @@ function updateClassifica() {
         var row = document.createElement('div');
         row.className = 'chalk-row chalk-row-speciale';
         row.innerHTML =
+            '<span class="chalk-pos-spacer"></span>' +
             '<span class="chalk-logo"><img loading="eager" decoding="async" src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></span>' +
             '<span class="chalk-team">' + sq.nome + '</span>' +
             '<span class="chalk-pt">' + valore + '</span>';
