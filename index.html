@@ -1521,6 +1521,109 @@
         body.layout-editing #page-best11 #pitch-best11 .pitch-player.layout-selected {
             outline-color:#55ff88 !important;
         }
+
+        /* === BEST 11 · TARGHETTA COMPATTA BORRACHO'S === */
+        #page-best11 .pitch-player .pp-main {
+            width:166px !important;
+            min-width:166px !important;
+            max-width:166px !important;
+            height:46px !important;
+            display:grid !important;
+            grid-template-columns:40px minmax(0,1fr) 34px !important;
+            gap:0 !important;
+            padding:0 !important;
+            overflow:hidden !important;
+            background:linear-gradient(180deg,#f1e5ca 0%,#d8c6a2 100%) !important;
+            border:2px solid #17130d !important;
+            border-radius:8px !important;
+            clip-path:none !important;
+            box-shadow:
+                inset 0 0 0 2px rgba(166,117,42,.65),
+                inset 0 -7px 12px rgba(69,42,14,.16),
+                0 3px 7px rgba(0,0,0,.62) !important;
+        }
+        #page-best11 .pitch-player .pp-main::before {
+            content:"" !important;
+            position:absolute !important;
+            left:40px !important;
+            right:34px !important;
+            bottom:0 !important;
+            height:7px !important;
+            opacity:1 !important;
+            box-shadow:none !important;
+        }
+        #page-best11 .pitch-player.pp-role-por .pp-main::before { background:#7c4bd6 !important; }
+        #page-best11 .pitch-player.pp-role-dif .pp-main::before { background:#1769aa !important; }
+        #page-best11 .pitch-player.pp-role-cen .pp-main::before { background:#168a48 !important; }
+        #page-best11 .pitch-player.pp-role-att .pp-main::before { background:#bd2424 !important; }
+        #page-best11 .pitch-player .pp-logo {
+            position:relative !important;
+            z-index:3 !important;
+            width:36px !important;
+            height:36px !important;
+            margin:3px 2px !important;
+            object-fit:contain !important;
+            filter:drop-shadow(0 1px 2px rgba(0,0,0,.6)) !important;
+        }
+        #page-best11 .pitch-player .pp-copy {
+            position:relative !important;
+            z-index:2 !important;
+            min-width:0 !important;
+            width:100% !important;
+            height:100% !important;
+            display:flex !important;
+            align-items:center !important;
+            justify-content:flex-start !important;
+            padding:0 4px 7px 5px !important;
+        }
+        #page-best11 .pitch-player .pp-name {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            color:#17130d !important;
+            font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+            font-size:11px !important;
+            font-weight:1000 !important;
+            letter-spacing:-.15px !important;
+            line-height:1 !important;
+            text-align:left !important;
+            white-space:nowrap !important;
+            overflow:hidden !important;
+            text-overflow:ellipsis !important;
+            text-shadow:none !important;
+        }
+        #page-best11 .pitch-player .pp-ruolo {
+            position:absolute !important;
+            left:5px !important;
+            bottom:0 !important;
+            z-index:4 !important;
+            height:7px !important;
+            margin:0 !important;
+            color:#fff !important;
+            font-family:Arial,sans-serif !important;
+            font-size:6px !important;
+            font-weight:1000 !important;
+            line-height:7px !important;
+            text-shadow:0 1px 1px rgba(0,0,0,.8) !important;
+            overflow:visible !important;
+        }
+        #page-best11 .pitch-player .pp-val {
+            position:relative !important;
+            z-index:4 !important;
+            width:34px !important;
+            height:46px !important;
+            margin:0 !important;
+            border:0 !important;
+            border-left:2px solid #17130d !important;
+            border-radius:0 !important;
+            background:linear-gradient(180deg,#245f9d,#123a6c) !important;
+            box-shadow:inset 2px 0 0 rgba(255,255,255,.12) !important;
+            color:#fff !important;
+            font-family:"Arial Black",Arial,sans-serif !important;
+            font-size:16px !important;
+            font-weight:1000 !important;
+            text-shadow:0 1px 2px #000 !important;
+        }
 </style>
 
 </head>
