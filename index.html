@@ -579,7 +579,17 @@
         .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
 
         /* === BEST 11 LAYOUT === */
-        #page-best11 { max-width: 1500px; }
+        #page-best11 {
+            max-width:none;
+            width:100%;
+            min-height:calc(100vh - 82px);
+            margin:0;
+            padding:0;
+            background:url('assets/borrachos/backgrounds/best11/santiago-bernabeer-best11.webp') center top / cover no-repeat;
+            position:relative;
+            overflow:hidden;
+        }
+        #page-best11 > .page-title { display:none; }
         .best11-layout {
             display: grid;
             grid-template-columns: 95px minmax(720px, 1fr) 230px;
@@ -658,9 +668,9 @@
             width: 100%;
             margin: 0;
             aspect-ratio: 16/8.4;
-            background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
-            border: 3px solid #fff;
-            border-radius: 8px;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
             overflow: hidden;
             flex: 1;
         }
@@ -832,6 +842,9 @@
             background-color: #0F7FEA !important;
             color: #FFFFFF !important;
         }
+
+        #page-best11 .pitch-lines { display:none !important; }
+        #page-best11 .best11-layout { position:relative; z-index:2; }
 </style>
 </head>
 <body>
