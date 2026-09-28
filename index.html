@@ -1117,12 +1117,6 @@
         }
 </style>
 
-<link rel="preload" as="image" href="assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.webp">
-<link rel="preload" as="image" href="assets/borrachos/backgrounds/classifica/classifica-lavagna.png">
-<link rel="preload" as="image" href="assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp">
-<link rel="preload" as="image" href="assets/borrachos/navigation/classifica/classifica-tasto.webp">
-<link rel="preload" as="image" href="assets/borrachos/navigation/classifica/formula1-tasto.webp">
-<link rel="preload" as="image" href="assets/borrachos/navigation/classifica/battle-royale-tasto.webp">
 </head>
 <body>
 
@@ -1611,6 +1605,23 @@ function showPage(page, btn) {
     if (layoutEditorOn) { layoutEditorOn = false; document.body.classList.remove('layout-editing'); refreshLayoutTargets(); }
 }
 
+function warmSecondaryGraphics() {
+    var urls = [
+        'assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.webp',
+        'assets/borrachos/backgrounds/classifica/classifica-lavagna.png',
+        'assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp',
+        'assets/borrachos/navigation/classifica/classifica-tasto.webp',
+        'assets/borrachos/navigation/classifica/formula1-tasto.webp',
+        'assets/borrachos/navigation/classifica/battle-royale-tasto.webp',
+        'assets/borrachos/backgrounds/best11/santiago-bernabeer-best11.webp'
+    ];
+    var run=function(){
+        urls.forEach(function(src){ var im=new Image(); im.decoding='async'; im.src=src; });
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(run,{timeout:2500});
+    else setTimeout(run,1200);
+}
+
 function populateHomeLoghi() {
     var container = document.getElementById('home-loghi');
     if (!container) return;
@@ -1619,6 +1630,7 @@ function populateHomeLoghi() {
     var perColonna = 5;
     for (var i = 0; i < n; i++) {
         var img = document.createElement('img');
+        img.decoding = 'async';
         img.src = logoUrl(datiSquadre[i].nome);
         img.onerror = function() { this.style.display = 'none'; };
         var col = Math.floor(i / perColonna);
@@ -2280,10 +2292,10 @@ function updateBest11() {
                     .replace(/[^a-z0-9]/g, '');
                 var squadraBorrachoBest = mappaBorrachoPerNome[nomeNormBest];
                 if (squadraBorrachoBest) {
-                    logo = '<img class="pp-logo" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
+                    logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
                 }
             } else {
-                logo = '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
+                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
             }
             el.classList.add('pp-role-' + rl.toLowerCase());
             el.innerHTML = '<div class="pp-main">'
@@ -2340,6 +2352,7 @@ fetch("dati.json")
         // Prima renderizziamo la Classifica; il resto viene distribuito
         // nei frame successivi per non bloccare il primo caricamento della pagina.
         updateClassifica();
+        warmSecondaryGraphics();
         requestAnimationFrame(function() {
             cambiaGruppoGiocatori();
             resizeSelect(document.getElementById('gruppo-giocatori'));
