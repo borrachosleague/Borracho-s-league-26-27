@@ -1511,6 +1511,16 @@
         #page-best11 .pitch-player .pp-ruolo {
             font-size:clamp(7px,.43vw,9px) !important;
         }
+
+        /* Best 11: in MODIFICA ogni singola card è trascinabile. */
+        body.layout-editing #page-best11 #pitch-best11 .pitch-player.layout-editable {
+            outline:2px dashed #ffd54a !important;
+            outline-offset:4px !important;
+            pointer-events:auto !important;
+        }
+        body.layout-editing #page-best11 #pitch-best11 .pitch-player.layout-selected {
+            outline-color:#55ff88 !important;
+        }
 </style>
 
 </head>
@@ -1816,7 +1826,7 @@ function pageLayoutTargets(){
         'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-special-data','.classifica-menu-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
-        'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench']
+        'page-best11':['.page-title','.best11-controls','#pitch-best11','.best11-bench','#pitch-best11 .pitch-player']
     };
     var arr=selectors[p.id]||[];
     var seen=[];
@@ -1895,12 +1905,24 @@ function layoutElementName(el,i){
         var buttons=Array.from(el.parentElement.querySelectorAll('.classifica-menu-btn'));
         return '.classifica-menu-btn:nth-child('+(buttons.indexOf(el)+1)+')';
     }
+    if(el.classList.contains('pitch-player')){
+        var cards=Array.from(document.querySelectorAll('#pitch-best11 .pitch-player'));
+        var idx=cards.indexOf(el);
+        var role=(el.querySelector('.pp-ruolo')||{}).textContent||'';
+        role=role.trim().split(' ')[0].split('·')[0] || 'PLAYER';
+        var sameRole=cards.slice(0,idx+1).filter(function(x){
+            var rr=(x.querySelector('.pp-ruolo')||{}).textContent||'';
+            return rr.trim().split(' ')[0].split('·')[0]===role;
+        }).length;
+        return '.best11-'+role.toLowerCase()+'-'+sameRole;
+    }
     var cls=Array.from(el.classList).filter(function(x){return x!=='layout-editable'&&x!=='layout-selected';})[0];
     return cls?'.'+cls:'ELEMENTO_'+(i+1);
 }
 function copyPageLayout(){
     var p=currentLayoutPage(); if(!p)return;
     var data={page:p.id.replace('page-',''),viewport:Math.round(innerWidth)+'x'+Math.round(innerHeight),elements:{}};
+    if(p.id==='page-best11') data.modulo=(typeof bestModulo!=='undefined' ? bestModulo : '');
     pageLayoutTargets().forEach(function(el,i){
         var r=el.getBoundingClientRect();
         data.elements[layoutElementName(el,i)]={x:Math.round(r.left),y:Math.round(r.top),width:Math.round(r.width),height:Math.round(r.height)};
@@ -2587,6 +2609,7 @@ function setBestModulo(modulo, btn) {
     btn.parentElement.querySelectorAll('.subnav-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
     updateBest11();
+    if (layoutEditorOn) refreshLayoutTargets();
 }
 
 function updateBest11() {
@@ -2725,6 +2748,8 @@ function updateBest11() {
             container.appendChild(el);
         });
     });
+    if (layoutEditorOn) refreshLayoutTargets();
+
 }
 
 // === CARICA DATI ===
