@@ -2704,49 +2704,65 @@ function updateBest11() {
         });
     }
 
-    // Schieramento verticale sul campo:
-    // POR in alto, poi DIF, CEN e ATT in basso.
-    // Le percentuali lasciano margine per tenere interamente le card dentro il terreno.
-    var groups = [
-        { list: players.slice(0, 1), y: 8 },
-        { list: players.slice(1, 1 + nDif), y: 34 },
-        { list: players.slice(1 + nDif, 1 + nDif + nCen), y: 66 },
-        { list: players.slice(1 + nDif + nCen), y: 92 }
-    ];
+    // Layout Best 11 approvati manualmente a 1536x735.
+    // Solo le 11 card cambiano col modulo; campo, panchina e comandi restano indipendenti.
+    var best11Layouts = {
+        '352': [
+            [675,128],[459,192],[671,220],[884,179],
+            [323,403],[453,326],[679,307],[880,322],[1011,412],
+            [552,477],[762,540]
+        ],
+        '442': [
+            [675,144],[389,213],[581,225],[768,226],[961,213],
+            [348,403],[560,333],[764,333],[985,395],
+            [548,472],[756,472]
+        ],
+        '433': [
+            [678,140],[378,240],[566,215],[751,216],[945,245],
+            [420,351],[663,322],[866,359],
+            [319,467],[661,501],[1006,466]
+        ],
+        '343': [
+            [671,141],[457,221],[671,222],[882,223],
+            [329,328],[544,325],[764,329],[976,331],
+            [411,452],[663,496],[918,441]
+        ]
+    };
+    var approvedLayout = best11Layouts[bestModulo] || best11Layouts['352'];
+    var viewportW = 1536, viewportH = 735;
 
-    groups.forEach(function(grp) {
-        var n = grp.list.length;
-        // Le card sono larghe fino a ~154px: 13%-87% evita lo sbordo
-        // anche nei reparti da 4/5 giocatori sul pitch corrente.
-        var marginX = n >= 5 ? 12 : (n === 4 ? 14 : (n === 3 ? 20 : (n === 2 ? 32 : 50)));
-        grp.list.forEach(function(g, i) {
-            var x = n === 1 ? 50 : marginX + i * ((100 - 2 * marginX) / (n - 1));
-            var el = document.createElement('div');
-            el.className = 'pitch-player';
-            el.style.left = x + '%';
-            el.style.top = grp.y + '%';
-            var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
-            var logo = '';
-            if (isSerieA) {
-                var nomeNormBest = String(g.nome || '').trim().toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^a-z0-9]/g, '');
-                var squadraBorrachoBest = mappaBorrachoPerNome[nomeNormBest];
-                if (squadraBorrachoBest) {
-                    logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
-                }
-            } else {
-                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
+    players.forEach(function(g, playerIndex) {
+        var pos = approvedLayout[playerIndex] || [viewportW/2, viewportH/2];
+        var el = document.createElement('div');
+        el.className = 'pitch-player';
+        // Coordinate viewport-relative: mantengono la formazione proporzionata
+        // senza dipendere dalle dimensioni/posizione del contenitore pitch.
+        el.style.setProperty('position','fixed','important');
+        el.style.setProperty('left',(pos[0] / viewportW * 100) + 'vw','important');
+        el.style.setProperty('top',(pos[1] / viewportH * 100) + 'vh','important');
+        el.style.setProperty('margin','0','important');
+
+        var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
+        var logo = '';
+        if (isSerieA) {
+            var nomeNormBest = String(g.nome || '').trim().toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]/g, '');
+            var squadraBorrachoBest = mappaBorrachoPerNome[nomeNormBest];
+            if (squadraBorrachoBest) {
+                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\\'none\\'">';
             }
-            el.classList.add('pp-role-' + rl.toLowerCase());
-            el.innerHTML = '<div class="pp-main">'
-                + logo
-                + '<span class="pp-copy"><span class="pp-name">' + g.nome + '</span>'
-                + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span></span>'
-                + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
-                + '</div>';
-            container.appendChild(el);
-        });
+        } else {
+            logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\\'none\\'">';
+        }
+        el.classList.add('pp-role-' + rl.toLowerCase());
+        el.innerHTML = '<div class="pp-main">'
+            + logo
+            + '<span class="pp-copy"><span class="pp-name">' + g.nome + '</span>'
+            + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span></span>'
+            + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
+            + '</div>';
+        container.appendChild(el);
     });
     if (layoutEditorOn) refreshLayoutTargets();
 
