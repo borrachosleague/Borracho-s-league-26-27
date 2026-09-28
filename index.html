@@ -2750,10 +2750,10 @@ function updateBest11() {
                 .replace(/[^a-z0-9]/g, '');
             var squadraBorrachoBest = mappaBorrachoPerNome[nomeNormBest];
             if (squadraBorrachoBest) {
-                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\\'none\\'">';
+                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
             }
         } else {
-            logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\\'none\\'">';
+            logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
         }
         el.classList.add('pp-role-' + rl.toLowerCase());
         el.innerHTML = '<div class="pp-main">'
