@@ -579,7 +579,17 @@
         .placeholder { text-align: center; padding: 60px 20px; color: #555; font-size: 1.2em; }
 
         /* === BEST 11 LAYOUT === */
-        #page-best11 { max-width: 1500px; }
+        #page-best11 {
+            max-width:none;
+            width:100%;
+            min-height:calc(100vh - 82px);
+            margin:0;
+            padding:0;
+            background:url('assets/borrachos/backgrounds/best11/santiago-bernabeer-best11.webp') center top / cover no-repeat;
+            position:relative;
+            overflow:hidden;
+        }
+        #page-best11 > .page-title { display:none; }
         .best11-layout {
             display: grid;
             grid-template-columns: 95px minmax(720px, 1fr) 230px;
@@ -658,9 +668,9 @@
             width: 100%;
             margin: 0;
             aspect-ratio: 16/8.4;
-            background: linear-gradient(90deg, #2d5a27 0%, #3a7a33 50%, #2d5a27 100%);
-            border: 3px solid #fff;
-            border-radius: 8px;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
             overflow: hidden;
             flex: 1;
         }
@@ -831,6 +841,279 @@
         #tabella-giocatori tbody tr.riga-svincolato:hover > td {
             background-color: #0F7FEA !important;
             color: #FFFFFF !important;
+        }
+
+        #page-best11 .pitch-lines { display:none !important; }
+        #page-best11 .best11-layout { position:relative; z-index:2; }
+
+        /* === BEST 11 · SANTIAGO BERNABEER === */
+        #page-best11 { height:calc(100vh - 82px); min-height:620px; background-position:center center; }
+        #page-best11 .best11-layout {
+            display:block;
+            position:relative;
+            width:100%;
+            height:100%;
+            margin:0;
+        }
+        #page-best11 .best11-controls {
+            position:absolute;
+            left:3.2%;
+            top:17%;
+            width:15.5%;
+            max-height:70%;
+            overflow:auto;
+            padding:8px 10px;
+            gap:4px;
+            z-index:6;
+            background:rgba(5,8,14,.42);
+            border-radius:12px;
+            scrollbar-width:thin;
+        }
+        #page-best11 .best11-label { color:#f4d36a; font-size:.68em; margin-top:2px; }
+        #page-best11 .subnav.best11-v { gap:3px; margin-bottom:4px; }
+        #page-best11 .subnav.best11-v .subnav-btn {
+            padding:5px 4px;
+            font-size:.68em;
+            background:rgba(9,14,24,.82);
+        }
+        #page-best11 .best11-presenze-control { padding:4px; margin:0 0 3px; background:rgba(9,14,24,.78); }
+        #page-best11 #pitch-best11 {
+            position:absolute;
+            left:23.5%;
+            top:31%;
+            width:54%;
+            height:53%;
+            aspect-ratio:auto;
+            overflow:visible;
+            z-index:5;
+        }
+        #page-best11 .best11-bench {
+            position:absolute;
+            right:2.8%;
+            top:20%;
+            width:17%;
+            max-height:66%;
+            overflow:auto;
+            z-index:6;
+            padding:7px;
+            background:rgba(5,8,14,.48);
+            border:1px solid rgba(242,199,73,.45);
+            border-radius:12px;
+        }
+        #page-best11 .best11-bench-title { font-size:.78em; margin-bottom:4px; }
+        #page-best11 .bench-player { grid-template-columns:26px minmax(0,1fr) 26px 32px; min-height:32px; gap:4px; padding:2px; }
+        #page-best11 .bench-logo { width:25px; height:25px; }
+        #page-best11 .bench-name { font-size:.65em; }
+        #page-best11 .bench-role { font-size:.55em; }
+        #page-best11 .bench-vote { font-size:.7em; }
+        #page-best11 .pitch-player .pp-main {
+            min-width:112px;
+            max-width:145px;
+            height:38px;
+            padding:2px 4px 2px 7px;
+            gap:4px;
+            border-width:1px;
+            border-radius:7px;
+            background:rgba(0,0,0,.76);
+        }
+        #page-best11 .pitch-player .pp-logo { width:31px; height:31px; flex-basis:31px; }
+        #page-best11 .pitch-player .pp-name { font-size:.78em; }
+        #page-best11 .pitch-player .pp-val { font-size:.78em; line-height:1; }
+        #page-best11 .pitch-player .pp-ruolo { font-size:.5em; line-height:1; }
+        @media (max-width:1000px) {
+            #page-best11 .pitch-player .pp-main { min-width:90px; max-width:110px; }
+            #page-best11 .pitch-player .pp-name { font-size:.66em; }
+        }
+
+        /* === BEST 11 PLAYER PLATES · BORRACHO'S === */
+        #page-best11 .pitch-player { gap:0; filter:drop-shadow(0 5px 6px rgba(0,0,0,.65)); }
+        #page-best11 .pitch-player .pp-main {
+            position:relative;
+            display:grid;
+            grid-template-columns:34px minmax(62px,1fr) 34px;
+            align-items:center;
+            min-width:126px;
+            max-width:154px;
+            height:42px;
+            padding:2px 3px 2px 4px;
+            gap:3px;
+            overflow:visible;
+            background:linear-gradient(180deg,rgba(15,35,67,.97),rgba(2,12,29,.98));
+            border:1px solid #f4bd38;
+            border-radius:5px 11px 11px 5px;
+            box-shadow:
+                inset 0 0 0 1px rgba(255,226,124,.18),
+                inset 0 -7px 12px rgba(0,0,0,.38),
+                0 0 8px rgba(244,189,56,.42);
+            clip-path:polygon(7% 0,89% 0,100% 18%,100% 82%,91% 100%,7% 100%,0 76%,0 24%);
+        }
+        #page-best11 .pitch-player .pp-main::before {
+            content:'';
+            position:absolute;
+            left:30px; right:30px; bottom:2px;
+            height:2px;
+            background:#2b7fff;
+            box-shadow:0 0 6px #2b7fff;
+            opacity:.95;
+        }
+        #page-best11 .pitch-player.pp-role-por .pp-main::before { background:#a568ff; box-shadow:0 0 6px #a568ff; }
+        #page-best11 .pitch-player.pp-role-dif .pp-main::before { background:#2f8cff; box-shadow:0 0 6px #2f8cff; }
+        #page-best11 .pitch-player.pp-role-cen .pp-main::before { background:#29d36b; box-shadow:0 0 6px #29d36b; }
+        #page-best11 .pitch-player.pp-role-att .pp-main::before { background:#ff4141; box-shadow:0 0 6px #ff4141; }
+        #page-best11 .pitch-player .pp-logo {
+            position:relative;
+            z-index:2;
+            width:34px; height:34px;
+            flex-basis:auto;
+            object-fit:contain;
+            filter:drop-shadow(0 1px 2px rgba(0,0,0,.75));
+        }
+        #page-best11 .pitch-player .pp-copy {
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            line-height:1;
+        }
+        #page-best11 .pitch-player .pp-name {
+            display:block;
+            width:100%;
+            min-width:0;
+            font-size:.72em;
+            font-weight:900;
+            letter-spacing:.15px;
+            color:#fff;
+            text-align:center;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            text-shadow:0 1px 2px #000;
+        }
+        #page-best11 .pitch-player .pp-ruolo {
+            display:block;
+            margin-top:4px;
+            max-width:100%;
+            font-size:.45em;
+            font-weight:900;
+            color:#f2f5ff;
+            text-transform:uppercase;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            text-shadow:0 1px 2px #000;
+        }
+        #page-best11 .pitch-player .pp-val {
+            position:relative;
+            z-index:2;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:31px; height:31px;
+            margin-right:-2px;
+            border-radius:50%;
+            border:2px solid #8d5c08;
+            background:radial-gradient(circle at 35% 28%,#fff0a3 0,#ffd34d 24%,#d99008 68%,#7d4900 100%);
+            box-shadow:inset 0 0 0 1px #ffe995,0 0 7px rgba(255,194,48,.65);
+            color:#111;
+            font-size:.7em;
+            font-weight:950;
+            line-height:1;
+            text-shadow:none;
+        }
+
+        /* === CLASSIFICA · LAYOUT APPROVATO 1536x735 === */
+        #page-classifica .classifica-board {
+            position:fixed !important;
+            left:28.320313vw !important;
+            top:13.197279vh !important;
+            width:63.802083vw !important;
+            height:88.843537vh !important;
+            max-width:none !important;
+            max-height:none !important;
+            margin:0 !important;
+        }
+        #page-classifica .classifica-menu-board {
+            position:fixed !important;
+            left:0 !important;
+            top:8.027211vh !important;
+            width:32.03125vw !important;
+            height:91.972789vh !important;
+            max-width:none !important;
+            max-height:none !important;
+            margin:0 !important;
+        }
+        #page-classifica #classifica-special-data {
+            position:fixed !important;
+            left:43.554688vw !important;
+            top:48.29932vh !important;
+            width:49.348958vw !important;
+            height:44.62585vh !important;
+            max-width:none !important;
+            max-height:none !important;
+            margin:0 !important;
+        }
+        /* Menu Classifica ricostruito dal layout approvato 1536x735:
+           3 pulsanti 217x189, x=212, y=62/258/454, gap=7px. */
+        #page-classifica .classifica-menu {
+            position:fixed !important;
+            left:13.802083vw !important;
+            top:8.435374vh !important;
+            width:14.127604vw !important;
+            max-width:none !important;
+            display:flex !important;
+            flex-direction:column !important;
+            gap:0.952381vh !important;
+            padding:0 !important;
+            margin:0 !important;
+            z-index:5 !important;
+        }
+        #page-classifica .classifica-menu-btn {
+            position:relative !important;
+            left:auto !important;
+            top:auto !important;
+            width:100% !important;
+            height:25.714286vh !important;
+            aspect-ratio:auto !important;
+            flex:0 0 25.714286vh !important;
+            margin:0 !important;
+        }
+
+        /* Layout editor: durante MODIFICA gli elementi selezionati devono poter
+           superare i valori !important del layout congelato. */
+        body.layout-editing #page-classifica .layout-editable {
+            pointer-events:auto !important;
+        }
+        body.layout-editing #page-classifica .layout-editable.layout-selected {
+            position:fixed !important;
+        }
+
+        /* === CLASSIFICA · LAYOUT DEFINITIVO BLOCCATO · 1536x735 === */
+        #page-classifica .classifica-board {
+            position:fixed !important; left:586px !important; top:80px !important;
+            width:929px !important; height:679px !important; max-width:none !important;
+            max-height:none !important; margin:0 !important;
+        }
+        #page-classifica #classifica-chalk-data {
+            position:fixed !important; left:742px !important; top:340px !important;
+            width:674px !important; height:342px !important; margin:0 !important;
+        }
+        #page-classifica .classifica-menu-board {
+            position:fixed !important; left:0 !important; top:59px !important;
+            width:492px !important; height:676px !important; max-width:none !important;
+            max-height:none !important; margin:0 !important;
+        }
+        #page-classifica .classifica-menu-btn:nth-child(1) {
+            position:fixed !important; left:259px !important; top:205px !important;
+            width:146px !important; height:189px !important; margin:0 !important;
+        }
+        #page-classifica .classifica-menu-btn:nth-child(2) {
+            position:fixed !important; left:75px !important; top:300px !important;
+            width:151px !important; height:189px !important; margin:0 !important;
+        }
+        #page-classifica .classifica-menu-btn:nth-child(3) {
+            position:fixed !important; left:251px !important; top:416px !important;
+            width:153px !important; height:189px !important; margin:0 !important;
         }
 </style>
 </head>
@@ -1140,7 +1423,14 @@ function pageLayoutTargets(){
     };
     var arr=selectors[p.id]||[];
     var seen=[];
-    arr.forEach(function(s){p.querySelectorAll(s).forEach(function(el){if(el.offsetParent!==null && seen.indexOf(el)<0)seen.push(el);});});
+    arr.forEach(function(s){
+        p.querySelectorAll(s).forEach(function(el){
+            var cs=window.getComputedStyle(el);
+            var r=el.getBoundingClientRect();
+            var visible=cs.display!=='none' && cs.visibility!=='hidden' && r.width>0 && r.height>0;
+            if(visible && seen.indexOf(el)<0)seen.push(el);
+        });
+    });
     return seen;
 }
 function refreshLayoutTargets(){
@@ -1160,36 +1450,41 @@ function layoutPointerDown(e){
     layoutSelected=el; el.classList.add('layout-selected');
     var r=el.getBoundingClientRect();
     layoutDrag={el:el,dx:e.clientX-r.left,dy:e.clientY-r.top};
-    el.style.position='fixed'; el.style.left=r.left+'px'; el.style.top=r.top+'px';
-    el.style.right='auto'; el.style.bottom='auto'; el.style.margin='0';
+    el.style.setProperty('position','fixed','important');
+    el.style.setProperty('left',r.left+'px','important');
+    el.style.setProperty('top',r.top+'px','important');
+    el.style.setProperty('right','auto','important');
+    el.style.setProperty('bottom','auto','important');
+    el.style.setProperty('margin','0','important');
     el.style.zIndex = el.classList.contains('classifica-menu-board') ? '4' : '50000';
-    el.style.width=r.width+'px';
+    el.style.setProperty('width',r.width+'px','important');
 }
 function layoutPointerMove(e){
     if(!layoutDrag)return;
     var el=layoutDrag.el,r=el.getBoundingClientRect();
-    el.style.left=Math.max(0,Math.min(innerWidth-r.width,e.clientX-layoutDrag.dx))+'px';
-    el.style.top=Math.max(0,Math.min(innerHeight-r.height,e.clientY-layoutDrag.dy))+'px';
+    el.style.setProperty('left',Math.max(0,Math.min(innerWidth-r.width,e.clientX-layoutDrag.dx))+'px','important');
+    el.style.setProperty('top',Math.max(0,Math.min(innerHeight-r.height,e.clientY-layoutDrag.dy))+'px','important');
 }
 function layoutPointerUp(){layoutDrag=null;}
 function resizeLayoutSelected(delta){
     if(!layoutEditorOn||!layoutSelected)return;
     var r=layoutSelected.getBoundingClientRect();
     var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
-    layoutSelected.style.width=nw+'px';
-    if(layoutSelected.tagName==='IMG')layoutSelected.style.height='auto';
+    layoutSelected.style.setProperty('width',nw+'px','important');
+    layoutSelected.style.setProperty('aspect-ratio','auto','important');
+    if(layoutSelected.tagName==='IMG')layoutSelected.style.setProperty('height','auto','important');
 }
 function resizeLayoutAxis(axis,delta){
     if(!layoutEditorOn||!layoutSelected)return;
     var r=layoutSelected.getBoundingClientRect();
     if(axis==='height'){
         var nh=Math.max(60,Math.min(innerHeight,r.height*(1+delta)));
-        layoutSelected.style.height=nh+'px';
-        layoutSelected.style.aspectRatio='auto';
+        layoutSelected.style.setProperty('height',nh+'px','important');
+        layoutSelected.style.setProperty('aspect-ratio','auto','important');
     }else{
         var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
-        layoutSelected.style.width=nw+'px';
-        layoutSelected.style.aspectRatio='auto';
+        layoutSelected.style.setProperty('width',nw+'px','important');
+        layoutSelected.style.setProperty('aspect-ratio','auto','important');
     }
 }
 function confirmLayoutEditor(){
@@ -1199,6 +1494,10 @@ function confirmLayoutEditor(){
 }
 function layoutElementName(el,i){
     if(el.id)return '#'+el.id;
+    if(el.classList.contains('classifica-menu-btn')){
+        var buttons=Array.from(el.parentElement.querySelectorAll('.classifica-menu-btn'));
+        return '.classifica-menu-btn:nth-child('+(buttons.indexOf(el)+1)+')';
+    }
     var cls=Array.from(el.classList).filter(function(x){return x!=='layout-editable'&&x!=='layout-selected';})[0];
     return cls?'.'+cls:'ELEMENTO_'+(i+1);
 }
@@ -1979,12 +2278,13 @@ function updateBest11() {
             } else {
                 logo = '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
             }
+            el.classList.add('pp-role-' + rl.toLowerCase());
             el.innerHTML = '<div class="pp-main">'
-                + '<span class="pp-name">' + g.nome + '</span>'
                 + logo
-                + '</div>'
+                + '<span class="pp-copy"><span class="pp-name">' + g.nome + '</span>'
+                + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span></span>'
                 + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
-                + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span>';
+                + '</div>';
             container.appendChild(el);
         });
     });
