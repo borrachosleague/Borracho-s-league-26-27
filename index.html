@@ -1329,7 +1329,14 @@ function pageLayoutTargets(){
     };
     var arr=selectors[p.id]||[];
     var seen=[];
-    arr.forEach(function(s){p.querySelectorAll(s).forEach(function(el){if(el.offsetParent!==null && seen.indexOf(el)<0)seen.push(el);});});
+    arr.forEach(function(s){
+        p.querySelectorAll(s).forEach(function(el){
+            var cs=window.getComputedStyle(el);
+            var r=el.getBoundingClientRect();
+            var visible=cs.display!=='none' && cs.visibility!=='hidden' && r.width>0 && r.height>0;
+            if(visible && seen.indexOf(el)<0)seen.push(el);
+        });
+    });
     return seen;
 }
 function refreshLayoutTargets(){
