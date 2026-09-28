@@ -1442,8 +1442,9 @@ function resizeLayoutSelected(delta){
     if(!layoutEditorOn||!layoutSelected)return;
     var r=layoutSelected.getBoundingClientRect();
     var nw=Math.max(100,Math.min(innerWidth,r.width*(1+delta)));
-    layoutSelected.style.width=nw+'px';
-    if(layoutSelected.tagName==='IMG')layoutSelected.style.height='auto';
+    layoutSelected.style.setProperty('width',nw+'px','important');
+    layoutSelected.style.setProperty('aspect-ratio','auto','important');
+    if(layoutSelected.tagName==='IMG')layoutSelected.style.setProperty('height','auto','important');
 }
 function resizeLayoutAxis(axis,delta){
     if(!layoutEditorOn||!layoutSelected)return;
@@ -1465,6 +1466,10 @@ function confirmLayoutEditor(){
 }
 function layoutElementName(el,i){
     if(el.id)return '#'+el.id;
+    if(el.classList.contains('classifica-menu-btn')){
+        var buttons=Array.from(el.parentElement.querySelectorAll('.classifica-menu-btn'));
+        return '.classifica-menu-btn:nth-child('+(buttons.indexOf(el)+1)+')';
+    }
     var cls=Array.from(el.classList).filter(function(x){return x!=='layout-editable'&&x!=='layout-selected';})[0];
     return cls?'.'+cls:'ELEMENTO_'+(i+1);
 }
