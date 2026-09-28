@@ -1,6 +1,10 @@
 import json
 import openpyxl
 from collections import defaultdict
+from html.parser import HTMLParser
+from urllib.request import Request, urlopen
+import re
+import unicodedata
 
 # === CONFIGURAZIONE ===
 CLASSIFICA_FILE = r"E:\--- fantacalcio tot uff\26-27\esportazioni\classifica\Classifica_Serie-Aperol.xlsx"
@@ -111,6 +115,60 @@ colonne_stat.append("f1")
 colonne_stat.append("br")
 
 wb_stat.close()   
+# === 1.7 QUOTAZIONI UFFICIALI FANTACALCIO.IT 2026/27 ===
+# Fonte pubblica: https://www.fantacalcio.it/quotazioni-fantacalcio/2026-27
+# QI = quotazione iniziale Classic, QA = quotazione attuale Classic.
+class _TableParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.rows, self.row, self.cell = [], None, None
+    def handle_starttag(self, tag, attrs):
+        if tag == "tr": self.row = []
+        elif tag in ("td", "th") and self.row is not None: self.cell = []
+    def handle_data(self, data):
+        if self.cell is not None: self.cell.append(data)
+    def handle_endtag(self, tag):
+        if tag in ("td", "th") and self.cell is not None and self.row is not None:
+            self.row.append(" ".join("".join(self.cell).split()))
+            self.cell = None
+        elif tag == "tr" and self.row is not None:
+            if self.row: self.rows.append(self.row)
+            self.row = None
+
+def _norm_nome(s):
+    s = unicodedata.normalize("NFD", str(s or "").lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    return re.sub(r"[^a-z0-9]", "", s)
+
+def carica_quotazioni():
+    url = "https://www.fantacalcio.it/quotazioni-fantacalcio/2026-27"
+    try:
+        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        html = urlopen(req, timeout=20).read().decode("utf-8", "ignore")
+        parser = _TableParser()
+        parser.feed(html)
+        out = {}
+        for cells in parser.rows:
+            # Nella tabella ufficiale: Calciatore, Sq, QI Classic, QA Classic, FVM...
+            clean = [c.strip().replace("*", "").strip() for c in cells if c.strip()]
+            team_i = next((i for i,c in enumerate(clean) if re.fullmatch(r"[A-Z]{3}", c)), None)
+            if team_i is None or team_i < 1 or len(clean) <= team_i + 2:
+                continue
+            nome = clean[team_i - 1]
+            try:
+                qi = int(float(clean[team_i + 1].replace(",", ".")))
+                qa = int(float(clean[team_i + 2].replace(",", ".")))
+            except (ValueError, TypeError):
+                continue
+            out[_norm_nome(nome)] = {"qi": qi, "qa": qa}
+        print(f"OK {len(out)} quotazioni Fantacalcio.it")
+        return out
+    except Exception as e:
+        print(f"ATTENZIONE: quotazioni non aggiornate: {e}")
+        return {}
+
+quotazioni_fc = carica_quotazioni()
+
 # === 2. GIOCATORI (INSER DATA) ===
 wb_borr = openpyxl.load_workbook(BORRACHOS_FILE, read_only=True, data_only=True)
 ws_data = wb_borr["INSER DATA"]
@@ -252,6 +310,8 @@ for nome, g in giocatori.items():
         "nome": nome,
         "squadra": g["squadra"],
         "ruolo": g["ruolo"],
+        "qi": quotazioni_fc.get(_norm_nome(nome), {}).get("qi"),
+        "qa": quotazioni_fc.get(_norm_nome(nome), {}).get("qa"),
         "prestit": n_voti,
         "mediavototit": round(sum(g["voti"]) / n_voti, 2) if n_voti > 0 else 0,
         "fvototit": round(sum(g["fvoti"]) / n_fvoti, 2) if n_fvoti > 0 else 0,
