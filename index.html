@@ -2103,6 +2103,96 @@
         #page-best11 .best11-quote-diff.up{color:#6ee57b!important;text-shadow:0 1px 2px #000!important}
         #page-best11 .best11-quote-diff.down{color:#ff6258!important;text-shadow:0 1px 2px #000!important}
         #page-best11 .best11-quote-diff.flat{color:#d8bd80!important}
+
+        /* === BEST 11 · FIGURINA V2, CAMBIO STRUTTURALE VISIBILE === */
+        #page-best11 .best11-hover-card{
+            width:360px!important;height:520px!important;bottom:9px!important;
+            border-radius:20px!important;
+            clip-path:polygon(4% 0,96% 0,100% 3%,100% 97%,96% 100%,4% 100%,0 97%,0 3%)!important;
+        }
+        #page-best11 .best11-hover-top{
+            height:345px!important;padding:0!important;overflow:hidden!important;
+            background:
+              radial-gradient(ellipse at 50% 56%,rgba(218,157,46,.22),transparent 43%),
+              linear-gradient(120deg,transparent 0 43%,rgba(208,148,41,.08) 44% 46%,transparent 47%),
+              linear-gradient(180deg,#272117,#0a0907)!important;
+        }
+        #page-best11 .best11-card-silhouette{
+            position:absolute!important;left:50%!important;top:55px!important;transform:translateX(-50%)!important;
+            width:205px!important;height:220px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+            border-radius:52% 52% 22% 22% / 35% 35% 18% 18%!important;
+            background:
+              radial-gradient(circle at 50% 24%,#2d281f 0 37px,transparent 38px),
+              radial-gradient(ellipse at 50% 100%,#29241c 0 92px,transparent 93px)!important;
+            border-bottom:2px solid rgba(211,154,50,.34)!important;
+            filter:drop-shadow(0 8px 8px #000)!important;opacity:.96!important;z-index:1!important;
+        }
+        #page-best11 .best11-card-silhouette:before{
+            content:""!important;position:absolute!important;inset:18px 24px!important;border-radius:50%!important;
+            border:2px solid rgba(210,151,45,.16)!important;transform:rotate(-12deg)!important;
+        }
+        #page-best11 .best11-card-silhouette span{
+            position:absolute!important;bottom:35px!important;color:#c28b2d!important;font-size:46px!important;
+            opacity:.34!important;filter:grayscale(1)!important;
+        }
+        #page-best11 .best11-hover-logo{
+            left:17px!important;top:17px!important;width:94px!important;height:94px!important;z-index:6!important;
+        }
+        #page-best11 .best11-hover-main{
+            left:18px!important;right:18px!important;bottom:15px!important;z-index:5!important;
+        }
+        #page-best11 .best11-hover-main:before{display:none!important}
+        #page-best11 .best11-hover-name{
+            font-size:28px!important;padding:8px 8px!important;
+            transform:rotate(-3deg) skew(-5deg)!important;
+            background:linear-gradient(90deg,#eee4ce,#c7b48c)!important;
+            border-left:7px solid #b01d19!important;
+            box-shadow:5px 6px 0 rgba(0,0,0,.85)!important;
+        }
+        #page-best11 .best11-hover-team{
+            margin-top:11px!important;padding:4px 13px!important;font-size:11px!important;
+            transform:rotate(1deg)!important;
+        }
+        #page-best11 .best11-hover-role{
+            width:138px!important;margin-top:6px!important;padding:4px 10px!important;
+        }
+        #page-best11 .best11-hover-card:after{
+            content:"BORRACHO'S"!important;right:-19px!important;top:31px!important;
+            font-family:"Arial Black",Arial,sans-serif!important;font-size:13px!important;font-style:italic!important;
+            color:#e0a83d!important;letter-spacing:1px!important;transform:rotate(90deg)!important;
+            filter:none!important;opacity:.55!important;
+        }
+        #page-best11 .best11-hover-stats-five{
+            height:175px!important;grid-template-columns:repeat(3,1fr)!important;
+            grid-template-rows:1fr 1fr!important;padding:8px 13px 11px!important;gap:4px!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-hover-stat{
+            border:1px solid #59401d!important;border-radius:5px!important;
+            box-shadow:inset 0 0 0 1px rgba(214,160,62,.10)!important;
+            background:rgba(0,0,0,.23)!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-hover-stat:nth-child(4){
+            grid-column:1 / 2!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-hover-stat:nth-child(5){
+            grid-column:2 / 4!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-hover-stat span{
+            min-height:auto!important;font-size:7.5px!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-hover-stat strong{
+            margin-top:3px!important;font-size:21px!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-quote-current{
+            display:grid!important;grid-template-columns:auto auto!important;grid-template-rows:auto auto!important;
+            column-gap:9px!important;align-content:center!important;justify-content:center!important;
+            background:linear-gradient(145deg,rgba(222,166,56,.28),rgba(76,44,7,.24))!important;
+        }
+        #page-best11 .best11-hover-stats-five .best11-quote-current span{grid-column:1/3!important}
+        #page-best11 .best11-hover-stats-five .best11-quote-current strong{font-size:25px!important}
+        #page-best11 .best11-hover-stats-five .best11-quote-current .best11-quote-diff{
+            margin:3px 0 0!important;align-self:center!important;
+        }
 </style>
 
 </head>
@@ -3289,6 +3379,7 @@ function updateBest11() {
             '<div class="best11-hover-top">' +
                 logoHtml +
                 '<div class="best11-hover-main">' +
+                    '<div class="best11-card-silhouette"><span>⚽</span></div>' +
                     '<div class="best11-hover-name">' + g.nome + '</div>' +
                     '<div class="best11-hover-team">' + teamName + '</div>' +
                     '<div class="best11-hover-role">' + ruoloLabel + '</div>' +
