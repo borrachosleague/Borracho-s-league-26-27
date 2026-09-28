@@ -261,7 +261,7 @@
         #page-classifica .classifica-board {
             position:absolute; left:28vw; top:2vh; width:min(64vw,980px);
             aspect-ratio:1536/1024;
-            background:url('assets/borrachos/backgrounds/classifica/classifica-lavagna.png') center/100% 100% no-repeat;
+            background:url('assets/borrachos/backgrounds/classifica/classifica-lavagna.webp') center/100% 100% no-repeat;
             z-index:2; overflow:visible;
         }
         #page-classifica .classifica-chalk-data {
@@ -1615,7 +1615,7 @@ function showPage(page, btn) {
 function warmSecondaryGraphics() {
     var classificaUrls = [
         'assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.webp',
-        'assets/borrachos/backgrounds/classifica/classifica-lavagna.png',
+        'assets/borrachos/backgrounds/classifica/classifica-lavagna.webp',
         'assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp',
         'assets/borrachos/backgrounds/classifica/classifica-3-colonne.webp',
         'assets/borrachos/navigation/classifica/classifica-tasto.webp',
@@ -1694,28 +1694,28 @@ function logoUrl(nome) {
         .replace(/[^a-z0-9]/g, '');
 
     var loghi = {
-        'aspipperia': 'as-pipperia.png',
-        'pipperia': 'as-pipperia.png',
-        'acasparaghese': 'ac-asparaghese.png',
-        'asparaghese': 'ac-asparaghese.png',
-        'atleticoimprovvisato': 'atletico-improvvisato.png',
-        'atlimprovvisato': 'atletico-improvvisato.png',
-        'fcinternazioanale': 'fc-internazioanale.png',
-        'internazioanale': 'fc-internazioanale.png',
-        'ilsestoasensio': 'sesto-asensio.png',
-        'sestoasensio': 'sesto-asensio.png',
-        'partizandegrado': 'partizan-degrado.png',
-        'pesciculinifc': 'pesciculini-fc.png',
-        'pesciculini': 'pesciculini-fc.png',
-        'sangria': 'san-gria.png',
-        'shark': 'shark.png',
-        'tricchetrachtfrancoforte': 'tricchetracht-francoforte.png',
-        'tricchetrachtfrankfurt': 'tricchetracht-francoforte.png',
-        'tricchetracht': 'tricchetracht-francoforte.png',
-        'tricchettracht': 'tricchetracht-francoforte.png'
+        'aspipperia': 'as-pipperia.webp',
+        'pipperia': 'as-pipperia.webp',
+        'acasparaghese': 'ac-asparaghese.webp',
+        'asparaghese': 'ac-asparaghese.webp',
+        'atleticoimprovvisato': 'atletico-improvvisato.webp',
+        'atlimprovvisato': 'atletico-improvvisato.webp',
+        'fcinternazioanale': 'fc-internazioanale.webp',
+        'internazioanale': 'fc-internazioanale.webp',
+        'ilsestoasensio': 'sesto-asensio.webp',
+        'sestoasensio': 'sesto-asensio.webp',
+        'partizandegrado': 'partizan-degrado.webp',
+        'pesciculinifc': 'pesciculini-fc.webp',
+        'pesciculini': 'pesciculini-fc.webp',
+        'sangria': 'san-gria.webp',
+        'shark': 'shark.webp',
+        'tricchetrachtfrancoforte': 'tricchetracht-francoforte.webp',
+        'tricchetrachtfrankfurt': 'tricchetracht-francoforte.webp',
+        'tricchetracht': 'tricchetracht-francoforte.webp',
+        'tricchettracht': 'tricchetracht-francoforte.webp'
     };
 
-    return 'loghi finiti/' + (loghi[key] || key + '.png');
+    return 'loghi finiti/' + (loghi[key] || key + '.webp');
 }
 
 function setTipoClassifica(tipo, btn) {
@@ -1727,7 +1727,7 @@ function setTipoClassifica(tipo, btn) {
     var board = document.querySelector('#page-classifica .classifica-board');
     if (board) {
         var img = tipo === 'classifica'
-            ? 'assets/borrachos/backgrounds/classifica/classifica-lavagna.png'
+            ? 'assets/borrachos/backgrounds/classifica/classifica-lavagna.webp'
             : 'assets/borrachos/backgrounds/classifica/classifica-3-colonne.webp';
         board.style.backgroundImage = 'url("' + img + '")';
     }
