@@ -1,4 +1,5 @@
 name: Optimize web graphics
+# Runs automatically when source PNG graphics change.
 on:
   push:
     paths:
