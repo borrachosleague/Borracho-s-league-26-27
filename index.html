@@ -1807,6 +1807,29 @@
         #page-best11 .best11-hover-card.role-dif .best11-hover-role{background:#14528c}
         #page-best11 .best11-hover-card.role-cen .best11-hover-role{background:#14743e}
         #page-best11 .best11-hover-card.role-att .best11-hover-role{background:#9f1515}
+
+        /* === BEST 11 · SCHEDA HOVER GRANDE APPROVATA === */
+        #page-best11 .best11-hover-card{
+            width:610px!important;height:250px!important;bottom:8px!important;padding:0!important;
+            display:block!important;overflow:hidden!important;
+            background:radial-gradient(circle at 72% 30%,rgba(178,119,28,.13),transparent 30%),linear-gradient(180deg,#17140f,#070706)!important;
+            border:3px solid #322511!important;border-radius:13px!important;
+            box-shadow:inset 0 0 0 2px #b6812d,inset 0 0 28px #000,0 10px 28px rgba(0,0,0,.82)!important;
+        }
+        #page-best11 .best11-hover-top{height:128px;display:grid;grid-template-columns:130px 1fr;align-items:center;padding:12px 20px 8px;border-bottom:1px solid #8a6529}
+        #page-best11 .best11-hover-logo{width:104px!important;height:104px!important;justify-self:center!important}
+        #page-best11 .best11-hover-logo-placeholder{width:104px;height:104px}
+        #page-best11 .best11-hover-main{padding:0 0 0 18px!important;border:0!important}
+        #page-best11 .best11-hover-name{font-size:31px!important;overflow:visible!important;text-overflow:clip!important}
+        #page-best11 .best11-hover-team{font-size:13px!important;margin-top:7px!important}
+        #page-best11 .best11-hover-role{display:inline-block!important;margin-top:10px!important;min-width:108px!important;padding:5px 14px!important;font-size:12px!important}
+        #page-best11 .best11-hover-stats{height:116px;display:grid;grid-template-columns:repeat(4,1fr);align-items:stretch;padding:8px 12px 10px}
+        #page-best11 .best11-hover-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;border-left:1px solid #6f5528}
+        #page-best11 .best11-hover-stat:first-child{border-left:0}
+        #page-best11 .best11-hover-stat span{color:#d8cfbf;font-size:10px;font-weight:1000;letter-spacing:.3px}
+        #page-best11 .best11-hover-stat strong{margin-top:7px;color:#f7f4ed;font-family:"Arial Black",Arial,sans-serif;font-size:27px;line-height:1;text-shadow:0 2px 2px #000}
+        #page-best11 .best11-hover-stat-best strong{color:#e9ad31}
+        #page-best11 .bench-player{cursor:default}
 </style>
 
 </head>
@@ -2967,6 +2990,48 @@ function updateBest11() {
         .concat(perRuolo('c').filter(function(g) { return !titolariSet.has(g); }).slice(0, 3))
         .concat(perRuolo('a').filter(function(g) { return !titolariSet.has(g); }).slice(0, 3));
 
+    var hoverCardBest11 = document.getElementById('best11-hover-card');
+    function squadraBorrachoBest11(g) {
+        if (!isSerieA) return g.squadra || '';
+        var nomeNorm = String(g.nome || '').trim().toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]/g, '');
+        return mappaBorrachoPerNome[nomeNorm] || '';
+    }
+    function mostraSchedaBest11(g, ruoloLabel, squadraLogo) {
+        if (!hoverCardBest11 || layoutEditorOn) return;
+        var teamName = squadraLogo || (isSerieA ? 'SVINCOLATO' : (g.squadra || ''));
+        var mediaVoto = usaTotali ? Number(g.mediavototot || 0) : Number(g.mediavototit || 0);
+        var fantaMedia = usaTotali ? Number(g.fvototot || 0) : Number(g.fvototit || 0);
+        var presenze = Number(g[presKeyBest] || 0);
+        var score = Number(g[bestMetric] || 0);
+        var logoHtml = squadraLogo
+            ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\\'hidden\\'">'
+            : '<div class="best11-hover-logo-placeholder"></div>';
+        hoverCardBest11.className = 'best11-hover-card role-' + ruoloLabel.toLowerCase() + ' is-visible';
+        hoverCardBest11.innerHTML =
+            '<div class="best11-hover-top">' +
+                logoHtml +
+                '<div class="best11-hover-main">' +
+                    '<div class="best11-hover-name">' + g.nome + '</div>' +
+                    '<div class="best11-hover-team">' + teamName + '</div>' +
+                    '<div class="best11-hover-role">' + ruoloLabel + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="best11-hover-stats">' +
+                '<div class="best11-hover-stat best11-hover-stat-best"><span>BEST</span><strong>' + score + '</strong></div>' +
+                '<div class="best11-hover-stat"><span>MEDIA VOTO</span><strong>' + mediaVoto + '</strong></div>' +
+                '<div class="best11-hover-stat"><span>FANTAMEDIA</span><strong>' + fantaMedia + '</strong></div>' +
+                '<div class="best11-hover-stat"><span>PRESENZE</span><strong>' + presenze + '</strong></div>' +
+            '</div>';
+        hoverCardBest11.setAttribute('aria-hidden','false');
+    }
+    function nascondiSchedaBest11() {
+        if (!hoverCardBest11) return;
+        hoverCardBest11.classList.remove('is-visible');
+        hoverCardBest11.setAttribute('aria-hidden','true');
+    }
+
     var benchList = document.getElementById('best11-bench-list');
     if (benchList) {
         benchList.innerHTML = '';
@@ -2982,12 +3047,15 @@ function updateBest11() {
             var logoBench = squadraLogoBench
                 ? '<img class="bench-logo" src="' + logoUrl(squadraLogoBench) + '" onerror="this.remove()">'
                 : '<span></span>';
-            benchList.innerHTML += '<div class="bench-player">'
-                + logoBench
+            var benchEl = document.createElement('div');
+            benchEl.className = 'bench-player';
+            benchEl.innerHTML = logoBench
                 + '<span class="bench-name" title="' + g.nome + '">' + g.nome + '</span>'
                 + '<span class="bench-role">' + rlBench + '</span>'
-                + '<span class="bench-vote">' + (g[bestMetric] || 0) + '</span>'
-                + '</div>';
+                + '<span class="bench-vote">' + (g[bestMetric] || 0) + '</span>';
+            benchEl.addEventListener('mouseenter', function() { mostraSchedaBest11(g, rlBench, squadraLogoBench); });
+            benchEl.addEventListener('mouseleave', nascondiSchedaBest11);
+            benchList.appendChild(benchEl);
         });
     }
 
@@ -3054,34 +3122,9 @@ function updateBest11() {
             + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
             + '</div>';
 
-        (function(player, ruoloLabel, squadraLogo, score, presenze) {
-            var hoverCard = document.getElementById('best11-hover-card');
-            function showBest11Hover() {
-                if (!hoverCard || layoutEditorOn) return;
-                var teamName = isSerieA ? (squadraLogo || 'SVINCOLATO') : (player.squadra || '');
-                var logoHtml = squadraLogo
-                    ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\\'hidden\\'">'
-                    : '<div></div>';
-                hoverCard.className = 'best11-hover-card role-' + ruoloLabel.toLowerCase() + ' is-visible';
-                hoverCard.innerHTML = logoHtml
-                    + '<div class="best11-hover-main">'
-                    + '<div class="best11-hover-name">' + player.nome + '</div>'
-                    + '<div class="best11-hover-team">' + teamName + '</div>'
-                    + '<div class="best11-hover-meta"><span class="best11-hover-role">' + ruoloLabel + '</span>'
-                    + '<span class="best11-hover-pres">' + presenze + ' presenze · ' + (usaTotali ? 'totali' : 'titolare') + '</span></div></div>'
-                    + '<div class="best11-hover-score"><div class="best11-hover-score-label">'
-                    + (bestMetricTipo === 'fanta' ? 'Fantamedia' : 'Media voto')
-                    + '</div><div class="best11-hover-score-value">' + score + '</div></div>';
-                hoverCard.setAttribute('aria-hidden','false');
-            }
-            function hideBest11Hover() {
-                if (!hoverCard) return;
-                hoverCard.classList.remove('is-visible');
-                hoverCard.setAttribute('aria-hidden','true');
-            }
-            el.addEventListener('mouseenter', showBest11Hover);
-            el.addEventListener('mouseleave', hideBest11Hover);
-        })(g, rl, isSerieA ? (squadraBorrachoBest || '') : g.squadra, g[bestMetric] || 0, g[presKeyBest] || 0);
+        var squadraHover = isSerieA ? (squadraBorrachoBest || '') : g.squadra;
+        el.addEventListener('mouseenter', function() { mostraSchedaBest11(g, rl, squadraHover); });
+        el.addEventListener('mouseleave', nascondiSchedaBest11);
 
         container.appendChild(el);
     });
