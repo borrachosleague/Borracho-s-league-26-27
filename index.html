@@ -1053,13 +1053,27 @@
             max-height:none !important;
             margin:0 !important;
         }
-        /* I tre pulsanti restano impilati nel loro contenitore: non fissarli singolarmente. */
+        /* Menu calibrato sul terzo pulsante del layout 1536x735:
+           terzo x=212 y=454, 217x189; primi due impilati sopra. */
+        #page-classifica .classifica-menu {
+            position:fixed !important;
+            left:13.802083vw !important;
+            top:10.340136vh !important;
+            width:14.127604vw !important;
+            max-width:none !important;
+            display:flex !important;
+            flex-direction:column !important;
+            gap:0 !important;
+            z-index:5 !important;
+        }
         #page-classifica .classifica-menu-btn {
             position:relative !important;
             left:auto !important;
             top:auto !important;
             width:100% !important;
-            height:auto !important;
+            height:25.714286vh !important;
+            aspect-ratio:auto !important;
+            flex:none !important;
             margin:0 !important;
         }
 </style>
