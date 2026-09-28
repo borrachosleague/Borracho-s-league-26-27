@@ -1115,6 +1115,13 @@
             position:fixed !important; left:251px !important; top:416px !important;
             width:153px !important; height:189px !important; margin:0 !important;
         }
+
+        /* Classifica: mostra la composizione tutta insieme, mai a pezzi. */
+        #page-classifica .classifica-layout { opacity:0; }
+        body.classifica-graphics-ready #page-classifica .classifica-layout {
+            opacity:1;
+            transition:opacity .10s ease-out;
+        }
 </style>
 
 </head>
@@ -1141,8 +1148,8 @@
 <!-- HOME -->
 <div id="page-home" class="page active">
     <div class="home-branding">
-        <img class="home-aperol" src="aperol-definitiva-A-grande.webp" alt="Serie Aperol - Lega Fantacalcio Lombadostana 2026-2027">
-        <img class="home-league" src="borrachos-league-logo-10-squadre.webp" alt="Borracho's League">
+        <img class="home-aperol" fetchpriority="high" decoding="async" src="aperol-definitiva-A-grande.webp" alt="Serie Aperol - Lega Fantacalcio Lombadostana 2026-2027">
+        <img class="home-league" fetchpriority="high" decoding="async" src="borrachos-league-logo-10-squadre.webp" alt="Borracho's League">
     </div>
     <div class="home-nav">
         <button class="nav-btn" onclick="showPage('classifica', this)">Classifica</button>
@@ -1606,20 +1613,37 @@ function showPage(page, btn) {
 }
 
 function warmSecondaryGraphics() {
-    var urls = [
+    var classificaUrls = [
         'assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.webp',
         'assets/borrachos/backgrounds/classifica/classifica-lavagna.png',
         'assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp',
+        'assets/borrachos/backgrounds/classifica/classifica-3-colonne.webp',
         'assets/borrachos/navigation/classifica/classifica-tasto.webp',
         'assets/borrachos/navigation/classifica/formula1-tasto.webp',
-        'assets/borrachos/navigation/classifica/battle-royale-tasto.webp',
-        'assets/borrachos/backgrounds/best11/santiago-bernabeer-best11.webp'
+        'assets/borrachos/navigation/classifica/battle-royale-tasto.webp'
     ];
     var run=function(){
-        urls.forEach(function(src){ var im=new Image(); im.decoding='async'; im.src=src; });
+        Promise.all(classificaUrls.map(function(src){
+            return new Promise(function(resolve){
+                var im=new Image();
+                im.decoding='async';
+                im.onload=function(){
+                    if(im.decode) im.decode().catch(function(){}).then(resolve);
+                    else resolve();
+                };
+                im.onerror=resolve;
+                im.src=src;
+                if(im.complete) im.onload();
+            });
+        })).then(function(){
+            document.body.classList.add('classifica-graphics-ready');
+        });
+        var best=new Image();
+        best.decoding='async';
+        best.src='assets/borrachos/backgrounds/best11/santiago-bernabeer-best11.webp';
     };
-    if ('requestIdleCallback' in window) requestIdleCallback(run,{timeout:2500});
-    else setTimeout(run,1200);
+    if ('requestIdleCallback' in window) requestIdleCallback(run,{timeout:1200});
+    else setTimeout(run,500);
 }
 
 function populateHomeLoghi() {
