@@ -1925,6 +1925,18 @@
             transition:transform .1s ease,filter .1s ease!important;
         }
         #page-best11 .bench-player:hover{transform:translateX(-3px)!important;filter:brightness(1.18)!important}
+
+        /* Figurina Best 11: cinque dati reali, senza BEST ridondante */
+        #page-best11 .best11-hover-stats-five{grid-template-columns:repeat(5,1fr)!important}
+        #page-best11 .best11-hover-stats-five .best11-hover-stat{min-width:0!important}
+        #page-best11 .best11-hover-stats-five .best11-hover-stat span{font-size:9px!important}
+        #page-best11 .best11-hover-stats-five .best11-hover-stat strong{font-size:27px!important}
+        #page-best11 .best11-hover-stats-five .best11-quote{background:linear-gradient(180deg,rgba(181,126,34,.08),rgba(0,0,0,.14))!important}
+        #page-best11 .best11-hover-stats-five .best11-quote-current{background:linear-gradient(145deg,rgba(232,179,63,.24),rgba(93,57,7,.20))!important}
+        #page-best11 .best11-quote-diff{display:block!important;margin-top:4px!important;font-family:"Arial Black",Arial,sans-serif!important;font-size:12px!important;font-style:normal!important;line-height:1!important}
+        #page-best11 .best11-quote-diff.up{color:#58d76a!important}
+        #page-best11 .best11-quote-diff.down{color:#ff5a50!important}
+        #page-best11 .best11-quote-diff.flat{color:#d7bd82!important}
 </style>
 
 </head>
@@ -3099,7 +3111,10 @@ function updateBest11() {
         var mediaVoto = usaTotali ? Number(g.mediavototot || 0) : Number(g.mediavototit || 0);
         var fantaMedia = usaTotali ? Number(g.fvototot || 0) : Number(g.fvototit || 0);
         var presenze = Number(g[presKeyBest] || 0);
-        var score = Number(g[bestMetric] || 0);
+        var qi = (g.qi !== undefined && g.qi !== null && g.qi !== '') ? Number(g.qi) : null;
+        var qa = (g.qa !== undefined && g.qa !== null && g.qa !== '') ? Number(g.qa) : null;
+        var diffQ = (qi !== null && qa !== null) ? qa - qi : null;
+        var diffHtml = diffQ === null ? '' : '<em class="best11-quote-diff ' + (diffQ > 0 ? 'up' : diffQ < 0 ? 'down' : 'flat') + '">' + (diffQ > 0 ? '▲ +' : diffQ < 0 ? '▼ ' : '• ') + diffQ + '</em>';
         var logoHtml = squadraLogo
             ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\'hidden\'">'
             : '<div class="best11-hover-logo-placeholder"></div>';
@@ -3113,11 +3128,12 @@ function updateBest11() {
                     '<div class="best11-hover-role">' + ruoloLabel + '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="best11-hover-stats">' +
-                '<div class="best11-hover-stat best11-hover-stat-best"><span>BEST</span><strong>' + score + '</strong></div>' +
+            '<div class="best11-hover-stats best11-hover-stats-five">' +
                 '<div class="best11-hover-stat"><span>MEDIA VOTO</span><strong>' + mediaVoto + '</strong></div>' +
                 '<div class="best11-hover-stat"><span>FANTAMEDIA</span><strong>' + fantaMedia + '</strong></div>' +
                 '<div class="best11-hover-stat"><span>PRESENZE</span><strong>' + presenze + '</strong></div>' +
+                '<div class="best11-hover-stat best11-quote"><span>QI</span><strong>' + (qi === null ? '—' : qi) + '</strong></div>' +
+                '<div class="best11-hover-stat best11-quote best11-quote-current"><span>QA</span><strong>' + (qa === null ? '—' : qa) + '</strong>' + diffHtml + '</div>' +
             '</div>';
         hoverCardBest11.setAttribute('aria-hidden','false');
     }
