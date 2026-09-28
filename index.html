@@ -1789,6 +1789,24 @@
             font-size:7.5px !important;
             letter-spacing:-.65px !important;
         }
+
+        /* === BEST 11 · SCHEDA GRANDE HOVER BORRACHO'S === */
+        #page-best11 .best11-hover-card{position:fixed;left:50%;bottom:10px;transform:translate(-50%,8px);z-index:40;width:560px;height:118px;box-sizing:border-box;display:grid;grid-template-columns:96px minmax(0,1fr) 92px;align-items:center;padding:10px 12px;opacity:0;visibility:hidden;pointer-events:none;background:radial-gradient(circle at 70% 35%,rgba(177,119,28,.16),transparent 34%),linear-gradient(180deg,#27231d 0%,#0c0b09 100%);border:3px solid #2b2113;border-radius:12px;box-shadow:inset 0 0 0 2px #a9792d,inset 0 0 20px #000,0 8px 24px rgba(0,0,0,.75);transition:opacity .12s ease,transform .12s ease,visibility .12s}
+        #page-best11 .best11-hover-card.is-visible{opacity:1;visibility:visible;transform:translate(-50%,0)}
+        #page-best11 .best11-hover-logo{width:82px;height:82px;object-fit:contain;justify-self:center;filter:drop-shadow(0 3px 4px #000)}
+        #page-best11 .best11-hover-main{min-width:0;padding:0 14px;border-left:1px solid #7c5a28;border-right:1px solid #7c5a28}
+        #page-best11 .best11-hover-name{color:#fff6e5;font-family:"Arial Narrow",Arial,sans-serif;font-style:italic;font-size:28px;font-weight:1000;line-height:1;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 2px #000}
+        #page-best11 .best11-hover-team{margin-top:5px;color:#d6a63e;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}
+        #page-best11 .best11-hover-meta{display:flex;gap:7px;align-items:center;margin-top:9px}
+        #page-best11 .best11-hover-role{min-width:42px;padding:3px 8px;border-radius:4px;color:#fff;font-size:10px;font-weight:1000;text-align:center;background:#9f1515;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+        #page-best11 .best11-hover-pres{color:#cfc7b7;font-size:10px;font-weight:800}
+        #page-best11 .best11-hover-score{text-align:center}
+        #page-best11 .best11-hover-score-label{color:#c7ad79;font-size:9px;font-weight:900;text-transform:uppercase}
+        #page-best11 .best11-hover-score-value{margin-top:4px;color:#111;font-family:"Arial Black",Arial,sans-serif;font-size:29px;font-weight:1000;line-height:54px;width:68px;height:54px;border-radius:7px;background:linear-gradient(145deg,#f3c54b,#c98a18 58%,#8d5908);box-shadow:inset 0 0 0 2px #6a4308,0 2px 5px #000}
+        #page-best11 .best11-hover-card.role-por .best11-hover-role{background:#5c32ad}
+        #page-best11 .best11-hover-card.role-dif .best11-hover-role{background:#14528c}
+        #page-best11 .best11-hover-card.role-cen .best11-hover-role{background:#14743e}
+        #page-best11 .best11-hover-card.role-att .best11-hover-role{background:#9f1515}
 </style>
 
 </head>
@@ -2006,6 +2024,7 @@
                 <div class="pitch-penalty-right"></div>
             </div>
         </div>
+        <div id="best11-hover-card" class="best11-hover-card" aria-hidden="true"></div>
         <div class="best11-bench">
             <div class="best11-bench-title">Panchina Best 11</div>
             <div id="best11-bench-list"></div>
@@ -3034,6 +3053,36 @@ function updateBest11() {
             + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span></span>'
             + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
             + '</div>';
+
+        (function(player, ruoloLabel, squadraLogo, score, presenze) {
+            var hoverCard = document.getElementById('best11-hover-card');
+            function showBest11Hover() {
+                if (!hoverCard || layoutEditorOn) return;
+                var teamName = isSerieA ? (squadraLogo || 'SVINCOLATO') : (player.squadra || '');
+                var logoHtml = squadraLogo
+                    ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\\'hidden\\'">'
+                    : '<div></div>';
+                hoverCard.className = 'best11-hover-card role-' + ruoloLabel.toLowerCase() + ' is-visible';
+                hoverCard.innerHTML = logoHtml
+                    + '<div class="best11-hover-main">'
+                    + '<div class="best11-hover-name">' + player.nome + '</div>'
+                    + '<div class="best11-hover-team">' + teamName + '</div>'
+                    + '<div class="best11-hover-meta"><span class="best11-hover-role">' + ruoloLabel + '</span>'
+                    + '<span class="best11-hover-pres">' + presenze + ' presenze · ' + (usaTotali ? 'totali' : 'titolare') + '</span></div></div>'
+                    + '<div class="best11-hover-score"><div class="best11-hover-score-label">'
+                    + (bestMetricTipo === 'fanta' ? 'Fantamedia' : 'Media voto')
+                    + '</div><div class="best11-hover-score-value">' + score + '</div></div>';
+                hoverCard.setAttribute('aria-hidden','false');
+            }
+            function hideBest11Hover() {
+                if (!hoverCard) return;
+                hoverCard.classList.remove('is-visible');
+                hoverCard.setAttribute('aria-hidden','true');
+            }
+            el.addEventListener('mouseenter', showBest11Hover);
+            el.addEventListener('mouseleave', hideBest11Hover);
+        })(g, rl, isSerieA ? (squadraBorrachoBest || '') : g.squadra, g[bestMetric] || 0, g[presKeyBest] || 0);
+
         container.appendChild(el);
     });
     if (layoutEditorOn) refreshLayoutTargets();
