@@ -924,6 +924,103 @@
             #page-best11 .pitch-player .pp-main { min-width:90px; max-width:110px; }
             #page-best11 .pitch-player .pp-name { font-size:.66em; }
         }
+
+        /* === BEST 11 PLAYER PLATES · BORRACHO'S === */
+        #page-best11 .pitch-player { gap:0; filter:drop-shadow(0 5px 6px rgba(0,0,0,.65)); }
+        #page-best11 .pitch-player .pp-main {
+            position:relative;
+            display:grid;
+            grid-template-columns:34px minmax(62px,1fr) 34px;
+            align-items:center;
+            min-width:126px;
+            max-width:154px;
+            height:42px;
+            padding:2px 3px 2px 4px;
+            gap:3px;
+            overflow:visible;
+            background:linear-gradient(180deg,rgba(15,35,67,.97),rgba(2,12,29,.98));
+            border:1px solid #f4bd38;
+            border-radius:5px 11px 11px 5px;
+            box-shadow:
+                inset 0 0 0 1px rgba(255,226,124,.18),
+                inset 0 -7px 12px rgba(0,0,0,.38),
+                0 0 8px rgba(244,189,56,.42);
+            clip-path:polygon(7% 0,89% 0,100% 18%,100% 82%,91% 100%,7% 100%,0 76%,0 24%);
+        }
+        #page-best11 .pitch-player .pp-main::before {
+            content:'';
+            position:absolute;
+            left:30px; right:30px; bottom:2px;
+            height:2px;
+            background:#2b7fff;
+            box-shadow:0 0 6px #2b7fff;
+            opacity:.95;
+        }
+        #page-best11 .pitch-player.pp-role-por .pp-main::before { background:#a568ff; box-shadow:0 0 6px #a568ff; }
+        #page-best11 .pitch-player.pp-role-dif .pp-main::before { background:#2f8cff; box-shadow:0 0 6px #2f8cff; }
+        #page-best11 .pitch-player.pp-role-cen .pp-main::before { background:#29d36b; box-shadow:0 0 6px #29d36b; }
+        #page-best11 .pitch-player.pp-role-att .pp-main::before { background:#ff4141; box-shadow:0 0 6px #ff4141; }
+        #page-best11 .pitch-player .pp-logo {
+            position:relative;
+            z-index:2;
+            width:34px; height:34px;
+            flex-basis:auto;
+            object-fit:contain;
+            filter:drop-shadow(0 1px 2px rgba(0,0,0,.75));
+        }
+        #page-best11 .pitch-player .pp-copy {
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            line-height:1;
+        }
+        #page-best11 .pitch-player .pp-name {
+            display:block;
+            width:100%;
+            min-width:0;
+            font-size:.72em;
+            font-weight:900;
+            letter-spacing:.15px;
+            color:#fff;
+            text-align:center;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            text-shadow:0 1px 2px #000;
+        }
+        #page-best11 .pitch-player .pp-ruolo {
+            display:block;
+            margin-top:4px;
+            max-width:100%;
+            font-size:.45em;
+            font-weight:900;
+            color:#f2f5ff;
+            text-transform:uppercase;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            text-shadow:0 1px 2px #000;
+        }
+        #page-best11 .pitch-player .pp-val {
+            position:relative;
+            z-index:2;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:31px; height:31px;
+            margin-right:-2px;
+            border-radius:50%;
+            border:2px solid #8d5c08;
+            background:radial-gradient(circle at 35% 28%,#fff0a3 0,#ffd34d 24%,#d99008 68%,#7d4900 100%);
+            box-shadow:inset 0 0 0 1px #ffe995,0 0 7px rgba(255,194,48,.65);
+            color:#111;
+            font-size:.7em;
+            font-weight:950;
+            line-height:1;
+            text-shadow:none;
+        }
 </style>
 </head>
 <body>
@@ -2071,12 +2168,13 @@ function updateBest11() {
             } else {
                 logo = '<img class="pp-logo" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
             }
+            el.classList.add('pp-role-' + rl.toLowerCase());
             el.innerHTML = '<div class="pp-main">'
-                + '<span class="pp-name">' + g.nome + '</span>'
                 + logo
-                + '</div>'
+                + '<span class="pp-copy"><span class="pp-name">' + g.nome + '</span>'
+                + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span></span>'
                 + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
-                + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span>';
+                + '</div>';
             container.appendChild(el);
         });
     });
