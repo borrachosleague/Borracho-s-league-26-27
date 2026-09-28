@@ -1053,14 +1053,15 @@
             max-height:none !important;
             margin:0 !important;
         }
+        /* I tre pulsanti restano impilati nel loro contenitore: non fissarli singolarmente. */
         #page-classifica .classifica-menu-btn {
-            position:fixed !important;
-            left:13.802083vw !important;
-            width:14.127604vw !important;
-            height:25.714286vh !important;
+            position:relative !important;
+            left:auto !important;
+            top:auto !important;
+            width:100% !important;
+            height:auto !important;
             margin:0 !important;
         }
-        #page-classifica .classifica-menu-btn:nth-child(1){ top:61.768707vh !important; }
 </style>
 </head>
 <body>
