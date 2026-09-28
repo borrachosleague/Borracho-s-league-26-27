@@ -1152,19 +1152,6 @@
             padding-left:1%;
         }
 
-        /* === CLASSIFICA · BLOCCO FINALE STABILE ===
-           F1/Battle Royale: conversione esatta del layout approvato 1536x735.
-           Non usare più vw/vh per questo overlay. */
-        #page-classifica #classifica-special-data {
-            position:fixed !important;
-            left:669px !important;
-            top:355px !important;
-            width:758px !important;
-            height:328px !important;
-            max-width:none !important;
-            max-height:none !important;
-            margin:0 !important;
-        }
 
         /* Valori punti gialli più evidenti, senza alterare le altre colonne. */
         #page-classifica .classifica-chalk-data .chalk-pt,
@@ -1175,46 +1162,67 @@
             color:#ffd84c !important;
         }
 
-        /* === F1 / BATTLE ROYALE · GEOMETRIA ISOLATA E DEFINITIVA === */
-        #page-classifica #classifica-special-data {
-            position:fixed !important;
-            left:43.554688vw !important;
-            top:48.29932vh !important;
-            width:49.348958vw !important;
-            height:44.62585vh !important;
+
+
+        /* === CLASSIFICA / F1 / BATTLE · DATI DEFINITIVI === */
+        #page-classifica .classifica-chalk-data .chalk-pt {
+            font-size:1.38em !important;
+            font-weight:1000 !important;
+            color:#ffd84c !important;
+        }
+
+        /* F1 e Battle Royale: stesso linguaggio grafico della Classifica. */
+        #page-classifica .classifica-board #classifica-special-data {
+            position:absolute !important;
+            left:83px !important;
+            top:275px !important;
+            width:758px !important;
+            height:328px !important;
             margin:0 !important;
             padding:0 !important;
             display:none;
             grid-template-rows:repeat(10,minmax(0,1fr)) !important;
-            font-family:'Trebuchet MS','Segoe UI',sans-serif !important;
+            font-family:"Comic Sans MS","Segoe Print","Bradley Hand",cursive !important;
             font-size:clamp(11px,.92vw,17px) !important;
-            font-weight:800 !important;
-            letter-spacing:normal !important;
+            font-weight:700 !important;
+            letter-spacing:.015em !important;
+            text-shadow:0 1px 1px rgba(0,0,0,.7) !important;
+            z-index:3 !important;
         }
-        #page-classifica #classifica-special-data[style*="display: grid"] {
+        #page-classifica .classifica-board #classifica-special-data[style*="display: grid"] {
             display:grid !important;
         }
         #page-classifica #classifica-special-data .chalk-row,
         #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale {
             display:grid !important;
-            grid-template-columns:12% 72% 16% !important;
+            grid-template-columns:10% 74% 16% !important;
             align-items:center !important;
-            justify-content:start !important;
             width:100% !important;
             min-height:0 !important;
             margin:0 !important;
             padding:0 !important;
         }
+        #page-classifica #classifica-special-data .chalk-logo {
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            height:100% !important;
+        }
+        #page-classifica #classifica-special-data .chalk-logo img {
+            width:clamp(25px,2.45vw,38px) !important;
+            height:clamp(25px,2.45vw,38px) !important;
+            max-width:none !important;
+            object-fit:contain !important;
+            filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));
+        }
         #page-classifica #classifica-special-data .chalk-team,
         #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale .chalk-team {
-            padding-left:1% !important;
-            padding-right:1% !important;
+            padding:0 1% !important;
             font-size:1.12em !important;
             font-weight:900 !important;
             text-align:left !important;
             white-space:nowrap !important;
             overflow:visible !important;
-            text-overflow:clip !important;
         }
         #page-classifica #classifica-special-data .chalk-pt {
             font-size:1.38em !important;
@@ -1225,23 +1233,6 @@
             margin:0 !important;
             line-height:1 !important;
             color:#ffd84c !important;
-        }
-
-        /* === F1 / BATTLE ROYALE · ANCORAGGIO ALLA LAVAGNA ===
-           Board definitiva: x586 y80, 929x679.
-           Overlay approvato: x669 y355, 758x328.
-           Coordinate interne: x83 y275. */
-        #page-classifica .classifica-board #classifica-special-data {
-            position:absolute !important;
-            left:83px !important;
-            top:275px !important;
-            width:758px !important;
-            height:328px !important;
-            max-width:none !important;
-            max-height:none !important;
-            margin:0 !important;
-            padding:0 !important;
-            z-index:3 !important;
         }
 </style>
 
@@ -1897,7 +1888,7 @@ function updateClassifica() {
         var row = document.createElement('div');
         row.className = 'chalk-row chalk-row-speciale';
         row.innerHTML =
-            '<span class="chalk-pos">' + (i+1) + '</span>' +
+            '<span class="chalk-logo"><img loading="eager" decoding="async" src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></span>' +
             '<span class="chalk-team">' + sq.nome + '</span>' +
             '<span class="chalk-pt">' + valore + '</span>';
         special.appendChild(row);
