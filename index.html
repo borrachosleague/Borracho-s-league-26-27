@@ -1478,6 +1478,39 @@
             position:fixed !important; left:251px !important; top:416px !important;
             width:153px !important; height:189px !important; margin:0 !important;
         }
+
+        /* === BEST 11 · CAMPO PIENO + NOMI SEMPRE LEGGIBILI === */
+        #page-best11 #pitch-best11 {
+            left:20.5% !important;
+            top:25.5% !important;
+            width:61% !important;
+            height:64% !important;
+            overflow:visible !important;
+        }
+        #page-best11 .pitch-player .pp-main {
+            width:clamp(148px,10.8vw,174px) !important;
+            min-width:148px !important;
+            max-width:174px !important;
+            height:46px !important;
+            grid-template-columns:34px minmax(76px,1fr) 34px !important;
+        }
+        #page-best11 .pitch-player .pp-copy {
+            min-width:0 !important;
+            width:100% !important;
+        }
+        #page-best11 .pitch-player .pp-name {
+            width:100% !important;
+            max-width:none !important;
+            font-size:clamp(9px,.72vw,12px) !important;
+            letter-spacing:0 !important;
+            white-space:nowrap !important;
+            overflow:visible !important;
+            text-overflow:clip !important;
+            line-height:1.05 !important;
+        }
+        #page-best11 .pitch-player .pp-ruolo {
+            font-size:clamp(7px,.43vw,9px) !important;
+        }
 </style>
 
 </head>
@@ -2652,17 +2685,17 @@ function updateBest11() {
     // POR in alto, poi DIF, CEN e ATT in basso.
     // Le percentuali lasciano margine per tenere interamente le card dentro il terreno.
     var groups = [
-        { list: players.slice(0, 1), y: 10 },
-        { list: players.slice(1, 1 + nDif), y: 35 },
-        { list: players.slice(1 + nDif, 1 + nDif + nCen), y: 62 },
-        { list: players.slice(1 + nDif + nCen), y: 88 }
+        { list: players.slice(0, 1), y: 8 },
+        { list: players.slice(1, 1 + nDif), y: 34 },
+        { list: players.slice(1 + nDif, 1 + nDif + nCen), y: 66 },
+        { list: players.slice(1 + nDif + nCen), y: 92 }
     ];
 
     groups.forEach(function(grp) {
         var n = grp.list.length;
         // Le card sono larghe fino a ~154px: 13%-87% evita lo sbordo
         // anche nei reparti da 4/5 giocatori sul pitch corrente.
-        var marginX = n >= 5 ? 13 : (n === 4 ? 15 : (n === 3 ? 22 : (n === 2 ? 34 : 50)));
+        var marginX = n >= 5 ? 12 : (n === 4 ? 14 : (n === 3 ? 20 : (n === 2 ? 32 : 50)));
         grp.list.forEach(function(g, i) {
             var x = n === 1 ? 50 : marginX + i * ((100 - 2 * marginX) / (n - 1));
             var el = document.createElement('div');
