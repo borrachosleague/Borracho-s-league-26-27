@@ -1115,11 +1115,6 @@
             position:fixed !important; left:251px !important; top:416px !important;
             width:153px !important; height:189px !important; margin:0 !important;
         }
-
-        /* Regola generale: nessuna pagina grafica appare a pezzi durante il caricamento. */
-        .page.page-preparing { visibility:hidden !important; opacity:0 !important; }
-        .page.page-ready { animation:pageReadyIn .14s ease-out both; }
-        @keyframes pageReadyIn { from { opacity:0; } to { opacity:1; } }
 </style>
 </head>
 <body>
@@ -1595,72 +1590,18 @@ document.addEventListener('DOMContentLoaded',function(){
     document.addEventListener('pointercancel',stopHomeDrag);
 });
 
-var pageAssetCache = Object.create(null);
-
-function collectPageAssets(target) {
-    if (!target) return [];
-    var urls = [];
-    function add(u) {
-        if (!u || u === 'none') return;
-        u = String(u).replace(/^url\\(["']?/, '').replace(/["']?\\)$/, '');
-        if (u && urls.indexOf(u) < 0) urls.push(u);
-    }
-    [target].concat(Array.from(target.querySelectorAll('*'))).forEach(function(el) {
-        var cs = getComputedStyle(el);
-        var bg = cs.backgroundImage || '';
-        var matches = bg.match(/url\\(["']?[^)"']+["']?\\)/g) || [];
-        matches.forEach(add);
-        if (el.tagName === 'IMG') add(el.currentSrc || el.src);
-    });
-    return urls;
-}
-function preloadUrls(urls) {
-    return Promise.all(urls.map(function(url) {
-        if (pageAssetCache[url]) return pageAssetCache[url];
-        pageAssetCache[url] = new Promise(function(resolve) {
-            var im = new Image();
-            im.onload = im.onerror = resolve;
-            im.src = url;
-            if (im.complete) resolve();
-        });
-        return pageAssetCache[url];
-    }));
-}
-function preloadSiteGraphics() {
-    var urls = [];
-    document.querySelectorAll('.page').forEach(function(p) {
-        collectPageAssets(p).forEach(function(u){ if(urls.indexOf(u)<0) urls.push(u); });
-    });
-    preloadUrls(urls);
-}
-document.addEventListener('DOMContentLoaded', function() {
-    requestAnimationFrame(preloadSiteGraphics);
-});
-
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
-        p.classList.remove('active','page-ready','page-preparing');
+        p.classList.remove('active');
         p.style.display = 'none';
     });
     document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
     var target = document.getElementById('page-' + page);
-    if (!target) return;
-    target.classList.add('active','page-preparing');
+    target.classList.add('active');
     target.style.display = 'block';
     if (btn) btn.classList.add('active');
     document.body.classList.toggle('home-active', page === 'home');
     if (layoutEditorOn) { layoutEditorOn = false; document.body.classList.remove('layout-editing'); refreshLayoutTargets(); }
-
-    var assets = collectPageAssets(target);
-    preloadUrls(assets).then(function() {
-        if (!target.classList.contains('active')) return;
-        requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-                target.classList.remove('page-preparing');
-                target.classList.add('page-ready');
-            });
-        });
-    });
 }
 
 function populateHomeLoghi() {
