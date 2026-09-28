@@ -1770,6 +1770,25 @@
         #page-best11 .pitch-player .pp-name.pp-name-medium { font-size:10px !important; letter-spacing:-.35px !important; }
         #page-best11 .pitch-player .pp-name.pp-name-long { font-size:8.8px !important; letter-spacing:-.45px !important; }
         #page-best11 .pitch-player .pp-name.pp-name-xl { font-size:7.6px !important; letter-spacing:-.55px !important; }
+
+        /* Best 11: nomi lunghi sempre interi, senza ellissi. */
+        #page-best11 .pitch-player .pp-name {
+            overflow:visible !important;
+            text-overflow:clip !important;
+            letter-spacing:-.25px !important;
+        }
+        #page-best11 .pitch-player.pp-name-long .pp-name {
+            font-size:9.5px !important;
+            letter-spacing:-.45px !important;
+        }
+        #page-best11 .pitch-player.pp-name-xl .pp-name {
+            font-size:8.5px !important;
+            letter-spacing:-.55px !important;
+        }
+        #page-best11 .pitch-player.pp-name-xxl .pp-name {
+            font-size:7.5px !important;
+            letter-spacing:-.65px !important;
+        }
 </style>
 
 </head>
@@ -3005,6 +3024,10 @@ function updateBest11() {
             logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
         }
         el.classList.add('pp-role-' + rl.toLowerCase());
+        var nomeLen = String(g.nome || '').trim().length;
+        if (nomeLen >= 18) el.classList.add('pp-name-xxl');
+        else if (nomeLen >= 15) el.classList.add('pp-name-xl');
+        else if (nomeLen >= 12) el.classList.add('pp-name-long');
         el.innerHTML = '<div class="pp-main">'
             + logo
             + '<span class="pp-copy"><span class="pp-name pp-name-' + (String(g.nome || '').length > 18 ? 'xl' : String(g.nome || '').length > 14 ? 'long' : String(g.nome || '').length > 10 ? 'medium' : 'normal') + '">' + g.nome + '</span>'
