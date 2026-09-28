@@ -1116,6 +1116,13 @@
             width:153px !important; height:189px !important; margin:0 !important;
         }
 </style>
+
+<link rel="preload" as="image" href="assets/borrachos/backgrounds/classifica/cantina%20spogliatotio.webp">
+<link rel="preload" as="image" href="assets/borrachos/backgrounds/classifica/classifica-lavagna.png">
+<link rel="preload" as="image" href="assets/borrachos/backgrounds/classifica/classifica-menu-lavagna.webp">
+<link rel="preload" as="image" href="assets/borrachos/navigation/classifica/classifica-tasto.webp">
+<link rel="preload" as="image" href="assets/borrachos/navigation/classifica/formula1-tasto.webp">
+<link rel="preload" as="image" href="assets/borrachos/navigation/classifica/battle-royale-tasto.webp">
 </head>
 <body>
 
@@ -2330,13 +2337,19 @@ fetch("dati.json")
             }
         }
 
+        // Prima renderizziamo la Classifica; il resto viene distribuito
+        // nei frame successivi per non bloccare il primo caricamento della pagina.
         updateClassifica();
-        cambiaGruppoGiocatori();
-        resizeSelect(document.getElementById('gruppo-giocatori'));
-        resizeSelect(document.getElementById('criterio-giocatori'));
-        updateSquadre();
-        if (datiRisultati.length > 0) updateRisultati();
-        updateBest11();
+        requestAnimationFrame(function() {
+            cambiaGruppoGiocatori();
+            resizeSelect(document.getElementById('gruppo-giocatori'));
+            resizeSelect(document.getElementById('criterio-giocatori'));
+            requestAnimationFrame(function() {
+                updateSquadre();
+                if (datiRisultati.length > 0) updateRisultati();
+                requestAnimationFrame(updateBest11);
+            });
+        });
     })
     .catch(function(e) {
         document.body.innerHTML = '<div style="text-align:center;padding:40px;color:#e94560;">Errore: ' + e.message + '<br><br>Verifica che dati.json sia nella stessa cartella.</div>';
