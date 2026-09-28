@@ -1764,6 +1764,12 @@
             text-align:center !important;
             text-shadow:0 1px rgba(255,226,125,.55) !important;
         }
+
+        /* Best 11: nomi lunghi sempre interi nella targhetta approvata. */
+        #page-best11 .pitch-player .pp-name.pp-name-normal { font-size:11px !important; letter-spacing:-.2px !important; }
+        #page-best11 .pitch-player .pp-name.pp-name-medium { font-size:10px !important; letter-spacing:-.35px !important; }
+        #page-best11 .pitch-player .pp-name.pp-name-long { font-size:8.8px !important; letter-spacing:-.45px !important; }
+        #page-best11 .pitch-player .pp-name.pp-name-xl { font-size:7.6px !important; letter-spacing:-.55px !important; }
 </style>
 
 </head>
@@ -3001,7 +3007,7 @@ function updateBest11() {
         el.classList.add('pp-role-' + rl.toLowerCase());
         el.innerHTML = '<div class="pp-main">'
             + logo
-            + '<span class="pp-copy"><span class="pp-name">' + g.nome + '</span>'
+            + '<span class="pp-copy"><span class="pp-name pp-name-' + (String(g.nome || '').length > 18 ? 'xl' : String(g.nome || '').length > 14 ? 'long' : String(g.nome || '').length > 10 ? 'medium' : 'normal') + '">' + g.nome + '</span>'
             + '<span class="pp-ruolo">' + rl + (isSerieA ? ' · ' + g.squadra : '') + '</span></span>'
             + '<span class="pp-val">' + (g[bestMetric] || 0) + '</span>'
             + '</div>';
