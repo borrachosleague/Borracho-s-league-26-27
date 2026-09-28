@@ -1395,6 +1395,26 @@
             left:251px !important; top:416px !important;
             width:153px !important; height:189px !important; margin:0 !important;
         }
+
+        /* F1 / Battle Royale: 10 righe contenute ESATTAMENTE nei 344px approvati. */
+        #page-classifica #classifica-special-data {
+            grid-template-rows:repeat(10, 1fr) !important;
+            overflow:hidden !important;
+        }
+        #page-classifica #classifica-special-data .chalk-row,
+        #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale {
+            height:auto !important;
+            min-height:0 !important;
+            max-height:none !important;
+            align-self:stretch !important;
+            box-sizing:border-box !important;
+        }
+        #page-classifica #classifica-special-data .chalk-logo,
+        #page-classifica #classifica-special-data .chalk-pt {
+            height:auto !important;
+            min-height:0 !important;
+            align-self:stretch !important;
+        }
 </style>
 
 </head>
