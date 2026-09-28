@@ -1151,6 +1151,29 @@
         #page-classifica .classifica-chalk-data .chalk-team {
             padding-left:1%;
         }
+
+        /* === CLASSIFICA · BLOCCO FINALE STABILE ===
+           F1/Battle Royale: conversione esatta del layout approvato 1536x735.
+           Non usare più vw/vh per questo overlay. */
+        #page-classifica #classifica-special-data {
+            position:fixed !important;
+            left:669px !important;
+            top:355px !important;
+            width:758px !important;
+            height:328px !important;
+            max-width:none !important;
+            max-height:none !important;
+            margin:0 !important;
+        }
+
+        /* Valori punti gialli più evidenti, senza alterare le altre colonne. */
+        #page-classifica .classifica-chalk-data .chalk-pt,
+        #page-classifica .classifica-special-data .chalk-pt {
+            font-size:1.38em !important;
+            font-weight:1000 !important;
+            line-height:1 !important;
+            color:#ffd84c !important;
+        }
 </style>
 
 </head>
