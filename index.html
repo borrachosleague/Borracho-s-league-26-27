@@ -2735,11 +2735,11 @@ function updateBest11() {
         var pos = approvedLayout[playerIndex] || [viewportW/2, viewportH/2];
         var el = document.createElement('div');
         el.className = 'pitch-player';
-        // Coordinate viewport-relative: mantengono la formazione proporzionata
-        // senza dipendere dalle dimensioni/posizione del contenitore pitch.
+        // Coordinate esatte approvate nei PAGE LAYOUT a 1536x735.
+        // Non reinterpretarle: devono coincidere con le posizioni impostate manualmente.
         el.style.setProperty('position','fixed','important');
-        el.style.setProperty('left',(pos[0] / viewportW * 100) + 'vw','important');
-        el.style.setProperty('top',(pos[1] / viewportH * 100) + 'vh','important');
+        el.style.setProperty('left',pos[0] + 'px','important');
+        el.style.setProperty('top',pos[1] + 'px','important');
         el.style.setProperty('margin','0','important');
 
         var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
