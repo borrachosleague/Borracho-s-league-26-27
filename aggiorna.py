@@ -10,7 +10,7 @@ from collections import defaultdict
 COMPETITION_ID = 324951
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
-CREDENTIALS_FILE = os.path.join(DATA_DIR, "DATI_FANTACALCIO.txt")
+CREDENTIALS_FILE = os.path.abspath(os.path.join(BASE_DIR, "..", "..", "DATI_FANTACALCIO.txt"))
 BORRACHOS_FILE = os.path.join(DATA_DIR, "BORRACHOSLEAGUE 26.27.xlsm")
 OUTPUT_FILE = os.path.join(BASE_DIR, "dati.json")
 STAT_FILE = os.path.join(DATA_DIR, "nuovo statistiche.xlsm")
