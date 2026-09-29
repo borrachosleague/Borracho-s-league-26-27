@@ -5,12 +5,15 @@ from html.parser import HTMLParser
 from urllib.request import Request, urlopen
 import re
 import unicodedata
+from pathlib import Path
 
 # === CONFIGURAZIONE ===
-CLASSIFICA_FILE = r"E:\--- fantacalcio tot uff\26-27\esportazioni\classifica\Classifica_Serie-Aperol.xlsx"
-BORRACHOS_FILE = r"E:\--- fantacalcio tot uff\26-27\BORRACHOSLEAGUE 26.27.xlsm"
-CALENDARIO_FILE = r"E:\--- fantacalcio tot uff\26-27\CalendarioSerieAperol.xlsx"
-OUTPUT_FILE = r"E:\--- fantacalcio tot uff\26-27\dati.json"
+PROJECT_DIR = Path(__file__).resolve().parent
+DATA_DIR = PROJECT_DIR.parent
+CLASSIFICA_FILE = str(DATA_DIR / "esportazioni" / "classifica" / "Classifica_Serie-Aperol.xlsx")
+BORRACHOS_FILE = str(DATA_DIR / "BORRACHOSLEAGUE 26.27.xlsm")
+CALENDARIO_FILE = str(DATA_DIR / "CalendarioSerieAperol.xlsx")
+OUTPUT_FILE = str(PROJECT_DIR / "dati.json")
 
 # === 1. CLASSIFICA SQUADRE ===
 wb_class = openpyxl.load_workbook(CLASSIFICA_FILE, read_only=True)
@@ -39,7 +42,7 @@ for row in ws_class.iter_rows(min_row=2, values_only=True):
 
 
 # === 1.5 STATISTICHE SQUADRE ===
-STAT_FILE = r"E:\--- fantacalcio tot uff\26-27\nuovo statistiche.xlsm"
+STAT_FILE = str(DATA_DIR / "nuovo statistiche.xlsm")
 
 wb_stat = openpyxl.load_workbook(STAT_FILE, data_only=True)
 ws_stat = wb_stat.worksheets[0]
