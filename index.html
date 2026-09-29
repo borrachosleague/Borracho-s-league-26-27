@@ -3632,7 +3632,7 @@ function updateBest11() {
         if (!hoverCardBest11 || layoutEditorOn) return;
         var teamName = squadraLogo || (isSerieA ? 'SVINCOLATO' : (g.squadra || ''));
         var mediaVoto = usaTotali ? Number(g.mediavototot || 0) : Number(g.mediavototit || 0);
-        var fantaMedia = usaTotali ? Number(g.fvototot || 0) : Number(g.fvotit || 0);
+        var fantaMedia = usaTotali ? Number(g.fvototot || 0) : Number(g.fvototit || 0);
         var presenze = Number(g[presKeyBest] || 0);
         var qi = (g.qi !== undefined && g.qi !== null && g.qi !== '') ? Number(g.qi) : null;
         var qa = (g.qa !== undefined && g.qa !== null && g.qa !== '') ? Number(g.qa) : null;
