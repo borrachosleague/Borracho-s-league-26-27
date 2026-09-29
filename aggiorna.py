@@ -6,6 +6,7 @@ from urllib.request import Request, urlopen
 import re
 import unicodedata
 from pathlib import Path
+import os
 
 # === CONFIGURAZIONE ===
 PROJECT_DIR = Path(__file__).resolve().parent
