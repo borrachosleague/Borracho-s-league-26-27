@@ -2411,7 +2411,56 @@
         #page-best11 .best11-quote-diff.down{color:#ce211b!important}
         #page-best11 .best11-quote-diff.flat{color:#555!important}
 
-    </style>
+    
+/* === BEST 11 · CARD BORRACHOS DINAMICA === */
+.best11-hover-card.is-visible{
+  width:420px!important; padding:0!important; overflow:hidden!important;
+  border:5px solid #d5ad45!important; border-radius:18px!important;
+  background:linear-gradient(145deg,#07101f 0%,#0b254d 48%,#05070b 100%)!important;
+  box-shadow:0 22px 55px rgba(0,0,0,.72),inset 0 0 0 2px #111!important;
+}
+.best11-hover-card .best11-hover-top{
+  min-height:260px!important; position:relative!important; display:block!important;
+  padding:22px 22px 12px!important;
+  background:radial-gradient(circle at 50% 30%,rgba(28,95,177,.5),transparent 55%)!important;
+}
+.best11-hover-card .best11-hover-logo{
+  position:absolute!important; left:18px!important; top:18px!important;
+  width:88px!important; height:88px!important; object-fit:contain!important;
+  filter:drop-shadow(0 5px 8px #000)!important; z-index:3!important;
+}
+.best11-hover-card .best11-hover-main{display:flex!important;flex-direction:column!important;align-items:center!important}
+.best11-hover-card .best11-card-silhouette{
+  width:180px!important;height:150px!important;margin:5px auto 4px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  font-size:82px!important;background:transparent!important;border:0!important;
+}
+.best11-hover-card .best11-hover-name{
+  font-size:30px!important;line-height:1!important;font-weight:1000!important;
+  text-transform:uppercase!important;color:#fff!important;text-shadow:0 3px 4px #000!important;
+}
+.best11-hover-card .best11-hover-team{
+  margin-top:8px!important;color:#e3bd59!important;font-weight:900!important;
+  letter-spacing:1.5px!important;text-transform:uppercase!important
+}
+.best11-hover-card .best11-hover-role{
+  margin-top:5px!important;color:#fff!important;font-size:13px!important;font-weight:900!important
+}
+.best11-hover-card .best11-hover-stats{
+  display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:7px!important;
+  padding:12px!important;background:rgba(0,0,0,.66)!important
+}
+.best11-hover-card .best11-hover-stat{
+  min-height:67px!important;border:1px solid rgba(213,173,69,.75)!important;border-radius:8px!important;
+  background:linear-gradient(#171717,#050505)!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important
+}
+.best11-hover-card .best11-hover-stat span{font-size:10px!important;color:#d8bc6b!important;font-weight:900!important}
+.best11-hover-card .best11-hover-stat strong{font-size:23px!important;color:#fff!important;line-height:1.05!important}
+.best11-hover-card .best11-diff.up strong{color:#55df79!important}
+.best11-hover-card .best11-diff.down strong{color:#ff6868!important}
+
+</style>
 
 </head>
 <body>
@@ -3583,12 +3632,13 @@ function updateBest11() {
         if (!hoverCardBest11 || layoutEditorOn) return;
         var teamName = squadraLogo || (isSerieA ? 'SVINCOLATO' : (g.squadra || ''));
         var mediaVoto = usaTotali ? Number(g.mediavototot || 0) : Number(g.mediavototit || 0);
-        var fantaMedia = usaTotali ? Number(g.fvototot || 0) : Number(g.fvototit || 0);
+        var fantaMedia = usaTotali ? Number(g.fvototot || 0) : Number(g.fvotit || 0);
         var presenze = Number(g[presKeyBest] || 0);
         var qi = (g.qi !== undefined && g.qi !== null && g.qi !== '') ? Number(g.qi) : null;
         var qa = (g.qa !== undefined && g.qa !== null && g.qa !== '') ? Number(g.qa) : null;
         var diffQ = (qi !== null && qa !== null) ? qa - qi : null;
-        var diffHtml = diffQ === null ? '' : '<em class="best11-quote-diff ' + (diffQ > 0 ? 'up' : diffQ < 0 ? 'down' : 'flat') + '">' + (diffQ > 0 ? '▲ +' : diffQ < 0 ? '▼ ' : '• ') + diffQ + '</em>';
+        var diffClass = diffQ > 0 ? 'up' : diffQ < 0 ? 'down' : 'flat';
+        var diffText = diffQ === null ? '—' : (diffQ > 0 ? '+' : '') + diffQ;
         var logoHtml = squadraLogo
             ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\'hidden\'">'
             : '<div class="best11-hover-logo-placeholder"></div>';
@@ -3603,12 +3653,13 @@ function updateBest11() {
                     '<div class="best11-hover-role">' + ruoloLabel + '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="best11-hover-stats best11-hover-stats-five">' +
-                '<div class="best11-hover-stat"><span>MEDIA VOTO</span><strong>' + mediaVoto + '</strong></div>' +
-                '<div class="best11-hover-stat"><span>FANTAMEDIA</span><strong>' + fantaMedia + '</strong></div>' +
+            '<div class="best11-hover-stats">' +
+                '<div class="best11-hover-stat"><span>MEDIA VOTO</span><strong>' + mediaVoto.toFixed(2) + '</strong></div>' +
+                '<div class="best11-hover-stat"><span>FANTAMEDIA</span><strong>' + fantaMedia.toFixed(2) + '</strong></div>' +
                 '<div class="best11-hover-stat"><span>PRESENZE</span><strong>' + presenze + '</strong></div>' +
-                '<div class="best11-hover-stat best11-quote"><span>QI</span><strong>' + (qi === null ? '—' : qi) + '</strong></div>' +
-                '<div class="best11-hover-stat best11-quote best11-quote-current"><span>QA</span><strong>' + (qa === null ? '—' : qa) + '</strong>' + diffHtml + '</div>' +
+                '<div class="best11-hover-stat"><span>QI</span><strong>' + (qi === null ? '—' : qi) + '</strong></div>' +
+                '<div class="best11-hover-stat"><span>QA</span><strong>' + (qa === null ? '—' : qa) + '</strong></div>' +
+                '<div class="best11-hover-stat best11-diff ' + diffClass + '"><span>DIFF. +/-</span><strong>' + diffText + '</strong></div>' +
             '</div>';
         hoverCardBest11.setAttribute('aria-hidden','false');
     }
