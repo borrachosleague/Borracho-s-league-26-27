@@ -189,6 +189,10 @@ giocatori = defaultdict(lambda: {
     "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
     "squadra": "", "ruolo": ""
 })
+# Statistiche TOTALI: tutte le prestazioni, anche non schierate
+giocatori_totali = defaultdict(lambda: {
+    "voti": [], "fvoti": [], "squadra": "", "ruolo": ""
+})
 # Gol per reparto per squadra
 gol_reparto = defaultdict(lambda: {"d": 0, "c": 0, "a": 0})   
 
@@ -217,6 +221,19 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
 
     ruolo = row[3]
     g["ruolo"] = str(ruolo).strip().lower() if ruolo is not None else ""
+
+    # TOTALI: Voto colonna F e Fantavoto generale colonna V
+    gt = giocatori_totali[nome]
+    gt["squadra"] = g["squadra"]
+    gt["ruolo"] = g["ruolo"]
+    try:
+        vv = float(str(row[5]).replace(",", ".")) if row[5] is not None else 0
+        if vv > 0: gt["voti"].append(vv)
+    except (ValueError, TypeError): pass
+    try:
+        ff = float(str(row[21]).replace(",", ".")) if row[21] is not None else 0
+        if ff > 0: gt["fvoti"].append(ff)
+    except (ValueError, TypeError): pass
 
     tit = row[19]
     try:
@@ -316,6 +333,11 @@ for nome, g in giocatori.items():
         "qi": quotazioni_fc.get(_norm_nome(nome), {}).get("qi"),
         "qa": quotazioni_fc.get(_norm_nome(nome), {}).get("qa"),
         "prestit": n_voti,
+        "presfvtit": n_fvoti,
+        "prestot": len(giocatori_totali[nome]["voti"]),
+        "presfvtot": len(giocatori_totali[nome]["fvoti"]),
+        "mediavototot": round(sum(giocatori_totali[nome]["voti"]) / len(giocatori_totali[nome]["voti"]), 2) if giocatori_totali[nome]["voti"] else 0,
+        "fvototot": round(sum(giocatori_totali[nome]["fvoti"]) / len(giocatori_totali[nome]["fvoti"]), 2) if giocatori_totali[nome]["fvoti"] else 0,
         "mediavototit": round(sum(g["voti"]) / n_voti, 2) if n_voti > 0 else 0,
         "fvototit": round(sum(g["fvoti"]) / n_fvoti, 2) if n_fvoti > 0 else 0,
         "goltit": g["gol"],
@@ -457,9 +479,20 @@ risultati.sort(key=lambda x: x["giornata"])
 # === 4. GENERA JSON ===
 
 colonne_stat = [c for c in colonne_stat if c != "class"]   
+# Conserva il database Serie A già presente finché il relativo aggiornamento non viene eseguito
+_vecchi = {}
+if os.path.exists(OUTPUT_FILE):
+    try:
+        with open(OUTPUT_FILE, "r", encoding="utf-8") as _f:
+            _vecchi = json.load(_f)
+    except Exception:
+        _vecchi = {}
+
 dati = {
     "squadre": squadre,
     "giocatori": lista_giocatori,
+    "giocatori_seriea": _vecchi.get("giocatori_seriea", []),
+    "giocatori_svincolati": _vecchi.get("giocatori_svincolati", []),
     "risultati": risultati,
     "stat_squadre": stat_squadre,
     "stat_colonne": colonne_stat
