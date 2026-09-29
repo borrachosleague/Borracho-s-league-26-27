@@ -10,9 +10,9 @@ from pathlib import Path
 # === CONFIGURAZIONE ===
 PROJECT_DIR = Path(__file__).resolve().parent
 DATA_DIR = PROJECT_DIR.parent
-CLASSIFICA_FILE = str(DATA_DIR / "esportazioni" / "classifica" / "Classifica_Serie-Aperol.xlsx")
+CLASSIFICA_FILE = str(PROJECT_DIR / "esportazioni" / "classifica" / "Classifica_Serie-Aperol.xlsx")
 BORRACHOS_FILE = str(DATA_DIR / "BORRACHOSLEAGUE 26.27.xlsm")
-CALENDARIO_FILE = str(DATA_DIR / "CalendarioSerieAperol.xlsx")
+CALENDARIO_FILE = str(PROJECT_DIR / "esportazioni" / "classifica" / "Calendario_Serie-Aperol.xlsx")
 OUTPUT_FILE = str(PROJECT_DIR / "dati.json")
 
 # === 1. CLASSIFICA SQUADRE ===
