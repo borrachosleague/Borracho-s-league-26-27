@@ -478,34 +478,270 @@ wb_cal.close()
 
 # Ordina per numero giornata
 risultati.sort(key=lambda x: x["giornata"])   
+# === 3.5 TUTTI I GIOCATORI SERIE A - VOTO STATISTICO FC (Alvin482) ===
+# Fonte pubblica Fantacalcio: pagina statistiche con fonte "statistico".
+from html.parser import HTMLParser
+import re
+import unicodedata
+
+STATISTICO_URL = "https://www.fantacalcio.it/statistiche-serie-a/2026-27/statistico/assist"
+
+def _num_fc(s, default=0.0):
+    try:
+        return float(str(s).strip().replace(",", "."))
+    except Exception:
+        return default
+
+def _norm_nome_fc(s):
+    s = unicodedata.normalize("NFD", str(s or "").lower())
+    s = "".join(ch for ch in s if unicodedata.category(ch) != "Mn")
+    return re.sub(r"[^a-z0-9]", "", s)
+
+class _StatsTableParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_tr = False
+        self.in_cell = False
+        self.cell = []
+        self.cell_meta = []
+        self.row = []
+        self.row_meta = []
+        self.rows = []
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        attrs_dict = {str(k).lower(): str(v or "") for k, v in attrs}
+        if tag == "tr":
+            self.in_tr = True
+            self.row = []
+            self.row_meta = []
+        elif self.in_tr and tag in ("td", "th"):
+            self.in_cell = True
+            self.cell = []
+            self.cell_meta = [" ".join(attrs_dict.values())]
+        elif self.in_cell:
+            # Fantacalcio mostra il ruolo Classic anche tramite badge/classi/attributi:
+            # conserviamo i metadati degli elementi interni alla cella.
+            self.cell_meta.append(" ".join(attrs_dict.values()))
+
+    def handle_data(self, data):
+        if self.in_cell:
+            self.cell.append(data)
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if self.in_tr and tag in ("td", "th") and self.in_cell:
+            txt = " ".join("".join(self.cell).split())
+            meta = " ".join(self.cell_meta)
+            self.row.append(txt)
+            self.row_meta.append(meta)
+            self.in_cell = False
+        elif tag == "tr" and self.in_tr:
+            if self.row:
+                self.rows.append((self.row, self.row_meta))
+            self.in_tr = False
+
+def _ruolo_classic_da_riga(cells, metas, idx_nome):
+    # Prima prova il testo delle celle che precedono il nome (P/D/C/A).
+    for j in range(max(0, idx_nome - 4), idx_nome):
+        t = str(cells[j] or "").strip().lower()
+        if t in ("p", "d", "c", "a"):
+            return t
+
+    # Poi cerca nei metadati HTML di badge/classi/data-*.
+    blocco = " ".join(metas[max(0, idx_nome - 4):idx_nome + 1]).lower()
+    patterns = [
+        ("p", r"(?:^|[\s_\-:=])(p|por|portiere|goalkeeper)(?:$|[\s_\-;])"),
+        ("d", r"(?:^|[\s_\-:=])(d|dif|difensore|defender)(?:$|[\s_\-;])"),
+        ("c", r"(?:^|[\s_\-:=])(c|cen|centrocampista|midfielder)(?:$|[\s_\-;])"),
+        ("a", r"(?:^|[\s_\-:=])(a|att|attaccante|forward)(?:$|[\s_\-;])"),
+    ]
+    for ruolo, pat in patterns:
+        if re.search(pat, blocco):
+            return ruolo
+    return ""
+
+
+QUOTAZIONI_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
+
+def scarica_ruoli_classic_fc():
+    """Scarica il Listone/quotazioni ufficiale e costruisce nome -> ruolo Classic.
+    Le statistiche restano quelle Voto Statistico; questa seconda pagina serve solo per P/D/C/A.
+    """
+    req = urllib.request.Request(
+        QUOTAZIONI_URL,
+        headers={"User-Agent": "Mozilla/5.0", "Accept": "text/html,application/xhtml+xml"},
+        method="GET",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            raw = response.read().decode("utf-8", errors="replace")
+    except Exception as e:
+        raise RuntimeError("Impossibile scaricare i ruoli Classic dal Listone Fantacalcio: " + str(e))
+
+    parser = _StatsTableParser()
+    parser.feed(raw)
+    ruoli = {}
+    for cells, metas in parser.rows:
+        idx_sq = None
+        for i, c in enumerate(cells):
+            if re.fullmatch(r"[A-Z]{3}", c or ""):
+                idx_sq = i
+                break
+        if idx_sq is None or idx_sq < 1:
+            continue
+        nome = str(cells[idx_sq - 1] or "").strip()
+        if not nome or nome.lower() == "calciatore":
+            continue
+        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
+        if ruolo:
+            ruoli[_norm_nome_fc(nome)] = ruolo
+
+    return ruoli
+
+def scarica_statistiche_statistiche_fc():
+    req = urllib.request.Request(
+        STATISTICO_URL,
+        headers={
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "text/html,application/xhtml+xml"
+        },
+        method="GET",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            raw = response.read().decode("utf-8", errors="replace")
+    except Exception as e:
+        raise RuntimeError("Impossibile scaricare le statistiche Voto Statistico FC: " + str(e))
+
+    parser = _StatsTableParser()
+    parser.feed(raw)
+
+    out = []
+    for cells, metas in parser.rows:
+        # Cerca la sigla squadra (3 lettere) e usa la cella precedente come nome.
+        idx_sq = None
+        for i, c in enumerate(cells):
+            if re.fullmatch(r"[A-Z]{3}", c or ""):
+                idx_sq = i
+                break
+        if idx_sq is None or idx_sq < 1 or len(cells) < idx_sq + 11:
+            continue
+
+        nome = cells[idx_sq - 1].strip()
+        squadra_a = cells[idx_sq].strip()
+        if not nome or nome.lower() == "calciatore":
+            continue
+
+        pv = int(_num_fc(cells[idx_sq + 1], 0))
+        mv = _num_fc(cells[idx_sq + 2], 0)
+        fm = _num_fc(cells[idx_sq + 3], 0)
+        gol = int(_num_fc(cells[idx_sq + 4], 0))
+        gs = int(_num_fc(cells[idx_sq + 5], 0))
+
+        rig_txt = cells[idx_sq + 6]
+        mrig = re.search(r"(\d+)\s*/\s*(\d+)", rig_txt)
+        rig_segnati = int(mrig.group(1)) if mrig else 0
+        rig_tirati = int(mrig.group(2)) if mrig else 0
+        rig_sbagliati = max(0, rig_tirati - rig_segnati)
+
+        rp = int(_num_fc(cells[idx_sq + 7], 0))
+        ass = int(_num_fc(cells[idx_sq + 8], 0))
+        amm = int(_num_fc(cells[idx_sq + 9], 0))
+        esp = int(_num_fc(cells[idx_sq + 10], 0))
+
+        # Ruolo Classic P/D/C/A: serve anche alla Best 11 di tutta la Serie A.
+        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
+        # Fallback sicuro per i portieri se il badge ruolo non viene esposto come testo/metadato.
+        if not ruolo and (gs > 0 or rp > 0):
+            ruolo = "p"
+
+        out.append({
+            "nome": nome,
+            "squadra": squadra_a,
+            "ruolo": ruolo,
+            "prestot": pv,
+            "presfvtot": pv,
+            "mediavototot": round(mv, 2),
+            "fvototot": round(fm, 2),
+            "goltot": gol,
+            "assisttot": ass,
+            "golsubititot": gs,
+            "cleansheettot": 0,
+            "rigtot": rig_segnati,
+            "risgsbtot": rig_sbagliati,
+            "rigpartot": rp,
+            "autgoltot": 0,
+            "ammtot": amm,
+            "esptot": esp
+        })
+
+    if len(out) < 100:
+        raise RuntimeError(
+            "La pagina Fantacalcio è stata letta, ma la tabella Statistico non è stata riconosciuta "
+            f"(trovati {len(out)} giocatori). dati.json NON viene sovrascritto."
+        )
+    return out
+
+print("Scarico statistiche Serie A - Voto Statistico FC (Alvin482)...")
+giocatori_seriea = scarica_statistiche_statistiche_fc()
+
+# I voti/statistiche arrivano SEMPRE dalla pagina Statistico.
+# Per i ruoli P/D/C/A usiamo invece il Listone ufficiale Classic, che è la fonte corretta.
+print("Scarico ruoli Classic dal Listone ufficiale Fantacalcio...")
+ruoli_listone = scarica_ruoli_classic_fc()
+ruoli_borracho = {_norm_nome_fc(g["nome"]): g.get("ruolo", "") for g in lista_giocatori}
+
+for g in giocatori_seriea:
+    k = _norm_nome_fc(g["nome"])
+    if k in ruoli_listone:
+        g["ruolo"] = ruoli_listone[k]
+    elif k in ruoli_borracho:
+        # Fallback per eventuali differenze di rendering/nome nel Listone.
+        g["ruolo"] = ruoli_borracho[k]
+
+conteggio_ruoli_seriea = {r: sum(1 for g in giocatori_seriea if g.get("ruolo") == r) for r in ("p", "d", "c", "a")}
+senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
+print("Ruoli Serie A:", conteggio_ruoli_seriea)
+print("Giocatori senza ruolo:", len(senza_ruolo))
+
+# Blocco di sicurezza: una Best 11 Serie A con centinaia di ruoli mancanti sarebbe falsata.
+# Non sovrascriviamo dati.json finché il Listone non è stato letto correttamente.
+if len(senza_ruolo) > 10:
+    esempio = ", ".join(senza_ruolo[:10])
+    raise RuntimeError(
+        "Ruoli Classic non letti correttamente dal Listone Fantacalcio: "
+        f"{len(senza_ruolo)} giocatori senza ruolo (esempio: {esempio}). "
+        "dati.json NON viene sovrascritto."
+    )
+
+# Svincolati = tutti Serie A meno i giocatori presenti nelle rose Borracho.
+nomi_borracho = {_norm_nome_fc(g["nome"]) for g in lista_giocatori}
+giocatori_svincolati = [
+    g for g in giocatori_seriea
+    if _norm_nome_fc(g["nome"]) not in nomi_borracho
+]
+
+
+
 # === 4. GENERA JSON ===
 
-colonne_stat = [c for c in colonne_stat if c != "class"]   
-# Conserva il database Serie A già presente finché il relativo aggiornamento non viene eseguito
-_vecchi = {}
-if os.path.exists(OUTPUT_FILE):
-    try:
-        with open(OUTPUT_FILE, "r", encoding="utf-8") as _f:
-            _vecchi = json.load(_f)
-    except Exception:
-        _vecchi = {}
-
+colonne_stat = [c for c in colonne_stat if c != "class"]
 dati = {
     "squadre": squadre,
     "giocatori": lista_giocatori,
-    "giocatori_seriea": _vecchi.get("giocatori_seriea", []),
-    "giocatori_svincolati": _vecchi.get("giocatori_svincolati", []),
+    "giocatori_seriea": giocatori_seriea,
+    "giocatori_svincolati": giocatori_svincolati,
     "risultati": risultati,
     "stat_squadre": stat_squadre,
     "stat_colonne": colonne_stat
-}   
+}
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    json.dump(dati, f, ensure_ascii=False, separators=(',', ':'))
+    json.dump(dati, f, ensure_ascii=False, indent=2)
 
-# TEST: mostra i primi 3 punti
-for s in squadre[:3]:
-    print(s["nome"], s["pt"])
 print(f"OK {len(squadre)} squadre")
-print(f"OK {len(lista_giocatori)} giocatori")
+print(f"OK {len(lista_giocatori)} giocatori Borracho")
+print(f"OK {len(giocatori_seriea)} giocatori Serie A")
+print(f"OK {len(giocatori_svincolati)} svincolati")
 print(f"OK {len(risultati)} giornate")
-print(f"OK Salvato in: {OUTPUT_FILE}")   
+print(f"OK Salvato in: {OUTPUT_FILE}")
