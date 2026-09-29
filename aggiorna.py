@@ -1,51 +1,152 @@
 import json
-import os
 import openpyxl
-from collections import defaultdict
-from html.parser import HTMLParser
-from urllib.request import Request, urlopen
-import re
-import unicodedata
-from pathlib import Path
 import os
+import sys
+import urllib.request
+import urllib.error
+from collections import defaultdict
 
 # === CONFIGURAZIONE ===
-PROJECT_DIR = Path(__file__).resolve().parent
-DATA_DIR = PROJECT_DIR.parent
-CLASSIFICA_FILE = str(PROJECT_DIR / "esportazioni" / "classifica" / "Classifica_Serie-Aperol.xlsx")
-BORRACHOS_FILE = str(DATA_DIR / "BORRACHOSLEAGUE 26.27.xlsm")
-CALENDARIO_FILE = str(PROJECT_DIR / "esportazioni" / "classifica" / "Calendario_Serie-Aperol.xlsx")
-OUTPUT_FILE = str(PROJECT_DIR / "dati.json")
+COMPETITION_ID = 324951
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
+CREDENTIALS_FILE = os.path.join(DATA_DIR, "DATI_FANTACALCIO.txt")
+BORRACHOS_FILE = os.path.join(DATA_DIR, "BORRACHOSLEAGUE 26.27.xlsm")
+OUTPUT_FILE = os.path.join(BASE_DIR, "dati.json")
+STAT_FILE = os.path.join(DATA_DIR, "nuovo statistiche.xlsm")
 
-# === 1. CLASSIFICA SQUADRE ===
-wb_class = openpyxl.load_workbook(CLASSIFICA_FILE, read_only=True)
-ws_class = wb_class.active
+TEAMS_URL = (
+    "https://apileague.fantacalcio.it/onboarding/v1/league/competition/"
+    f"teams?page=1&pageSize=50&competitionId={COMPETITION_ID}"
+)
+CALENDAR_URL = (
+    "https://apileague.fantacalcio.it/onboarding/v1/league/competition/"
+    f"calendar/{COMPETITION_ID}"
+)
 
-squadre = []
-for row in ws_class.iter_rows(min_row=2, values_only=True):
-    if row[1] is None:
-        continue
+def read_credentials(path):
+    if not os.path.exists(path):
+        raise RuntimeError(f"File credenziali non trovato: {path}")
+    values = {}
+    with open(path, "r", encoding="utf-8-sig") as f:
+        for raw in f:
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            values[key.strip().upper()] = value.strip().strip('"').strip("'")
+    app_key = values.get("APP_KEY", "")
+    bearer = values.get("BEARER", "")
+    if bearer.lower().startswith("bearer "):
+        bearer = bearer[7:].strip()
+    if not app_key or not bearer:
+        raise RuntimeError("Nel file credenziali servono APP_KEY=... e BEARER=...")
+    return app_key, bearer
+
+def fetch_json(url, app_key, bearer):
+    req = urllib.request.Request(
+        url,
+        headers={
+            "App_key": app_key,
+            "Authorization": "Bearer " + bearer,
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0",
+        },
+        method="GET",
+    )
     try:
-        int(row[0])
-    except (ValueError, TypeError):
-        continue
-    squadre.append({
-        "nome": str(row[1]).strip(),
-        "g": int(row[3] or 0),
-        "v": int(row[4] or 0),
-        "n": int(row[5] or 0),
-        "p": int(row[6] or 0),
-        "gf": int(row[7] or 0),
-        "gs": int(row[8] or 0),
-        "dr": int(row[9] or 0),
-        "pt": int(row[10] or 0),
-        "pt_totali": float(str(row[11]).replace(",", ".")) if row[11] else 0
-    })
+        with urllib.request.urlopen(req, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {e.code}: {body}") from None
 
+def unwrap_list(payload):
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict):
+        for key in ("data", "items", "result"):
+            if isinstance(payload.get(key), list):
+                return payload[key]
+    raise RuntimeError("Formato API Fantacalcio inatteso.")
+
+def parse_result(value):
+    try:
+        a, b = str(value).split("-", 1)
+        return int(a.strip()), int(b.strip())
+    except Exception:
+        return 0, 0
+
+for _label, _path in [("BORRACHOSLEAGUE 26.27.xlsm", BORRACHOS_FILE), ("nuovo statistiche.xlsm", STAT_FILE)]:
+    if not os.path.exists(_path):
+        raise RuntimeError(f"{_label} non trovato: {_path}")
+
+print("Aggiornamento Borracho's League...")
+app_key, bearer = read_credentials(CREDENTIALS_FILE)
+print("Scarico squadre, classifica e calendario da Fantacalcio...")
+teams_api = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
+calendar_api = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
+
+team_names = {int(t["id"]): str(t["n"]).strip() for t in teams_api}
+stats_api = {
+    tid: {
+        "nome": name, "g": 0, "v": 0, "n": 0, "p": 0,
+        "gf": 0, "gs": 0, "dr": 0, "pt": 0, "pt_totali": 0.0
+    }
+    for tid, name in team_names.items()
+}
+risultati = []
+
+for day in calendar_api:
+    giornata = int(day.get("matchDay", 0))
+    calculated = bool(day.get("calculated", False))
+    partite = []
+    for match in day.get("matches", []):
+        hid, aid = int(match["tIdH"]), int(match["tIdA"])
+        home, away = team_names[hid], team_names[aid]
+        pt_h, pt_a = float(match.get("ptH") or 0), float(match.get("ptA") or 0)
+        result = str(match.get("result", "-"))
+        gh, ga = parse_result(result) if calculated and result != "-" else (0, 0)
+
+        if calculated and result != "-":
+            sh, sa = int(match.get("standingPtH") or 0), int(match.get("standingPtA") or 0)
+            h, a = stats_api[hid], stats_api[aid]
+            h["g"] += 1; a["g"] += 1
+            h["gf"] += gh; h["gs"] += ga
+            a["gf"] += ga; a["gs"] += gh
+            h["pt"] += sh; a["pt"] += sa
+            h["pt_totali"] += pt_h; a["pt_totali"] += pt_a
+            if sh > sa:
+                h["v"] += 1; a["p"] += 1
+            elif sa > sh:
+                a["v"] += 1; h["p"] += 1
+            else:
+                h["n"] += 1; a["n"] += 1
+
+        partite.append({
+            "casa": home,
+            "pt_casa": pt_h if calculated else 0,
+            "gol_casa": gh,
+            "gol_trasferta": ga,
+            "pt_trasferta": pt_a if calculated else 0,
+            "trasferta": away
+        })
+    risultati.append({"giornata": giornata, "partite": partite})
+
+for s in stats_api.values():
+    s["dr"] = s["gf"] - s["gs"]
+    s["pt_totali"] = round(s["pt_totali"], 2)
+
+# Classifica Borracho's League:
+# punti > fantapunti > differenza reti > gol fatti
+squadre = sorted(
+    stats_api.values(),
+    key=lambda s: (s["pt"], s["pt_totali"], s["dr"], s["gf"]),
+    reverse=True
+)
+risultati.sort(key=lambda x: x["giornata"])
 
 # === 1.5 STATISTICHE SQUADRE ===
-STAT_FILE = str(DATA_DIR / "nuovo statistiche.xlsm")
-
 wb_stat = openpyxl.load_workbook(STAT_FILE, data_only=True)
 ws_stat = wb_stat.worksheets[0]
 
@@ -60,11 +161,6 @@ for c in range(4, 29):
         colonne_stat.append(str(val).strip())
     else:
         colonne_stat.append("")
-
-if "tot best" in colonne_stat and "pt best" in colonne_stat:
-    i1 = colonne_stat.index("tot best")
-    i2 = colonne_stat.index("pt best")
-    colonne_stat[i1], colonne_stat[i2] = colonne_stat[i2], colonne_stat[i1]   
 
 # Se le intestazioni di AA/AB sono vuote, assegna etichette
 if not colonne_stat[23]:
@@ -90,7 +186,7 @@ for r in range(5, 15):
 
 
 # === 1.6 CLASSIFICA F1 E BATTLE ROYALE (Foglio4) ===
-ws_f1 = wb_stat.worksheets[2]
+ws_f1 = wb_stat["Foglio4"]
 
 f1_scores = {}
 for r in range(4, 14):
@@ -120,60 +216,6 @@ colonne_stat.append("f1")
 colonne_stat.append("br")
 
 wb_stat.close()   
-# === 1.7 QUOTAZIONI UFFICIALI FANTACALCIO.IT 2026/27 ===
-# Fonte pubblica: https://www.fantacalcio.it/quotazioni-fantacalcio/2026-27
-# QI = quotazione iniziale Classic, QA = quotazione attuale Classic.
-class _TableParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.rows, self.row, self.cell = [], None, None
-    def handle_starttag(self, tag, attrs):
-        if tag == "tr": self.row = []
-        elif tag in ("td", "th") and self.row is not None: self.cell = []
-    def handle_data(self, data):
-        if self.cell is not None: self.cell.append(data)
-    def handle_endtag(self, tag):
-        if tag in ("td", "th") and self.cell is not None and self.row is not None:
-            self.row.append(" ".join("".join(self.cell).split()))
-            self.cell = None
-        elif tag == "tr" and self.row is not None:
-            if self.row: self.rows.append(self.row)
-            self.row = None
-
-def _norm_nome(s):
-    s = unicodedata.normalize("NFD", str(s or "").lower())
-    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
-    return re.sub(r"[^a-z0-9]", "", s)
-
-def carica_quotazioni():
-    url = "https://www.fantacalcio.it/quotazioni-fantacalcio/2026-27"
-    try:
-        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        html = urlopen(req, timeout=20).read().decode("utf-8", "ignore")
-        parser = _TableParser()
-        parser.feed(html)
-        out = {}
-        for cells in parser.rows:
-            # Nella tabella ufficiale: Calciatore, Sq, QI Classic, QA Classic, FVM...
-            clean = [c.strip().replace("*", "").strip() for c in cells if c.strip()]
-            team_i = next((i for i,c in enumerate(clean) if re.fullmatch(r"[A-Z]{3}", c)), None)
-            if team_i is None or team_i < 1 or len(clean) <= team_i + 2:
-                continue
-            nome = clean[team_i - 1]
-            try:
-                qi = int(float(clean[team_i + 1].replace(",", ".")))
-                qa = int(float(clean[team_i + 2].replace(",", ".")))
-            except (ValueError, TypeError):
-                continue
-            out[_norm_nome(nome)] = {"qi": qi, "qa": qa}
-        print(f"OK {len(out)} quotazioni Fantacalcio.it")
-        return out
-    except Exception as e:
-        print(f"ATTENZIONE: quotazioni non aggiornate: {e}")
-        return {}
-
-quotazioni_fc = carica_quotazioni()
-
 # === 2. GIOCATORI (INSER DATA) ===
 wb_borr = openpyxl.load_workbook(BORRACHOS_FILE, read_only=True, data_only=True)
 ws_data = wb_borr["INSER DATA"]
@@ -191,10 +233,14 @@ giocatori = defaultdict(lambda: {
     "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
     "squadra": "", "ruolo": ""
 })
-# Statistiche TOTALI: tutte le prestazioni, anche non schierate
+# Statistiche TOTALI dei giocatori: tutte le prestazioni, indipendentemente dalla formazione schierata
 giocatori_totali = defaultdict(lambda: {
-    "voti": [], "fvoti": [], "squadra": "", "ruolo": ""
+    "voti": [], "fvoti": [], "gol": 0, "assist": 0,
+    "golsub": 0, "rigseg": 0, "rigsba": 0, "rigpar": 0,
+    "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
+    "squadra": "", "ruolo": ""
 })
+
 # Gol per reparto per squadra
 gol_reparto = defaultdict(lambda: {"d": 0, "c": 0, "a": 0})   
 
@@ -224,18 +270,40 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
     ruolo = row[3]
     g["ruolo"] = str(ruolo).strip().lower() if ruolo is not None else ""
 
-    # TOTALI: Voto colonna F e Fantavoto generale colonna V
+    # TOTALI: usa Voto (F) e fanta voto generale (V), senza filtro FantaTit
     gt = giocatori_totali[nome]
-    gt["squadra"] = g["squadra"]
+    gt["squadra"] = str(fantasquadra).strip()
     gt["ruolo"] = g["ruolo"]
-    try:
-        vv = float(str(row[5]).replace(",", ".")) if row[5] is not None else 0
-        if vv > 0: gt["voti"].append(vv)
-    except (ValueError, TypeError): pass
-    try:
-        ff = float(str(row[21]).replace(",", ".")) if row[21] is not None else 0
-        if ff > 0: gt["fvoti"].append(ff)
-    except (ValueError, TypeError): pass
+
+    voto_tot = row[5]
+    if voto_tot is not None:
+        try:
+            v = float(str(voto_tot).replace(",", "."))
+            if v > 0:
+                gt["voti"].append(v)
+        except (ValueError, TypeError):
+            pass
+
+    fvoto_tot = row[21]
+    if fvoto_tot is not None:
+        try:
+            fv = float(str(fvoto_tot).replace(",", "."))
+            if fv > 0:
+                gt["fvoti"].append(fv)
+        except (ValueError, TypeError):
+            pass
+
+    for idx, chiave in [
+        (18, "gol"), (14, "assist"), (7, "golsub"), (10, "rigseg"),
+        (9, "rigsba"), (8, "rigpar"), (11, "autogol"), (12, "amm"),
+        (13, "esp"), (16, "cleansheet")
+    ]:
+        val_tot = row[idx]
+        if val_tot is not None:
+            try:
+                gt[chiave] += int(float(str(val_tot).replace(",", ".")))
+            except (ValueError, TypeError):
+                pass
 
     tit = row[19]
     try:
@@ -332,14 +400,8 @@ for nome, g in giocatori.items():
         "nome": nome,
         "squadra": g["squadra"],
         "ruolo": g["ruolo"],
-        "qi": quotazioni_fc.get(_norm_nome(nome), {}).get("qi"),
-        "qa": quotazioni_fc.get(_norm_nome(nome), {}).get("qa"),
         "prestit": n_voti,
         "presfvtit": n_fvoti,
-        "prestot": len(giocatori_totali[nome]["voti"]),
-        "presfvtot": len(giocatori_totali[nome]["fvoti"]),
-        "mediavototot": round(sum(giocatori_totali[nome]["voti"]) / len(giocatori_totali[nome]["voti"]), 2) if giocatori_totali[nome]["voti"] else 0,
-        "fvototot": round(sum(giocatori_totali[nome]["fvoti"]) / len(giocatori_totali[nome]["fvoti"]), 2) if giocatori_totali[nome]["fvoti"] else 0,
         "mediavototit": round(sum(g["voti"]) / n_voti, 2) if n_voti > 0 else 0,
         "fvototit": round(sum(g["fvoti"]) / n_fvoti, 2) if n_fvoti > 0 else 0,
         "goltit": g["gol"],
@@ -351,7 +413,21 @@ for nome, g in giocatori.items():
         "rigpartit": g["rigpar"],
         "autgoltit": g["autogol"],
         "ammtit": g["amm"],
-        "esptit": g["esp"]
+        "esptit": g["esp"],
+        "prestot": len(giocatori_totali[nome]["voti"]),
+        "presfvtot": len(giocatori_totali[nome]["fvoti"]),
+        "mediavototot": round(sum(giocatori_totali[nome]["voti"]) / len(giocatori_totali[nome]["voti"]), 2) if giocatori_totali[nome]["voti"] else 0,
+        "fvototot": round(sum(giocatori_totali[nome]["fvoti"]) / len(giocatori_totali[nome]["fvoti"]), 2) if giocatori_totali[nome]["fvoti"] else 0,
+        "goltot": giocatori_totali[nome]["gol"],
+        "assisttot": giocatori_totali[nome]["assist"],
+        "golsubititot": giocatori_totali[nome]["golsub"],
+        "cleansheettot": giocatori_totali[nome]["cleansheet"],
+        "rigtot": giocatori_totali[nome]["rigseg"],
+        "risgsbtot": giocatori_totali[nome]["rigsba"],
+        "rigpartot": giocatori_totali[nome]["rigpar"],
+        "autgoltot": giocatori_totali[nome]["autogol"],
+        "ammtot": giocatori_totali[nome]["amm"],
+        "esptot": giocatori_totali[nome]["esp"]
     })
 lista_giocatori.sort(key=lambda x: x["mediavototit"], reverse=True)
 # Aggrega gol per reparto in stat_squadre
@@ -371,113 +447,7 @@ for c in ["gol d", "gol c", "gol a"]:
     if c not in colonne_stat:
         colonne_stat.append(c)   
 
-# === 3. CALENDARIO ===
-wb_cal = openpyxl.load_workbook(CALENDARIO_FILE, read_only=True, data_only=True)
-ws_cal = wb_cal.active
 
-risultati = []
-giornata_sin = 0
-giornata_des = 0
-partite_sin = []
-partite_des = []
-
-def parse_gol(val):
-    if val is None:
-        return 0, 0
-    s = str(val).strip()
-    if s == "-" or s == "":
-        return 0, 0
-    if "-" in s:
-        parts = s.split("-")
-        try:
-            return int(float(parts[0].replace(",", "."))), int(float(parts[1].replace(",", ".")))
-        except (ValueError, TypeError):
-            return 0, 0
-    try:
-        n = float(s.replace(",", "."))
-        if n <= 65.5: return 0, 0
-        elif n <= 71.5: return 1, 0
-        elif n <= 77.5: return 2, 0
-        elif n <= 83.5: return 3, 0
-        elif n <= 89.5: return 4, 0
-        elif n <= 95.5: return 5, 0
-        elif n <= 101.5: return 6, 0
-        else: return 7, 0
-    except (ValueError, TypeError):
-        return 0, 0
-
-def parse_pt(val):
-    if val is None:
-        return 0
-    try:
-        return float(str(val).replace(",", "."))
-    except (ValueError, TypeError):
-        return 0
-
-for row in ws_cal.iter_rows(min_row=1, values_only=True):
-    val_a = row[0]
-    if val_a is None:
-        continue
-    val_a_str = str(val_a).strip()
-
-    if "giornata" in val_a_str.lower():
-        if partite_sin:
-            risultati.append({"giornata": giornata_sin, "partite": partite_sin})
-        if partite_des:
-            risultati.append({"giornata": giornata_des, "partite": partite_des})
-
-        import re
-        m = re.search(r'(\d+)', val_a_str)
-        if m:
-            giornata_sin = int(m.group(1))
-        else:
-            giornata_sin += 1
-
-        val_g = row[6] if len(row) > 6 else None
-        if val_g is not None and "giornata" in str(val_g).lower():
-            m2 = re.search(r'(\d+)', str(val_g))
-            if m2:
-                giornata_des = int(m2.group(1))
-            else:
-                giornata_des += 1
-
-        partite_sin = []
-        partite_des = []
-    else:
-        # Blocco sinistro (A-E): giornata dispari
-        if val_a_str and row[3] is not None:
-            gol_c, gol_t = parse_gol(row[4])
-            partite_sin.append({
-                "casa": str(val_a_str).strip(),
-                "pt_casa": parse_pt(row[1]),
-                "gol_casa": gol_c,
-                "gol_trasferta": gol_t,
-                "pt_trasferta": parse_pt(row[2]),
-                "trasferta": str(row[3]).strip()
-            })
-
-        # Blocco destro (G-K): giornata pari
-        val_g = row[6] if len(row) > 6 else None
-        if val_g is not None and str(val_g).strip() and len(row) > 10 and row[9] is not None:
-            gol_c2, gol_t2 = parse_gol(row[10])
-            partite_des.append({
-                "casa": str(val_g).strip(),
-                "pt_casa": parse_pt(row[7]),
-                "gol_casa": gol_c2,
-                "gol_trasferta": gol_t2,
-                "pt_trasferta": parse_pt(row[8]),
-                "trasferta": str(row[9]).strip()
-            })
-
-if partite_sin:
-    risultati.append({"giornata": giornata_sin, "partite": partite_sin})
-if partite_des:
-    risultati.append({"giornata": giornata_des, "partite": partite_des})
-
-wb_cal.close()
-
-# Ordina per numero giornata
-risultati.sort(key=lambda x: x["giornata"])   
 # === 3.5 TUTTI I GIOCATORI SERIE A - VOTO STATISTICO FC (Alvin482) ===
 # Fonte pubblica Fantacalcio: pagina statistiche con fonte "statistico".
 from html.parser import HTMLParser
@@ -723,10 +693,9 @@ giocatori_svincolati = [
 ]
 
 
-
 # === 4. GENERA JSON ===
 
-colonne_stat = [c for c in colonne_stat if c != "class"]
+colonne_stat = [c for c in colonne_stat if c != "class"]   
 dati = {
     "squadre": squadre,
     "giocatori": lista_giocatori,
@@ -735,13 +704,17 @@ dati = {
     "risultati": risultati,
     "stat_squadre": stat_squadre,
     "stat_colonne": colonne_stat
-}
+}   
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     json.dump(dati, f, ensure_ascii=False, indent=2)
 
+# TEST: mostra i primi 3 punti
+for s in squadre[:3]:
+    print(s["nome"], s["pt"])
 print(f"OK {len(squadre)} squadre")
 print(f"OK {len(lista_giocatori)} giocatori Borracho")
-print(f"OK {len(giocatori_seriea)} giocatori Serie A")
+print(f"OK {len(giocatori_seriea)} giocatori Serie A (Voto Statistico)")
 print(f"OK {len(giocatori_svincolati)} svincolati")
 print(f"OK {len(risultati)} giornate")
-print(f"OK Salvato in: {OUTPUT_FILE}")
+print(f"OK Salvato in: {OUTPUT_FILE}")   
+
