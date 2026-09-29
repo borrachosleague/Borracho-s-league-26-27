@@ -3,21 +3,13 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 title Borrachos League - Aggiorna e pubblica
 
-echo === 1. AGGIORNAMENTO DATI ===
-python aggiorna.py
-if errorlevel 1 (
- echo ERRORE DATI - GitHub non viene modificato.
- pause
- exit /b 1
-)
-
-echo === 2. CONTROLLO GITHUB ===
+echo === 1. CONTROLLO GITHUB ===
 git fetch origin
 if errorlevel 1 (
  echo ERRORE CONNESSIONE GITHUB.
  pause
  exit /b 1
-)
+) 
 
 for /f %%A in ('git rev-list --count HEAD..origin/main') do set "REMOTE_AHEAD=%%A"
 if not "%REMOTE_AHEAD%"=="0" (
@@ -29,6 +21,14 @@ if not "%REMOTE_AHEAD%"=="0" (
   pause
   exit /b 1
  )
+) 
+
+echo === 2. AGGIORNAMENTO DATI ===
+python aggiorna.py
+if errorlevel 1 (
+ echo ERRORE DATI - GitHub non viene modificato.
+ pause
+ exit /b 1
 )
 
 echo === 3. PREPARO MODIFICHE ===
