@@ -134,7 +134,23 @@ def main():
                 nome = p.get("plyr") or p.get("nome") or p.get("name")
                 if nome:
                     PLAYER_NAMES[str(p.get("pid"))] = str(nome).strip()
-    print(f"Nomi giocatori caricati: {len(PLAYER_NAMES)}")
+    print(f"Nomi giocatori dalla rosa autenticata: {len(PLAYER_NAMES)}")
+
+    # dati.json contiene ora l'ID Fantacalcio ufficiale preso dal Listone:
+    # completa la mappa per tutta la Serie A, quindi anche per tutte le 10 rose.
+    if os.path.exists(DATA_FILE):
+        try:
+            with open(DATA_FILE, "r", encoding="utf-8") as f:
+                dati = json.load(f)
+            for p in dati.get("giocatori_seriea", []):
+                if p.get("id") is not None and p.get("nome"):
+                    PLAYER_NAMES[str(p["id"])] = str(p["nome"]).strip()
+            for p in dati.get("giocatori", []):
+                if p.get("id") is not None and p.get("nome"):
+                    PLAYER_NAMES[str(p["id"])] = str(p["nome"]).strip()
+        except Exception as e:
+            print("ATTENZIONE lettura anagrafica dati.json:", e)
+    print(f"Nomi giocatori totali disponibili: {len(PLAYER_NAMES)}")
 
     teams = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
     calendar = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
