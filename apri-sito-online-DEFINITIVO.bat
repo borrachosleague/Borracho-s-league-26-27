@@ -55,10 +55,7 @@ if errorlevel 1 (
 
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
-echo Aggiornamento completato.
-echo Chiudo le vecchie finestre Brave e riapro il sito aggiornato...
-taskkill /F /IM brave.exe >nul 2>&1
-timeout /t 1 /nobreak >nul
-start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/?v=%RANDOM%%RANDOM%"
+echo Aggiorno la finestra Brave gia aperta senza aprirne una nuova...
+powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; if ($ws.AppActivate('Brave')) { Start-Sleep -Milliseconds 400; $ws.SendKeys('^{F5}') }"
 timeout /t 2 /nobreak >nul
 exit
