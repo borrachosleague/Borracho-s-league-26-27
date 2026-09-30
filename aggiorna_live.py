@@ -11,6 +11,7 @@ DIVISION = "A"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_FILE = os.path.abspath(os.path.join(BASE_DIR, "..", "PRIVATO BORRACHOS", "DATI_FANTACALCIO.txt"))
 OUTPUT_FILE = os.path.join(BASE_DIR, "live.json")
+DATA_FILE = os.path.join(BASE_DIR, "dati.json")
 
 TEAMS_URL = (
     "https://apileague.fantacalcio.it/onboarding/v1/league/competition/"
@@ -67,9 +68,14 @@ def unwrap_list(payload):
                 return payload[key]
     raise RuntimeError("Formato API Fantacalcio inatteso.")
 
+PLAYER_NAMES = {}
+
 def player_row(p):
+    pid = p.get("pid")
     return {
-        "pid": p.get("pid"),
+        "pid": pid,
+        "nome": PLAYER_NAMES.get(str(pid), ""),
+
         "m": p.get("m"),
         "scr": p.get("scr"),
         "cscr": p.get("cscr"),
@@ -111,13 +117,27 @@ def choose_day(calendar, mday):
     return None
 
 def main():
+    global PLAYER_NAMES
     print("LIVE BORRACHOS - aggiornamento")
     app_key, bearer = read_credentials(CREDENTIALS_FILE)
+
+    # Il dettaglio formazione restituisce i pid ma non i nomi.
+    # Recuperiamo la mappa pid->nome dall'endpoint visualizza, che contiene lineUpInfo.
+    mine = fetch_json(MY_LINEUP_URL, app_key, bearer)
+    info = mine.get("lineUpInfo") or (mine.get("data") or {}).get("lineUpInfo") or []
+    if isinstance(info, dict):
+        info = info.get("players") or info.get("items") or info.get("data") or []
+    if isinstance(info, list):
+        for p in info:
+            if isinstance(p, dict) and p.get("pid") is not None:
+                nome = p.get("plyr") or p.get("nome") or p.get("name")
+                if nome:
+                    PLAYER_NAMES[str(p.get("pid"))] = str(nome).strip()
+
     teams = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
     calendar = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
     team_names = {int(t["id"]): str(t.get("n") or t["id"]).strip() for t in teams}
 
-    mine = fetch_json(MY_LINEUP_URL, app_key, bearer)
     dto = mine.get("teamLineupDto") or (mine.get("data") or {}).get("teamLineupDto") or {}
     if not dto.get("mday") or not dto.get("cmday"):
         raise RuntimeError("Fantacalcio non ha restituito mday/cmday.")
