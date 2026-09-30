@@ -3594,9 +3594,21 @@ function updateBest11() {
         return Number(b[presKeyBest] || 0) - Number(a[presKeyBest] || 0);
     }
     var giornateGiocate = giornateGiocateBest11();
-    var presenzeMinime = bestPresenzePct <= 0 ? 1 : Math.ceil(giornateGiocate * bestPresenzePct / 100);
+    // Per i voti da TITOLARE la percentuale va calcolata sulle presenze
+    // effettivamente disponibili nel campione titolari, non sulle giornate di lega:
+    // altrimenti, nelle prime giornate, soglie alte possono svuotare completamente la Best 11.
+    var basePresenzeBest = giornateGiocate;
+    if (!usaTotali) {
+        var maxPresenzeTitolari = 0;
+        elencoBest.forEach(function(g) {
+            var pTit = Number(g[presKeyBest] || 0);
+            if (pTit > maxPresenzeTitolari) maxPresenzeTitolari = pTit;
+        });
+        if (maxPresenzeTitolari > 0) basePresenzeBest = maxPresenzeTitolari;
+    }
+    var presenzeMinime = bestPresenzePct <= 0 ? 1 : Math.ceil(basePresenzeBest * bestPresenzePct / 100);
     var infoPres = document.getElementById('best-presenze-info');
-    if (infoPres) infoPres.textContent = giornateGiocate + ' giornate · min ' + presenzeMinime + ' presenze';
+    if (infoPres) infoPres.textContent = basePresenzeBest + ' presenze disponibili · min ' + presenzeMinime + ' presenze';
 
     function perRuolo(ruolo) {
         return elencoBest.filter(function(g) {
