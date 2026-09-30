@@ -2792,7 +2792,7 @@
         /* === LIVE BORRACHOS === */
         #page-live { max-width:none; min-height:calc(100vh - 82px); padding:18px 24px 28px; background:radial-gradient(circle at 50% 0,#3b2515 0,#17110d 45%,#090807 100%); }
         .live-head{text-align:center;margin-bottom:16px}.live-title{font-size:clamp(28px,3vw,48px);font-weight:950;color:#ffd54a;letter-spacing:3px;text-shadow:3px 3px #000}.live-meta{color:#e9dfc9;font-weight:800;margin-top:5px}
-        .live-status{display:inline-block;margin-left:10px;padding:4px 10px;border:2px solid #ffd54a;border-radius:999px;color:#ffd54a}.live-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 auto 16px}.live-tab{background:#ffd54a;color:#111;border:2px solid #ffd54a;border-radius:9px;padding:9px 14px;font-weight:950;cursor:pointer}.live-tab.active{background:#111;color:#ffd54a}.live-grid{display:block;max-width:980px;margin:0 auto}
+        .live-status{display:inline-block;margin-left:10px;padding:4px 10px;border:2px solid #ffd54a;border-radius:999px;color:#ffd54a}.live-scoreboard{max-width:1100px;margin:0 auto 16px;overflow:hidden;border-radius:10px}.live-scoreboard table{width:100%;border-collapse:collapse;background:#171723}.live-scoreboard th{padding:9px 8px;background:#24243a;color:#ddd}.live-scoreboard td{padding:8px;border-top:1px solid #333;text-align:center;font-weight:800}.live-scoreboard .ris-team{display:flex;align-items:center;gap:8px}.live-scoreboard .ris-team.casa{justify-content:flex-end}.live-scoreboard .ris-team.trasferta{justify-content:flex-start}.live-scoreboard .ris-logo{width:32px;height:32px;object-fit:contain}.live-scoreboard .live-goal{color:#e94560;font-size:18px}.live-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 auto 16px}.live-tab{background:#ffd54a;color:#111;border:2px solid #ffd54a;border-radius:9px;padding:9px 14px;font-weight:950;cursor:pointer}.live-tab.active{background:#111;color:#ffd54a}.live-grid{display:block;max-width:980px;margin:0 auto}
         .live-match{background:linear-gradient(180deg,#2b2119,#15110e);border:2px solid #74552d;border-radius:12px;box-shadow:0 8px 22px #0008;overflow:hidden}.live-team{padding:11px 10px;border-bottom:1px solid #5a4328}.live-team:last-child{border-bottom:0}.live-team-top{display:flex;align-items:center;gap:7px}.live-team img{width:34px;height:34px;object-fit:contain}.live-team-name{font-weight:900;color:#fff;line-height:1.05;flex:1}.live-total{font-size:20px;font-weight:950;color:#ffd54a}.live-module{font-size:11px;color:#c9b99f;margin-top:3px}.live-players{margin-top:7px;display:grid;gap:2px}.live-player{display:flex;justify-content:space-between;gap:5px;font-size:11px;color:#ddd}.live-player .vote{color:#ffd54a;font-weight:800}.live-wait{color:#b6a88e;font-size:11px;font-style:italic;margin-top:6px}.live-error{text-align:center;color:#ff8b83;padding:30px}
         @media(max-width:650px){.live-tabs{gap:5px}.live-tab{padding:7px 9px;font-size:12px}}
 
@@ -2851,6 +2851,7 @@
 <!-- LIVE BORRACHOS -->
 <div id="page-live" class="page">
   <div class="live-head"><div class="live-title">LIVE BORRACHOS</div><div class="live-meta" id="live-meta">Caricamento…</div></div>
+  <div class="live-scoreboard"><table><thead><tr><th>Squadra Casa</th><th>Pt</th><th>Gol</th><th>Gol</th><th>Pt</th><th>Squadra Trasferta</th></tr></thead><tbody id="live-scoreboard-body"></tbody></table></div>
   <div class="live-tabs" id="live-tabs"></div>
   <div class="live-grid" id="live-grid"></div>
 </div>
@@ -3326,6 +3327,15 @@ function caricaLive(){
     fetch('live.json?ts='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
         meta.innerHTML='Giornata Borrachos '+liveEsc(d.giornata_borrachos)+' · Serie A '+liveEsc(d.giornata_serie_a)+' · Formazioni '+liveEsc(d.formazioni_consegnate)+'/10 <span class="live-status">'+liveEsc(String(d.stato||'attesa').toUpperCase())+'</span>';
         livePartiteCache=d.partite||[];
+        var sb=document.getElementById('live-scoreboard-body');
+        if(sb) sb.innerHTML=livePartiteCache.map(function(p){
+            var h=p.casa||{}, a=p.trasferta||{};
+            var hp=(h.totale!=null&&Number(h.totale)!==0)?Number(h.totale).toFixed(1):'—';
+            var ap=(a.totale!=null&&Number(a.totale)!==0)?Number(a.totale).toFixed(1):'—';
+            var hg=(p.risultato_reale&&p.risultato_reale.gol_casa!=null)?p.risultato_reale.gol_casa:(p.risultato&&p.risultato.gol_casa!=null?p.risultato.gol_casa:'—');
+            var ag=(p.risultato_reale&&p.risultato_reale.gol_trasferta!=null)?p.risultato_reale.gol_trasferta:(p.risultato&&p.risultato.gol_trasferta!=null?p.risultato.gol_trasferta:'—');
+            return '<tr><td><div class="ris-team casa"><span>'+liveEsc(h.nome||'—')+'</span><img class="ris-logo" src="'+logoUrl(h.nome||'')+'" onerror="this.remove()"></div></td><td>'+hp+'</td><td class="live-goal">'+hg+'</td><td class="live-goal">'+ag+'</td><td>'+ap+'</td><td><div class="ris-team trasferta"><img class="ris-logo" src="'+logoUrl(a.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(a.nome||'—')+'</span></div></td></tr>';
+        }).join('');
         if(livePartitaAttiva>=livePartiteCache.length)livePartitaAttiva=0;
         tabs.innerHTML=livePartiteCache.map(function(p,i){
             var casa=(p.casa&&p.casa.nome)||'Casa', tras=(p.trasferta&&p.trasferta.nome)||'Trasferta';
