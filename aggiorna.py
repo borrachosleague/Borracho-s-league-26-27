@@ -566,7 +566,14 @@ def scarica_listone_classic_fc():
         ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
         qi = int(_num_fc(cells[idx_sq + 1], 0))
         qa = int(_num_fc(cells[idx_sq + 2], 0))
-        listone[_norm_nome_fc(nome)] = {"ruolo": ruolo, "qi": qi, "qa": qa}
+        # Il link del profilo Fantacalcio termina con l'ID ufficiale del giocatore,
+        # es. /martinez-l/2764. Il parser conserva l'href nei metadati della cella.
+        pid = None
+        meta_nome = str(metas[idx_sq - 1] or "")
+        m_pid = re.search(r"/(\d+)(?:[/?#\s]|$)", meta_nome)
+        if m_pid:
+            pid = int(m_pid.group(1))
+        listone[_norm_nome_fc(nome)] = {"id": pid, "ruolo": ruolo, "qi": qi, "qa": qa}
 
     if len(listone) < 100:
         raise RuntimeError(
@@ -674,6 +681,7 @@ for g in giocatori_seriea:
     if info:
         if info.get("ruolo"):
             g["ruolo"] = info["ruolo"]
+        g["id"] = info.get("id")
         g["qi"] = info["qi"]
         g["qa"] = info["qa"]
     elif k in ruoli_borracho:
@@ -684,6 +692,7 @@ for g in giocatori_seriea:
 for g in lista_giocatori:
     info = listone_fc.get(_norm_nome_fc(g["nome"]))
     if info:
+        g["id"] = info.get("id")
         g["qi"] = info["qi"]
         g["qa"] = info["qa"]
 
