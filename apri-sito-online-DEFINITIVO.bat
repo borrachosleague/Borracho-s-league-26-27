@@ -56,4 +56,6 @@ if errorlevel 1 (
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
 start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/"
-pause
+echo La finestra si chiudera automaticamente.
+timeout /t 2 /nobreak >nul
+exit
