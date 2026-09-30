@@ -56,7 +56,9 @@ if errorlevel 1 (
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
 echo Aggiornamento completato.
-echo Apro il sito Borrachos League...
-start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/"
+echo Chiudo le vecchie finestre Brave e riapro il sito aggiornato...
+taskkill /F /IM brave.exe >nul 2>&1
+timeout /t 1 /nobreak >nul
+start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/?v=%RANDOM%%RANDOM%"
 timeout /t 2 /nobreak >nul
 exit
