@@ -125,14 +125,16 @@ def main():
     # Recuperiamo la mappa pid->nome dall'endpoint visualizza, che contiene lineUpInfo.
     mine = fetch_json(MY_LINEUP_URL, app_key, bearer)
     info = mine.get("lineUpInfo") or (mine.get("data") or {}).get("lineUpInfo") or []
+    # lineUpInfo può essere direttamente una lista oppure un oggetto che la contiene.
     if isinstance(info, dict):
-        info = info.get("players") or info.get("items") or info.get("data") or []
+        info = info.get("players") or info.get("items") or info.get("data") or info.get("lineUpInfo") or []
     if isinstance(info, list):
         for p in info:
             if isinstance(p, dict) and p.get("pid") is not None:
                 nome = p.get("plyr") or p.get("nome") or p.get("name")
                 if nome:
                     PLAYER_NAMES[str(p.get("pid"))] = str(nome).strip()
+    print(f"Nomi giocatori caricati: {len(PLAYER_NAMES)}")
 
     teams = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
     calendar = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
