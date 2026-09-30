@@ -3327,7 +3327,7 @@ function caricaLive(){
         meta.innerHTML='Giornata Borrachos '+liveEsc(d.giornata_borrachos)+' · Serie A '+liveEsc(d.giornata_serie_a)+' · Formazioni '+liveEsc(d.formazioni_consegnate)+'/10 <span class="live-status">'+liveEsc(String(d.stato||'attesa').toUpperCase())+'</span>';
         livePartiteCache=d.partite||[];
         var sb=document.getElementById('live-scoreboard-body');
-        if(sb) sb.innerHTML=livePartiteCache.map(function(p){
+        if(sb) sb.innerHTML=livePartiteCache.map(function(p,i){
             var h=p.casa||{}, a=p.trasferta||{};
             var hp=(h.totale!=null&&Number(h.totale)!==0)?Number(h.totale).toFixed(1):'—';
             var ap=(a.totale!=null&&Number(a.totale)!==0)?Number(a.totale).toFixed(1):'—';
@@ -3337,7 +3337,7 @@ function caricaLive(){
         }).join('');
         if(livePartitaAttiva>=livePartiteCache.length)livePartitaAttiva=0;
         if(livePartiteCache.length) mostraLivePartita(livePartitaAttiva); else grid.innerHTML='<div class="live-error">Nessuna partita disponibile.</div>';
-    }).catch(function(e){meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">live.json non ancora disponibile. Esegui aggiorna_live.py.</div>';});
+    }).catch(function(e){meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">Errore caricamento LIVE: '+liveEsc(e && e.message ? e.message : e)+'</div>'; console.error('LIVE BORRACHOS',e);});
 }
 setInterval(function(){if(document.getElementById('page-live')&&document.getElementById('page-live').classList.contains('active'))caricaLive();},30000);
 
