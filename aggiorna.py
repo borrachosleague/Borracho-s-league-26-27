@@ -534,10 +534,8 @@ def _ruolo_classic_da_riga(cells, metas, idx_nome):
 
 QUOTAZIONI_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
 
-def scarica_ruoli_classic_fc():
-    """Scarica il Listone/quotazioni ufficiale e costruisce nome -> ruolo Classic.
-    Le statistiche restano quelle Voto Statistico; questa seconda pagina serve solo per P/D/C/A.
-    """
+def scarica_listone_classic_fc():
+    """Scarica il Listone ufficiale e restituisce ruolo Classic, QI e QA per giocatore."""
     req = urllib.request.Request(
         QUOTAZIONI_URL,
         headers={"User-Agent": "Mozilla/5.0", "Accept": "text/html,application/xhtml+xml"},
@@ -547,27 +545,35 @@ def scarica_ruoli_classic_fc():
         with urllib.request.urlopen(req, timeout=30) as response:
             raw = response.read().decode("utf-8", errors="replace")
     except Exception as e:
-        raise RuntimeError("Impossibile scaricare i ruoli Classic dal Listone Fantacalcio: " + str(e))
+        raise RuntimeError("Impossibile scaricare il Listone Fantacalcio: " + str(e))
 
     parser = _StatsTableParser()
     parser.feed(raw)
-    ruoli = {}
+    listone = {}
     for cells, metas in parser.rows:
         idx_sq = None
-        for i, c in enumerate(cells):
-            if re.fullmatch(r"[A-Z]{3}", c or ""):
+        for i, cella in enumerate(cells):
+            if re.fullmatch(r"[A-Z]{3}", cella or ""):
                 idx_sq = i
                 break
-        if idx_sq is None or idx_sq < 1:
+        # Nel Listone Classic: Nome | Sq | QI | QA | FVM/1000.
+        if idx_sq is None or idx_sq < 1 or len(cells) <= idx_sq + 2:
             continue
         nome = str(cells[idx_sq - 1] or "").strip()
         if not nome or nome.lower() == "calciatore":
             continue
-        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
-        if ruolo:
-            ruoli[_norm_nome_fc(nome)] = ruolo
 
-    return ruoli
+        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
+        qi = int(_num_fc(cells[idx_sq + 1], 0))
+        qa = int(_num_fc(cells[idx_sq + 2], 0))
+        listone[_norm_nome_fc(nome)] = {"ruolo": ruolo, "qi": qi, "qa": qa}
+
+    if len(listone) < 100:
+        raise RuntimeError(
+            "Listone Fantacalcio non riconosciuto correttamente "
+            f"(trovati {len(listone)} giocatori). dati.json NON viene sovrascritto."
+        )
+    return listone
 
 def scarica_statistiche_statistiche_fc():
     req = urllib.request.Request(
@@ -658,17 +664,28 @@ giocatori_seriea = scarica_statistiche_statistiche_fc()
 
 # I voti/statistiche arrivano SEMPRE dalla pagina Statistico.
 # Per i ruoli P/D/C/A usiamo invece il Listone ufficiale Classic, che è la fonte corretta.
-print("Scarico ruoli Classic dal Listone ufficiale Fantacalcio...")
-ruoli_listone = scarica_ruoli_classic_fc()
+print("Scarico ruoli Classic + QI/QA dal Listone ufficiale Fantacalcio...")
+listone_fc = scarica_listone_classic_fc()
 ruoli_borracho = {_norm_nome_fc(g["nome"]): g.get("ruolo", "") for g in lista_giocatori}
 
 for g in giocatori_seriea:
     k = _norm_nome_fc(g["nome"])
-    if k in ruoli_listone:
-        g["ruolo"] = ruoli_listone[k]
+    info = listone_fc.get(k)
+    if info:
+        if info.get("ruolo"):
+            g["ruolo"] = info["ruolo"]
+        g["qi"] = info["qi"]
+        g["qa"] = info["qa"]
     elif k in ruoli_borracho:
         # Fallback per eventuali differenze di rendering/nome nel Listone.
         g["ruolo"] = ruoli_borracho[k]
+
+# Anche i giocatori Borracho devono ricevere QI e QA: la Best 11 usa questa lista.
+for g in lista_giocatori:
+    info = listone_fc.get(_norm_nome_fc(g["nome"]))
+    if info:
+        g["qi"] = info["qi"]
+        g["qa"] = info["qa"]
 
 conteggio_ruoli_seriea = {r: sum(1 for g in giocatori_seriea if g.get("ruolo") == r) for r in ("p", "d", "c", "a")}
 senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
