@@ -23,6 +23,7 @@ CALENDAR_URL = (
     "https://apileague.fantacalcio.it/onboarding/v1/league/competition/"
     f"calendar/{COMPETITION_ID}"
 )
+PLAYERS_URL = "https://apileague.fantacalcio.it/onboarding/v1/league/players"
 
 def read_credentials(path):
     if not os.path.exists(path):
@@ -88,6 +89,27 @@ teams_api = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
 calendar_api = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
 
 team_names = {int(t["id"]): str(t["n"]).strip() for t in teams_api}
+
+# Rose ufficiali della lega: il campo "cal" di ogni team contiene gli ID
+# Fantacalcio dei 25 giocatori, separati da ";". Questa è la fonte corretta
+# per avere sempre tutte le 10 rose, anche per chi non ha ancora statistiche.
+league_players_payload = fetch_json(PLAYERS_URL, app_key, bearer)
+league_players = league_players_payload.get("players", []) if isinstance(league_players_payload, dict) else []
+league_player_by_id = {
+    int(p["id"]): p for p in league_players
+    if isinstance(p, dict) and p.get("id") is not None
+}
+roster_ufficiali = []
+for t in teams_api:
+    squadra = str(t.get("n") or "").strip()
+    raw_ids = str(t.get("cal") or "").strip()
+    ids = [int(x) for x in raw_ids.split(";") if x.strip().isdigit()]
+    for pid in ids:
+        p = league_player_by_id.get(pid, {})
+        nome = str(p.get("name") or "").strip()
+        if nome:
+            roster_ufficiali.append({"id": pid, "nome": nome, "squadra": squadra})
+print(f"Rose ufficiali API: {len(roster_ufficiali)} giocatori")
 stats_api = {
     tid: {
         "nome": name, "g": 0, "v": 0, "n": 0, "p": 0,
@@ -695,6 +717,28 @@ for g in lista_giocatori:
         g["id"] = info.get("id")
         g["qi"] = info["qi"]
         g["qa"] = info["qa"]
+
+# Completa giocatori con le rose ufficiali API. INSER DATA contiene lo storico
+# delle prestazioni e può non avere ancora una riga per chi non ha giocato:
+# quei giocatori entrano comunque con statistiche a zero.
+presenti_id = {g.get("id") for g in lista_giocatori if g.get("id") is not None}
+for rp in roster_ufficiali:
+    if rp["id"] in presenti_id:
+        continue
+    info = listone_fc.get(_norm_nome_fc(rp["nome"])) or {}
+    lista_giocatori.append({
+        "nome": rp["nome"], "squadra": rp["squadra"], "ruolo": info.get("ruolo", ""),
+        "prestit": 0, "presfvtit": 0, "mediavototit": 0, "fvototit": 0,
+        "goltit": 0, "assisttit": 0, "golsubititit": 0, "cleansheettit": 0,
+        "rigtit": 0, "risgsbtit": 0, "rigpartit": 0, "autgoltit": 0, "ammtit": 0, "esptit": 0,
+        "prestot": 0, "presfvtot": 0, "mediavototot": 0, "fvototot": 0,
+        "goltot": 0, "assisttot": 0, "golsubititot": 0, "cleansheettot": 0,
+        "rigtot": 0, "risgsbtot": 0, "rigpartot": 0, "autgoltot": 0, "ammtot": 0, "esptot": 0,
+        "id": rp["id"], "qi": info.get("qi", 0), "qa": info.get("qa", 0)
+    })
+    presenti_id.add(rp["id"])
+
+print(f"Giocatori Borracho completi: {len(lista_giocatori)}")
 
 conteggio_ruoli_seriea = {r: sum(1 for g in giocatori_seriea if g.get("ruolo") == r) for r in ("p", "d", "c", "a")}
 senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
