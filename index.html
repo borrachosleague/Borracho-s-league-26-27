@@ -3552,6 +3552,28 @@ function setBestModulo(modulo, btn) {
     if (layoutEditorOn) refreshLayoutTargets();
 }
 
+function best11Logo3dUrl(squadra) {
+    var logo3dMap = {
+        'AC ASPARAGHESE': 'ac-asparaghese.webp',
+        'AS PIPPERIA': 'as-pipperia.webp',
+        'ATL IMPROVVISATO': 'atletico-improvvisato.webp',
+        'ATLETICO IMPROVVISATO': 'atletico-improvvisato.webp',
+        'FC INTERNAZIOANALE': 'fc-internazioanale.webp',
+        'INTERNAZIOANALE': 'fc-internazioanale.webp',
+        'PARTIZAN DEGRADO': 'partizan-degrado.webp',
+        'PESCICULINI': 'pesciculini-fc.webp',
+        'PESCICULINI FC': 'pesciculini-fc.webp',
+        'SAN GRIA': 'san-gria.webp',
+        'SESTO ASENSIO': 'sesto-asensio.webp',
+        'SHARK': 'shark.webp',
+        'TRICCHETRACHT': 'tricchetracht-francoforte.webp',
+        'TRICCHETRACHT FRANKFURT': 'tricchetracht-francoforte.webp',
+        'TRICCHETRACHT FRANCOFORTE': 'tricchetracht-francoforte.webp'
+    };
+    var key = String(squadra || '').trim().toUpperCase();
+    return logo3dMap[key] ? '3d/' + logo3dMap[key] : '';
+}
+
 function updateBest11() {
     var nums = bestModulo.split('').map(Number);
     var nDif = nums[0], nCen = nums[1], nAtt = nums[2];
@@ -3713,8 +3735,9 @@ function updateBest11() {
                     .replace(/[^a-z0-9]/g, '');
                 squadraLogoBench = mappaBorrachoPerNome[nomeNormBench] || '';
             }
+            var logoBench3d = best11Logo3dUrl(squadraLogoBench);
             var logoBench = squadraLogoBench
-                ? '<img class="bench-logo" src="' + logoUrl(squadraLogoBench) + '" onerror="this.remove()">'
+                ? '<img class="bench-logo" src="' + (logoBench3d || logoUrl(squadraLogoBench)) + '" onerror="this.remove()">'
                 : '<span></span>';
             var benchEl = document.createElement('div');
             benchEl.className = 'bench-player';
@@ -3774,10 +3797,12 @@ function updateBest11() {
                 .replace(/[^a-z0-9]/g, '');
             var squadraBorrachoBest = mappaBorrachoPerNome[nomeNormBest];
             if (squadraBorrachoBest) {
-                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(squadraBorrachoBest) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
+                var logo3dBest = best11Logo3dUrl(squadraBorrachoBest);
+                logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + (logo3dBest || logoUrl(squadraBorrachoBest)) + '" title="' + squadraBorrachoBest + '" onerror="this.style.display=\'none\'">';
             }
         } else {
-            logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + logoUrl(g.squadra) + '" onerror="this.style.display=\'none\'">';
+            var logo3dBest = best11Logo3dUrl(g.squadra);
+            logo = '<img class="pp-logo" loading="lazy" decoding="async" src="' + (logo3dBest || logoUrl(g.squadra)) + '" onerror="this.style.display=\'none\'">';
         }
         el.classList.add('pp-role-' + rl.toLowerCase());
         var nomeLen = String(g.nome || '').trim().length;
