@@ -3323,7 +3323,7 @@ function renderLiveMatch(p){
     var htot=(h.totale!=null&&Number(h.totale)!==0)?Number(h.totale).toFixed(1):'—';
     var atot=(a.totale!=null&&Number(a.totale)!==0)?Number(a.totale).toFixed(1):'—';
     return '<div class="live-h2h-head"><div>'+(hlogo?'<img src="'+hlogo+'" alt="">':'')+'<b>'+liveEsc(h.nome||'Casa')+'</b><small>'+(h.consegnata?'Modulo '+liveEsc(h.modulo||'—'):'Formazione non consegnata')+'</small></div><strong>'+htot+' - '+atot+'</strong><div><b>'+liveEsc(a.nome||'Trasferta')+'</b>'+(alogo?'<img src="'+alogo+'" alt="">':'')+'<small>'+(a.consegnata?'Modulo '+liveEsc(a.modulo||'—'):'Formazione non consegnata')+'</small></div></div>'+
-      '<div class="live-h2h-wrap"><table class="live-h2h"><thead><tr><th>Giocatori '+liveEsc(h.nome||'Casa')+'</th><th>Voto</th><th>Voto</th><th>Giocatori '+liveEsc(a.nome||'Trasferta')+'</th></tr></thead><tbody>'+rows+'</tbody><tfoot><tr><td>TOTALE</td><td>'+htot+'</td><td>'+atot+'</td><td>TOTALE</td></tr></tfoot></table></div>';
+      '<div class="live-h2h-wrap"><table class="live-h2h"><thead><tr><th></th><th>Voto</th><th>Voto</th><th></th></tr></thead><tbody>'+rows+'</tbody><tfoot><tr><td>TOTALE</td><td>'+htot+'</td><td>'+atot+'</td><td>TOTALE</td></tr></tfoot></table></div>';
 }
 var livePartiteCache=[], livePartitaAttiva=0;
 function mostraLivePartita(indice){
