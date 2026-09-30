@@ -170,6 +170,28 @@ def main():
         )
         print(f"- {hn} - {an} ... ", end="", flush=True)
         detail = fetch_json(url, app_key, bearer)
+
+        # Il /visualizza restituisce i nomi solo per la rosa autenticata (25 giocatori).
+        # Nei dettagli delle 5 partite abbiamo invece tutti i pid schierati.
+        # Completiamo la mappa pid->nome usando dati.json, dove i nomi Borrachos
+        # corrispondono alle rose ma non sempre hanno il pid. Per i pid non noti
+        # conserviamo il numero: verrà completato quando l'API live espone il nome.
+        #
+        # Se il dettaglio partita include informazioni giocatore in lply, raccogliamo
+        # anche da lì eventuali coppie pid/nome.
+        def collect_names(obj):
+            if isinstance(obj, dict):
+                pid = obj.get("pid")
+                nome = obj.get("plyr") or obj.get("nome") or obj.get("name")
+                if pid is not None and nome:
+                    PLAYER_NAMES[str(pid)] = str(nome).strip()
+                for v in obj.values():
+                    collect_names(v)
+            elif isinstance(obj, list):
+                for v in obj:
+                    collect_names(v)
+        collect_names(detail)
+
         home = side(detail.get("home"), hn, hid)
         away = side(detail.get("away"), an, aid)
         output["formazioni_consegnate"] += int(home["consegnata"]) + int(away["consegnata"])
