@@ -31,12 +31,19 @@ if errorlevel 1 (
  exit /b 1
 )
 
-echo === 3. PREPARO MODIFICHE ===
+echo === 3. AGGIORNAMENTO LIVE ===
+python aggiorna_live.py
+if errorlevel 1 (
+ echo ATTENZIONE: aggiornamento LIVE non riuscito.
+ echo Continuo comunque con la pubblicazione degli altri dati.
+)
+
+echo === 4. PREPARO MODIFICHE ===
 git add -A
 git diff --cached --quiet
 if not errorlevel 1 goto APERTURA
 
-echo === 4. COMMIT ===
+echo === 5. COMMIT ===
 git commit -m "Aggiornamento sito %date% %time%"
 if errorlevel 1 (
  echo ERRORE COMMIT.
@@ -44,7 +51,7 @@ if errorlevel 1 (
  exit /b 1
 )
 
-echo === 5. PUSH ===
+echo === 6. PUSH ===
 git push origin main
 if errorlevel 1 (
  echo ERRORE GIT - pubblicazione non completata.
@@ -55,7 +62,8 @@ if errorlevel 1 (
 
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
-echo Aggiorno la finestra Brave gia aperta senza aprirne una nuova...
-powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; if ($ws.AppActivate('Brave')) { Start-Sleep -Milliseconds 400; $ws.SendKeys('^{F5}') }"
+echo Pubblicazione completata.
+echo Non eseguo refresh automatici per non aggiornare anche la chat.
+echo Torna sulla scheda Borrachos e premi CTRL+F5.
 timeout /t 2 /nobreak >nul
 exit
