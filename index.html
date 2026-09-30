@@ -3639,9 +3639,29 @@ function updateBest11() {
         var diffQ = (qi !== null && qa !== null) ? qa - qi : null;
         var diffClass = diffQ > 0 ? 'up' : diffQ < 0 ? 'down' : 'flat';
         var diffText = diffQ === null ? '—' : (diffQ > 0 ? '+' : '') + diffQ;
-        var logoHtml = squadraLogo
-            ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\'hidden\'">'
-            : '<div class="best11-hover-logo-placeholder"></div>';
+        var logo3dMap = {
+            'AC ASPARAGHESE': 'ac-asparaghese.webp',
+            'AS PIPPERIA': 'as-pipperia.webp',
+            'ATL IMPROVVISATO': 'atletico-improvvisato.webp',
+            'ATLETICO IMPROVVISATO': 'atletico-improvvisato.webp',
+            'FC INTERNAZIOANALE': 'fc-internazioanale.webp',
+            'INTERNAZIOANALE': 'fc-internazioanale.webp',
+            'PARTIZAN DEGRADO': 'partizan-degrado.webp',
+            'PESCICULINI FC': 'pesciculini-fc.webp',
+            'SAN GRIA': 'san-gria.webp',
+            'SESTO ASENSIO': 'sesto-asensio.webp',
+            'SHARK': 'shark.webp',
+            'TRICCHETRACHT': 'tricchetracht-francoforte.webp',
+            'TRICCHETRACHT FRANKFURT': 'tricchetracht-francoforte.webp',
+            'TRICCHETRACHT FRANCOFORTE': 'tricchetracht-francoforte.webp'
+        };
+        var teamKey3d = String(squadraLogo || '').trim().toUpperCase();
+        var logo3dFile = logo3dMap[teamKey3d] || '';
+        var logoHtml = logo3dFile
+            ? '<img class="best11-hover-logo best11-hover-logo-3d" src="loghi%20finiti/3d/' + logo3dFile + '" onerror="this.style.visibility=\'hidden\'">'
+            : (squadraLogo
+                ? '<img class="best11-hover-logo" src="' + logoUrl(squadraLogo) + '" onerror="this.style.visibility=\'hidden\'">'
+                : '<div class="best11-hover-logo-placeholder"></div>');
         hoverCardBest11.className = 'best11-hover-card role-' + ruoloLabel.toLowerCase() + ' is-visible';
         hoverCardBest11.innerHTML =
             '<div class="best11-hover-top">' +
