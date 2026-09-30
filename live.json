@@ -1,6 +1,6 @@
 {
   "versione": 1,
-  "aggiornato_il": "2026-09-30T22:45:38+02:00",
+  "aggiornato_il": "2026-09-30T22:47:39+02:00",
   "idcomp": 324951,
   "giornata_borrachos": 4,
   "giornata_serie_a": 6,
@@ -18,7 +18,7 @@
         "titolari": [
           {
             "pid": 2170,
-            "nome": "",
+            "nome": "Milinkovic-Savic V.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -27,7 +27,7 @@
           },
           {
             "pid": 5877,
-            "nome": "",
+            "nome": "Carlos Augusto",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -36,7 +36,7 @@
           },
           {
             "pid": 2296,
-            "nome": "",
+            "nome": "Mancini",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -45,7 +45,7 @@
           },
           {
             "pid": 7181,
-            "nome": "",
+            "nome": "Wesley",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -54,7 +54,7 @@
           },
           {
             "pid": 6827,
-            "nome": "",
+            "nome": "Njie",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -63,7 +63,7 @@
           },
           {
             "pid": 536,
-            "nome": "",
+            "nome": "Politano",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -72,7 +72,7 @@
           },
           {
             "pid": 6398,
-            "nome": "",
+            "nome": "Isaksen",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -81,7 +81,7 @@
           },
           {
             "pid": 1870,
-            "nome": "",
+            "nome": "Barella",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -90,7 +90,7 @@
           },
           {
             "pid": 5995,
-            "nome": "",
+            "nome": "De Ketelaere",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -99,7 +99,7 @@
           },
           {
             "pid": 2097,
-            "nome": "",
+            "nome": "Kean",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -108,7 +108,7 @@
           },
           {
             "pid": 6967,
-            "nome": "",
+            "nome": "Diao",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -119,7 +119,7 @@
         "panchina": [
           {
             "pid": 2521,
-            "nome": "",
+            "nome": "De Gea",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -128,7 +128,7 @@
           },
           {
             "pid": 572,
-            "nome": "",
+            "nome": "Meret",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -137,7 +137,7 @@
           },
           {
             "pid": 4887,
-            "nome": "",
+            "nome": "Bellanova",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -146,7 +146,7 @@
           },
           {
             "pid": 5273,
-            "nome": "",
+            "nome": "Estupinan",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -155,7 +155,7 @@
           },
           {
             "pid": 4210,
-            "nome": "",
+            "nome": "Mina",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -164,7 +164,7 @@
           },
           {
             "pid": 6826,
-            "nome": "",
+            "nome": "Dembelè A.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -173,7 +173,7 @@
           },
           {
             "pid": 2724,
-            "nome": "",
+            "nome": "Buongiorno",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -182,7 +182,7 @@
           },
           {
             "pid": 5422,
-            "nome": "",
+            "nome": "Zalewski",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -191,7 +191,7 @@
           },
           {
             "pid": 22,
-            "nome": "",
+            "nome": "De Roon",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -200,7 +200,7 @@
           },
           {
             "pid": 6503,
-            "nome": "",
+            "nome": "Stankovic A.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -209,7 +209,7 @@
           },
           {
             "pid": 4349,
-            "nome": "",
+            "nome": "Nicolussi Caviglia",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -218,7 +218,7 @@
           },
           {
             "pid": 6215,
-            "nome": "",
+            "nome": "Lucca",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -227,7 +227,7 @@
           },
           {
             "pid": 6435,
-            "nome": "",
+            "nome": "Krstovic",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -236,7 +236,7 @@
           },
           {
             "pid": 7561,
-            "nome": "",
+            "nome": "Lontani",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -329,7 +329,7 @@
         "titolari": [
           {
             "pid": 133,
-            "nome": "",
+            "nome": "Skorupski",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -338,7 +338,7 @@
           },
           {
             "pid": 5641,
-            "nome": "",
+            "nome": "Chalobah T.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -347,7 +347,7 @@
           },
           {
             "pid": 5750,
-            "nome": "",
+            "nome": "Ostigard",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -356,7 +356,7 @@
           },
           {
             "pid": 4409,
-            "nome": "",
+            "nome": "Rrahmani",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -365,7 +365,7 @@
           },
           {
             "pid": 4159,
-            "nome": "",
+            "nome": "Akanji",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -374,7 +374,7 @@
           },
           {
             "pid": 5295,
-            "nome": "",
+            "nome": "Musah",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -383,7 +383,7 @@
           },
           {
             "pid": 6680,
-            "nome": "",
+            "nome": "Karlstrom",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -392,7 +392,7 @@
           },
           {
             "pid": 6898,
-            "nome": "",
+            "nome": "Keita M.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -401,7 +401,7 @@
           },
           {
             "pid": 4287,
-            "nome": "",
+            "nome": "Lobotka",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -410,7 +410,7 @@
           },
           {
             "pid": 4463,
-            "nome": "",
+            "nome": "Esposito Se.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -419,7 +419,7 @@
           },
           {
             "pid": 7023,
-            "nome": "",
+            "nome": "Pellegrino M.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -430,7 +430,7 @@
         "panchina": [
           {
             "pid": 6248,
-            "nome": "",
+            "nome": "Stankovic F.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -439,7 +439,7 @@
           },
           {
             "pid": 7235,
-            "nome": "",
+            "nome": "Troilo",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -448,7 +448,7 @@
           },
           {
             "pid": 2167,
-            "nome": "",
+            "nome": "Orsolini",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -457,7 +457,7 @@
           },
           {
             "pid": 4359,
-            "nome": "",
+            "nome": "Piccoli",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -466,7 +466,7 @@
           },
           {
             "pid": 6831,
-            "nome": "",
+            "nome": "Neres",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -475,7 +475,7 @@
           },
           {
             "pid": 7314,
-            "nome": "",
+            "nome": "Taylor K.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -484,7 +484,7 @@
           },
           {
             "pid": 4845,
-            "nome": "",
+            "nome": "Correia T.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -493,7 +493,7 @@
           },
           {
             "pid": 5982,
-            "nome": "",
+            "nome": "Spence",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -502,7 +502,7 @@
           },
           {
             "pid": 5457,
-            "nome": "",
+            "nome": "Maleh",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -511,7 +511,7 @@
           },
           {
             "pid": 2155,
-            "nome": "",
+            "nome": "Cutrone",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -520,7 +520,7 @@
           },
           {
             "pid": 5336,
-            "nome": "",
+            "nome": "Nzola",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -529,7 +529,7 @@
           },
           {
             "pid": 4199,
-            "nome": "",
+            "nome": "Loftus-Cheek",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -538,7 +538,7 @@
           },
           {
             "pid": 2514,
-            "nome": "",
+            "nome": "Stones",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -547,7 +547,7 @@
           },
           {
             "pid": 4957,
-            "nome": "",
+            "nome": "Montipò",
             "m": 0,
             "scr": 56,
             "cscr": 100,
