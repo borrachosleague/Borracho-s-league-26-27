@@ -55,7 +55,7 @@ if errorlevel 1 (
 
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
-start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/"
-echo La finestra si chiudera automaticamente.
+echo Aggiornamento completato. Il sito NON viene riaperto per evitare schede duplicate.
+echo Se il sito e' gia aperto, aggiorna la pagina con CTRL+F5.
 timeout /t 2 /nobreak >nul
 exit
