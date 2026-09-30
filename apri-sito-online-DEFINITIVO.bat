@@ -55,7 +55,8 @@ if errorlevel 1 (
 
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
-echo Aggiornamento completato. Il sito NON viene riaperto per evitare schede duplicate.
-echo Se il sito e' gia aperto, aggiorna la pagina con CTRL+F5.
+echo Aggiornamento completato.
+echo Apro il sito Borrachos League...
+start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/"
 timeout /t 2 /nobreak >nul
 exit
