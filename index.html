@@ -2626,6 +2626,59 @@
   box-shadow:0 8px 20px rgba(0,0,0,.55)!important;
 }
 
+
+/* === BEST 11 · COMPONENTE BOTTIGLIA PULITO, SENZA FIGURINA LEGACY === */
+#page-best11 #best11-hover-card.best11-drink-hover{
+ position:fixed!important;left:50%!important;bottom:10px!important;transform:translate(-50%,8px)!important;
+ z-index:40!important;width:430px!important;height:auto!important;padding:0!important;margin:0!important;
+ display:block!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ transition:opacity .12s ease,transform .12s ease,visibility .12s!important;
+}
+#page-best11 #best11-hover-card.best11-drink-hover.is-visible{
+ opacity:1!important;visibility:visible!important;transform:translate(-50%,0)!important;
+}
+#page-best11 #best11-hover-card.best11-drink-hover:before,
+#page-best11 #best11-hover-card.best11-drink-hover:after{display:none!important;content:none!important}
+#page-best11 .best11-drink-visual{
+ position:relative!important;width:400px!important;height:400px!important;margin:0 auto!important;
+ padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#page-best11 .best11-drink-image{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ filter:drop-shadow(0 13px 13px rgba(0,0,0,.65))!important;
+}
+#page-best11 .best11-drink-logo{
+ position:absolute!important;left:50%!important;top:52%!important;transform:translate(-50%,-50%)!important;
+ width:140px!important;height:140px!important;object-fit:contain!important;z-index:2!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ filter:drop-shadow(0 5px 7px rgba(0,0,0,.8))!important;
+}
+#page-best11 .best11-drink-name{
+ margin:-8px auto 0!important;padding:0!important;width:410px!important;text-align:center!important;
+ color:#fff!important;background:transparent!important;border:0!important;box-shadow:none!important;
+ font:1000 29px/1 "Arial Black",Arial,sans-serif!important;text-transform:uppercase!important;text-shadow:0 3px 5px #000!important;
+}
+#page-best11 .best11-drink-meta{
+ margin:6px auto 9px!important;text-align:center!important;color:#e7bd54!important;
+ font:900 12px/1 Arial,sans-serif!important;letter-spacing:1px!important;text-transform:uppercase!important;text-shadow:0 2px 3px #000!important;
+}
+#page-best11 .best11-drink-data{
+ width:410px!important;margin:0 auto!important;padding:7px!important;box-sizing:border-box!important;
+ display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;
+ background:rgba(8,8,8,.92)!important;border:2px solid #d5ad45!important;border-radius:8px!important;
+ box-shadow:0 8px 20px rgba(0,0,0,.55)!important;
+}
+#page-best11 .best11-drink-data>div{
+ min-height:57px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ background:#f4efe5!important;border:2px solid #20180e!important;border-radius:6px!important;
+}
+#page-best11 .best11-drink-data span{font:900 9px/1 Arial,sans-serif!important;color:#111!important}
+#page-best11 .best11-drink-data b{margin-top:4px!important;font:1000 21px/1 "Arial Black",Arial,sans-serif!important;color:#111!important}
+#page-best11 .best11-drink-data .diff-up b{color:#087a2b!important}
+#page-best11 .best11-drink-data .diff-down b{color:#ce211b!important}
+
 </style>
 
 </head>
@@ -3854,26 +3907,21 @@ function updateBest11() {
         var svincolato = !squadraLogo;
         var logoSrc = logo3dFile || (squadraLogo ? logoUrl(squadraLogo) : '3d/svincolati-serie-aperol.webp');
         var contenitoreSrc = contenitoreBest11(g, svincolato);
-        hoverCardBest11.className = 'best11-hover-card role-' + ruoloLabel.toLowerCase() + ' is-visible';
+        hoverCardBest11.className = 'best11-drink-hover is-visible';
         hoverCardBest11.innerHTML =
-            '<div class="best11-hover-top">' +
-                '<div class="best11-hover-main">' +
-                    '<div class="best11-container-wrap">' +
-                        '<img class="best11-container-img" src="' + contenitoreSrc + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
-                        '<img class="best11-container-logo" src="' + logoSrc + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
-                    '</div>' +
-                    '<div class="best11-hover-name">' + g.nome + '</div>' +
-                    '<div class="best11-hover-team">' + teamName + '</div>' +
-                    '<div class="best11-hover-role">' + ruoloLabel + '</div>' +
-                '</div>' +
+            '<div class="best11-drink-visual">' +
+                '<img class="best11-drink-image" src="' + contenitoreSrc + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
+                '<img class="best11-drink-logo" src="' + logoSrc + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
             '</div>' +
-            '<div class="best11-hover-stats">' +
-                '<div class="best11-hover-stat"><span>MEDIA VOTO</span><strong>' + mediaVoto.toFixed(2) + '</strong></div>' +
-                '<div class="best11-hover-stat"><span>FANTAMEDIA</span><strong>' + fantaMedia.toFixed(2) + '</strong></div>' +
-                '<div class="best11-hover-stat"><span>PRESENZE</span><strong>' + presenze + '</strong></div>' +
-                '<div class="best11-hover-stat"><span>QI</span><strong>' + (qi === null ? '—' : qi) + '</strong></div>' +
-                '<div class="best11-hover-stat"><span>QA</span><strong>' + (qa === null ? '—' : qa) + '</strong></div>' +
-                '<div class="best11-hover-stat best11-diff ' + diffClass + '"><span>DIFF. +/-</span><strong>' + diffText + '</strong></div>' +
+            '<div class="best11-drink-name">' + g.nome + '</div>' +
+            '<div class="best11-drink-meta">' + teamName + ' · ' + ruoloLabel + '</div>' +
+            '<div class="best11-drink-data">' +
+                '<div><span>MEDIA VOTO</span><b>' + mediaVoto.toFixed(2) + '</b></div>' +
+                '<div><span>FANTAMEDIA</span><b>' + fantaMedia.toFixed(2) + '</b></div>' +
+                '<div><span>PRESENZE</span><b>' + presenze + '</b></div>' +
+                '<div><span>QI</span><b>' + (qi === null ? '—' : qi) + '</b></div>' +
+                '<div><span>QA</span><b>' + (qa === null ? '—' : qa) + '</b></div>' +
+                '<div class="diff-' + diffClass + '"><span>DIFF. +/-</span><b>' + diffText + '</b></div>' +
             '</div>';
         hoverCardBest11.setAttribute('aria-hidden','false');
     }
