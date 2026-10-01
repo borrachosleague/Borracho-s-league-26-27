@@ -2896,18 +2896,39 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
 }
 #page-best11 .best11-presenze-info{display:none!important}
 
-/* FIX PRESENZE: pallone fumetto proporzionato, niente cerchio CSS gigante */
-#page-best11 .best11-presenze-unit{background-image:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO_TRASPARENTE.webp')!important;background-size:100% 100%!important}
-#page-best11 #best-presenze-pct::-webkit-slider-thumb{
- width:22px!important;height:22px!important;margin-top:-6px!important;
- border:2px solid #d69b24!important;border-radius:50%!important;
- background:#f5f1dc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='%23f7f2df' stroke='%23111' stroke-width='5'/%3E%3Cpolygon points='50,28 64,38 59,55 41,55 36,38' fill='%23111'/%3E%3Cpath d='M36 38L20 30M64 38L80 30M59 55L70 73M41 55L30 73M20 30L16 49M80 30L84 49M30 73L18 67M70 73L82 67' fill='none' stroke='%23111' stroke-width='5'/%3E%3C/svg%3E") center/100% 100% no-repeat!important;
- box-shadow:0 2px 5px #000!important;
+/* FIX PRESENZE: il disegno WebP è la grafica; l'input è solo il comando trasparente */
+#page-best11 .best11-presenze-unit{
+ background:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO_TRASPARENTE.webp') center/100% 100% no-repeat!important;
 }
+#page-best11 .best11-presenze-unit .best11-presenze-control{
+ left:20.5%!important;right:20.5%!important;top:44%!important;height:28%!important;
+ background:transparent!important;border:0!important;
+}
+#page-best11 #best-presenze-pct{
+ appearance:none!important;-webkit-appearance:none!important;
+ background:transparent!important;cursor:pointer!important;
+}
+#page-best11 #best-presenze-pct::-webkit-slider-runnable-track{
+ height:12px!important;background:transparent!important;border:0!important;
+}
+#page-best11 #best-presenze-pct::-moz-range-track{
+ height:12px!important;background:transparent!important;border:0!important;
+}
+/* pallone mobile in stile fumetto, senza il vecchio cerchio bianco CSS */
+#page-best11 #best-presenze-pct::-webkit-slider-thumb{
+ -webkit-appearance:none!important;appearance:none!important;
+ width:28px!important;height:28px!important;margin-top:-8px!important;
+ border:3px solid #111!important;border-radius:50%!important;
+ background:
+ radial-gradient(circle at 50% 46%,#111 0 14%,transparent 15%),
+ conic-gradient(from 18deg,#f6f0d9 0 12%,#111 12% 18%,#f6f0d9 18% 32%,#111 32% 38%,#f6f0d9 38% 52%,#111 52% 58%,#f6f0d9 58% 72%,#111 72% 78%,#f6f0d9 78% 100%)!important;
+ box-shadow:0 0 0 3px #d69b24,0 3px 6px #000!important;
+ cursor:grab!important;
+}
+#page-best11 #best-presenze-pct:active::-webkit-slider-thumb{cursor:grabbing!important;transform:scale(1.08)}
 #page-best11 #best-presenze-pct::-moz-range-thumb{
- width:22px!important;height:22px!important;
- border:2px solid #d69b24!important;border-radius:50%!important;
- background:#f5f1dc!important;box-shadow:0 2px 5px #000!important;
+ width:28px!important;height:28px!important;border:3px solid #111!important;border-radius:50%!important;
+ background:#f6f0d9!important;box-shadow:0 0 0 3px #d69b24,0 3px 6px #000!important;cursor:grab!important;
 }
 </style>
 
