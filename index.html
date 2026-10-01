@@ -2895,6 +2895,20 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
     font-weight:1000!important;text-shadow:1px 2px #000!important;pointer-events:none!important;
 }
 #page-best11 .best11-presenze-info{display:none!important}
+
+/* FIX PRESENZE: pallone fumetto proporzionato, niente cerchio CSS gigante */
+#page-best11 .best11-presenze-unit{background-image:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO.webp')!important;background-size:100% 100%!important}
+#page-best11 #best-presenze-pct::-webkit-slider-thumb{
+ width:22px!important;height:22px!important;margin-top:-6px!important;
+ border:2px solid #d69b24!important;border-radius:50%!important;
+ background:#f5f1dc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='%23f7f2df' stroke='%23111' stroke-width='5'/%3E%3Cpolygon points='50,28 64,38 59,55 41,55 36,38' fill='%23111'/%3E%3Cpath d='M36 38L20 30M64 38L80 30M59 55L70 73M41 55L30 73M20 30L16 49M80 30L84 49M30 73L18 67M70 73L82 67' fill='none' stroke='%23111' stroke-width='5'/%3E%3C/svg%3E") center/100% 100% no-repeat!important;
+ box-shadow:0 2px 5px #000!important;
+}
+#page-best11 #best-presenze-pct::-moz-range-thumb{
+ width:22px!important;height:22px!important;
+ border:2px solid #d69b24!important;border-radius:50%!important;
+ background:#f5f1dc!important;box-shadow:0 2px 5px #000!important;
+}
 </style>
 
 </head>
