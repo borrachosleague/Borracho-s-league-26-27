@@ -2828,6 +2828,9 @@ html:has(#page-best11.active),body:has(#page-best11.active){height:100%!importan
  margin:0 0 1px!important;
 }
 #page-best11 .best11-controls #best-modulo{margin-bottom:0!important}
+/* BEST11: ogni blocco scelta comprende scritta fissa + relativi comandi */
+#page-best11 .best11-choice-unit{position:relative;display:flex;flex-direction:column;gap:2px;width:100%}
+body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px dashed #ffd54a!important;outline-offset:3px!important;cursor:move!important}
 </style>
 
 </head>
@@ -3018,35 +3021,43 @@ html:has(#page-best11.active),body:has(#page-best11.active){height:100%!importan
     <h2 class="page-title">Best 11</h2>
     <div class="best11-layout">
         <div class="best11-controls">
+            <div class="best11-choice-unit">
             <div class="best11-label">Gruppo</div>
             <div class="subnav best11-v" id="best-gruppo">
                 <button class="subnav-btn active" onclick="setBestGruppo('borracho', this)">Rosa Borracho</button>
                 <button class="subnav-btn" onclick="setBestGruppo('seriea', this)">Tutti Serie A</button>
             </div>
-            <div id="best-tipo-wrap">
+            </div>
+            <div id="best-tipo-wrap" class="best11-choice-unit">
                 <div class="best11-label">Voti</div>
                 <div class="subnav best11-v" id="best-tipo">
                     <button class="subnav-btn active" onclick="setBestTipo('titolari', this)">Titolari</button>
                     <button class="subnav-btn" onclick="setBestTipo('totali', this)">Totali</button>
                 </div>
             </div>
+            <div class="best11-choice-unit">
             <div class="best11-label">Metrica</div>
             <div class="subnav best11-v" id="best-metrica">
                 <button class="subnav-btn active" onclick="setBestMetric('mediavototit', this)">Media Voto</button>
                 <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
             </div>
+            </div>
+            <div class="best11-choice-unit">
             <div class="best11-label">Presenze minime</div>
             <div class="best11-presenze-control">
                 <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)">
                 <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
                 <div class="best11-presenze-info" id="best-presenze-info"></div>
             </div>
+            </div>
+            <div class="best11-choice-unit">
             <div class="best11-label">Modulo</div>
             <div class="subnav best11-v" id="best-modulo">
                 <button class="subnav-btn active" onclick="setBestModulo('352', this)">3-5-2</button>
                 <button class="subnav-btn" onclick="setBestModulo('442', this)">4-4-2</button>
                 <button class="subnav-btn" onclick="setBestModulo('433', this)">4-3-3</button>
                 <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
+            </div>
             </div>
         </div>
         <div class="pitch-container" id="pitch-best11">
@@ -3150,7 +3161,7 @@ function pageLayoutTargets(){
         'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-special-data','.classifica-menu-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
-        'page-best11':['#best-gruppo .subnav-btn','#best-tipo .subnav-btn','#best-metrica .subnav-btn','#best-presenze-pct','#best-modulo .subnav-btn']
+        'page-best11':['.best11-choice-unit']
     };
     var arr=selectors[p.id]||[];
     var seen=[];
