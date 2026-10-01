@@ -861,7 +861,7 @@
             top:17%;
             width:15.5%;
             max-height:70%;
-            overflow:auto;
+            overflow:hidden;
             padding:8px 10px;
             gap:4px;
             z-index:6;
@@ -893,7 +893,7 @@
             top:20%;
             width:17%;
             max-height:66%;
-            overflow:auto;
+            overflow:hidden;
             z-index:6;
             padding:7px;
             background:rgba(5,8,14,.48);
@@ -2801,6 +2801,11 @@
 #page-best11{height:calc(100vh - 92px)!important;max-height:calc(100vh - 92px)!important;overflow:hidden!important}
 #page-best11 .best11-layout{height:100%!important;max-height:100%!important;overflow:hidden!important}
 body:has(#page-best11.active){overflow:hidden!important}
+/* BEST11: nessuna scrollbar, né pagina né pannelli interni */
+html:has(#page-best11.active),body:has(#page-best11.active){height:100%!important;overflow:hidden!important}
+#page-best11.active{overflow:hidden!important}
+#page-best11 .best11-controls,#page-best11 .best11-bench,#page-best11 .best11-layout{overflow:hidden!important;scrollbar-width:none!important}
+#page-best11 .best11-controls::-webkit-scrollbar,#page-best11 .best11-bench::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
 </style>
 
 </head>
