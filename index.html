@@ -3264,6 +3264,57 @@
 #page-best11 .best11-presenze-control input[type=range]::-webkit-slider-thumb{-webkit-appearance:none!important;appearance:none!important;width:25px!important;height:25px!important;margin-top:-10px!important;border-radius:50%!important;border:2px solid #111!important;background:radial-gradient(circle at 50% 35%,#fff 0 20%,#ddd 21% 34%,#111 35% 45%,#f5f5f5 46% 70%,#111 71% 78%,#eee 79%)!important;box-shadow:0 2px 3px #000!important}
 #page-best11 .best11-presenze-value{position:absolute!important;right:3px!important;top:31px!important;color:#fff!important;font:900 15px/1 Impact,"Arial Black",sans-serif!important}
 #page-best11 .best11-presenze-info{position:absolute!important;left:0!important;top:34px!important;width:78%!important;color:#fff!important;font:900 8px/1 Impact,"Arial Black",sans-serif!important;text-align:left!important}
+/* === BEST11 · VERSIONE FUNZIONALE DEFINITIVA, SENZA WEBP === */
+#page-best11 .best11-controls{
+ left:.7%!important;top:5%!important;width:20.5%!important;height:auto!important;padding:12px 10px 14px!important;
+ background:#171717!important;border:4px solid #e7a91b!important;border-radius:12px!important;
+ box-shadow:0 0 0 3px #111,0 8px 18px #000!important;transform:none!important;overflow:visible!important;z-index:8!important;
+}
+#page-best11 .best11-controls:before{
+ content:"SERIE APEROL"!important;display:block!important;position:static!important;width:auto!important;height:auto!important;
+ margin:0 0 10px!important;padding:8px 4px!important;background:#e7a91b!important;border:0!important;border-radius:6px!important;
+ color:#111!important;text-align:center!important;font:900 23px/.95 Impact,"Arial Black",sans-serif!important;
+ letter-spacing:1px!important;text-shadow:none!important;
+}
+#page-best11 .best11-controls:after{display:none!important}
+#page-best11 .best11-controls>.best11-label,#page-best11 #best-tipo-wrap>.best11-label{
+ display:block!important;position:static!important;margin:9px 0 5px!important;color:#fff!important;
+ font:900 14px/1 Impact,"Arial Black",sans-serif!important;letter-spacing:.7px!important;text-align:left!important;text-shadow:2px 2px 0 #000!important;
+}
+#page-best11 .best11-controls>#best-gruppo,#page-best11 .best11-controls>#best-metrica,#page-best11 .best11-controls>#best-modulo,
+#page-best11 .best11-controls>.best11-presenze-control,#page-best11 .best11-controls>#best-tipo-wrap{
+ position:static!important;left:auto!important;top:auto!important;width:100%!important;height:auto!important;margin:0!important;padding:0!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#page-best11 #best-tipo{position:static!important;width:100%!important}
+#page-best11 #best-gruppo,#page-best11 #best-tipo,#page-best11 #best-metrica{display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px!important}
+#page-best11 #best-modulo{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:4px!important}
+#page-best11 .best11-controls .subnav-btn,#page-best11 .best11-controls .subnav-btn.active{
+ display:flex!important;align-items:center!important;justify-content:center!important;height:34px!important;min-height:34px!important;
+ margin:0!important;padding:2px 3px!important;border:2px solid #e7a91b!important;border-radius:6px!important;
+ background:#252525!important;color:#fff!important;font:900 13px/.95 Impact,"Arial Black",sans-serif!important;
+ letter-spacing:.1px!important;text-shadow:1px 1px 0 #000!important;box-shadow:none!important;cursor:pointer!important;
+}
+#page-best11 .best11-controls .subnav-btn.active{background:#e7a91b!important;color:#111!important;text-shadow:none!important}
+#page-best11 .best11-presenze-control{position:relative!important;height:60px!important;margin:0!important}
+#page-best11 .best11-presenze-control:before{
+ content:""!important;display:block!important;position:absolute!important;left:7px!important;right:7px!important;top:17px!important;height:8px!important;
+ background:#343434!important;border:2px solid #e7a91b!important;border-radius:10px!important;
+}
+#page-best11 .best11-presenze-control input[type=range]{
+ -webkit-appearance:none!important;appearance:none!important;position:absolute!important;left:5px!important;top:7px!important;
+ width:calc(100% - 10px)!important;height:30px!important;margin:0!important;opacity:1!important;background:transparent!important;z-index:4!important;cursor:pointer!important;
+}
+#page-best11 .best11-presenze-control input[type=range]::-webkit-slider-runnable-track{height:8px!important;background:transparent!important;border:0!important}
+#page-best11 .best11-presenze-control input[type=range]::-webkit-slider-thumb{
+ -webkit-appearance:none!important;appearance:none!important;width:28px!important;height:28px!important;margin-top:-10px!important;border:2px solid #111!important;border-radius:50%!important;
+ background:radial-gradient(circle at 50% 50%,#111 0 18%,#fff 19% 43%,#111 44% 53%,#fff 54% 76%,#111 77% 84%,#fff 85%)!important;
+ box-shadow:0 2px 4px #000!important;cursor:grab!important;
+}
+#page-best11 .best11-presenze-control input[type=range]::-moz-range-track{height:8px!important;background:transparent!important;border:0!important}
+#page-best11 .best11-presenze-control input[type=range]::-moz-range-thumb{width:28px!important;height:28px!important;border:2px solid #111!important;border-radius:50%!important;background:#fff!important;cursor:grab!important}
+#page-best11 .best11-presenze-value{position:absolute!important;right:2px!important;top:39px!important;color:#fff!important;font:900 17px/1 Impact,"Arial Black",sans-serif!important;text-shadow:1px 1px #000!important}
+#page-best11 .best11-presenze-info{position:absolute!important;left:2px!important;top:42px!important;width:76%!important;color:#fff!important;font:900 9px/1 Impact,"Arial Black",sans-serif!important;text-align:left!important;text-shadow:1px 1px #000!important}
 </style>
 
 </head>
