@@ -2952,6 +2952,14 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
  background:url('assets/PRESENZE_MINIME_PALLONE_BORRACHO.webp') center/contain no-repeat!important;
  filter:drop-shadow(0 2px 2px #000);
 }
+
+/* PRESENZE: pallone WebP agganciato 1:1 al cursore range */
+#page-best11 .best11-presenze-control{--ball-size:30px}
+#page-best11 #best-presenze-ball{
+ top:50%!important;
+ width:var(--ball-size)!important;height:var(--ball-size)!important;
+ background:url('assets/PRESENZE_MINIME_PALLONE_BORRACHO.webp') center/contain no-repeat!important;
+}
 </style>
 
 </head>
@@ -4138,13 +4146,19 @@ var bestMetricTipo = 'media';
 var bestTipo = 'titolari';
 var bestModulo = '352';
 var bestPresenzePct = 50;
+window.addEventListener('load', function(){ setBestPresenzePct(bestPresenzePct); });
 
 function setBestPresenzePct(valore) {
     bestPresenzePct = Math.max(0, Math.min(100, Number(valore) || 0));
     var out = document.getElementById('best-presenze-pct-val');
     if (out) out.textContent = bestPresenzePct;
     var ball = document.getElementById('best-presenze-ball');
-    if (ball) ball.style.left = bestPresenzePct + '%';
+    var slider = document.getElementById('best-presenze-pct');
+    if (ball && slider) {
+        var min = Number(slider.min || 0), max = Number(slider.max || 100);
+        var pct = max > min ? (bestPresenzePct - min) / (max - min) : 0;
+        ball.style.left = 'calc(' + (pct * 100) + '% + ' + ((0.5 - pct) * 30) + 'px)';
+    }
     updateBest11();
 }
 
