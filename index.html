@@ -2797,6 +2797,10 @@
         
 
 @media(max-width:800px){.live-detail-layout{grid-template-columns:1fr}.live-detail-nav{flex-direction:row;flex-wrap:wrap}.live-detail-nav #live-match-nav{flex-direction:row;flex-wrap:wrap}}
+/* BEST11: niente scroll verticale della pagina */
+#page-best11{height:calc(100vh - 92px)!important;max-height:calc(100vh - 92px)!important;overflow:hidden!important}
+#page-best11 .best11-layout{height:100%!important;max-height:100%!important;overflow:hidden!important}
+body:has(#page-best11.active){overflow:hidden!important}
 </style>
 
 </head>
