@@ -3150,7 +3150,7 @@ function pageLayoutTargets(){
         'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-special-data','.classifica-menu-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
-        'page-best11':['#pitch-best11 .pitch-player']
+        'page-best11':['.best11-controls']
     };
     var arr=selectors[p.id]||[];
     var seen=[];
@@ -3246,7 +3246,7 @@ function layoutElementName(el,i){
 function copyPageLayout(){
     var p=currentLayoutPage(); if(!p)return;
     var data={page:p.id.replace('page-',''),viewport:Math.round(innerWidth)+'x'+Math.round(innerHeight),elements:{}};
-    if(p.id==='page-best11') data.modulo=(typeof bestModulo!=='undefined' ? bestModulo : '');
+    if(p.id==='page-best11') data.area='tabellone-tasti-scelta';
     pageLayoutTargets().forEach(function(el,i){
         var r=el.getBoundingClientRect();
         data.elements[layoutElementName(el,i)]={x:Math.round(r.left),y:Math.round(r.top),width:Math.round(r.width),height:Math.round(r.height)};
