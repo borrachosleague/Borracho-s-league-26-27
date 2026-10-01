@@ -2949,7 +2949,68 @@
         .live-match{background:linear-gradient(180deg,#2b2119,#15110e);border:2px solid #74552d;border-radius:12px;box-shadow:0 8px 22px #0008;overflow:hidden}.live-team{padding:11px 10px;border-bottom:1px solid #5a4328}.live-team:last-child{border-bottom:0}.live-team-top{display:flex;align-items:center;gap:7px}.live-team img{width:34px;height:34px;object-fit:contain}.live-team-name{font-weight:900;color:#fff;line-height:1.05;flex:1}.live-total{font-size:20px;font-weight:950;color:#ffd54a}.live-module{font-size:11px;color:#c9b99f;margin-top:3px}.live-players{margin-top:7px;display:grid;gap:2px}.live-player{display:flex;justify-content:space-between;gap:5px;font-size:11px;color:#ddd}.live-player .vote{color:#ffd54a;font-weight:800}.live-wait{color:#b6a88e;font-size:11px;font-style:italic;margin-top:6px}.live-error{text-align:center;color:#ff8b83;padding:30px}
         
 
-@media(max-width:800px){.live-detail-layout{grid-template-columns:1fr}.live-detail-nav{flex-direction:row;flex-wrap:wrap}.live-detail-nav #live-match-nav{flex-direction:row;flex-wrap:wrap}}</style>
+@media(max-width:800px){.live-detail-layout{grid-template-columns:1fr}.live-detail-nav{flex-direction:row;flex-wrap:wrap}.live-detail-nav #live-match-nav{flex-direction:row;flex-wrap:wrap}}
+/* === OVERRIDE FINALE BEST11 · STRISCIONE SERIE APEROL === */
+#page-best11 .best11-controls{
+  position:absolute!important;left:2.2%!important;top:13%!important;
+  width:17.5%!important;max-height:none!important;overflow:visible!important;
+  box-sizing:border-box!important;padding:58px 10px 12px!important;gap:4px!important;
+  border:0!important;border-radius:2px!important;
+  background:
+    linear-gradient(90deg,transparent 0 5%,rgba(238,214,158,.96) 5% 95%,transparent 95%),
+    repeating-linear-gradient(3deg,rgba(70,42,15,.08) 0 2px,transparent 2px 7px)!important;
+  box-shadow:0 8px 12px rgba(0,0,0,.55)!important;
+  transform:rotate(-.35deg);
+}
+#page-best11 .best11-controls:before{
+  content:"SERIE APEROL"!important;white-space:nowrap!important;
+  position:absolute!important;left:-4%!important;top:0!important;width:108%!important;height:48px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  box-sizing:border-box!important;
+  border:3px solid #38210d!important;border-radius:1px!important;
+  background:
+    repeating-linear-gradient(7deg,rgba(80,42,10,.10) 0 2px,transparent 2px 7px),
+    linear-gradient(180deg,#f2dfad,#d3ad63)!important;
+  color:#231307!important;font:900 18px/1 "Arial Black",Arial,sans-serif!important;
+  letter-spacing:1px!important;text-shadow:1px 1px 0 rgba(255,255,255,.45)!important;
+  box-shadow:0 5px 7px rgba(0,0,0,.6),inset 0 0 12px rgba(89,49,8,.25)!important;
+  z-index:4!important;
+}
+#page-best11 .best11-controls:after{
+  content:"🙌  ⚽  🙌  🍺  🙌"!important;
+  position:absolute!important;left:-2%!important;top:-29px!important;width:104%!important;
+  color:#f1b63a!important;font-size:19px!important;letter-spacing:2px!important;text-align:center!important;
+  filter:drop-shadow(0 2px 1px #000);z-index:3!important;
+}
+#page-best11 .best11-label{
+  position:relative!important;z-index:5!important;margin:2px 0 1px!important;padding:0!important;
+  color:#3a220d!important;font:900 9px/1 "Arial Black",Arial,sans-serif!important;
+  letter-spacing:.5px!important;text-align:center!important;text-shadow:none!important;
+}
+#page-best11 .subnav.best11-v{
+  position:relative!important;z-index:5!important;display:grid!important;
+  grid-template-columns:1fr 1fr!important;gap:4px!important;margin:0 0 4px!important;
+}
+#page-best11 #best-modulo{grid-template-columns:1fr 1fr!important}
+#page-best11 .subnav.best11-v .subnav-btn{
+  width:100%!important;min-width:0!important;min-height:25px!important;margin:0!important;padding:4px 2px!important;
+  border:2px solid #3b250f!important;border-radius:1px!important;
+  background:#17130d!important;color:#efe2c2!important;
+  font:900 9px/1 "Arial Black",Arial,sans-serif!important;
+  box-shadow:2px 2px 0 rgba(64,37,10,.38)!important;text-shadow:none!important;
+}
+#page-best11 .subnav.best11-v .subnav-btn.active{
+  background:#e99b20!important;color:#171008!important;border-color:#3b250f!important;
+  box-shadow:inset 0 0 0 1px #ffd77d,2px 2px 0 rgba(64,37,10,.38)!important;
+}
+#page-best11 .best11-presenze-control{
+  position:relative!important;z-index:5!important;margin:0 0 4px!important;padding:5px 7px!important;
+  border:2px solid #3b250f!important;border-radius:1px!important;background:#17130d!important;
+}
+#page-best11 .best11-presenze-control input[type=range]{width:100%!important;accent-color:#e99b20!important}
+#page-best11 .best11-presenze-value{color:#ffc04b!important;font-weight:900!important}
+#page-best11 .best11-presenze-info{color:#eee0bf!important}
+</style>
 
 </head>
 <body>
