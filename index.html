@@ -2831,6 +2831,70 @@ html:has(#page-best11.active),body:has(#page-best11.active){height:100%!importan
 /* BEST11: ogni blocco scelta comprende scritta fissa + relativi comandi */
 #page-best11 .best11-choice-unit{position:relative;display:flex;flex-direction:column;gap:2px;width:100%}
 body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px dashed #ffd54a!important;outline-offset:3px!important;cursor:move!important}
+
+/* BEST11 · PRESENZE MINIME: bilancia fumetto + slider reale con pallone mobile */
+#page-best11 .best11-presenze-unit{
+    width:100%!important;
+    aspect-ratio:1536/374!important;
+    min-height:0!important;
+    background:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO.webp') center/100% 100% no-repeat!important;
+    position:relative!important;
+    overflow:visible!important;
+}
+#page-best11 .best11-presenze-unit .best11-presenze-control{
+    position:absolute!important;
+    left:20.5%!important;
+    right:20.5%!important;
+    top:44%!important;
+    height:28%!important;
+    padding:0!important;
+    margin:0!important;
+    background:transparent!important;
+    border:0!important;
+}
+#page-best11 #best-presenze-pct{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    appearance:none!important;
+    -webkit-appearance:none!important;
+    background:transparent!important;
+    cursor:pointer!important;
+    z-index:4!important;
+}
+#page-best11 #best-presenze-pct::-webkit-slider-runnable-track{height:10px!important;background:transparent!important;border:0!important}
+#page-best11 #best-presenze-pct::-moz-range-track{height:10px!important;background:transparent!important;border:0!important}
+#page-best11 #best-presenze-pct::-webkit-slider-thumb{
+    -webkit-appearance:none!important;
+    appearance:none!important;
+    width:34px!important;height:34px!important;
+    margin-top:-12px!important;
+    border:0!important;border-radius:50%!important;
+    background:
+      radial-gradient(circle at 50% 50%,#111 0 15%,transparent 16%),
+      radial-gradient(circle at 28% 31%,#111 0 10%,transparent 11%),
+      radial-gradient(circle at 72% 31%,#111 0 10%,transparent 11%),
+      radial-gradient(circle at 32% 72%,#111 0 10%,transparent 11%),
+      radial-gradient(circle at 68% 72%,#111 0 10%,transparent 11%),
+      #f4f0dc!important;
+    box-shadow:0 2px 0 #111,0 0 0 3px #d69b24,0 4px 8px #000!important;
+    cursor:grab!important;
+}
+#page-best11 #best-presenze-pct:active::-webkit-slider-thumb{cursor:grabbing!important;transform:scale(1.08)}
+#page-best11 #best-presenze-pct::-moz-range-thumb{
+    width:34px!important;height:34px!important;border:3px solid #d69b24!important;border-radius:50%!important;
+    background:#f4f0dc!important;box-shadow:0 3px 7px #000!important;cursor:grab!important;
+}
+#page-best11 .best11-presenze-value{
+    position:absolute!important;
+    left:50%!important;top:80%!important;transform:translateX(-50%)!important;
+    margin:0!important;color:#ffd84a!important;font-size:clamp(9px,.72vw,13px)!important;
+    font-weight:1000!important;text-shadow:1px 2px #000!important;pointer-events:none!important;
+}
+#page-best11 .best11-presenze-info{display:none!important}
 </style>
 
 </head>
@@ -3042,10 +3106,9 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
                 <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
             </div>
             </div>
-            <div class="best11-choice-unit">
-            <div class="best11-label">Presenze minime</div>
+            <div class="best11-choice-unit best11-presenze-unit">
             <div class="best11-presenze-control">
-                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)">
+                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime">
                 <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
                 <div class="best11-presenze-info" id="best-presenze-info"></div>
             </div>
