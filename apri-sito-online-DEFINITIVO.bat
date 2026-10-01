@@ -63,7 +63,8 @@ if errorlevel 1 (
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
 echo Pubblicazione completata.
-echo Non eseguo refresh automatici per non aggiornare anche la chat.
-echo Torna sulla scheda Borrachos e premi CTRL+F5.
-timeout /t 2 /nobreak >nul
+echo Apro Borrachos League in una nuova scheda del browser...
+start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/?v=%RANDOM%%RANDOM%"
+echo Il sito e' stato aperto. Questa finestra si chiudera' tra pochi secondi.
+timeout /t 4 /nobreak >nul
 exit
