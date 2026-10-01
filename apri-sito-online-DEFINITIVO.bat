@@ -63,8 +63,9 @@ if errorlevel 1 (
 :APERTURA
 echo === OPERAZIONE COMPLETATA ===
 echo Pubblicazione completata.
-echo Apro Borrachos League in una nuova scheda del browser...
-start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/?v=%RANDOM%%RANDOM%"
-echo Il sito e' stato aperto. Questa finestra si chiudera' tra pochi secondi.
+echo Aggiornamento completato.
+echo Aggiorno la scheda Borrachos gia aperta nel browser...
+powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $ws.AppActivate('Borrachos'); Start-Sleep -Milliseconds 300; $ws.SendKeys('^{F5}')" >nul 2>&1
+echo Se la scheda Borrachos non era gia aperta, premi CTRL+F5 manualmente nel browser.
 timeout /t 4 /nobreak >nul
 exit
