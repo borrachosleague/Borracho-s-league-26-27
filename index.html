@@ -3318,12 +3318,12 @@ function liveVotoPagella(p){
 }
 function liveFantaVoto(p){
     if(!p) return '—';
-    // Nei payload Fantacalcio conserviamo sia scr sia cscr.
-    // Mostriamo il valore di fantavoto disponibile senza inventarlo.
+    // scr=56 e cscr=100 sono valori tecnici presenti anche a partite ferme:
+    // non sono fantavoti e non vanno mostrati.
     var candidati=[p.cscr,p.scr];
     for(var i=0;i<candidati.length;i++){
-        var v=candidati[i];
-        if(v!=null && v!=='' && Number(v)!==0 && Number.isFinite(Number(v))) return Number(v).toFixed(1);
+        var v=Number(candidati[i]);
+        if(Number.isFinite(v) && v>0 && v<20) return v.toFixed(1);
     }
     return '—';
 }
