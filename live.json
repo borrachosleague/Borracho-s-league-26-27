@@ -1,6 +1,6 @@
 {
   "versione": 1,
-  "aggiornato_il": "2026-10-01T06:59:37+02:00",
+  "aggiornato_il": "2026-10-01T07:02:59+02:00",
   "idcomp": 324951,
   "giornata_borrachos": 4,
   "giornata_serie_a": 6,
@@ -637,8 +637,8 @@
             "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 5800,
-            "nome": "Gudmundsson A.",
+            "pid": 6844,
+            "nome": "Rowe",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -655,8 +655,8 @@
             "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 7351,
-            "nome": "Santos A.",
+            "pid": 6904,
+            "nome": "Yeboah J.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -684,8 +684,8 @@
         ],
         "panchina": [
           {
-            "pid": 6904,
-            "nome": "Yeboah J.",
+            "pid": 7351,
+            "nome": "Santos A.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -702,8 +702,8 @@
             "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 6844,
-            "nome": "Rowe",
+            "pid": 7472,
+            "nome": "Calò",
             "m": 0,
             "scr": 56,
             "cscr": 100,
@@ -711,8 +711,8 @@
             "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 7472,
-            "nome": "Calò",
+            "pid": 5800,
+            "nome": "Gudmundsson A.",
             "m": 0,
             "scr": 56,
             "cscr": 100,
