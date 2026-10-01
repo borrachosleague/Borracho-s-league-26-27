@@ -2930,6 +2930,28 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
  width:28px!important;height:28px!important;border:3px solid #111!important;border-radius:50%!important;
  background:#f6f0d9!important;box-shadow:0 0 0 3px #d69b24,0 3px 6px #000!important;cursor:grab!important;
 }
+
+/* PRESENZE: WebP trasparente + solo il pallone fumetto mobile */
+#page-best11 .best11-presenze-unit{
+ background:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO_TRASPARENTE.webp') center/100% 100% no-repeat!important;
+}
+#page-best11 #best-presenze-pct::-webkit-slider-thumb{
+ -webkit-appearance:none!important;appearance:none!important;
+ width:1px!important;height:1px!important;border:0!important;background:transparent!important;
+ box-shadow:none!important;
+}
+#page-best11 #best-presenze-pct::-moz-range-thumb{
+ width:1px!important;height:1px!important;border:0!important;background:transparent!important;
+ box-shadow:none!important;
+}
+#page-best11 #best-presenze-ball{
+ position:absolute!important;z-index:6!important;pointer-events:none!important;
+ top:50%!important;left:50%;
+ width:30px!important;height:30px!important;
+ transform:translate(-50%,-50%)!important;border-radius:50%!important;
+ background:url('assets/PRESENZE_MINIME_PALLONE_BORRACHO.webp') center/contain no-repeat!important;
+ filter:drop-shadow(0 2px 2px #000);
+}
 </style>
 
 </head>
@@ -3143,7 +3165,7 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
             </div>
             <div class="best11-choice-unit best11-presenze-unit">
             <div class="best11-presenze-control">
-                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime">
+                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime"><span id="best-presenze-ball" aria-hidden="true"></span>
                 <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
                 <div class="best11-presenze-info" id="best-presenze-info"></div>
             </div>
@@ -4121,6 +4143,8 @@ function setBestPresenzePct(valore) {
     bestPresenzePct = Math.max(0, Math.min(100, Number(valore) || 0));
     var out = document.getElementById('best-presenze-pct-val');
     if (out) out.textContent = bestPresenzePct;
+    var ball = document.getElementById('best-presenze-ball');
+    if (ball) ball.style.left = bestPresenzePct + '%';
     updateBest11();
 }
 
