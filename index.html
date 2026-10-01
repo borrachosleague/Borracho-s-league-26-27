@@ -673,6 +673,109 @@
             box-shadow:inset 0 0 0 1px #ffe19a,0 0 8px rgba(225,165,48,.38);
             text-shadow:0 1px rgba(255,229,154,.5);
         }
+        /* === BEST 11 · CURVA SERIE APEROL: SOLO PANNELLO COMANDI === */
+        #page-best11 .best11-controls{
+            position:relative;
+            isolation:isolate;
+            width:95px;
+            padding:42px 6px 8px!important;
+            gap:5px!important;
+            overflow:visible;
+            border:0!important;
+            border-radius:0!important;
+            background:
+              radial-gradient(circle at 18% 22%,#e0a12d 0 2px,transparent 3px),
+              radial-gradient(circle at 48% 17%,#cfc8b8 0 2px,transparent 3px),
+              radial-gradient(circle at 78% 24%,#d26b22 0 2px,transparent 3px),
+              radial-gradient(circle at 31% 31%,#b8aa92 0 2px,transparent 3px),
+              radial-gradient(circle at 69% 34%,#e3a438 0 2px,transparent 3px),
+              linear-gradient(180deg,rgba(17,17,16,.88) 0 39px,rgba(6,6,6,.92) 39px 100%)!important;
+            box-shadow:none!important;
+        }
+        #page-best11 .best11-controls:before{
+            content:"SERIE\A APEROL";
+            white-space:pre;
+            position:absolute;
+            z-index:3;
+            top:8px;left:-5px;
+            width:105px;height:31px;
+            display:flex;align-items:center;justify-content:center;
+            box-sizing:border-box;
+            transform:rotate(-1.5deg);
+            border:1px solid #d5a43b;
+            background:
+              repeating-linear-gradient(7deg,rgba(80,40,5,.09) 0 2px,transparent 2px 6px),
+              linear-gradient(180deg,#f1dfb2,#cba55f);
+            box-shadow:0 3px 5px rgba(0,0,0,.75),inset 0 0 7px rgba(93,47,4,.28);
+            color:#17110a;
+            font-family:"Arial Black",Arial,sans-serif;
+            font-size:9px;
+            line-height:10px;
+            letter-spacing:.6px;
+            text-align:center;
+            text-shadow:0 1px rgba(255,255,255,.35);
+        }
+        #page-best11 .best11-controls:after{
+            content:"⚑  ●  ⚑  ●  ⚑";
+            position:absolute;z-index:2;
+            top:-2px;left:0;width:95px;
+            color:#e2a832;
+            font-size:12px;letter-spacing:1px;text-align:center;
+            text-shadow:0 2px 2px #000;
+        }
+        #page-best11 .best11-label{
+            position:relative;z-index:2;
+            margin:1px 0 0!important;
+            padding:2px 1px;
+            color:#f1d38b!important;
+            font-family:"Arial Black",Arial,sans-serif!important;
+            font-size:.54em!important;
+            line-height:1!important;
+            letter-spacing:.35px!important;
+            text-align:center!important;
+            text-transform:uppercase;
+            text-shadow:0 2px 2px #000!important;
+        }
+        #page-best11 .subnav.best11-v{
+            position:relative;z-index:2;
+            gap:3px!important;margin-bottom:3px!important;
+        }
+        #page-best11 .subnav.best11-v .subnav-btn{
+            min-height:24px!important;
+            padding:3px 2px!important;
+            border:1px solid #7d5a25!important;
+            border-radius:2px!important;
+            background:
+              repeating-linear-gradient(4deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px),
+              linear-gradient(180deg,#25231f,#0e0e0d)!important;
+            box-shadow:inset 0 0 0 1px rgba(255,214,118,.07),0 2px 2px #000!important;
+            color:#eee4cf!important;
+            font-family:"Arial Black",Arial,sans-serif!important;
+            font-size:.56em!important;
+            line-height:1.05!important;
+            text-shadow:0 1px 2px #000!important;
+        }
+        #page-best11 .subnav.best11-v .subnav-btn.active{
+            border-color:#f0b534!important;
+            background:
+              repeating-linear-gradient(4deg,rgba(92,39,0,.08) 0 1px,transparent 1px 4px),
+              linear-gradient(180deg,#ffbd32,#d77a12)!important;
+            color:#181008!important;
+            box-shadow:inset 0 0 0 1px #ffe09a,0 0 7px rgba(255,153,24,.45)!important;
+            text-shadow:0 1px rgba(255,234,174,.55)!important;
+        }
+        #page-best11 .best11-presenze-control{
+            position:relative;z-index:2;
+            margin:0!important;padding:5px 3px 3px!important;
+            border:1px solid #76531d!important;border-radius:2px!important;
+            background:linear-gradient(180deg,#24221e,#0d0d0c)!important;
+            box-shadow:inset 0 0 7px #000!important;
+        }
+        #page-best11 .best11-presenze-control input[type="range"]{
+            width:100%;height:12px;accent-color:#e9971b;
+        }
+        #page-best11 .best11-presenze-value{color:#ffc24a!important;font-size:.7em!important}
+        #page-best11 .best11-presenze-info{color:#bfb49e!important;font-size:.47em!important}
         .best11-presenze-control {
             margin-top: 2px;
             padding: 6px 4px;
