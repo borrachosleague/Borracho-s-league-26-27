@@ -3286,6 +3286,107 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     #page-best11 .pitch-player .pp-main { min-width:66px !important; max-width:78px !important; }
 }
 
+
+/* === MOBILE V10: ALLINEAMENTO DATI + TASTI PIU ALTI === */
+@media (max-width:700px){
+  /* Targhette: sempre lunghe, ma più alte e leggibili */
+  #page-classifica .classifica-menu{
+    gap:4px!important;
+    margin-bottom:5px!important;
+  }
+  #page-classifica .classifica-menu-btn,
+  #page-classifica .classifica-menu-btn:nth-child(1),
+  #page-classifica .classifica-menu-btn:nth-child(2),
+  #page-classifica .classifica-menu-btn:nth-child(3){
+    height:64px!important;
+    min-height:64px!important;
+    flex:1 1 0!important;
+  }
+
+  /* FONDAMENTALE: i dati devono essere ancorati ALLA LAVAGNA,
+     non alle coordinate del viewport desktop */
+  #page-classifica .classifica-board{
+    position:relative!important;
+  }
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{
+    position:absolute!important;
+    left:10.8%!important;
+    top:39.1%!important;
+    width:81.8%!important;
+    height:48.0%!important;
+    margin:0!important;
+    padding:0!important;
+    font-family:'Arial Narrow','Roboto Condensed','Arial',sans-serif!important;
+    font-style:normal!important;
+    font-weight:900!important;
+    font-size:clamp(12px,3.55vw,16px)!important;
+    line-height:1!important;
+  }
+
+  /* 11 elementi reali per riga:
+     POS | LOGO | SQUADRA | G | V | N | P | GF | GS | DR | PT */
+  #page-classifica .classifica-chalk-data .chalk-row{
+    display:grid!important;
+    grid-template-columns:7% 8% 25% repeat(8,7.5%)!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    align-items:center!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-row>span{
+    min-width:0!important;
+    width:auto!important;
+    height:100%!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    line-height:1!important;
+    box-sizing:border-box!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-pos{
+    justify-content:center!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-logo{
+    overflow:visible!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-logo img{
+    width:auto!important;
+    height:clamp(25px,6.7vw,36px)!important;
+    max-width:100%!important;
+    object-fit:contain!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-team{
+    justify-content:flex-start!important;
+    padding-left:3%!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-pt{
+    font-size:1.15em!important;
+  }
+}
+@media (max-width:390px){
+  #page-classifica .classifica-menu-btn,
+  #page-classifica .classifica-menu-btn:nth-child(1),
+  #page-classifica .classifica-menu-btn:nth-child(2),
+  #page-classifica .classifica-menu-btn:nth-child(3){
+    height:58px!important;
+    min-height:58px!important;
+  }
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{
+    font-size:clamp(11px,3.45vw,14px)!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-logo img{
+    height:clamp(23px,6.4vw,32px)!important;
+  }
+}
+
 </style>
 
 
@@ -3737,7 +3838,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
-<meta name="borrachos-mobile-build" content="v9-autocontenuto">
+<meta name="borrachos-mobile-build" content="v10-allineata">
 </head>
 <body>
 
