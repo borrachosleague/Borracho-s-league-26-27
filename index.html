@@ -3332,6 +3332,25 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 <meta name="borrachos-mobile-build-v19" content="lavagna-tasti-locked">
+
+
+
+<meta name="borrachos-mobile-build-v20" content="editor-only-data">
+
+<style id="mle21css">
+#mle21{position:fixed!important;right:8px!important;bottom:8px!important;z-index:2147483647!important;
+width:215px!important;padding:7px!important;box-sizing:border-box!important;background:#090d16!important;color:#fff!important;
+border:3px solid #ff4fe1!important;border-radius:8px!important;font:700 11px Arial,sans-serif!important;display:block!important}
+#mle21 .title{color:#ff8ceb!important;font-size:12px!important;margin-bottom:5px!important}
+#mle21 .vals{padding:5px!important;background:#11192a!important;border-radius:4px!important;font:700 10px Consolas,monospace!important}
+#mle21 .actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;margin-top:5px!important}
+#mle21 button{min-height:32px!important;background:#172039!important;color:#fff!important;border:1px solid #69748e!important;border-radius:4px!important;font:700 11px Arial!important}
+body.mle21on #page-classifica #classifica-chalk-data{outline:3px dashed #ff4fe1!important;cursor:move!important;touch-action:none!important}
+#mle21handle{position:fixed!important;z-index:2147483646!important;width:25px!important;height:25px!important;border-radius:50%!important;
+background:#ff4fe1!important;border:2px solid #111!important;transform:translate(-50%,-50%)!important;touch-action:none!important;cursor:nwse-resize!important}
+</style>
+
+<meta name="borrachos-mobile-build-v21" content="data-editor-always-visible">
 </head>
 <body>
 
@@ -4989,6 +5008,38 @@ caricaDatiBorrachos()
 
 
 
+
+
+
+
+
+<script id="mle21js">
+(function(){
+'use strict';
+const KEY='borrachos_mobile_data_v21';let S=null,D=null,H=null;
+function E(){return document.querySelector('#page-classifica #classifica-chalk-data')}
+function par(e){return e.offsetParent?e.offsetParent.getBoundingClientRect():{left:0,top:0}}
+function meas(){let e=E();if(!e)return{x:0,y:0,w:200,h:200};let r=e.getBoundingClientRect(),p=par(e);return{x:r.left-p.left,y:r.top-p.top,w:r.width,h:r.height}}
+function get(){if(!S){try{S=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){};if(!S)S=meas()}return S}
+function apply(){let e=E(),v=get();if(!e)return;e.style.setProperty('position','absolute','important');e.style.setProperty('left',v.x+'px','important');e.style.setProperty('top',v.y+'px','important');e.style.setProperty('width',v.w+'px','important');e.style.setProperty('height',v.h+'px','important');e.style.setProperty('margin','0','important')}
+function show(){let v=get(),b=document.getElementById('mle21vals');if(b)b.textContent='DATI  X '+Math.round(v.x)+'  Y '+Math.round(v.y)+'  W '+Math.round(v.w)+'  H '+Math.round(v.h);place()}
+function place(){if(!H)return;let e=E();if(!e){H.style.display='none';return}H.style.display='block';let r=e.getBoundingClientRect();H.style.left=r.right+'px';H.style.top=r.bottom+'px'}
+function down(ev){let e=E();if(!e||!(ev.target===e||e.contains(ev.target)))return;ev.preventDefault();ev.stopPropagation();let v=get();D={kind:'move',id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,x:v.x,y:v.y}}
+function move(ev){if(!D||D.id!==ev.pointerId)return;ev.preventDefault();let v=get(),dx=ev.clientX-D.sx,dy=ev.clientY-D.sy;if(D.kind==='move'){v.x=D.x+dx;v.y=D.y+dy}else{v.w=Math.max(30,D.w+dx);v.h=Math.max(30,D.h+dy)}apply();show()}
+function up(ev){if(D&&D.id===ev.pointerId)D=null}
+function build(){
+ if(document.getElementById('mle21'))return;
+ let p=document.createElement('div');p.id='mle21';p.innerHTML='<div class="title">MODIFICA SOLO DATI</div><div class="vals" id="mle21vals">ricerca dati...</div><div class="actions"><button id="mle21save">SALVA</button><button id="mle21reset">RESET DATI</button></div>';document.body.appendChild(p);
+ H=document.createElement('div');H.id='mle21handle';document.body.appendChild(H);document.body.classList.add('mle21on');
+ p.querySelector('#mle21save').onclick=function(){localStorage.setItem(KEY,JSON.stringify(get()))};
+ p.querySelector('#mle21reset').onclick=function(){localStorage.removeItem(KEY);location.reload()};
+ document.addEventListener('pointerdown',down,true);window.addEventListener('pointermove',move,{passive:false});window.addEventListener('pointerup',up);
+ H.addEventListener('pointerdown',function(ev){ev.preventDefault();ev.stopPropagation();let v=get();D={kind:'resize',id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,w:v.w,h:v.h}});
+ if(localStorage.getItem(KEY))apply();show();setTimeout(show,500);setTimeout(show,1500);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build,{once:true});else build();
+})();
+</script>
 
 </body>
 </html>
