@@ -3170,73 +3170,68 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <meta name="borrachos-mobile-build" content="v12-clean">
 
-<style id="borrachos-classifica-v13-geometry">
+<style id="borrachos-v14-only-data-fix">
 @media (max-width:700px){
-  /* I tre tasti restano lunghi, ma più leggibili */
-  #page-classifica .classifica-menu{
-    height:66px!important;
-    margin-bottom:2px!important;
-  }
-  #page-classifica .classifica-menu-btn{
-    height:66px!important;
-    min-height:66px!important;
-  }
 
-  /* La lavagna deve stare tutta nel viewport mobile.
-     Mantiene le proporzioni originali 929x679. */
-  #page-classifica .classifica-board{
-    width:min(96vw, calc((100dvh - 168px) * 929 / 679))!important;
-    height:auto!important;
-    aspect-ratio:929/679!important;
-    margin:0 auto!important;
-    flex:0 0 auto!important;
-  }
-
-  /* Dallo screenshot reale:
-     la zona dati inizia dopo la colonna POS già stampata.
-     Nessun numero ordinale viene più sovrapposto. */
-  #page-classifica #classifica-chalk-data{
-    position:absolute!important;
-    left:18.0%!important;
-    top:60.4%!important;
-    width:72.0%!important;
-    height:34.8%!important;
-    display:grid!important;
-    grid-template-rows:repeat(10,minmax(0,1fr))!important;
-    margin:0!important;
-    padding:0!important;
-    font-family:'Arial Narrow','Roboto Condensed','Arial',sans-serif!important;
-    font-size:clamp(9px,2.65vw,14px)!important;
-    font-weight:900!important;
-    line-height:1!important;
-  }
-
+  /* SICUREZZA: nessun ordinale nei dati. Gli 1-10 restano solo nel disegno. */
   #page-classifica #classifica-chalk-data .chalk-pos{
     display:none!important;
   }
 
-  /* Coordinate delle linee verticali lette dalla lavagna:
-     LOGO + NOME condividono la grande colonna SQUADRA.
-     Poi 8 colonne statistiche, PT compresa. */
+  /* Mantengo IDENTICHE lavagna e pulsanti della V12.
+     Correggo solo l'area dati e le colonne. */
+  #page-classifica #classifica-chalk-data{
+    position:absolute!important;
+    left:17.0%!important;
+    top:46.6%!important;
+    width:75.2%!important;
+    height:45.0%!important;
+    padding:0!important;
+    margin:0!important;
+
+    display:grid!important;
+    grid-template-rows:repeat(10,1fr)!important;
+
+    font-family:'Arial Narrow','Roboto Condensed','Arial',sans-serif!important;
+    font-style:normal!important;
+    font-weight:900!important;
+    font-size:clamp(10px,2.75vw,14px)!important;
+    line-height:1!important;
+  }
+
+  /* 10 elementi reali:
+     LOGO | SQUADRA | G | V | N | P | GF | GS | DR | PT
+     Logo piccolo; nome squadra molto più largo. */
   #page-classifica #classifica-chalk-data .chalk-row{
     display:grid!important;
-    grid-template-columns:8% 37% 7% 6% 6% 6% 7% 7% 7% 9%!important;
+    grid-template-columns:
+      8%
+      34%
+      7%
+      7%
+      7%
+      7%
+      7.5%
+      7.5%
+      7.5%
+      7.5%!important;
     width:100%!important;
     height:100%!important;
     min-height:0!important;
+    margin:0!important;
+    padding:0!important;
     align-items:center!important;
-    overflow:visible!important;
   }
 
-  #page-classifica #classifica-chalk-data .chalk-row>span{
+  #page-classifica #classifica-chalk-data .chalk-row > span{
     display:flex!important;
     align-items:center!important;
     justify-content:center!important;
-    width:auto!important;
     min-width:0!important;
+    width:auto!important;
     height:100%!important;
-    padding:0!important;
     margin:0!important;
+    padding:0!important;
     box-sizing:border-box!important;
     white-space:nowrap!important;
     overflow:hidden!important;
@@ -3245,38 +3240,35 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 
   #page-classifica #classifica-chalk-data .chalk-logo{
-    overflow:visible!important;
     justify-content:center!important;
+    overflow:visible!important;
   }
+
   #page-classifica #classifica-chalk-data .chalk-logo img{
-    display:block!important;
     width:auto!important;
-    height:82%!important;
-    max-width:100%!important;
+    height:72%!important;
+    max-width:92%!important;
     object-fit:contain!important;
     margin:auto!important;
   }
+
   #page-classifica #classifica-chalk-data .chalk-team{
     justify-content:flex-start!important;
+    text-align:left!important;
     padding-left:2%!important;
+    font-size:.92em!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
   }
+
   #page-classifica #classifica-chalk-data .chalk-pt{
     color:#ffd84c!important;
-    font-size:1.08em!important;
-  }
-}
-@media (max-width:390px){
-  #page-classifica .classifica-menu{height:60px!important;}
-  #page-classifica .classifica-menu-btn{height:60px!important;min-height:60px!important;}
-  #page-classifica .classifica-board{
-    width:min(97vw, calc((100dvh - 158px) * 929 / 679))!important;
+    font-size:1.05em!important;
   }
 }
 </style>
 
-<meta name="borrachos-mobile-build-v13" content="geometry-screenshot">
+<meta name="borrachos-mobile-build-v14" content="v12-base-data-only">
 </head>
 <body>
 
@@ -4925,16 +4917,5 @@ caricaDatiBorrachos()
         document.body.innerHTML = '<div style="text-align:center;padding:40px;color:#e94560;">Errore caricamento dati: ' + e.message + '<br><br>Non è stato possibile leggere né dati.json locale né la copia pubblicata su GitHub.</div>';
     });
 </script>
-
-<script id="borrachos-classifica-v13-runtime">
-(function(){
-  function stripPos(){
-    document.querySelectorAll('#classifica-chalk-data .chalk-pos').forEach(function(el){ el.remove(); });
-  }
-  document.addEventListener('DOMContentLoaded', stripPos);
-  new MutationObserver(stripPos).observe(document.documentElement,{subtree:true,childList:true});
-})();
-</script>
-
 </body>
 </html>
