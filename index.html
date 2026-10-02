@@ -2978,6 +2978,14 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
     filter:drop-shadow(0 2px 2px #000)!important;
 }
 
+
+/* EDITOR PRIVATO BORRACHOS: invisibile ai visitatori normali */
+.home-layout-tools,
+.layout-editor-tools { display:none !important; }
+
+body.editor-authorized.home-active .home-layout-tools { display:flex !important; }
+body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !important; }
+
 </style>
 
 </head>
@@ -3239,6 +3247,60 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
 </div>
 
 <script>
+
+/* ===== EDITOR PRIVATO BORRACHOS =====
+   Ctrl+Alt+M -> inserisci password.
+   La password NON è salvata in chiaro nel sorgente: solo hash SHA-256.
+   L'abilitazione resta memorizzata esclusivamente nel browser usato. */
+const BORRACHOS_EDITOR_HASH = "55170fd08ccfa95c76c30ad2a30cea9ac7c7b66a980af0a3419303e7ad4eeda7";
+const BORRACHOS_EDITOR_KEY = "borrachos_editor_authorized_v1";
+
+function borrachosEditorApplyAuth() {
+    if (localStorage.getItem(BORRACHOS_EDITOR_KEY) === "1") {
+        document.body.classList.add("editor-authorized");
+        return true;
+    }
+    document.body.classList.remove("editor-authorized");
+    return false;
+}
+
+async function borrachosSha256(text) {
+    const data = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function borrachosEditorLogin() {
+    if (borrachosEditorApplyAuth()) {
+        if (confirm("Modalità modifica già attiva. Vuoi disattivarla su questo browser?")) {
+            localStorage.removeItem(BORRACHOS_EDITOR_KEY);
+            document.body.classList.remove("editor-authorized","home-editing","layout-editing");
+            homeEditorOn = false;
+            layoutEditorOn = false;
+        }
+        return;
+    }
+    const pwd = prompt("Password modifica Borrachos:");
+    if (pwd === null) return;
+    const hash = await borrachosSha256(pwd);
+    if (hash === BORRACHOS_EDITOR_HASH) {
+        localStorage.setItem(BORRACHOS_EDITOR_KEY, "1");
+        document.body.classList.add("editor-authorized");
+        alert("Modalità modifica attivata su questo browser.");
+    } else {
+        alert("Password non corretta.");
+    }
+}
+
+document.addEventListener("keydown", function(e) {
+    if (e.ctrlKey && e.altKey && (e.key === "m" || e.key === "M")) {
+        e.preventDefault();
+        borrachosEditorLogin();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", borrachosEditorApplyAuth);
+
 let datiSquadre = [];
 let datiGiocatori = [];
 let datiGiocatoriSerieA = [];
