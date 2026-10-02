@@ -3288,6 +3288,43 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 </style>
 
+
+<style id="borrachos-home-mobile-v2">
+/* HOME MOBILE V2 — solo smartphone; desktop invariato */
+@media (max-width:700px){
+  #page-home.active{overflow:hidden!important;}
+  #page-home .home-league{
+    left:50%!important; top:18dvh!important;
+    width:min(86vw,430px)!important; height:31dvh!important;
+    transform:translateX(-50%)!important; object-fit:contain!important;
+  }
+  #page-home .home-aperol{
+    left:50%!important; top:1.5dvh!important;
+    width:min(76vw,380px)!important; height:15dvh!important;
+    transform:translateX(-50%)!important; object-fit:contain!important;
+  }
+  #page-home .home-nav{
+    left:50%!important; top:53dvh!important; bottom:auto!important;
+    width:min(90vw,440px)!important;
+    transform:translateX(-50%)!important;
+    display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important; align-items:stretch!important;
+  }
+  #page-home .home-nav .nav-btn{
+    width:100%!important; min-width:0!important; min-height:54px!important;
+    padding:8px 6px!important; margin:0!important; box-sizing:border-box!important;
+    display:flex!important; align-items:center!important; justify-content:center!important;
+    text-align:center!important; font-size:clamp(.72rem,3.2vw,.92rem)!important;
+    line-height:1.08!important; white-space:normal!important; overflow-wrap:anywhere!important;
+  }
+}
+@media (max-width:390px){
+  #page-home .home-league{top:18dvh!important;width:88vw!important;height:30dvh!important;}
+  #page-home .home-aperol{top:1dvh!important;width:80vw!important;height:15dvh!important;}
+  #page-home .home-nav{top:52dvh!important;width:92vw!important;gap:8px!important;}
+  #page-home .home-nav .nav-btn{min-height:51px!important;font-size:clamp(.68rem,3.35vw,.84rem)!important;}
+}
+</style>
 </head>
 <body>
 
