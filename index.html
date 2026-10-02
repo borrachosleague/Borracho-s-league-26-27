@@ -3270,51 +3270,53 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <meta name="borrachos-mobile-build-v14" content="v12-base-data-only">
 
-<style id="mobile-layout-editor-v15-css">
-@media (max-width:700px){
-  #mobile-layout-editor-v15{
-    position:fixed; right:6px; bottom:6px; z-index:2147483647;
-    width:230px; max-width:calc(100vw - 12px);
-    padding:7px; box-sizing:border-box;
-    background:rgba(7,12,18,.96); color:#fff;
-    border:2px solid #f0bd24; border-radius:8px;
-    font:700 11px/1.15 Arial,sans-serif;
-    box-shadow:0 3px 14px rgba(0,0,0,.55);
-  }
-  #mobile-layout-editor-v15.mle-collapsed .mle-body{display:none}
-  #mobile-layout-editor-v15 .mle-head{display:flex;gap:5px;align-items:center}
-  #mobile-layout-editor-v15 .mle-title{flex:1;color:#ffd84c;font-size:12px}
-  #mobile-layout-editor-v15 button,
-  #mobile-layout-editor-v15 select{
-    border:1px solid #697083;border-radius:5px;background:#182138;color:#fff;
-    min-height:29px;padding:3px 6px;font:700 11px Arial,sans-serif;
-  }
-  #mobile-layout-editor-v15 select{width:100%;margin:6px 0}
-  #mobile-layout-editor-v15 .mle-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:4px;
-  }
-  #mobile-layout-editor-v15 .mle-grid button{min-width:0;padding:3px}
-  #mobile-layout-editor-v15 .mle-wide{grid-column:span 3}
-  #mobile-layout-editor-v15 .mle-values{
-    margin-top:5px;padding:5px;background:#0d1423;border-radius:5px;
-    color:#dfe7ff;font:700 10px/1.25 Consolas,monospace;
-  }
-  #mobile-layout-editor-v15 .mle-actions{
-    display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:5px
-  }
-  body.mobile-editing-v15 #page-classifica .classifica-menu,
-  body.mobile-editing-v15 #page-classifica .classifica-board,
-  body.mobile-editing-v15 #page-classifica #classifica-chalk-data{
-    outline:2px dashed rgba(255,216,76,.65)!important;
-    outline-offset:1px;
-  }
-}
-@media (min-width:701px){
-  #mobile-layout-editor-v15{display:none!important}
-}
-</style>
+
 
 <meta name="borrachos-mobile-build-v15" content="editor-mobile">
+
+<meta name="borrachos-mobile-build-v16" content="editor-fast">
+
+<style id="mle17css">
+@media(max-width:700px){
+  #mle17{
+    position:fixed;right:5px;bottom:5px;z-index:2147483647;
+    width:210px;padding:6px;box-sizing:border-box;
+    background:rgba(8,13,22,.96);color:#fff;border:2px solid #f0bd24;border-radius:7px;
+    font:700 11px Arial,sans-serif
+  }
+  #mle17 .head{display:flex;align-items:center;gap:4px}
+  #mle17 .title{flex:1;color:#ffd84c;font-size:12px}
+  #mle17 button,#mle17 select{
+    min-height:30px;background:#172039;color:#fff;border:1px solid #66708a;
+    border-radius:4px;font:700 11px Arial,sans-serif
+  }
+  #mle17 select{width:100%;margin:5px 0}
+  #mle17 .vals{padding:4px;background:#101827;border-radius:4px;font:700 10px Consolas,monospace}
+  #mle17 .actions{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+  #mle17.closed .body{display:none}
+
+  body.mle17-on #page-classifica .classifica-menu,
+  body.mle17-on #page-classifica .classifica-board,
+  body.mle17-on #page-classifica #classifica-chalk-data{
+    touch-action:none!important;
+    user-select:none!important;
+    -webkit-user-select:none!important;
+  }
+  body.mle17-on #page-classifica .classifica-menu{outline:3px dashed #ffca28!important;cursor:move!important}
+  body.mle17-on #page-classifica .classifica-board{outline:3px dashed #00d8ff!important;cursor:move!important}
+  body.mle17-on #page-classifica #classifica-chalk-data{outline:3px dashed #ff4fe1!important;cursor:move!important}
+
+  .mle17-handle{
+    position:fixed;z-index:2147483646;width:22px;height:22px;
+    border-radius:50%;background:#ffd84c;border:2px solid #111;
+    transform:translate(-50%,-50%);touch-action:none;cursor:nwse-resize;
+    box-sizing:border-box;
+  }
+}
+@media(min-width:701px){#mle17,.mle17-handle{display:none!important}}
+</style>
+
+<meta name="borrachos-mobile-build-v17" content="drag-drop">
 </head>
 <body>
 
@@ -4964,128 +4966,108 @@ caricaDatiBorrachos()
     });
 </script>
 
-<script id="mobile-layout-editor-v15-js">
+
+
+
+
+<script id="mle17js">
 (function(){
-  const KEY='borrachos_mobile_layout_v15';
-  const STEP=1;
-  const defs={
-    menu:{label:'TASTI CLASSIFICA',sel:'#page-classifica .classifica-menu'},
-    board:{label:'LAVAGNA',sel:'#page-classifica .classifica-board'},
-    data:{label:'DATI CLASSIFICA',sel:'#page-classifica #classifica-chalk-data'}
-  };
-  let state={};
-  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){state={}}
+'use strict';
+const KEY='borrachos_mobile_drag_v17';
+const defs={
+ menu:['TASTI','#page-classifica .classifica-menu'],
+ board:['LAVAGNA','#page-classifica .classifica-board'],
+ data:['DATI','#page-classifica #classifica-chalk-data']
+};
+let current='board', state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
+let drag=null, handle=null;
 
-  function mobile(){return window.matchMedia('(max-width:700px)').matches}
-  function el(k){return document.querySelector(defs[k].sel)}
-  function num(v){const n=parseFloat(v);return Number.isFinite(n)?n:0}
-  function read(k){
-    const x=el(k); if(!x)return null;
-    const r=x.getBoundingClientRect();
-    let p=x.parentElement ? x.parentElement.getBoundingClientRect() : {left:0,top:0};
-    return {left:r.left-p.left,top:r.top-p.top,width:r.width,height:r.height};
-  }
-  function applyOne(k,v){
-    const x=el(k); if(!x||!v)return;
-    x.style.setProperty('position','absolute','important');
-    x.style.setProperty('left',v.left+'px','important');
-    x.style.setProperty('top',v.top+'px','important');
-    x.style.setProperty('width',Math.max(20,v.width)+'px','important');
-    x.style.setProperty('height',Math.max(20,v.height)+'px','important');
-    x.style.setProperty('margin','0','important');
-    if(k==='board') x.style.setProperty('aspect-ratio','auto','important');
-  }
-  function applySaved(){
-    if(!mobile())return;
-    Object.keys(defs).forEach(k=>{if(state[k])applyOne(k,state[k])});
-  }
-  function ensure(k){
-    if(!state[k]){
-      const v=read(k); if(v)state[k]=v;
-    }
-    return state[k];
-  }
-  function save(){
-    localStorage.setItem(KEY,JSON.stringify(state));
-    values();
-  }
-  function reset(){
-    localStorage.removeItem(KEY);
-    state={};
-    location.reload();
-  }
-  function values(){
-    const box=document.getElementById('mle-values-v15');
-    const s=document.getElementById('mle-select-v15');
-    if(!box||!s)return;
-    const k=s.value, v=ensure(k);
-    box.textContent=v ? `X ${v.left.toFixed(0)}  Y ${v.top.toFixed(0)}  W ${v.width.toFixed(0)}  H ${v.height.toFixed(0)}` : 'elemento non trovato';
-  }
-  function change(dx,dy,dw,dh){
-    const k=document.getElementById('mle-select-v15').value;
-    const v=ensure(k); if(!v)return;
-    v.left+=dx; v.top+=dy; v.width=Math.max(20,v.width+dw); v.height=Math.max(20,v.height+dh);
-    applyOne(k,v); save();
-  }
-  function build(){
-    if(document.getElementById('mobile-layout-editor-v15'))return;
-    const p=document.createElement('div');
-    p.id='mobile-layout-editor-v15';
-    p.innerHTML=`
-      <div class="mle-head">
-        <div class="mle-title">MODIFICA MOBILE</div>
-        <button type="button" id="mle-collapse-v15">−</button>
-      </div>
-      <div class="mle-body">
-        <select id="mle-select-v15">
-          <option value="menu">TASTI CLASSIFICA</option>
-          <option value="board">LAVAGNA</option>
-          <option value="data">DATI CLASSIFICA</option>
-        </select>
-        <div class="mle-grid">
-          <span></span><button type="button" data-op="up">▲</button><span></span>
-          <button type="button" data-op="left">◀</button><button type="button" data-op="down">▼</button><button type="button" data-op="right">▶</button>
-          <button type="button" data-op="narrow">W−</button><button type="button" data-op="wide">W+</button><button type="button" data-op="short">H−</button>
-          <button type="button" class="mle-wide" data-op="tall">H+ &nbsp; ALLUNGA</button>
-        </div>
-        <div class="mle-values" id="mle-values-v15"></div>
-        <div class="mle-actions">
-          <button type="button" id="mle-save-v15">SALVA</button>
-          <button type="button" id="mle-reset-v15">RESET</button>
-        </div>
-      </div>`;
-    document.body.appendChild(p);
-    document.body.classList.add('mobile-editing-v15');
+function E(k){return document.querySelector(defs[k][1])}
+function parentRect(e){return e.offsetParent?e.offsetParent.getBoundingClientRect():{left:0,top:0}}
+function measure(k){
+ const e=E(k); if(!e)return null;
+ const r=e.getBoundingClientRect(),p=parentRect(e);
+ return {x:r.left-p.left,y:r.top-p.top,w:r.width,h:r.height};
+}
+function ensure(k){if(!state[k])state[k]=measure(k);return state[k]}
+function apply(k){
+ const e=E(k),v=state[k]; if(!e||!v)return;
+ e.style.setProperty('position','absolute','important');
+ e.style.setProperty('left',v.x+'px','important');
+ e.style.setProperty('top',v.y+'px','important');
+ e.style.setProperty('width',v.w+'px','important');
+ e.style.setProperty('height',v.h+'px','important');
+ e.style.setProperty('margin','0','important');
+ if(k==='board')e.style.setProperty('aspect-ratio','auto','important');
+}
+function vals(){
+ const b=document.getElementById('mle17vals'),v=ensure(current);
+ if(b&&v)b.textContent=defs[current][0]+'  X '+Math.round(v.x)+' Y '+Math.round(v.y)+' W '+Math.round(v.w)+' H '+Math.round(v.h);
+ placeHandle();
+}
+function placeHandle(){
+ if(!handle)return;
+ const e=E(current);if(!e){handle.style.display='none';return}
+ const r=e.getBoundingClientRect();
+ handle.style.display='block';handle.style.left=r.right+'px';handle.style.top=r.bottom+'px';
+}
+function select(k){
+ current=k;document.getElementById('mle17sel').value=k;vals();
+}
+function targetKey(node){
+ for(const k of Object.keys(defs)){const e=E(k);if(e&&(node===e||e.contains(node)))return k}
+ return null;
+}
+function down(ev){
+ if(!document.body.classList.contains('mle17-on'))return;
+ const k=targetKey(ev.target);if(!k)return;
+ ev.preventDefault();ev.stopPropagation();select(k);
+ const v=ensure(k);
+ drag={kind:'move',k,id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,x:v.x,y:v.y};
+ ev.target.setPointerCapture?.(ev.pointerId);
+}
+function move(ev){
+ if(!drag||drag.id!==ev.pointerId)return;
+ ev.preventDefault();
+ const v=ensure(drag.k),dx=ev.clientX-drag.sx,dy=ev.clientY-drag.sy;
+ if(drag.kind==='move'){v.x=drag.x+dx;v.y=drag.y+dy}
+ else{v.w=Math.max(30,drag.w+dx);v.h=Math.max(30,drag.h+dy)}
+ apply(drag.k);vals();
+}
+function up(ev){if(drag&&drag.id===ev.pointerId)drag=null}
+function build(){
+ if(document.getElementById('mle17'))return;
+ const p=document.createElement('div');p.id='mle17';
+ p.innerHTML='<div class="head"><div class="title">DRAG MOBILE</div><button id="mle17close">−</button></div>'+
+ '<div class="body"><select id="mle17sel"><option value="menu">TASTI CLASSIFICA</option><option value="board" selected>LAVAGNA</option><option value="data">DATI CLASSIFICA</option></select>'+
+ '<div class="vals" id="mle17vals"></div><div class="actions"><button id="mle17save">SALVA</button><button id="mle17reset">RESET</button></div></div>';
+ document.body.appendChild(p);
+ handle=document.createElement('div');handle.className='mle17-handle';handle.title='Trascina per ridimensionare';document.body.appendChild(handle);
 
-    p.querySelector('#mle-collapse-v15').addEventListener('click',function(){
-      p.classList.toggle('mle-collapsed');
-      this.textContent=p.classList.contains('mle-collapsed')?'+':'−';
-    });
-    p.querySelector('#mle-select-v15').addEventListener('change',values);
-    p.querySelectorAll('[data-op]').forEach(b=>b.addEventListener('click',()=>{
-      const op=b.dataset.op;
-      if(op==='up')change(0,-STEP,0,0);
-      if(op==='down')change(0,STEP,0,0);
-      if(op==='left')change(-STEP,0,0,0);
-      if(op==='right')change(STEP,0,0,0);
-      if(op==='narrow')change(0,0,-STEP,0);
-      if(op==='wide')change(0,0,STEP,0);
-      if(op==='short')change(0,0,0,-STEP);
-      if(op==='tall')change(0,0,0,STEP);
-    }));
-    p.querySelector('#mle-save-v15').addEventListener('click',save);
-    p.querySelector('#mle-reset-v15').addEventListener('click',reset);
-    values();
-  }
+ document.body.classList.add('mle17-on');
+ p.querySelector('#mle17close').onclick=function(){p.classList.toggle('closed');this.textContent=p.classList.contains('closed')?'+':'−'};
+ p.querySelector('#mle17sel').onchange=function(){select(this.value)};
+ p.querySelector('#mle17save').onclick=function(){localStorage.setItem(KEY,JSON.stringify(state));vals()};
+ p.querySelector('#mle17reset').onclick=function(){localStorage.removeItem(KEY);location.reload()};
 
-  function init(){
-    if(!mobile())return;
-    applySaved();
-    build();
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
-  else init();
-  window.addEventListener('resize',()=>{if(mobile()){applySaved();build()}});
+ document.querySelector('#page-classifica')?.addEventListener('pointerdown',down,true);
+ window.addEventListener('pointermove',move,{passive:false});
+ window.addEventListener('pointerup',up);
+ handle.addEventListener('pointerdown',function(ev){
+   ev.preventDefault();ev.stopPropagation();
+   const v=ensure(current);
+   drag={kind:'resize',k:current,id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,w:v.w,h:v.h};
+   handle.setPointerCapture?.(ev.pointerId);
+ });
+ window.addEventListener('scroll',placeHandle,{passive:true});
+ window.addEventListener('resize',placeHandle);
+ Object.keys(defs).forEach(k=>{if(state[k])apply(k)});
+ vals();
+}
+if(matchMedia('(max-width:700px)').matches){
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build,{once:true});else build();
+}
 })();
 </script>
 
