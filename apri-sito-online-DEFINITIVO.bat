@@ -64,8 +64,7 @@ if errorlevel 1 (
 echo === OPERAZIONE COMPLETATA ===
 echo Pubblicazione completata.
 echo Aggiornamento completato.
-echo Aggiorno la scheda Borrachos gia aperta nel browser...
-powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $ws.AppActivate('Borrachos'); Start-Sleep -Milliseconds 300; $ws.SendKeys('^{F5}')" >nul 2>&1
-echo Se la scheda Borrachos non era gia aperta, premi CTRL+F5 manualmente nel browser.
+echo Apro/aggiorno il sito Borrachos...
+start "" "https://borrachosleague.github.io/Borracho-s-league-26-27/"
 timeout /t 4 /nobreak >nul
 exit
