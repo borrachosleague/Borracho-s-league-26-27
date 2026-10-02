@@ -3836,9 +3836,62 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-classifica .classifica-board #classifica-chalk-data,
   #page-classifica #classifica-chalk-data{font-size:clamp(10px,3.2vw,13px)!important;}
 }
+
+/* === MOBILE V11: COLONNE CLASSIFICA CORRETTE === */
+@media (max-width:700px){
+  /* I numeri 1-10 sono già disegnati sulla lavagna: non occupano più una colonna dati */
+  #page-classifica .classifica-chalk-data .chalk-pos{
+    display:none!important;
+  }
+
+  /* Il blocco parte dalla colonna SQUADRA del disegno.
+     LOGO piccolo + NOME largo + 8 colonne statistiche. */
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{
+    left:16.5%!important;
+    top:39.5%!important;
+    width:76.5%!important;
+    height:49.0%!important;
+  }
+
+  #page-classifica .classifica-chalk-data .chalk-row{
+    display:grid!important;
+    grid-template-columns:8% 32% repeat(8,7.5%)!important;
+    width:100%!important;
+    height:auto!important;
+    align-items:center!important;
+  }
+
+  #page-classifica .classifica-chalk-data .chalk-logo{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    overflow:visible!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-logo img{
+    height:clamp(24px,6.2vw,34px)!important;
+    width:auto!important;
+    max-width:96%!important;
+  }
+
+  #page-classifica .classifica-chalk-data .chalk-team{
+    justify-content:flex-start!important;
+    padding-left:3%!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* Evita qualunque a-capo: PT resta davvero l'ultima colonna */
+  #page-classifica .classifica-chalk-data .chalk-row>span{
+    white-space:nowrap!important;
+    min-width:0!important;
+  }
+}
+
 </style>
 
-<meta name="borrachos-mobile-build" content="v10-allineata">
+<meta name="borrachos-mobile-build" content="v11-colonne-corrette">
 </head>
 <body>
 
