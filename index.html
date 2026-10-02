@@ -3432,6 +3432,54 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="classifica-mobile-verticale-v3">
+/* CLASSIFICA MOBILE V3 — flusso completamente verticale */
+@media (max-width:700px){
+  #page-classifica .classifica-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    width:100%!important;
+    padding:8px 5px 20px!important;
+  }
+  #page-classifica .classifica-menu{
+    order:1!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    width:min(88vw,390px)!important;
+    gap:6px!important;
+    padding:0 0 8px!important;
+  }
+  #page-classifica .classifica-menu-btn,
+  #page-classifica .classifica-menu-btn:nth-child(1),
+  #page-classifica .classifica-menu-btn:nth-child(2),
+  #page-classifica .classifica-menu-btn:nth-child(3){
+    width:100%!important;
+    height:62px!important;
+    min-height:62px!important;
+    aspect-ratio:auto!important;
+    background-size:contain!important;
+    background-position:center!important;
+  }
+  #page-classifica .classifica-board{
+    order:2!important;
+    width:100%!important;
+    max-width:700px!important;
+    aspect-ratio:1536/1024!important;
+    margin:0 auto!important;
+  }
+}
+@media (max-width:390px){
+  #page-classifica .classifica-menu{width:92vw!important;gap:5px!important;}
+  #page-classifica .classifica-menu-btn,
+  #page-classifica .classifica-menu-btn:nth-child(1),
+  #page-classifica .classifica-menu-btn:nth-child(2),
+  #page-classifica .classifica-menu-btn:nth-child(3){height:56px!important;min-height:56px!important;}
+}
+</style>
+
 </head>
 <body>
 
