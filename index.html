@@ -3325,6 +3325,113 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-home .home-nav .nav-btn{min-height:51px!important;font-size:clamp(.68rem,3.35vw,.84rem)!important;}
 }
 </style>
+
+<style id="classifica-mobile-v2">
+/* === CLASSIFICA MOBILE V2: grafica intera, comandi sopra, dati ancorati alla lavagna === */
+@media (max-width:700px){
+  #page-classifica{
+    min-height:calc(100dvh - 150px)!important;
+    height:auto!important;
+    padding:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    background-position:center top!important;
+    background-size:cover!important;
+  }
+  #page-classifica .classifica-layout{
+    position:relative!important;
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:8px 4px 18px!important;
+    box-sizing:border-box!important;
+  }
+  #page-classifica .classifica-menu-board{display:none!important;}
+  #page-classifica .classifica-menu{
+    position:relative!important;
+    left:auto!important; top:auto!important;
+    width:100%!important; max-width:none!important;
+    height:auto!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+    padding:0 2px 7px!important;
+    margin:0!important;
+    z-index:20!important;
+  }
+  #page-classifica .classifica-menu-btn,
+  #page-classifica .classifica-menu-btn:nth-child(1),
+  #page-classifica .classifica-menu-btn:nth-child(2),
+  #page-classifica .classifica-menu-btn:nth-child(3){
+    position:relative!important;
+    left:auto!important; top:auto!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    aspect-ratio:1.15/1!important;
+    flex:none!important;
+    margin:0!important;
+    padding:0!important;
+    background-size:contain!important;
+    background-position:center!important;
+    background-repeat:no-repeat!important;
+    transform:none!important;
+  }
+  #page-classifica .classifica-board{
+    position:relative!important;
+    left:auto!important; top:auto!important;
+    width:100%!important;
+    height:auto!important;
+    max-width:none!important; max-height:none!important;
+    aspect-ratio:929/679!important;
+    margin:0 auto!important;
+    background-size:100% 100%!important;
+    overflow:visible!important;
+  }
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{
+    position:absolute!important;
+    left:16.8%!important;
+    top:38.3%!important;
+    width:72.6%!important;
+    height:50.4%!important;
+    margin:0!important;
+    font-size:clamp(6px,1.85vw,12px)!important;
+    line-height:1!important;
+  }
+  #page-classifica .classifica-board #classifica-special-data,
+  #page-classifica #classifica-special-data{
+    position:absolute!important;
+    left:8.9%!important;
+    top:40.5%!important;
+    width:81.6%!important;
+    height:48.3%!important;
+    margin:0!important;
+    font-size:clamp(7px,2vw,12px)!important;
+    line-height:1!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-logo img,
+  #page-classifica #classifica-special-data .chalk-logo img{
+    width:auto!important;
+    height:clamp(13px,3.6vw,24px)!important;
+    max-width:95%!important;
+    max-height:95%!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-team,
+  #page-classifica #classifica-special-data .chalk-team{
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+}
+@media (max-width:390px){
+  #page-classifica .classifica-layout{padding-left:2px!important;padding-right:2px!important;}
+  #page-classifica .classifica-menu{gap:2px!important;padding-bottom:5px!important;}
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{font-size:clamp(5.6px,1.8vw,9px)!important;}
+}
+</style>
+
 </head>
 <body>
 
