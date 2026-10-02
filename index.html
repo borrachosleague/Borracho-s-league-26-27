@@ -4558,8 +4558,28 @@ function updateBest11() {
 }
 
 // === CARICA DATI ===
-fetch("dati.json")
-    .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+// Prima prova dati.json accanto all'index (sito GitHub / server locale).
+// Se la pagina viene aperta direttamente come file:// e il browser blocca il fetch,
+// usa automaticamente la copia pubblicata nel repository GitHub.
+function caricaDatiBorrachos() {
+    var locale = "dati.json?ts=" + Date.now();
+    var github = "https://raw.githubusercontent.com/borrachosleague/Borracho-s-league-26-27/main/dati.json?ts=" + Date.now();
+
+    return fetch(locale, { cache: "no-store" })
+        .then(function(r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+        })
+        .catch(function(errLocale) {
+            console.warn("dati.json locale non raggiungibile; provo GitHub:", errLocale);
+            return fetch(github, { cache: "no-store" }).then(function(r) {
+                if (!r.ok) throw new Error("GitHub HTTP " + r.status);
+                return r.json();
+            });
+        });
+}
+
+caricaDatiBorrachos()
     .then(function(d) {
         uniformaNomiSquadre(d);
         datiSquadre = d.squadre;
@@ -4614,7 +4634,7 @@ fetch("dati.json")
         });
     })
     .catch(function(e) {
-        document.body.innerHTML = '<div style="text-align:center;padding:40px;color:#e94560;">Errore: ' + e.message + '<br><br>Verifica che dati.json sia nella stessa cartella.</div>';
+        document.body.innerHTML = '<div style="text-align:center;padding:40px;color:#e94560;">Errore caricamento dati: ' + e.message + '<br><br>Non è stato possibile leggere né dati.json locale né la copia pubblicata su GitHub.</div>';
     });
 </script>
 </body>
