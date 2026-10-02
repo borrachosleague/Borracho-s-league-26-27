@@ -2986,6 +2986,306 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
 body.editor-authorized.home-active .home-layout-tools { display:flex !important; }
 body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !important; }
 
+
+
+/* =========================================================
+   BORRACHOS MOBILE v1
+   Solo smartphone/tablet stretti: il desktop resta invariato.
+   ========================================================= */
+@media (max-width: 700px) {
+    html, body { width:100%; max-width:100%; overflow-x:hidden; }
+    body { min-height:100dvh; -webkit-text-size-adjust:100%; }
+
+    /* HOME */
+    #page-home.active {
+        position:fixed; inset:0; width:100vw; height:100dvh;
+        overflow:hidden;
+    }
+    #page-home .home-branding { display:block; }
+    #page-home .home-league {
+        position:absolute !important;
+        left:50% !important; top:3.5dvh !important;
+        width:min(92vw,520px) !important;
+        height:43dvh !important;
+        transform:translateX(-50%) !important;
+        object-fit:contain !important;
+    }
+    #page-home .home-aperol {
+        position:absolute !important;
+        left:50% !important; top:42dvh !important;
+        width:min(84vw,440px) !important;
+        height:15dvh !important;
+        transform:translateX(-50%) !important;
+        object-fit:contain !important;
+    }
+    #page-home .home-nav {
+        position:absolute !important;
+        left:50% !important; top:auto !important; bottom:2dvh !important;
+        width:min(88vw,420px) !important;
+        height:auto !important;
+        transform:translateX(-50%) !important;
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:8px !important;
+    }
+    #page-home .home-nav .nav-btn {
+        min-height:46px !important;
+        padding:8px 6px !important;
+        font-size:.76rem !important;
+        white-space:normal !important;
+        line-height:1.1 !important;
+        touch-action:manipulation;
+    }
+
+    /* HEADER / NAV DELLE PAGINE INTERNE */
+    body:not(.home-active) .header {
+        position:sticky; top:0;
+        padding:5px 6px !important;
+        gap:5px !important;
+        z-index:500;
+    }
+    body:not(.home-active) .header .logo { display:none !important; }
+    body:not(.home-active) .header .nav {
+        width:100%;
+        display:grid !important;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:4px !important;
+    }
+    body:not(.home-active) .header .nav-btn {
+        min-height:40px;
+        padding:5px 2px !important;
+        font-size:.60rem !important;
+        letter-spacing:0 !important;
+        white-space:normal;
+        line-height:1.05;
+        touch-action:manipulation;
+    }
+
+    .page { width:100%; max-width:none; padding:4px 6px; }
+    .page-title { font-size:1rem; margin-bottom:5px; }
+    .subnav { gap:4px; }
+    .subnav-btn { min-height:40px; padding:7px 8px; font-size:.72rem; touch-action:manipulation; }
+
+    /* CLASSIFICA: tasti sopra, lavagna sotto */
+    #page-classifica {
+        min-height:calc(100dvh - 92px) !important;
+        height:auto !important;
+        overflow-y:auto !important;
+        overflow-x:hidden !important;
+        background-position:center !important;
+    }
+    #page-classifica .classifica-layout {
+        min-height:0 !important; height:auto !important;
+        padding:8px 0 18px !important;
+    }
+    #page-classifica .classifica-menu-board { display:none !important; }
+    #page-classifica .classifica-menu {
+        position:relative !important;
+        left:auto !important; top:auto !important;
+        width:100% !important; max-width:none !important;
+        display:grid !important;
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:5px !important;
+        padding:0 4px 8px !important;
+    }
+    #page-classifica .classifica-menu-btn {
+        width:100% !important;
+        aspect-ratio:1.65/1 !important;
+        min-height:58px !important;
+        background-size:contain !important;
+    }
+    #page-classifica .classifica-board {
+        position:relative !important;
+        left:auto !important; top:auto !important;
+        width:100% !important; max-width:680px !important;
+        margin:0 auto !important;
+        aspect-ratio:1536/1024 !important;
+    }
+    #page-classifica .classifica-chalk-data,
+    #page-classifica .classifica-special-data {
+        font-size:clamp(7px,2.35vw,13px) !important;
+    }
+    #page-classifica .chalk-row .chalk-logo img {
+        height:clamp(14px,4.4vw,26px) !important;
+    }
+
+    /* RISULTATI */
+    #page-risultati { padding:5px 5px 18px !important; }
+    #page-risultati .risultati-giornate {
+        display:flex !important;
+        overflow-x:auto !important;
+        gap:5px !important;
+        margin-bottom:8px !important;
+        padding:2px 1px 6px !important;
+        scrollbar-width:thin;
+        -webkit-overflow-scrolling:touch;
+    }
+    #page-risultati .giornata-btn {
+        flex:0 0 42px !important;
+        min-width:42px !important; height:42px !important;
+    }
+    #page-risultati .table-container {
+        overflow-x:auto !important; -webkit-overflow-scrolling:touch;
+    }
+    #tabella-risultati { min-width:620px !important; }
+    #tabella-risultati td { font-size:.82rem !important; padding:8px 4px !important; }
+    #tabella-risultati th { font-size:.68rem !important; padding:5px 3px !important; }
+    #tabella-risultati .ris-logo { width:30px !important; height:30px !important; flex-basis:30px !important; }
+    #tabella-risultati .ris-team { gap:5px !important; }
+
+    /* STATISTICHE */
+    #page-statistiche { padding:4px 6px 18px !important; }
+    #page-statistiche > .subnav {
+        display:grid !important; grid-template-columns:1fr 1fr !important;
+        width:100%;
+    }
+    #page-statistiche .giocatori-layout,
+    #sub-squadre .giocatori-layout {
+        display:block !important;
+        padding-left:0 !important;
+    }
+    #page-statistiche .giocatori-controls,
+    #sub-squadre .giocatori-controls {
+        position:relative !important; top:auto !important;
+        width:100% !important;
+        display:block !important;
+        padding:2px 0 8px !important;
+    }
+    #page-statistiche .ricerca-input {
+        min-height:42px; font-size:16px !important; margin-bottom:6px;
+    }
+    #page-statistiche .stats-choice-row,
+    #page-statistiche .stats-criteria {
+        display:flex !important;
+        flex-direction:row !important;
+        overflow-x:auto !important;
+        gap:5px !important;
+        padding-bottom:5px;
+        -webkit-overflow-scrolling:touch;
+    }
+    #page-statistiche .stats-choice-btn {
+        flex:0 0 auto !important;
+        width:auto !important;
+        min-width:92px !important;
+        min-height:38px !important;
+        padding:6px 9px !important;
+        font-size:.70rem !important;
+    }
+    #page-statistiche .stats-filter-label { margin-top:4px; }
+    #page-statistiche .table-container {
+        width:100% !important; max-width:none !important;
+        overflow-x:auto !important; -webkit-overflow-scrolling:touch;
+    }
+    #sub-giocatori #tabella-giocatori { min-width:560px !important; }
+    #sub-giocatori #tabella-giocatori th,
+    #sub-giocatori #tabella-giocatori td { font-size:.76rem !important; padding:5px 5px !important; }
+    #tabella-giocatori .logo-cell img { width:34px !important; height:34px !important; }
+
+    #sub-squadre .sq-dati { transform:none !important; width:100% !important; max-width:none !important; }
+    #sub-squadre #titolo-statistiche-squadre { font-size:.95rem !important; margin:4px 0 6px !important; }
+    #sub-squadre .squadre-tabelle-doppie {
+        display:block !important; width:100% !important; max-width:none !important;
+    }
+    #sub-squadre .squadre-tabelle-doppie .table-container { margin-bottom:8px !important; }
+    #sub-squadre .squadre-tabelle-doppie table { min-width:0 !important; width:100% !important; }
+    #sub-squadre .squadre-tabelle-doppie td,
+    #sub-squadre .squadre-tabelle-doppie th { font-size:.74rem !important; padding:5px 4px !important; }
+
+    /* BEST 11: controlli sopra, campo, panchina sotto */
+    #page-best11 {
+        height:auto !important;
+        min-height:calc(100dvh - 92px) !important;
+        overflow-y:auto !important;
+        overflow-x:hidden !important;
+        background-attachment:scroll !important;
+        padding:6px !important;
+    }
+    #page-best11 .best11-layout {
+        display:flex !important;
+        flex-direction:column !important;
+        width:100% !important; height:auto !important;
+        overflow:visible !important;
+        gap:8px !important;
+    }
+    #page-best11 .best11-controls {
+        position:relative !important;
+        left:auto !important; top:auto !important;
+        width:100% !important; max-height:none !important;
+        overflow:visible !important;
+        display:grid !important;
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:5px !important;
+        padding:6px !important;
+        order:1;
+    }
+    #page-best11 .best11-choice-unit { min-width:0; }
+    #page-best11 .best11-presenze-unit { grid-column:1 / -1 !important; }
+    #page-best11 .subnav.best11-v {
+        display:flex !important; flex-direction:column !important;
+        gap:3px !important; margin:0 !important;
+    }
+    #page-best11 .subnav.best11-v .subnav-btn {
+        min-height:34px !important; padding:4px 2px !important; font-size:.60rem !important;
+    }
+    #page-best11 #pitch-best11 {
+        position:relative !important;
+        left:auto !important; top:auto !important;
+        width:100% !important; height:auto !important;
+        min-height:56vw !important;
+        aspect-ratio:16/9 !important;
+        overflow:visible !important;
+        order:2;
+    }
+    #page-best11 .pitch-player .pp-main {
+        min-width:72px !important; max-width:88px !important;
+        height:31px !important; padding:1px 2px !important;
+        grid-template-columns:23px minmax(36px,1fr) 20px !important;
+        gap:1px !important;
+    }
+    #page-best11 .pitch-player .pp-logo { width:22px !important; height:22px !important; }
+    #page-best11 .pitch-player .pp-name { font-size:.52rem !important; }
+    #page-best11 .pitch-player .pp-val { font-size:.52rem !important; }
+    #page-best11 .pitch-player .pp-ruolo { font-size:.42rem !important; }
+    #page-best11 .best11-bench {
+        position:relative !important;
+        right:auto !important; top:auto !important;
+        width:100% !important; max-height:none !important;
+        overflow:visible !important;
+        order:3;
+    }
+    #page-best11 .bench-player {
+        grid-template-columns:30px minmax(0,1fr) 34px 42px !important;
+        min-height:38px !important;
+    }
+
+    /* ASTA e LIVE */
+    #page-asta #asta-frame {
+        height:calc(100dvh - 92px) !important;
+        min-height:600px !important;
+        border-radius:0 !important;
+    }
+    #page-live { padding:5px !important; }
+    #page-live .live-scoreboard { overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+    #page-live .live-scoreboard table { min-width:560px; }
+
+    /* EDITOR: resta privato; su telefono non copre tutta la pagina */
+    body.editor-authorized .home-layout-tools,
+    body.editor-authorized .layout-editor-tools {
+        max-width:92vw !important;
+        max-height:35dvh !important;
+        overflow:auto !important;
+    }
+}
+
+/* telefoni molto stretti */
+@media (max-width: 390px) {
+    #page-home .home-nav { width:94vw !important; gap:6px !important; }
+    #page-home .home-nav .nav-btn { font-size:.68rem !important; }
+    body:not(.home-active) .header .nav-btn { font-size:.55rem !important; }
+    #page-classifica .classifica-menu-btn { min-height:52px !important; }
+    #page-best11 .pitch-player .pp-main { min-width:66px !important; max-width:78px !important; }
+}
+
 </style>
 
 </head>
