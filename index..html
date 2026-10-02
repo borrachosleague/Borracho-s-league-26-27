@@ -2949,7 +2949,7 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
  top:50%!important;left:50%;
  width:30px!important;height:30px!important;
  transform:translate(-50%,-50%)!important;border-radius:50%!important;
- background:url('assets/PRESENZE_MINIME_PALLONE_BORRACHO.webp') center/contain no-repeat!important;
+ background:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO_TRASPARENTE.webp') center/contain no-repeat!important;
  filter:drop-shadow(0 2px 2px #000);
 }
 
@@ -2958,8 +2958,26 @@ body.layout-editing #page-best11 .best11-choice-unit.layout-editable{outline:2px
 #page-best11 #best-presenze-ball{
  top:50%!important;
  width:var(--ball-size)!important;height:var(--ball-size)!important;
- background:url('assets/PRESENZE_MINIME_PALLONE_BORRACHO.webp') center/contain no-repeat!important;
+ background:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO_TRASPARENTE.webp') center/contain no-repeat!important;
 }
+
+/* PRESENZE DEFINITIVO: UN SOLO WEBP.
+   Il pallone mobile viene ritagliato dalla stessa bilancia Borracho. */
+#page-best11 .best11-presenze-control{--ball-size:30px}
+#page-best11 #best-presenze-ball{
+    top:50%!important;
+    width:var(--ball-size)!important;
+    height:var(--ball-size)!important;
+    border-radius:50%!important;
+    overflow:hidden!important;
+    background-image:url('assets/PRESENZE_MINIME_BILANCIA_BORRACHO_TRASPARENTE.webp')!important;
+    background-repeat:no-repeat!important;
+    /* crop del pallone centrale dalla sorgente 1536x374 */
+    background-size:397px 100px!important;
+    background-position:-183.6px -26.3px!important;
+    filter:drop-shadow(0 2px 2px #000)!important;
+}
+
 </style>
 
 </head>
