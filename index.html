@@ -3276,47 +3276,26 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <meta name="borrachos-mobile-build-v16" content="editor-fast">
 
-<style id="mle17css">
-@media(max-width:700px){
-  #mle17{
-    position:fixed;right:5px;bottom:5px;z-index:2147483647;
-    width:210px;padding:6px;box-sizing:border-box;
-    background:rgba(8,13,22,.96);color:#fff;border:2px solid #f0bd24;border-radius:7px;
-    font:700 11px Arial,sans-serif
-  }
-  #mle17 .head{display:flex;align-items:center;gap:4px}
-  #mle17 .title{flex:1;color:#ffd84c;font-size:12px}
-  #mle17 button,#mle17 select{
-    min-height:30px;background:#172039;color:#fff;border:1px solid #66708a;
-    border-radius:4px;font:700 11px Arial,sans-serif
-  }
-  #mle17 select{width:100%;margin:5px 0}
-  #mle17 .vals{padding:4px;background:#101827;border-radius:4px;font:700 10px Consolas,monospace}
-  #mle17 .actions{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
-  #mle17.closed .body{display:none}
 
-  body.mle17-on #page-classifica .classifica-menu,
-  body.mle17-on #page-classifica .classifica-board,
-  body.mle17-on #page-classifica #classifica-chalk-data{
-    touch-action:none!important;
-    user-select:none!important;
-    -webkit-user-select:none!important;
-  }
-  body.mle17-on #page-classifica .classifica-menu{outline:3px dashed #ffca28!important;cursor:move!important}
-  body.mle17-on #page-classifica .classifica-board{outline:3px dashed #00d8ff!important;cursor:move!important}
-  body.mle17-on #page-classifica #classifica-chalk-data{outline:3px dashed #ff4fe1!important;cursor:move!important}
-
-  .mle17-handle{
-    position:fixed;z-index:2147483646;width:22px;height:22px;
-    border-radius:50%;background:#ffd84c;border:2px solid #111;
-    transform:translate(-50%,-50%);touch-action:none;cursor:nwse-resize;
-    box-sizing:border-box;
-  }
-}
-@media(min-width:701px){#mle17,.mle17-handle{display:none!important}}
-</style>
 
 <meta name="borrachos-mobile-build-v17" content="drag-drop">
+
+<style id="mle18css">
+@media(max-width:700px){
+#mle18{position:fixed;right:5px;bottom:5px;z-index:2147483647;width:210px;padding:6px;box-sizing:border-box;background:rgba(8,13,22,.96);color:#fff;border:2px solid #f0bd24;border-radius:7px;font:700 11px Arial}
+#mle18 .h{display:flex;align-items:center;gap:4px}#mle18 .t{flex:1;color:#ffd84c;font-size:12px}
+#mle18 button,#mle18 select{min-height:30px;background:#172039;color:#fff;border:1px solid #66708a;border-radius:4px;font:700 11px Arial}
+#mle18 select{width:100%;margin:5px 0}#mle18 .v{padding:4px;background:#101827;border-radius:4px;font:700 10px Consolas}
+#mle18 .a{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}#mle18.c .b{display:none}
+body.mle18on #page-classifica .classifica-menu{outline:3px dashed #ffd22e!important;cursor:move!important;touch-action:none!important}
+body.mle18on #page-classifica .classifica-board{outline:3px dashed #00e5ff!important;cursor:move!important;touch-action:none!important}
+body.mle18on #page-classifica #classifica-chalk-data{outline:3px dashed #ff4fe1!important;cursor:move!important;touch-action:none!important}
+.mle18handle{position:fixed;z-index:2147483646;width:24px;height:24px;border-radius:50%;background:#ffd84c;border:2px solid #111;transform:translate(-50%,-50%);touch-action:none;cursor:nwse-resize;box-sizing:border-box}
+}
+@media(min-width:701px){#mle18,.mle18handle{display:none!important}}
+</style>
+
+<meta name="borrachos-mobile-build-v18" content="drag-buttons-fixed">
 </head>
 <body>
 
@@ -4970,104 +4949,86 @@ caricaDatiBorrachos()
 
 
 
-<script id="mle17js">
+
+
+
+<script id="mle18js">
 (function(){
 'use strict';
-const KEY='borrachos_mobile_drag_v17';
-const defs={
- menu:['TASTI','#page-classifica .classifica-menu'],
- board:['LAVAGNA','#page-classifica .classifica-board'],
- data:['DATI','#page-classifica #classifica-chalk-data']
-};
-let current='board', state={};
-try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
-let drag=null, handle=null;
+const K='borrachos_mobile_drag_v18';
+const DEF={menu:['TASTI CLASSIFICA','#page-classifica .classifica-menu'],board:['LAVAGNA','#page-classifica .classifica-board'],data:['DATI CLASSIFICA','#page-classifica #classifica-chalk-data']};
+let S={};try{S=JSON.parse(localStorage.getItem(K)||'{}')||{}}catch(e){}
+let C='menu',drag=null,H=null;
 
-function E(k){return document.querySelector(defs[k][1])}
-function parentRect(e){return e.offsetParent?e.offsetParent.getBoundingClientRect():{left:0,top:0}}
-function measure(k){
- const e=E(k); if(!e)return null;
- const r=e.getBoundingClientRect(),p=parentRect(e);
- return {x:r.left-p.left,y:r.top-p.top,w:r.width,h:r.height};
-}
-function ensure(k){if(!state[k])state[k]=measure(k);return state[k]}
-function apply(k){
- const e=E(k),v=state[k]; if(!e||!v)return;
+function E(k){return document.querySelector(DEF[k][1])}
+function PR(e){return e.offsetParent?e.offsetParent.getBoundingClientRect():{left:0,top:0}}
+function M(k){let e=E(k);if(!e)return null;let r=e.getBoundingClientRect(),p=PR(e);return{x:r.left-p.left,y:r.top-p.top,w:r.width,h:r.height}}
+function Q(k){if(!S[k])S[k]=M(k);return S[k]}
+function A(k){
+ let e=E(k),v=S[k];if(!e||!v)return;
  e.style.setProperty('position','absolute','important');
- e.style.setProperty('left',v.x+'px','important');
- e.style.setProperty('top',v.y+'px','important');
- e.style.setProperty('width',v.w+'px','important');
- e.style.setProperty('height',v.h+'px','important');
+ e.style.setProperty('left',v.x+'px','important');e.style.setProperty('top',v.y+'px','important');
+ e.style.setProperty('width',v.w+'px','important');e.style.setProperty('height',v.h+'px','important');
  e.style.setProperty('margin','0','important');
  if(k==='board')e.style.setProperty('aspect-ratio','auto','important');
+
+ /* FIX FONDAMENTALE: quando si ridimensiona il contenitore dei tasti,
+    anche i 3 tasti veri devono seguire il contenitore. */
+ if(k==='menu'){
+   e.style.setProperty('display','grid','important');
+   e.style.setProperty('grid-template-columns','repeat(3,minmax(0,1fr))','important');
+   e.style.setProperty('gap','4px','important');
+   Array.from(e.querySelectorAll('.classifica-menu-btn')).forEach(function(b){
+     b.style.setProperty('position','relative','important');
+     b.style.setProperty('left','auto','important');b.style.setProperty('top','auto','important');
+     b.style.setProperty('width','100%','important');b.style.setProperty('height','100%','important');
+     b.style.setProperty('min-height','0','important');b.style.setProperty('margin','0','important');
+     b.style.setProperty('background-size','300% 100%','important');
+   });
+ }
 }
-function vals(){
- const b=document.getElementById('mle17vals'),v=ensure(current);
- if(b&&v)b.textContent=defs[current][0]+'  X '+Math.round(v.x)+' Y '+Math.round(v.y)+' W '+Math.round(v.w)+' H '+Math.round(v.h);
- placeHandle();
+function V(){
+ let b=document.getElementById('mle18v'),v=Q(C);if(b&&v)b.textContent=DEF[C][0]+'  X '+Math.round(v.x)+' Y '+Math.round(v.y)+' W '+Math.round(v.w)+' H '+Math.round(v.h);
+ PH();
 }
-function placeHandle(){
- if(!handle)return;
- const e=E(current);if(!e){handle.style.display='none';return}
- const r=e.getBoundingClientRect();
- handle.style.display='block';handle.style.left=r.right+'px';handle.style.top=r.bottom+'px';
+function PH(){if(!H)return;let e=E(C);if(!e)return;let r=e.getBoundingClientRect();H.style.left=r.right+'px';H.style.top=r.bottom+'px'}
+function SEL(k){C=k;let s=document.getElementById('mle18s');if(s)s.value=k;V()}
+function KEY(n){
+ for(let k of Object.keys(DEF)){let e=E(k);if(e&&(n===e||e.contains(n)))return k}
+ return null
 }
-function select(k){
- current=k;document.getElementById('mle17sel').value=k;vals();
+function DOWN(ev){
+ if(!document.body.classList.contains('mle18on'))return;
+ let k=KEY(ev.target);if(!k)return;
+ /* se clicco un tasto, trascino l'intero gruppo, non il singolo bottone */
+ ev.preventDefault();ev.stopPropagation();SEL(k);
+ let v=Q(k);drag={kind:'move',k,id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,x:v.x,y:v.y};
 }
-function targetKey(node){
- for(const k of Object.keys(defs)){const e=E(k);if(e&&(node===e||e.contains(node)))return k}
- return null;
-}
-function down(ev){
- if(!document.body.classList.contains('mle17-on'))return;
- const k=targetKey(ev.target);if(!k)return;
- ev.preventDefault();ev.stopPropagation();select(k);
- const v=ensure(k);
- drag={kind:'move',k,id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,x:v.x,y:v.y};
- ev.target.setPointerCapture?.(ev.pointerId);
-}
-function move(ev){
- if(!drag||drag.id!==ev.pointerId)return;
- ev.preventDefault();
- const v=ensure(drag.k),dx=ev.clientX-drag.sx,dy=ev.clientY-drag.sy;
+function MOVE(ev){
+ if(!drag||drag.id!==ev.pointerId)return;ev.preventDefault();
+ let v=Q(drag.k),dx=ev.clientX-drag.sx,dy=ev.clientY-drag.sy;
  if(drag.kind==='move'){v.x=drag.x+dx;v.y=drag.y+dy}
- else{v.w=Math.max(30,drag.w+dx);v.h=Math.max(30,drag.h+dy)}
- apply(drag.k);vals();
+ else{v.w=Math.max(60,drag.w+dx);v.h=Math.max(25,drag.h+dy)}
+ A(drag.k);V()
 }
-function up(ev){if(drag&&drag.id===ev.pointerId)drag=null}
-function build(){
- if(document.getElementById('mle17'))return;
- const p=document.createElement('div');p.id='mle17';
- p.innerHTML='<div class="head"><div class="title">DRAG MOBILE</div><button id="mle17close">−</button></div>'+
- '<div class="body"><select id="mle17sel"><option value="menu">TASTI CLASSIFICA</option><option value="board" selected>LAVAGNA</option><option value="data">DATI CLASSIFICA</option></select>'+
- '<div class="vals" id="mle17vals"></div><div class="actions"><button id="mle17save">SALVA</button><button id="mle17reset">RESET</button></div></div>';
- document.body.appendChild(p);
- handle=document.createElement('div');handle.className='mle17-handle';handle.title='Trascina per ridimensionare';document.body.appendChild(handle);
+function UP(ev){if(drag&&drag.id===ev.pointerId)drag=null}
 
- document.body.classList.add('mle17-on');
- p.querySelector('#mle17close').onclick=function(){p.classList.toggle('closed');this.textContent=p.classList.contains('closed')?'+':'−'};
- p.querySelector('#mle17sel').onchange=function(){select(this.value)};
- p.querySelector('#mle17save').onclick=function(){localStorage.setItem(KEY,JSON.stringify(state));vals()};
- p.querySelector('#mle17reset').onclick=function(){localStorage.removeItem(KEY);location.reload()};
-
- document.querySelector('#page-classifica')?.addEventListener('pointerdown',down,true);
- window.addEventListener('pointermove',move,{passive:false});
- window.addEventListener('pointerup',up);
- handle.addEventListener('pointerdown',function(ev){
-   ev.preventDefault();ev.stopPropagation();
-   const v=ensure(current);
-   drag={kind:'resize',k:current,id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,w:v.w,h:v.h};
-   handle.setPointerCapture?.(ev.pointerId);
- });
- window.addEventListener('scroll',placeHandle,{passive:true});
- window.addEventListener('resize',placeHandle);
- Object.keys(defs).forEach(k=>{if(state[k])apply(k)});
- vals();
+function B(){
+ if(document.getElementById('mle18'))return;
+ let p=document.createElement('div');p.id='mle18';
+ p.innerHTML='<div class="h"><div class="t">DRAG MOBILE</div><button id="mle18c">−</button></div><div class="b"><select id="mle18s"><option value="menu">TASTI CLASSIFICA</option><option value="board">LAVAGNA</option><option value="data">DATI CLASSIFICA</option></select><div class="v" id="mle18v"></div><div class="a"><button id="mle18save">SALVA</button><button id="mle18reset">RESET</button></div></div>';
+ document.body.appendChild(p);H=document.createElement('div');H.className='mle18handle';document.body.appendChild(H);document.body.classList.add('mle18on');
+ p.querySelector('#mle18c').onclick=function(){p.classList.toggle('c');this.textContent=p.classList.contains('c')?'+':'−'};
+ p.querySelector('#mle18s').onchange=function(){SEL(this.value)};
+ p.querySelector('#mle18save').onclick=function(){localStorage.setItem(K,JSON.stringify(S))};
+ p.querySelector('#mle18reset').onclick=function(){localStorage.removeItem(K);location.reload()};
+ document.querySelector('#page-classifica')?.addEventListener('pointerdown',DOWN,true);
+ window.addEventListener('pointermove',MOVE,{passive:false});window.addEventListener('pointerup',UP);
+ H.addEventListener('pointerdown',function(ev){ev.preventDefault();ev.stopPropagation();let v=Q(C);drag={kind:'resize',k:C,id:ev.pointerId,sx:ev.clientX,sy:ev.clientY,w:v.w,h:v.h}});
+ window.addEventListener('scroll',PH,{passive:true});window.addEventListener('resize',PH);
+ Object.keys(DEF).forEach(k=>{if(S[k])A(k)});V()
 }
-if(matchMedia('(max-width:700px)').matches){
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build,{once:true});else build();
-}
+if(matchMedia('(max-width:700px)').matches){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',B,{once:true});else B()}
 })();
 </script>
 
