@@ -3480,6 +3480,53 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="classifica-mobile-righe-grandi-v4">
+/* CLASSIFICA MOBILE V4 — sfrutta lo spazio verticale: righe e testi più grandi */
+@media (max-width:700px){
+  #page-classifica .classifica-board{
+    aspect-ratio:0.96/1!important;
+    width:100%!important;
+    max-width:700px!important;
+    background-size:100% 100%!important;
+  }
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{
+    top:38.3%!important;
+    height:50.4%!important;
+    font-size:clamp(10px,3.15vw,15px)!important;
+    row-gap:0!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-row{
+    min-height:0!important;
+    height:100%!important;
+    align-items:center!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-logo img{
+    height:clamp(19px,5.6vw,31px)!important;
+  }
+  #page-classifica .classifica-chalk-data .chalk-team{
+    font-size:1em!important;
+    line-height:1!important;
+    padding-left:2%!important;
+  }
+  #page-classifica .classifica-board #classifica-special-data,
+  #page-classifica #classifica-special-data{
+    height:48.3%!important;
+    font-size:clamp(11px,3.35vw,16px)!important;
+  }
+  #page-classifica #classifica-special-data .chalk-row{
+    min-height:0!important;
+    height:100%!important;
+    align-items:center!important;
+  }
+}
+@media (max-width:390px){
+  #page-classifica .classifica-board #classifica-chalk-data,
+  #page-classifica #classifica-chalk-data{font-size:clamp(9.5px,3vw,12px)!important;}
+}
+</style>
+
 </head>
 <body>
 
