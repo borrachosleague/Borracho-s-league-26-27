@@ -3631,6 +3631,25 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-special-mobile-editor-v31">
+@media(max-width:700px){
+#special-mobile-editor{
+display:block!important;position:fixed!important;right:6px!important;top:75px!important;
+width:174px!important;padding:8px!important;z-index:2147483647!important;
+background:#080808!important;border:3px solid #f2b900!important;border-radius:8px!important;
+color:white!important;font:700 11px Arial!important;box-sizing:border-box!important;
+visibility:visible!important;opacity:1!important}
+#special-mobile-editor .tit{color:#ffd84c;text-align:center;font-weight:900;margin-bottom:6px}
+#special-mobile-editor .grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:4px!important}
+#special-mobile-editor button{height:30px!important;background:#202020!important;color:white!important;
+border:1px solid #8d7626!important;border-radius:4px!important;font-weight:900!important}
+#special-mobile-editor .blank{visibility:hidden}.wideed{grid-column:1/4!important}
+#special-mobile-editor-readout{text-align:center;margin-top:6px;font-size:10px}
+}
+@media(min-width:701px){#special-mobile-editor{display:none!important}}
+</style>
+
 </head>
 <body>
 
@@ -3697,6 +3716,19 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <!-- CLASSIFICA -->
 <div id="page-classifica" class="page">
+
+<div id="special-mobile-editor">
+ <div class="tit">EDITOR DATI F1 / BR</div>
+ <div class="grid">
+  <span class="blank"></span><button data-sped="up">▲</button><span class="blank"></span>
+  <button data-sped="left">◀</button><button data-sped="down">▼</button><button data-sped="right">▶</button>
+  <button data-sped="narrow">W−</button><button data-sped="short">H−</button><button data-sped="wide">W+</button>
+  <span class="blank"></span><button data-sped="tall">H+</button><span class="blank"></span>
+  <button class="wideed" data-sped="reset">RESET</button>
+ </div>
+ <div id="special-mobile-editor-readout">X 52 Y 259 W 383 H 335</div>
+</div>
+
     <input type="hidden" id="tipo-classifica" value="classifica">
     <div class="classifica-layout">
         <div class="classifica-menu-board" aria-hidden="true"></div>
@@ -5361,28 +5393,7 @@ caricaDatiBorrachos()
 
 
 
-<style id="borrachos-special-mobile-editor-v30">
-@media(max-width:700px){
-  #special-mobile-editor{
-    position:fixed;right:8px;top:92px;z-index:99999;
-    width:168px;padding:8px;
-    background:rgba(5,10,10,.94);border:2px solid #f0b51a;
-    border-radius:8px;color:#fff;font:700 11px Arial,sans-serif;
-    box-shadow:0 3px 12px rgba(0,0,0,.55);
-  }
-  #special-mobile-editor .ed-title{text-align:center;color:#ffd84c;margin-bottom:6px;font-size:12px}
-  #special-mobile-editor .ed-grid{display:grid;grid-template-columns:28px 1fr 28px;gap:4px;align-items:center}
-  #special-mobile-editor button{
-    min-height:28px;padding:2px;border:1px solid #8c762b;border-radius:4px;
-    background:#171717;color:#fff;font-weight:900;cursor:pointer;
-  }
-  #special-mobile-editor .wide{grid-column:1/4}
-  #special-mobile-editor .ed-readout{
-    margin-top:6px;text-align:center;color:#ddd;font-size:10px;line-height:1.35;
-  }
-}
-@media(min-width:701px){#special-mobile-editor{display:none!important}}
-</style>
+
 
 <div id="special-mobile-editor" style="display:none">
   <div class="ed-title">EDITOR DATI F1 / BR</div>
@@ -5396,70 +5407,35 @@ caricaDatiBorrachos()
   <div class="ed-readout" id="special-mobile-editor-readout"></div>
 </div>
 
-<script id="borrachos-special-mobile-editor-js">
+
+
+
+<script id="borrachos-special-mobile-editor-js-v31">
 (function(){
-  const KEY='borrachos_special_mobile_editor_v30';
-  const DEF={x:52,y:259,w:383,h:335};
-
-  function target(){return document.getElementById('classifica-special-data');}
-  function box(){return document.getElementById('special-mobile-editor');}
-  function activeSpecial(){
-    const t=document.getElementById('tipo-classifica');
-    return window.innerWidth<=700 && t && t.value!=='classifica';
-  }
-  function load(){
-    try{return Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'))}
-    catch(e){return Object.assign({},DEF)}
-  }
-  let s=load();
-
-  function apply(){
-    const el=target(), b=box();
-    if(!el||!b)return;
-    b.style.display=activeSpecial()?'block':'none';
-    if(!activeSpecial())return;
-
-    el.style.setProperty('left',s.x+'px','important');
-    el.style.setProperty('top',s.y+'px','important');
-    el.style.setProperty('width',s.w+'px','important');
-    el.style.setProperty('height',s.h+'px','important');
-    el.style.setProperty('grid-template-rows','repeat(10,'+(s.h/10)+'px)','important');
-
-    el.querySelectorAll('.chalk-row-speciale').forEach(r=>{
-      r.style.setProperty('height',(s.h/10)+'px','important');
-      r.style.setProperty('min-height',(s.h/10)+'px','important');
-      r.querySelectorAll('.chalk-logo,.chalk-team,.chalk-pt').forEach(c=>{
-        c.style.setProperty('height',(s.h/10)+'px','important');
-      });
-    });
-
-    const ro=document.getElementById('special-mobile-editor-readout');
-    if(ro) ro.textContent='X '+s.x+'  Y '+s.y+'  W '+s.w+'  H '+s.h+' | Riga '+(s.h/10).toFixed(1);
-  }
-  function save(){localStorage.setItem(KEY,JSON.stringify(s));apply()}
-
-  document.addEventListener('click',function(e){
-    const a=e.target && e.target.getAttribute('data-act');
-    if(!a)return;
-    e.preventDefault();
-    if(a==='up')s.y-=1;
-    if(a==='down')s.y+=1;
-    if(a==='left')s.x-=1;
-    if(a==='right')s.x+=1;
-    if(a==='narrow')s.w-=1;
-    if(a==='wide')s.w+=1;
-    if(a==='short')s.h-=1;
-    if(a==='tall')s.h+=1;
-    if(a==='reset')s=Object.assign({},DEF);
-    save();
-  });
-
-  const tipo=document.getElementById('tipo-classifica');
-  if(tipo) tipo.addEventListener('change',()=>setTimeout(apply,0));
-  window.addEventListener('resize',apply);
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,300));
-  setTimeout(apply,700);
-  setTimeout(apply,1500);
+var K='borrachos_special_mobile_editor_v31',D={x:52,y:259,w:383,h:335},s;
+try{s=Object.assign({},D,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){s=Object.assign({},D)}
+function A(){
+ var e=document.getElementById('classifica-special-data'); if(!e)return;
+ var r=s.h/10;
+ e.style.setProperty('left',s.x+'px','important');e.style.setProperty('top',s.y+'px','important');
+ e.style.setProperty('width',s.w+'px','important');e.style.setProperty('height',s.h+'px','important');
+ e.style.setProperty('grid-template-rows','repeat(10,'+r+'px)','important');
+ e.querySelectorAll('.chalk-row-speciale').forEach(function(q){
+  q.style.setProperty('height',r+'px','important');q.style.setProperty('min-height',r+'px','important');
+  q.querySelectorAll('.chalk-logo,.chalk-team,.chalk-pt').forEach(function(c){c.style.setProperty('height',r+'px','important')});
+ });
+ var o=document.getElementById('special-mobile-editor-readout');
+ if(o)o.textContent='X '+s.x+' Y '+s.y+' W '+s.w+' H '+s.h+' | riga '+r.toFixed(1);
+}
+document.addEventListener('click',function(ev){
+ var a=ev.target&&ev.target.getAttribute('data-sped');if(!a)return;
+ ev.preventDefault();ev.stopPropagation();
+ if(a==='up')s.y--;else if(a==='down')s.y++;else if(a==='left')s.x--;else if(a==='right')s.x++;
+ else if(a==='narrow')s.w--;else if(a==='wide')s.w++;else if(a==='short')s.h--;else if(a==='tall')s.h++;
+ else if(a==='reset')s=Object.assign({},D);
+ localStorage.setItem(K,JSON.stringify(s));A();
+},true);
+setTimeout(A,100);setTimeout(A,600);setTimeout(A,1500);
 })();
 </script>
 
