@@ -4010,6 +4010,103 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-statistiche-mobile-v41">
+@media(max-width:700px){
+  /* Porta la tabella Giocatori il più possibile verso sinistra.
+     I controlli restano larghi 150px; la seconda colonna parte subito dopo. */
+  #page-statistiche #sub-giocatori .giocatori-layout{
+    grid-template-columns:150px minmax(0,1fr)!important;
+    column-gap:0!important;
+  }
+  #page-statistiche #sub-giocatori .giocatori-controls{
+    width:150px!important;
+    max-width:150px!important;
+    margin:0!important;
+    padding-right:0!important;
+  }
+  #page-statistiche #sub-giocatori .table-container{
+    margin-left:0!important;
+    transform:translateX(-1px)!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-statistiche-mobile-scroll-v42">
+@media(max-width:700px){
+  /* Solo la tabella giocatori scorre verticalmente con dito/touch.
+     La scrollbar resta nascosta. */
+  #page-statistiche #sub-giocatori .table-container{
+    height:650px!important;
+    max-height:650px!important;
+    overflow-y:auto!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+    -ms-overflow-style:none!important;
+    touch-action:pan-x pan-y!important;
+  }
+  #page-statistiche #sub-giocatori .table-container::-webkit-scrollbar{
+    width:0!important;
+    height:0!important;
+    display:none!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-statistiche-mobile-fit-v43">
+@media(max-width:700px){
+  /* Niente scroll orizzontale: la tabella deve stare tutta nello spazio
+     disponibile a destra dei controlli. Rimane solo lo scroll verticale touch. */
+  #page-statistiche #sub-giocatori .table-container{
+    width:calc(100vw - 150px)!important;
+    max-width:calc(100vw - 150px)!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    box-sizing:border-box!important;
+  }
+
+  #page-statistiche #sub-giocatori #tabella-giocatori{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    table-layout:fixed!important;
+  }
+
+  #page-statistiche #sub-giocatori #tabella-giocatori th,
+  #page-statistiche #sub-giocatori #tabella-giocatori td{
+    padding-left:2px!important;
+    padding-right:2px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* POS | LOGO | GIOCATORE | SQUADRA | VALORE */
+  #page-statistiche #tabella-giocatori th:nth-child(1),
+  #page-statistiche #tabella-giocatori td:nth-child(1){width:10%!important;}
+  #page-statistiche #tabella-giocatori th:nth-child(2),
+  #page-statistiche #tabella-giocatori td:nth-child(2){width:12%!important;}
+  #page-statistiche #tabella-giocatori th:nth-child(3),
+  #page-statistiche #tabella-giocatori td:nth-child(3){width:31%!important;}
+  #page-statistiche #tabella-giocatori th:nth-child(4),
+  #page-statistiche #tabella-giocatori td:nth-child(4){width:31%!important;}
+  #page-statistiche #tabella-giocatori th:nth-child(5),
+  #page-statistiche #tabella-giocatori td:nth-child(5){width:16%!important;}
+
+  #page-statistiche #tabella-giocatori{
+    font-size:10px!important;
+  }
+  #page-statistiche #tabella-giocatori .logo-cell img{
+    max-width:22px!important;
+    max-height:22px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
