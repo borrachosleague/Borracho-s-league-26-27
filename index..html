@@ -3345,31 +3345,29 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <meta name="borrachos-mobile-build-v22" content="editor-data-active-view">
 
-
-
-<meta name="borrachos-mobile-build-v23" content="classifica-data-fixed-logos-shifted">
-
-<style id="borrachos-v24-classifica-mobile">
+<style id="borrachos-v23-classifica-mobile">
 @media (max-width:700px){
  #page-classifica #classifica-chalk-data{
-   position:absolute!important;left:52px!important;top:259px!important;
-   width:383px!important;height:335px!important;margin:0!important;
+  position:absolute!important;left:52px!important;top:259px!important;
+  width:383px!important;height:335px!important;margin:0!important;
+  outline:none!important;cursor:default!important;touch-action:auto!important;
  }
- /* logo + nome corto devono stare compatti nella stessa zona */
+ #page-classifica #classifica-chalk-data .classifica-row{
+  grid-template-columns:34px minmax(104px,1fr) 24px 24px 24px 24px 29px 29px 30px 34px!important;
+  column-gap:0!important;
+ }
+ #page-classifica #classifica-chalk-data .classifica-row > :first-child{
+  justify-self:center!important;align-self:center!important;transform:translateX(12px)!important;
+ }
+ #page-classifica #classifica-chalk-data .classifica-row > :first-child img,
  #page-classifica #classifica-chalk-data .team-logo,
  #page-classifica #classifica-chalk-data img{
-   width:27px!important;height:27px!important;max-width:27px!important;max-height:27px!important;
-   object-fit:contain!important;vertical-align:middle!important;
- }
- #page-classifica #classifica-chalk-data .mobile-short-name{
-   font-family:Arial,Helvetica,sans-serif!important;
-   font-size:14px!important;font-weight:900!important;
-   line-height:1!important;letter-spacing:.2px!important;text-transform:uppercase!important;
+  max-width:28px!important;max-height:28px!important;object-fit:contain!important;
  }
 }
 </style>
 
-<meta name="borrachos-mobile-build-v24" content="short-team-names-with-logos">
+<meta name="borrachos-mobile-build-v23" content="classifica-data-fixed-logos-shifted">
 </head>
 <body>
 
@@ -5036,50 +5034,6 @@ caricaDatiBorrachos()
 
 
 
-
-
-<script id="borrachos-v24-shortnames">
-(function(){
- const MAP=[
-  [/^TRICCHETRACHT(?:\s+FRANKFURT)?$/i,'TRCH'],
-  [/^(?:AC\s*)?A\s*SPARAGHEE?SE?$/i,'ASPA'],
-  [/^PARTIZAN\s+DEGRADO$/i,'PZDG'],
-  [/^PESCIU?CLINI$/i,'PCUL'],
-  [/^SESTO\s+ASENSIO$/i,'SEST'],
-  [/^SAN\s*GRIA$/i,'SANGR'],
-  [/^AS\s+PIPPERIA$/i,'PIPPE'],
-  [/^SHARK$/i,'SHARK'],
-  [/^FC\s+INTERNAZIO(?:A|AN)?NALE$/i,'FCINT'],
-  [/^ATL\.?\s*IMPROVVISATO$/i,'ATLIMP']
- ];
- function short(n){
-   n=(n||'').trim();
-   for(const [rx,s] of MAP) if(rx.test(n)) return s;
-   return null;
- }
- function apply(){
-   if(!matchMedia('(max-width:700px)').matches) return;
-   const root=document.getElementById('classifica-chalk-data');
-   if(!root) return;
-   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-   const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
-   nodes.forEach(t=>{
-     const n=(t.nodeValue||'').trim(), s=short(n);
-     if(s){
-       if(t.parentElement && !t.parentElement.dataset.fullName) t.parentElement.dataset.fullName=n;
-       t.nodeValue=t.nodeValue.replace(n,s);
-       if(t.parentElement) t.parentElement.classList.add('mobile-short-name');
-     }
-   });
- }
- function start(){
-   const root=document.getElementById('classifica-chalk-data');
-   if(root) new MutationObserver(apply).observe(root,{childList:true,subtree:true,characterData:true});
-   apply(); setTimeout(apply,300); setTimeout(apply,1000);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-})();
-</script>
 
 </body>
 </html>
