@@ -4798,7 +4798,17 @@ function updateClassifica() {
             '<span class="chalk-logo"><img loading="eager" decoding="async" src="' + logoUrl(sq.nome) + '" onerror="this.style.display=\'none\'"></span>' +
             '<span class="chalk-team">' + sq.nome + '</span>' +
             '<span class="chalk-pt">' + valore + '</span>';
-        special.appendChild(row);
+        /* Posizionamento mobile F1/BR applicato direttamente agli elementi:
+       evita che vecchie regole CSS sovrapposte annullino le regolazioni. */
+    var teamEl = row.querySelector('.chalk-team');
+    var ptEl = row.querySelector('.chalk-pt');
+    if (teamEl) {
+        teamEl.style.setProperty('top', '5px', 'important');
+    }
+    if (ptEl) {
+        ptEl.style.setProperty('left', '289px', 'important');
+    }
+    special.appendChild(row);
     });
 }
 
