@@ -4149,6 +4149,128 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-statistiche-squadre-mobile-v45">
+@media(max-width:700px){
+  /* STATISTICHE > SQUADRE: comandi sopra, classifica sotto */
+  #page-statistiche #sub-squadre .giocatori-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    gap:6px!important;
+  }
+
+  #page-statistiche #sub-squadre .giocatori-controls{
+    width:100%!important;
+    max-width:none!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    align-items:flex-start!important;
+    gap:4px 6px!important;
+    margin:0!important;
+    padding:0 4px!important;
+    box-sizing:border-box!important;
+  }
+
+  #page-statistiche #sub-squadre .stats-filter-label{
+    display:none!important;
+  }
+
+  #page-statistiche #sub-squadre #stats-categoria-btns{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+    margin:0!important;
+  }
+
+  #page-statistiche #sub-squadre #stats-categoria-btns .stats-choice-btn{
+    width:100%!important;
+    max-width:none!important;
+    min-height:28px!important;
+    margin:0!important;
+  }
+
+  #page-statistiche #sub-squadre #stats-criteri-squadre{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+    margin:0!important;
+  }
+
+  #page-statistiche #sub-squadre #stats-criteri-squadre .stats-choice-btn{
+    width:100%!important;
+    max-width:none!important;
+    min-height:28px!important;
+    margin:0!important;
+    padding:3px 4px!important;
+    font-size:11px!important;
+    line-height:1.05!important;
+  }
+
+  #page-statistiche #sub-squadre .sq-dati{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:0 4px!important;
+    box-sizing:border-box!important;
+  }
+
+  #page-statistiche #sub-squadre #titolo-statistiche-squadre{
+    display:none!important;
+  }
+
+  #page-statistiche #sub-squadre #titolo-sq{
+    margin:2px 0 4px!important;
+    text-align:center!important;
+  }
+
+  /* Due semi-tabelle affiancate, 5 squadre + 5 squadre */
+  #page-statistiche #sub-squadre .squadre-tabelle-doppie{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:5px!important;
+    width:100%!important;
+    margin:0!important;
+  }
+
+  #page-statistiche #sub-squadre .squadre-tabelle-doppie .table-container{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    margin:0!important;
+    transform:none!important;
+  }
+
+  #page-statistiche #sub-squadre #tabella-sq,
+  #page-statistiche #sub-squadre #tabella-sq-2{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    table-layout:fixed!important;
+    font-size:10px!important;
+  }
+
+  #page-statistiche #sub-squadre #tabella-sq td,
+  #page-statistiche #sub-squadre #tabella-sq-2 td{
+    padding:4px 2px!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+
+  #page-statistiche #sub-squadre #desc-sq{
+    width:100%!important;
+    max-width:100%!important;
+    margin:6px 0 0!important;
+    box-sizing:border-box!important;
+    min-height:0!important;
+    padding:8px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
