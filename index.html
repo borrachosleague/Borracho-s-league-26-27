@@ -3944,6 +3944,72 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-statistiche-mobile-v39">
+@media(max-width:700px){
+  /* Ricerca più corta */
+  #page-statistiche #sub-giocatori .ricerca-input{
+    width:150px!important;
+    max-width:150px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* I tre pulsanti Gruppo: testo bianco; inattivi blu, attivo azzurro */
+  #page-statistiche #stats-gruppo-btns .stats-choice-btn{
+    color:#fff!important;
+    background:#163f82!important;
+    border-color:#2874c8!important;
+  }
+  #page-statistiche #stats-gruppo-btns .stats-choice-btn.active{
+    color:#fff!important;
+    background:#159ee4!important;
+    border-color:#71d4ff!important;
+  }
+
+  /* Compatta il pannello sinistro e avvicina la tabella */
+  #page-statistiche #sub-giocatori .giocatori-layout{
+    display:grid!important;
+    grid-template-columns:260px minmax(0,1fr)!important;
+    column-gap:3px!important;
+    align-items:start!important;
+  }
+  #page-statistiche #sub-giocatori .giocatori-controls{
+    width:260px!important;
+    max-width:260px!important;
+    margin-right:0!important;
+    padding-right:0!important;
+  }
+  #page-statistiche #sub-giocatori .table-container{
+    margin-left:0!important;
+    transform:translateX(-2px)!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-statistiche-mobile-v40">
+@media(max-width:700px){
+  /* Tutti i tasti di scelta del pannello giocatori più corti */
+  #page-statistiche #sub-giocatori .stats-choice-row{
+    width:150px!important;
+    max-width:150px!important;
+  }
+  #page-statistiche #sub-giocatori .stats-choice-btn{
+    width:150px!important;
+    max-width:150px!important;
+    box-sizing:border-box!important;
+  }
+  #page-statistiche #stats-criteri-giocatori{
+    width:150px!important;
+    max-width:150px!important;
+  }
+  #page-statistiche #stats-criteri-giocatori .stats-choice-btn{
+    width:150px!important;
+    max-width:150px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -4066,7 +4132,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                     <option value="totali">Totali</option>
                 </select>
                 <select class="criterio-select stats-hidden-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)"></select>
-                <div class="stats-filter-label">Gruppo</div>
+                
                 <div class="stats-choice-row" id="stats-gruppo-btns">
                     <button class="stats-choice-btn active" onclick="setStatsGruppo('borracho',this)">Rosa Borracho</button>
                     <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Tutti Serie A</button>
@@ -4079,7 +4145,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                         <button class="stats-choice-btn" onclick="setStatsTipo('totali',this)">Totali</button>
                     </div>
                 </div>
-                <div class="stats-filter-label">Statistica</div>
+                
                 <div class="stats-criteria" id="stats-criteri-giocatori"></div>
             </div>
             <div class="table-container">
