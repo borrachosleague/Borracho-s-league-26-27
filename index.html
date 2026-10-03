@@ -4271,6 +4271,50 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-statistiche-squadre-unica-v46">
+@media(max-width:700px){
+  #page-statistiche #sub-squadre .squadre-tabelle-doppie{
+    display:block!important;
+    width:100%!important;
+  }
+  #page-statistiche #sub-squadre .squadre-tabelle-doppie .table-container:first-child{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+  #page-statistiche #sub-squadre .squadre-tabelle-doppie .table-container:nth-child(2){
+    display:none!important;
+  }
+  #page-statistiche #sub-squadre #tabella-sq{
+    width:100%!important;
+    max-width:100%!important;
+    table-layout:fixed!important;
+    font-size:12px!important;
+  }
+  #page-statistiche #sub-squadre #tabella-sq td{
+    padding:6px 4px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-statistiche-squadre-colori-v47">
+@media(max-width:700px){
+  /* Categoria Squadre: blu inattivo, azzurro attivo, testo sempre bianco */
+  #page-statistiche #sub-squadre #stats-categoria-btns .stats-choice-btn{
+    color:#fff!important;
+    background:#163f82!important;
+    border-color:#2874c8!important;
+  }
+  #page-statistiche #sub-squadre #stats-categoria-btns .stats-choice-btn.active{
+    color:#fff!important;
+    background:#159ee4!important;
+    border-color:#71d4ff!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6015,6 +6059,29 @@ caricaDatiBorrachos()
 })();
 </script>
 
+
+
+<script id="borrachos-statistiche-squadre-unica-js-v46">
+(function(){
+  function unisciSquadreMobile(){
+    if(!window.matchMedia('(max-width:700px)').matches) return;
+    var t1=document.querySelector('#page-statistiche #tabella-sq tbody');
+    var t2=document.querySelector('#page-statistiche #tabella-sq-2 tbody');
+    if(!t1 || !t2) return;
+    Array.from(t2.children).forEach(function(r){ t1.appendChild(r); });
+  }
+
+  var oldUpdateSquadre=window.updateSquadre;
+  if(typeof oldUpdateSquadre==='function'){
+    window.updateSquadre=function(){
+      var r=oldUpdateSquadre.apply(this,arguments);
+      unisciSquadreMobile();
+      return r;
+    };
+  }
+  window.addEventListener('load',function(){ setTimeout(unisciSquadreMobile,0); });
+})();
+</script>
 
 </body>
 </html>
