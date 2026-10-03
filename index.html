@@ -3370,6 +3370,34 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 <meta name="borrachos-mobile-build-v24" content="short-team-names-with-logos">
+
+<style id="borrachos-ultra-fresh-final">
+@font-face{
+  font-family:'Ultra Fresh';
+  src:url('Ultra Fresh - Demo.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* Font nuovo SOLO per i dati delle tre classifiche, PC + cellulare */
+#page-classifica #classifica-chalk-data,
+#page-classifica #classifica-chalk-data *,
+#page-classifica #classifica-special-data,
+#page-classifica #classifica-special-data *{
+  font-family:'Ultra Fresh', Arial, sans-serif!important;
+}
+
+/* Nomi corti mobile: leggermente più grandi */
+@media(max-width:700px){
+  #page-classifica #classifica-chalk-data .mobile-short-name{
+    font-family:'Ultra Fresh', Arial, sans-serif!important;
+    font-size:15px!important;
+    font-weight:normal!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
