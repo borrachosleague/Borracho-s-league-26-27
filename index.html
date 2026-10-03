@@ -3411,53 +3411,71 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 
-<style id="borrachos-mobile-logo-name-columns-v26">
+
+
+
+<style id="borrachos-mobile-logo-name-columns-v27">
 @media(max-width:700px){
 
-  /* Le 10 colonne sono:
-     LOGO | NOME | G | V | N | P | GF | GS | DR | PT */
-  #page-classifica #classifica-chalk-data .classifica-row{
+  /*
+    Area dati invariata.
+    I primi 28px restano LIBERI per non coprire i numeri 1-10
+    già stampati sulla lavagna.
+    Poi: LOGO | NOME | G | V | N | P | GF | GS | DR | PT
+  */
+  #page-classifica #classifica-chalk-data .chalk-row{
     display:grid!important;
-    grid-template-columns:32px minmax(116px,1fr) 22px 22px 22px 22px 27px 27px 29px 31px!important;
+    grid-template-columns:62px 99px repeat(8,27.75px)!important;
     column-gap:0!important;
     align-items:center!important;
+    width:383px!important;
   }
 
-  /* Prima colonna: solo logo, centrato */
-  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(1){
-    justify-self:center!important;
-    text-align:center!important;
-    transform:none!important;
-    width:32px!important;
+  /* LOGO: usa gli ultimi 34px della prima colonna.
+     I primi 28px rimangono vuoti sopra i numeri ordinali. */
+  #page-classifica #classifica-chalk-data .chalk-logo{
+    width:62px!important;
+    padding-left:28px!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    overflow:visible!important;
   }
 
-  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(1) img,
-  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(1) .team-logo{
-    display:block!important;
+  #page-classifica #classifica-chalk-data .chalk-logo img{
     width:27px!important;
     height:27px!important;
     max-width:27px!important;
     max-height:27px!important;
-    margin:0 auto!important;
     object-fit:contain!important;
+    margin:0!important;
   }
 
-  /* Seconda colonna: nome completo allineato a destra */
-  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(2){
-    justify-self:stretch!important;
+  /* NOME: colonna separata, tutto a DESTRA */
+  #page-classifica #classifica-chalk-data .chalk-team{
+    width:99px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
     text-align:right!important;
-    padding-right:5px!important;
+    padding:0 5px 0 0!important;
+    box-sizing:border-box!important;
     white-space:nowrap!important;
-    overflow:visible!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
     font-family:'Ultra Fresh',Arial,sans-serif!important;
-    font-size:13px!important;
+    font-size:12px!important;
     line-height:1!important;
   }
 
-  /* Tutte le colonne numeriche restano centrate */
-  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(n+3){
-    justify-self:center!important;
+  /* Dati numerici centrati nelle rispettive colonne */
+  #page-classifica #classifica-chalk-data .chalk-row > span:nth-child(n+3){
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
     text-align:center!important;
+    padding:0!important;
   }
 }
 </style>
