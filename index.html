@@ -5125,8 +5125,8 @@ caricaDatiBorrachos()
 
 
 
+
 <style id="borrachos-team-name-dot-fallback">
-/* Nei nomi squadra Ultra Fresh resta attivo; solo il punto usa Arial */
 #page-classifica .chalk-team .ultra-dot-fallback,
 #page-classifica .mobile-short-name .ultra-dot-fallback{
   font-family:Arial,Helvetica,sans-serif!important;
@@ -5135,7 +5135,12 @@ caricaDatiBorrachos()
 </style>
 <script id="borrachos-team-name-dot-fallback-js">
 (function(){
+  let fixing=false;
+
   function fixTeamDots(){
+    if(fixing) return;
+    fixing=true;
+
     document.querySelectorAll(
       '#page-classifica .chalk-team, #page-classifica .mobile-short-name'
     ).forEach(el=>{
@@ -5144,9 +5149,12 @@ caricaDatiBorrachos()
       while(walker.nextNode()) nodes.push(walker.currentNode);
 
       nodes.forEach(node=>{
+        if(node.parentElement && node.parentElement.classList.contains('ultra-dot-fallback')) return;
         if(!node.nodeValue || !node.nodeValue.includes('.')) return;
+
         const parts=node.nodeValue.split('.');
         const frag=document.createDocumentFragment();
+
         parts.forEach((part,i)=>{
           if(part) frag.appendChild(document.createTextNode(part));
           if(i<parts.length-1){
@@ -5159,15 +5167,34 @@ caricaDatiBorrachos()
         node.replaceWith(frag);
       });
     });
+
+    fixing=false;
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{
+  function startDotFix(){
     fixTeamDots();
     const root=document.querySelector('#page-classifica');
-    if(root) new MutationObserver(fixTeamDots).observe(root,{childList:true,subtree:true});
-  });
+    if(root){
+      new MutationObserver(function(mutations){
+        const needsFix=mutations.some(m=>
+          Array.from(m.addedNodes).some(n=>
+            n.nodeType===Node.TEXT_NODE ||
+            (n.nodeType===Node.ELEMENT_NODE && !n.classList.contains('ultra-dot-fallback'))
+          )
+        );
+        if(needsFix) fixTeamDots();
+      }).observe(root,{childList:true,subtree:true});
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',startDotFix,{once:true});
+  }else{
+    startDotFix();
+  }
 })();
 </script>
+
 
 </body>
 </html>
