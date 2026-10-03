@@ -3410,6 +3410,58 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-mobile-logo-name-columns-v26">
+@media(max-width:700px){
+
+  /* Le 10 colonne sono:
+     LOGO | NOME | G | V | N | P | GF | GS | DR | PT */
+  #page-classifica #classifica-chalk-data .classifica-row{
+    display:grid!important;
+    grid-template-columns:32px minmax(116px,1fr) 22px 22px 22px 22px 27px 27px 29px 31px!important;
+    column-gap:0!important;
+    align-items:center!important;
+  }
+
+  /* Prima colonna: solo logo, centrato */
+  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(1){
+    justify-self:center!important;
+    text-align:center!important;
+    transform:none!important;
+    width:32px!important;
+  }
+
+  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(1) img,
+  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(1) .team-logo{
+    display:block!important;
+    width:27px!important;
+    height:27px!important;
+    max-width:27px!important;
+    max-height:27px!important;
+    margin:0 auto!important;
+    object-fit:contain!important;
+  }
+
+  /* Seconda colonna: nome completo allineato a destra */
+  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(2){
+    justify-self:stretch!important;
+    text-align:right!important;
+    padding-right:5px!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    font-family:'Ultra Fresh',Arial,sans-serif!important;
+    font-size:13px!important;
+    line-height:1!important;
+  }
+
+  /* Tutte le colonne numeriche restano centrate */
+  #page-classifica #classifica-chalk-data .classifica-row > :nth-child(n+3){
+    justify-self:center!important;
+    text-align:center!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
