@@ -3866,7 +3866,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
   #page-classifica #classifica-special-data .chalk-row-speciale .chalk-logo{
     position:absolute!important;
-    left:24px!important;
+    left:34px!important;
     top:0!important;
     width:34px!important;
     height:34.2px!important;
@@ -3890,7 +3890,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
   #page-classifica #classifica-special-data .chalk-row-speciale .chalk-team{
     position:absolute!important;
-    left:62px!important;
+    left:72px!important;
     top:5px!important;
     width:184px!important;
     height:34.2px!important;
@@ -4802,7 +4802,12 @@ function updateClassifica() {
        evita che vecchie regole CSS sovrapposte annullino le regolazioni. */
     var teamEl = row.querySelector('.chalk-team');
     var ptEl = row.querySelector('.chalk-pt');
+    var logoEl = row.querySelector('.chalk-logo');
+    if (logoEl) {
+        logoEl.style.setProperty('left', '34px', 'important');
+    }
     if (teamEl) {
+        teamEl.style.setProperty('left', '72px', 'important');
         teamEl.style.setProperty('top', '5px', 'important');
     }
     if (ptEl) {
