@@ -3867,7 +3867,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-classifica #classifica-special-data .chalk-row-speciale .chalk-logo{
     position:absolute!important;
     left:34px!important;
-    top:0!important;
+    top:5px!important;
     width:34px!important;
     height:34.2px!important;
     display:flex!important;
@@ -3891,7 +3891,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-classifica #classifica-special-data .chalk-row-speciale .chalk-team{
     position:absolute!important;
     left:72px!important;
-    top:5px!important;
+    top:10px!important;
     width:184px!important;
     height:34.2px!important;
     display:flex!important;
@@ -4805,10 +4805,11 @@ function updateClassifica() {
     var logoEl = row.querySelector('.chalk-logo');
     if (logoEl) {
         logoEl.style.setProperty('left', '34px', 'important');
+        logoEl.style.setProperty('top', '5px', 'important');
     }
     if (teamEl) {
         teamEl.style.setProperty('left', '72px', 'important');
-        teamEl.style.setProperty('top', '5px', 'important');
+        teamEl.style.setProperty('top', '10px', 'important');
     }
     if (ptEl) {
         ptEl.style.setProperty('left', '289px', 'important');
