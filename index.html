@@ -3751,6 +3751,106 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-special-mobile-final-v35">
+@media(max-width:700px){
+  /* F1 / Battle Royale: stessa geometria approvata, rifinitura interna */
+  #page-classifica #classifica-special-data .chalk-row,
+  #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale{
+    grid-template-columns:24px 34px 204px 60px!important;
+    align-items:center!important;
+  }
+
+  /* Logo perfettamente centrato sulla riga */
+  #page-classifica #classifica-special-data .chalk-logo{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:34.2px!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  #page-classifica #classifica-special-data .chalk-logo img{
+    display:block!important;
+    margin:auto!important;
+  }
+
+  /* Nome sulla stessa linea verticale del punteggio */
+  #page-classifica #classifica-special-data .chalk-team{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    height:34.2px!important;
+    padding:0 0 0 4px!important;
+    margin:0!important;
+    line-height:34.2px!important;
+    transform:none!important;
+  }
+
+  /* Punti riportati dentro e centrati nella loro colonna */
+  #page-classifica #classifica-special-data .chalk-pt{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:34.2px!important;
+    padding:0!important;
+    margin:0!important;
+    text-align:center!important;
+    line-height:34.2px!important;
+    transform:translateX(10px)!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-special-mobile-final-v36">
+@media(max-width:700px){
+  #page-classifica #classifica-special-data .chalk-row,
+  #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale{
+    grid-template-columns:24px 34px 184px 80px!important;
+    align-items:center!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-logo{
+    grid-column:2!important;
+    width:34px!important;
+    height:34.2px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-team{
+    grid-column:3!important;
+    width:184px!important;
+    height:34.2px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    padding:0 0 0 5px!important;
+    margin:0!important;
+    line-height:1!important;
+    transform:translateY(1px)!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-pt{
+    grid-column:4!important;
+    width:80px!important;
+    height:34.2px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important;
+    text-align:center!important;
+    line-height:1!important;
+    transform:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
