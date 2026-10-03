@@ -3635,50 +3635,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 
 
-<style id="borrachos-special-drag-editor-v32">
-@media(max-width:700px){
-  #classifica-special-data.drag-edit-active{
-    display:grid!important;
-    outline:3px dashed #ffd400!important;
-    outline-offset:2px!important;
-    background:rgba(255,212,0,.06)!important;
-    cursor:move!important;
-    touch-action:none!important;
-    overflow:visible!important;
-    z-index:9999!important;
-  }
-  #classifica-special-data.drag-edit-active::after{
-    content:"";
-    position:absolute!important;
-    right:-8px!important;
-    bottom:-8px!important;
-    width:20px!important;
-    height:20px!important;
-    border:2px solid #111!important;
-    background:#ffd400!important;
-    box-sizing:border-box!important;
-    cursor:nwse-resize!important;
-    z-index:10001!important;
-  }
-  #special-drag-editor-label{
-    display:block!important;
-    position:fixed!important;
-    left:8px!important;
-    top:76px!important;
-    z-index:2147483647!important;
-    padding:6px 9px!important;
-    background:#090909!important;
-    border:2px solid #ffd400!important;
-    border-radius:6px!important;
-    color:#fff!important;
-    font:900 11px Arial,sans-serif!important;
-    pointer-events:none!important;
-  }
-}
-@media(min-width:701px){
-  #special-drag-editor-label{display:none!important}
-}
-</style>
+
 
 
 <style id="borrachos-special-mobile-alignment-v33">
@@ -3721,6 +3678,75 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     justify-content:center!important;
     text-align:center!important;
     padding:0!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-special-mobile-final-v34">
+@media(max-width:700px){
+  #page-classifica .classifica-board[data-classifica-view="f1"] #classifica-special-data,
+  #page-classifica .classifica-board[data-classifica-view="br"] #classifica-special-data{
+    left:84px!important;
+    top:258px!important;
+    width:322px!important;
+    height:342px!important;
+    grid-template-rows:repeat(10,34.2px)!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-row,
+  #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale{
+    width:322px!important;
+    height:34.2px!important;
+    min-height:34.2px!important;
+    /* spazio POS artwork | logo | squadra | punti */
+    grid-template-columns:24px 34px 204px 60px!important;
+    align-items:center!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-logo{
+    grid-column:2!important;
+    width:34px!important;
+    height:34.2px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  #page-classifica #classifica-special-data .chalk-logo img{
+    width:26px!important;
+    height:26px!important;
+    max-width:26px!important;
+    max-height:26px!important;
+    display:block!important;
+    margin:auto!important;
+    object-fit:contain!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-team{
+    grid-column:3!important;
+    height:34.2px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    padding:1px 6px 0 0!important;
+    margin:0!important;
+    line-height:1!important;
+    box-sizing:border-box!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-pt{
+    grid-column:4!important;
+    height:34.2px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    text-align:left!important;
+    padding:0 0 0 16px!important;
+    margin:0!important;
+    line-height:1!important;
+    box-sizing:border-box!important;
   }
 }
 </style>
@@ -5452,76 +5478,7 @@ caricaDatiBorrachos()
   }
 })();
 </script>
-<div id="special-drag-editor-label">EDITOR DRAG · trascina il riquadro · angolo giallo = ridimensiona</div>
 
-<script id="borrachos-special-drag-editor-js-v32">
-(function(){
-  var KEY='borrachos_special_drag_v32';
-  var DEF={x:52,y:259,w:383,h:335};
-  var s;
-  try{s=Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){s=Object.assign({},DEF);}
-
-  function el(){return document.getElementById('classifica-special-data');}
-  function isMobile(){return window.innerWidth<=700;}
-  function apply(){
-    var e=el(); if(!e || !isMobile()) return;
-    var rh=s.h/10;
-    e.classList.add('drag-edit-active');
-    e.style.setProperty('left',s.x+'px','important');
-    e.style.setProperty('top',s.y+'px','important');
-    e.style.setProperty('width',s.w+'px','important');
-    e.style.setProperty('height',s.h+'px','important');
-    e.style.setProperty('grid-template-rows','repeat(10,'+rh+'px)','important');
-    e.querySelectorAll('.chalk-row-speciale').forEach(function(r){
-      r.style.setProperty('height',rh+'px','important');
-      r.style.setProperty('min-height',rh+'px','important');
-      r.querySelectorAll('.chalk-logo,.chalk-team,.chalk-pt').forEach(function(c){
-        c.style.setProperty('height',rh+'px','important');
-      });
-    });
-    var lab=document.getElementById('special-drag-editor-label');
-    if(lab) lab.textContent='EDITOR DRAG  X '+Math.round(s.x)+' Y '+Math.round(s.y)+' W '+Math.round(s.w)+' H '+Math.round(s.h);
-  }
-  function save(){localStorage.setItem(KEY,JSON.stringify(s));apply();}
-
-  var mode=null,startX=0,startY=0,start={};
-
-  document.addEventListener('pointerdown',function(ev){
-    var e=el(); if(!e || !isMobile() || !e.contains(ev.target)) return;
-    var r=e.getBoundingClientRect();
-    var nearCorner=(ev.clientX >= r.right-30 && ev.clientY >= r.bottom-30);
-    mode=nearCorner?'resize':'move';
-    startX=ev.clientX; startY=ev.clientY;
-    start={x:s.x,y:s.y,w:s.w,h:s.h};
-    try{e.setPointerCapture(ev.pointerId)}catch(_){}
-    ev.preventDefault();
-  },true);
-
-  document.addEventListener('pointermove',function(ev){
-    if(!mode)return;
-    var dx=ev.clientX-startX,dy=ev.clientY-startY;
-    if(mode==='move'){
-      s.x=Math.round(start.x+dx); s.y=Math.round(start.y+dy);
-    }else{
-      s.w=Math.max(120,Math.round(start.w+dx));
-      s.h=Math.max(120,Math.round(start.h+dy));
-    }
-    apply();
-    ev.preventDefault();
-  },true);
-
-  function end(ev){
-    if(!mode)return;
-    mode=null; save();
-    ev.preventDefault();
-  }
-  document.addEventListener('pointerup',end,true);
-  document.addEventListener('pointercancel',end,true);
-
-  setTimeout(apply,250);
-  window.addEventListener('resize',apply);
-})();
-</script>
 
 </body>
 </html>
