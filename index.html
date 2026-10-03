@@ -3480,6 +3480,36 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-mobile-row-height-v28">
+@media(max-width:700px){
+  /*
+    Compattiamo leggermente SOLO in verticale.
+    Il bordo superiore del blocco dati resta fermo.
+  */
+  #page-classifica #classifica-chalk-data .chalk-row{
+    height:29px!important;
+    min-height:29px!important;
+    line-height:29px!important;
+  }
+
+  #page-classifica #classifica-chalk-data .chalk-logo,
+  #page-classifica #classifica-chalk-data .chalk-team,
+  #page-classifica #classifica-chalk-data .chalk-row > span{
+    height:29px!important;
+    min-height:29px!important;
+    line-height:29px!important;
+  }
+
+  #page-classifica #classifica-chalk-data .chalk-logo img{
+    width:26px!important;
+    height:26px!important;
+    max-width:26px!important;
+    max-height:26px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
