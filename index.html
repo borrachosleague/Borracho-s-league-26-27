@@ -3488,8 +3488,8 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     Il bordo superiore del blocco dati resta fermo.
   */
   #page-classifica #classifica-chalk-data .chalk-row{
-    height:29px!important;
-    min-height:29px!important;
+    height:33.5px!important;
+    min-height:33.5px!important;
     line-height:29px!important;
   }
 
@@ -3546,10 +3546,10 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     left:52px!important;
     top:259px!important;
     width:383px!important;
-    height:290px!important;
+    height:335px!important;
     margin:0!important;
     padding:0!important;
-    grid-template-rows:repeat(10,29px)!important;
+    grid-template-rows:repeat(10,33.5px)!important;
     overflow:visible!important;
     z-index:6!important;
     color:#f5efda!important;
@@ -3570,8 +3570,8 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     display:grid!important;
     grid-template-columns:28px 36px 244px 75px!important;
     width:383px!important;
-    height:29px!important;
-    min-height:29px!important;
+    height:33.5px!important;
+    min-height:33.5px!important;
     margin:0!important;
     padding:0!important;
     align-items:center!important;
@@ -3583,7 +3583,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     grid-column:2!important;
     display:flex!important;
     width:36px!important;
-    height:29px!important;
+    height:33.5px!important;
     align-items:center!important;
     justify-content:center!important;
     padding:0!important;
@@ -3601,7 +3601,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-classifica #classifica-special-data .chalk-team{
     grid-column:3!important;
     display:flex!important;
-    height:29px!important;
+    height:33.5px!important;
     align-items:center!important;
     justify-content:flex-end!important;
     text-align:right!important;
@@ -3617,7 +3617,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-classifica #classifica-special-data .chalk-pt{
     grid-column:4!important;
     display:flex!important;
-    height:29px!important;
+    height:33.5px!important;
     align-items:center!important;
     justify-content:center!important;
     text-align:center!important;
@@ -5359,6 +5359,109 @@ caricaDatiBorrachos()
 </script>
 
 
+
+
+<style id="borrachos-special-mobile-editor-v30">
+@media(max-width:700px){
+  #special-mobile-editor{
+    position:fixed;right:8px;top:92px;z-index:99999;
+    width:168px;padding:8px;
+    background:rgba(5,10,10,.94);border:2px solid #f0b51a;
+    border-radius:8px;color:#fff;font:700 11px Arial,sans-serif;
+    box-shadow:0 3px 12px rgba(0,0,0,.55);
+  }
+  #special-mobile-editor .ed-title{text-align:center;color:#ffd84c;margin-bottom:6px;font-size:12px}
+  #special-mobile-editor .ed-grid{display:grid;grid-template-columns:28px 1fr 28px;gap:4px;align-items:center}
+  #special-mobile-editor button{
+    min-height:28px;padding:2px;border:1px solid #8c762b;border-radius:4px;
+    background:#171717;color:#fff;font-weight:900;cursor:pointer;
+  }
+  #special-mobile-editor .wide{grid-column:1/4}
+  #special-mobile-editor .ed-readout{
+    margin-top:6px;text-align:center;color:#ddd;font-size:10px;line-height:1.35;
+  }
+}
+@media(min-width:701px){#special-mobile-editor{display:none!important}}
+</style>
+
+<div id="special-mobile-editor" style="display:none">
+  <div class="ed-title">EDITOR DATI F1 / BR</div>
+  <div class="ed-grid">
+    <span></span><button data-act="up">▲</button><span></span>
+    <button data-act="left">◀</button><button data-act="down">▼</button><button data-act="right">▶</button>
+    <button data-act="narrow">W−</button><button data-act="short">H−</button><button data-act="wide">W+</button>
+    <span></span><button data-act="tall">H+</button><span></span>
+    <button class="wide" data-act="reset">RESET</button>
+  </div>
+  <div class="ed-readout" id="special-mobile-editor-readout"></div>
+</div>
+
+<script id="borrachos-special-mobile-editor-js">
+(function(){
+  const KEY='borrachos_special_mobile_editor_v30';
+  const DEF={x:52,y:259,w:383,h:335};
+
+  function target(){return document.getElementById('classifica-special-data');}
+  function box(){return document.getElementById('special-mobile-editor');}
+  function activeSpecial(){
+    const t=document.getElementById('tipo-classifica');
+    return window.innerWidth<=700 && t && t.value!=='classifica';
+  }
+  function load(){
+    try{return Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'))}
+    catch(e){return Object.assign({},DEF)}
+  }
+  let s=load();
+
+  function apply(){
+    const el=target(), b=box();
+    if(!el||!b)return;
+    b.style.display=activeSpecial()?'block':'none';
+    if(!activeSpecial())return;
+
+    el.style.setProperty('left',s.x+'px','important');
+    el.style.setProperty('top',s.y+'px','important');
+    el.style.setProperty('width',s.w+'px','important');
+    el.style.setProperty('height',s.h+'px','important');
+    el.style.setProperty('grid-template-rows','repeat(10,'+(s.h/10)+'px)','important');
+
+    el.querySelectorAll('.chalk-row-speciale').forEach(r=>{
+      r.style.setProperty('height',(s.h/10)+'px','important');
+      r.style.setProperty('min-height',(s.h/10)+'px','important');
+      r.querySelectorAll('.chalk-logo,.chalk-team,.chalk-pt').forEach(c=>{
+        c.style.setProperty('height',(s.h/10)+'px','important');
+      });
+    });
+
+    const ro=document.getElementById('special-mobile-editor-readout');
+    if(ro) ro.textContent='X '+s.x+'  Y '+s.y+'  W '+s.w+'  H '+s.h+' | Riga '+(s.h/10).toFixed(1);
+  }
+  function save(){localStorage.setItem(KEY,JSON.stringify(s));apply()}
+
+  document.addEventListener('click',function(e){
+    const a=e.target && e.target.getAttribute('data-act');
+    if(!a)return;
+    e.preventDefault();
+    if(a==='up')s.y-=1;
+    if(a==='down')s.y+=1;
+    if(a==='left')s.x-=1;
+    if(a==='right')s.x+=1;
+    if(a==='narrow')s.w-=1;
+    if(a==='wide')s.w+=1;
+    if(a==='short')s.h-=1;
+    if(a==='tall')s.h+=1;
+    if(a==='reset')s=Object.assign({},DEF);
+    save();
+  });
+
+  const tipo=document.getElementById('tipo-classifica');
+  if(tipo) tipo.addEventListener('change',()=>setTimeout(apply,0));
+  window.addEventListener('resize',apply);
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,300));
+  setTimeout(apply,700);
+  setTimeout(apply,1500);
+})();
+</script>
 
 </body>
 </html>
