@@ -5130,48 +5130,8 @@ caricaDatiBorrachos()
 
 
 
-<script id="borrachos-v24-shortnames">
-(function(){
- const MAP=[
-  [/^TRICCHETRACHT(?:\s+FRANKFURT)?$/i,'TRCH'],
-  [/^(?:AC\s*)?A\s*SPARAGHEE?SE?$/i,'ASPA'],
-  [/^PARTIZAN\s+DEGRADO$/i,'PZDG'],
-  [/^PESCIU?CLINI$/i,'PCUL'],
-  [/^SESTO\s+ASENSIO$/i,'SEST'],
-  [/^SAN\s*GRIA$/i,'SANGR'],
-  [/^AS\s+PIPPERIA$/i,'PIPPE'],
-  [/^SHARK$/i,'SHARK'],
-  [/^FC\s+INTERNAZIO(?:A|AN)?NALE$/i,'FCINT'],
-  [/^ATL\.?\s*IMPROVVISATO$/i,'ATLIMP']
- ];
- function short(n){
-   n=(n||'').trim();
-   for(const [rx,s] of MAP) if(rx.test(n)) return s;
-   return null;
- }
- function apply(){
-   if(!matchMedia('(max-width:700px)').matches) return;
-   const root=document.getElementById('classifica-chalk-data');
-   if(!root) return;
-   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-   const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
-   nodes.forEach(t=>{
-     const n=(t.nodeValue||'').trim(), s=short(n);
-     if(s){
-       if(t.parentElement && !t.parentElement.dataset.fullName) t.parentElement.dataset.fullName=n;
-       t.nodeValue=t.nodeValue.replace(n,s);
-       if(t.parentElement) t.parentElement.classList.add('mobile-short-name');
-     }
-   });
- }
- function start(){
-   const root=document.getElementById('classifica-chalk-data');
-   if(root) new MutationObserver(apply).observe(root,{childList:true,subtree:true,characterData:true});
-   apply(); setTimeout(apply,300); setTimeout(apply,1000);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-})();
-</script>
+
+
 
 
 
@@ -5187,15 +5147,8 @@ caricaDatiBorrachos()
 </style>
 <script id="borrachos-team-name-dot-fallback-js">
 (function(){
-  let fixing=false;
-
   function fixTeamDots(){
-    if(fixing) return;
-    fixing=true;
-
-    document.querySelectorAll(
-      '#page-classifica .chalk-team, #page-classifica .mobile-short-name'
-    ).forEach(el=>{
+    document.querySelectorAll('#page-classifica .chalk-team').forEach(el=>{
       const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
       const nodes=[];
       while(walker.nextNode()) nodes.push(walker.currentNode);
@@ -5206,7 +5159,6 @@ caricaDatiBorrachos()
 
         const parts=node.nodeValue.split('.');
         const frag=document.createDocumentFragment();
-
         parts.forEach((part,i)=>{
           if(part) frag.appendChild(document.createTextNode(part));
           if(i<parts.length-1){
@@ -5219,33 +5171,23 @@ caricaDatiBorrachos()
         node.replaceWith(frag);
       });
     });
-
-    fixing=false;
   }
 
-  function startDotFix(){
+  function start(){
     fixTeamDots();
-    const root=document.querySelector('#page-classifica');
-    if(root){
-      new MutationObserver(function(mutations){
-        const needsFix=mutations.some(m=>
-          Array.from(m.addedNodes).some(n=>
-            n.nodeType===Node.TEXT_NODE ||
-            (n.nodeType===Node.ELEMENT_NODE && !n.classList.contains('ultra-dot-fallback'))
-          )
-        );
-        if(needsFix) fixTeamDots();
-      }).observe(root,{childList:true,subtree:true});
-    }
+    setTimeout(fixTeamDots,250);
+    setTimeout(fixTeamDots,800);
+    setTimeout(fixTeamDots,1600);
   }
 
   if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',startDotFix,{once:true});
+    document.addEventListener('DOMContentLoaded',start,{once:true});
   }else{
-    startDotFix();
+    start();
   }
 })();
 </script>
+
 
 
 </body>
