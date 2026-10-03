@@ -3510,6 +3510,127 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-mobile-two-boards-v29">
+@media(max-width:700px){
+
+  /* CLASSIFICA NORMALE: WebP con tutte le colonne */
+  #page-classifica .classifica-board:not([data-classifica-view]),
+  #page-classifica .classifica-board[data-classifica-view="classifica"]{
+    background-image:url('assets/borrachos/backgrounds/classifica/classifica-lavagna.webp')!important;
+    background-position:center!important;
+    background-size:100% 100%!important;
+    background-repeat:no-repeat!important;
+  }
+
+  /* FORMULA 1 + BATTLE ROYALE: WebP PC a 3 colonne */
+  #page-classifica .classifica-board[data-classifica-view="f1"],
+  #page-classifica .classifica-board[data-classifica-view="br"]{
+    background-image:url('assets/borrachos/backgrounds/classifica/classifica-3-colonne.webp')!important;
+    background-position:center!important;
+    background-size:100% 100%!important;
+    background-repeat:no-repeat!important;
+  }
+
+  /* Nelle viste speciali nascondiamo davvero la tabella Classifica */
+  #page-classifica .classifica-board[data-classifica-view="f1"] #classifica-chalk-data,
+  #page-classifica .classifica-board[data-classifica-view="br"] #classifica-chalk-data{
+    display:none!important;
+  }
+
+  /* E rendiamo visibili i DATI Formula 1 / Battle Royale */
+  #page-classifica .classifica-board[data-classifica-view="f1"] #classifica-special-data,
+  #page-classifica .classifica-board[data-classifica-view="br"] #classifica-special-data{
+    display:grid!important;
+    position:absolute!important;
+    left:52px!important;
+    top:259px!important;
+    width:383px!important;
+    height:290px!important;
+    margin:0!important;
+    padding:0!important;
+    grid-template-rows:repeat(10,29px)!important;
+    overflow:visible!important;
+    z-index:6!important;
+    color:#f5efda!important;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    line-height:1!important;
+    text-shadow:0 1px 1px #000!important;
+  }
+
+  /*
+    Il WebP speciale ha già la colonna POS disegnata.
+    Nei dati usiamo quindi:
+    spazio POS | LOGO | NOME | PUNTI
+  */
+  #page-classifica #classifica-special-data .chalk-row,
+  #page-classifica #classifica-special-data .chalk-row.chalk-row-speciale{
+    display:grid!important;
+    grid-template-columns:28px 36px 244px 75px!important;
+    width:383px!important;
+    height:29px!important;
+    min-height:29px!important;
+    margin:0!important;
+    padding:0!important;
+    align-items:center!important;
+  }
+
+  /* Il primo elemento reale è il logo: lo spostiamo nella seconda colonna,
+     lasciando libera la prima per i numeri POS stampati sul WebP. */
+  #page-classifica #classifica-special-data .chalk-logo{
+    grid-column:2!important;
+    display:flex!important;
+    width:36px!important;
+    height:29px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important;
+  }
+  #page-classifica #classifica-special-data .chalk-logo img{
+    width:26px!important;
+    height:26px!important;
+    max-width:26px!important;
+    max-height:26px!important;
+    object-fit:contain!important;
+    margin:0 auto!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-team{
+    grid-column:3!important;
+    display:flex!important;
+    height:29px!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    text-align:right!important;
+    padding-right:8px!important;
+    box-sizing:border-box!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    font-family:'Ultra Fresh',Arial,sans-serif!important;
+    font-size:13px!important;
+    font-weight:normal!important;
+  }
+
+  #page-classifica #classifica-special-data .chalk-pt{
+    grid-column:4!important;
+    display:flex!important;
+    height:29px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    padding:0!important;
+    margin:0!important;
+    color:#ffd84c!important;
+    font-family:'Trebuchet MS','Segoe UI',sans-serif!important;
+    font-size:15px!important;
+    font-weight:900!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -3584,7 +3705,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
             <button class="classifica-menu-btn" onclick="setTipoClassifica('f1', this)">Formula 1</button>
             <button class="classifica-menu-btn" onclick="setTipoClassifica('br', this)">Battle Royale</button>
         </div>
-        <div class="classifica-board">
+        <div class="classifica-board" data-classifica-view="classifica">
             <div id="classifica-chalk-data" class="classifica-chalk-data"></div>
             <div id="classifica-special-data" class="classifica-special-data"></div>
             <table id="tabella-classifica" hidden><thead></thead><tbody></tbody></table>
@@ -4331,6 +4452,7 @@ function setTipoClassifica(tipo, btn) {
 
     var board = document.querySelector('#page-classifica .classifica-board');
     if (board) {
+        board.setAttribute('data-classifica-view', tipo);
         var img = tipo === 'classifica'
             ? 'assets/borrachos/backgrounds/classifica/classifica-lavagna.webp'
             : 'assets/borrachos/backgrounds/classifica/classifica-3-colonne.webp';
