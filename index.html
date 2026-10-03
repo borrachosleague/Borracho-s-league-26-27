@@ -3371,7 +3371,13 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <meta name="borrachos-mobile-build-v24" content="short-team-names-with-logos">
 
-<style id="borrachos-ultra-fresh-final">
+
+
+
+
+
+
+<style id="borrachos-ultra-fresh-team-names-only">
 @font-face{
   font-family:'Ultra Fresh';
   src:url('Ultra Fresh - Demo.ttf') format('truetype');
@@ -3380,38 +3386,24 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   font-display:swap;
 }
 
-/* Font nuovo SOLO per i dati delle tre classifiche, PC + cellulare */
-#page-classifica #classifica-chalk-data,
-#page-classifica #classifica-chalk-data *,
-#page-classifica #classifica-special-data,
-#page-classifica #classifica-special-data *{
+/* Ultra Fresh SOLO sui nomi delle squadre - PC e cellulare */
+#page-classifica #classifica-chalk-data .chalk-team,
+#page-classifica #classifica-special-data .chalk-team,
+#page-classifica #classifica-chalk-data .mobile-short-name{
   font-family:'Ultra Fresh', Arial, sans-serif!important;
+  font-weight:normal!important;
 }
 
-/* Nomi corti mobile: leggermente più grandi */
-@media(max-width:700px){
-  #page-classifica #classifica-chalk-data .mobile-short-name{
-    font-family:'Ultra Fresh', Arial, sans-serif!important;
-    font-size:15px!important;
-    font-weight:normal!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-ultra-fresh-size-v2">
-/* Ultra Fresh più grande - Classifica PC */
+/* Tutti i numeri/dati tornano al font precedente della classifica */
 #page-classifica #classifica-chalk-data,
 #page-classifica #classifica-special-data{
-  font-size:clamp(14px,1.18vw,21px)!important;
+  font-family:'Trebuchet MS','Segoe UI',sans-serif!important;
+  font-size:clamp(11px,.92vw,17px);
+  font-weight:800;
 }
 
-/* Ultra Fresh più grande - Classifica cellulare */
+/* Sul cellulare manteniamo i nomi corti leggibili */
 @media(max-width:700px){
-  #page-classifica #classifica-chalk-data,
-  #page-classifica #classifica-special-data{
-    font-size:17px!important;
-  }
   #page-classifica #classifica-chalk-data .mobile-short-name{
     font-size:18px!important;
   }
@@ -5128,6 +5120,9 @@ caricaDatiBorrachos()
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
+
+
+
 
 </body>
 </html>
