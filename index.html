@@ -4641,6 +4641,52 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-v55">
+@media(max-width:700px){
+  /* Tabellone scelte: in basso, a fianco della porta inferiore */
+  #page-best11 .best11-controls{
+    left:5px!important;
+    top:auto!important;
+    bottom:10px!important;
+    width:70px!important;
+    z-index:30!important;
+  }
+
+  /* Panchina più pulita: niente loghi fantasquadra */
+  #page-best11 .best11-bench{
+    top:118px!important;
+    right:3px!important;
+    width:66px!important;
+    padding:4px 2px!important;
+  }
+  #page-best11 .bench-player{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:32px!important;
+    height:32px!important;
+    padding:1px 0!important;
+  }
+  #page-best11 .bench-logo{display:none!important;}
+  #page-best11 .bench-name{display:none!important;}
+  #page-best11 .bench-vote{display:none!important;}
+  #page-best11 .bench-role{
+    display:block!important;
+    width:100%!important;
+    font-size:9px!important;
+    font-weight:900!important;
+    text-align:center!important;
+  }
+
+  /* Più spazio verticale per la formazione */
+  #page-best11 #pitch-best11{
+    top:92px!important;
+    height:610px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6470,6 +6516,45 @@ caricaDatiBorrachos()
   window.addEventListener('resize',place);
   window.addEventListener('orientationchange',place);
   window.addEventListener('load',place);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-position-v55">
+(function(){
+  /* Formazione abbassata: il portiere parte davanti alla porta superiore. */
+  var layouts55={
+    '352':[[50,17],[18,31],[50,31],[82,31],[10,53],[30,48],[50,45],[70,48],[90,53],[35,72],[65,72]],
+    '442':[[50,17],[12,32],[37,32],[63,32],[88,32],[15,53],[38,48],[62,48],[85,53],[35,72],[65,72]],
+    '433':[[50,17],[12,32],[37,30],[63,30],[88,32],[22,51],[50,47],[78,51],[18,72],[50,76],[82,72]],
+    '343':[[50,17],[20,32],[50,30],[80,32],[12,52],[37,48],[63,48],[88,52],[20,72],[50,76],[80,72]]
+  };
+  function place55(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch)return;
+    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
+    var pos=layouts55[key]||layouts55['352'];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      var p=pos[i]; if(!p)return;
+      el.style.setProperty('position','absolute','important');
+      el.style.setProperty('left',p[0]+'%','important');
+      el.style.setProperty('top',p[1]+'%','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+  var old55=window.updateBest11;
+  if(typeof old55==='function'){
+    window.updateBest11=function(){
+      var r=old55.apply(this,arguments);
+      place55();
+      requestAnimationFrame(place55);
+      return r;
+    };
+  }
+  window.addEventListener('load',place55);
+  window.addEventListener('resize',place55);
+  window.addEventListener('orientationchange',place55);
 })();
 </script>
 
