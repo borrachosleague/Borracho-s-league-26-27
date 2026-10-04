@@ -4813,6 +4813,135 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-v60">
+@media(max-width:700px){
+  /* Presenze: rettangolo più grande, pallone-slider più piccolo */
+  #page-best11 .best11-presenze-mobile-center{
+    width:154px!important;
+    bottom:6px!important;
+  }
+  #page-best11 .best11-presenze-mobile-center.best11-presenze-unit{
+    transform:translateX(-50%)!important;
+    width:154px!important;
+    margin:0!important;
+  }
+  #page-best11 .best11-presenze-mobile-center .best11-presenze-control{
+    --ball-size:21px!important;
+  }
+  #page-best11 .best11-presenze-mobile-center #best-presenze-ball{
+    width:21px!important;
+    height:21px!important;
+  }
+
+  /* Panchina ancora più corta, mantenendo nome + ruolo */
+  #page-best11 .best11-bench{
+    width:78px!important;
+    padding:2px 2px!important;
+    bottom:6px!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:7.5px!important;
+    margin-bottom:1px!important;
+  }
+  #page-best11 .bench-player{
+    height:17px!important;
+    min-height:17px!important;
+    grid-template-columns:minmax(0,1fr) 16px!important;
+    gap:1px!important;
+    padding:0 1px!important;
+  }
+  #page-best11 .bench-name{
+    font-size:7px!important;
+  }
+  #page-best11 .bench-role{
+    width:16px!important;
+    font-size:6.5px!important;
+  }
+
+  /* Titolari: targhette leggermente più piccole per creare più aria */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.49)!important;
+  }
+
+  /* Ora che la panchina è compatta sfruttiamo più larghezza del campo */
+  #page-best11 #pitch-best11{
+    left:72px!important;
+    width:244px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-phone-fit-v61">
+@media(max-width:700px){
+  /* FIX TELEFONO REALE: niente altezza minima da 760px che veniva tagliata dal viewport */
+  #page-best11{
+    height:calc(100dvh - 38px)!important;
+    min-height:0!important;
+    max-height:calc(100dvh - 38px)!important;
+    overflow:hidden!important;
+  }
+  #page-best11 .best11-layout{
+    height:100%!important;
+    min-height:0!important;
+  }
+
+  /* Campo compresso in altezza in base allo spazio realmente disponibile */
+  #page-best11 #pitch-best11{
+    top:62px!important;
+    bottom:112px!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+
+  /* I tre blocchi inferiori restano SEMPRE dentro il viewport */
+  #page-best11 .best11-controls{
+    top:auto!important;
+    bottom:5px!important;
+    max-height:104px!important;
+    overflow:hidden!important;
+  }
+  #page-best11 .best11-presenze-mobile-center{
+    top:auto!important;
+    bottom:5px!important;
+  }
+  #page-best11 .best11-bench{
+    top:auto!important;
+    bottom:5px!important;
+    max-height:104px!important;
+    overflow:hidden!important;
+  }
+
+  /* Compatto solo quanto serve per far vedere interi i blocchi inferiori */
+  #page-best11 .best11-controls{
+    padding:3px!important;
+    gap:0!important;
+  }
+  #page-best11 .best11-controls .best11-label{
+    margin:1px 0!important;
+    font-size:7px!important;
+  }
+  #page-best11 .best11-controls .subnav.best11-v{
+    gap:1px!important;
+    margin:0 0 1px!important;
+  }
+  #page-best11 .best11-controls .subnav.best11-v .subnav-btn{
+    padding:2px 1px!important;
+    font-size:7.5px!important;
+    line-height:1!important;
+  }
+
+  /* Panchina ancora leggibile ma tutta visibile */
+  #page-best11 .bench-player{
+    height:15px!important;
+    min-height:15px!important;
+  }
+  #page-best11 .bench-name{font-size:6.6px!important;}
+  #page-best11 .bench-role{font-size:6px!important;}
+}
+</style>
+
 </head>
 <body>
 
@@ -4937,7 +5066,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                 <select class="criterio-select stats-hidden-select" id="criterio-giocatori" onchange="updateGiocatori(); resizeSelect(this)"></select>
                 
                 <div class="stats-choice-row" id="stats-gruppo-btns">
-                    <button class="stats-choice-btn active" onclick="setStatsGruppo('borracho',this)">Rosa Borracho</button>
+                    <button class="stats-choice-btn active" onclick="setStatsGruppo('borracho',this)">Fantasquadre</button>
                     <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Tutti Serie A</button>
                     <button class="stats-choice-btn" onclick="setStatsGruppo('svincolati',this)">Svincolati</button>
                 </div>
@@ -6721,6 +6850,46 @@ caricaDatiBorrachos()
   window.addEventListener('load',place56);
   window.addEventListener('resize',place56);
   window.addEventListener('orientationchange',place56);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-position-v60">
+(function(){
+  /* Disposizione più larga e più ariosa in tutti i moduli.
+     Nel 4-4-2 i quattro difensori sono spinti verso i bordi del campo. */
+  var layouts60={
+    '352':[[50,17],[8,31],[50,31],[92,31],[2,54],[25,48],[50,44],[75,48],[98,54],[28,73],[72,73]],
+    '442':[[50,17],[1,32],[34,32],[66,32],[99,32],[3,55],[34,48],[66,48],[97,55],[28,74],[72,74]],
+    '433':[[50,17],[1,32],[34,30],[66,30],[99,32],[12,52],[50,46],[88,52],[4,74],[50,78],[96,74]],
+    '343':[[50,17],[8,32],[50,29],[92,32],[2,53],[33,47],[67,47],[98,53],[8,74],[50,78],[92,74]]
+  };
+  function place60(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch)return;
+    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
+    var pos=layouts60[key]||layouts60['352'];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      var p=pos[i]; if(!p)return;
+      el.style.setProperty('position','absolute','important');
+      el.style.setProperty('left',p[0]+'%','important');
+      el.style.setProperty('top',p[1]+'%','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+  var old60=window.updateBest11;
+  if(typeof old60==='function'){
+    window.updateBest11=function(){
+      var r=old60.apply(this,arguments);
+      place60();
+      requestAnimationFrame(place60);
+      return r;
+    };
+  }
+  window.addEventListener('load',place60);
+  window.addEventListener('resize',place60);
+  window.addEventListener('orientationchange',place60);
 })();
 </script>
 
