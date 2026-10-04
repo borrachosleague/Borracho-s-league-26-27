@@ -4776,6 +4776,43 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-v59">
+@media(max-width:700px){
+  /* Presenze minime separata dai tasti: centrata sotto la porta inferiore */
+  #page-best11 .best11-presenze-mobile-center{
+    position:absolute!important;
+    left:50%!important;
+    bottom:8px!important;
+    width:118px!important;
+    height:auto!important;
+    margin:0!important;
+    padding:0!important;
+    transform:translateX(-50%)!important;
+    transform-origin:center bottom!important;
+    z-index:35!important;
+  }
+  #page-best11 .best11-presenze-mobile-center .best11-presenze-control{
+    width:100%!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Il blocco tasti a sinistra resta in basso, ora senza lo slider */
+  #page-best11 .best11-controls{
+    bottom:8px!important;
+  }
+
+  /* Panchina abbassata a destra della porta */
+  #page-best11 .best11-bench{
+    top:auto!important;
+    bottom:8px!important;
+    right:3px!important;
+    width:76px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -4988,13 +5025,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                 <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
             </div>
             </div>
-            <div class="best11-choice-unit best11-presenze-unit">
-            <div class="best11-presenze-control">
-                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime"><span id="best-presenze-ball" aria-hidden="true"></span>
-                <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
-                <div class="best11-presenze-info" id="best-presenze-info"></div>
-            </div>
-            </div>
+
             <div class="best11-choice-unit">
             <div class="best11-label">Modulo</div>
             <div class="subnav best11-v" id="best-modulo">
@@ -5003,6 +5034,13 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                 <button class="subnav-btn" onclick="setBestModulo('433', this)">4-3-3</button>
                 <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
             </div>
+            </div>
+        </div>
+        <div class="best11-choice-unit best11-presenze-unit best11-presenze-mobile-center">
+            <div class="best11-presenze-control">
+                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime"><span id="best-presenze-ball" aria-hidden="true"></span>
+                <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
+                <div class="best11-presenze-info" id="best-presenze-info"></div>
             </div>
         </div>
         <div class="pitch-container" id="pitch-best11">
