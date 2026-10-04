@@ -4956,6 +4956,55 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-bottom-panels-v63">
+@media(max-width:700px){
+  /* Alzo insieme i tre blocchi inferiori per evitare il taglio sul telefono reale */
+  #page-best11 .best11-controls{
+    bottom:34px!important;
+  }
+  #page-best11 .best11-presenze-mobile-center{
+    bottom:34px!important;
+  }
+  #page-best11 .best11-bench{
+    bottom:34px!important;
+  }
+
+  /* Lascio più margine anche al campo rispetto ai pannelli rialzati */
+  #page-best11 #pitch-best11{
+    bottom:136px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-v64">
+@media(max-width:700px){
+  /* v64: posizione dei tre pannelli inferiori gestita via JS in base all'altezza REALE visibile */
+  #page-best11 .best11-controls,
+  #page-best11 .best11-presenze-mobile-center,
+  #page-best11 .best11-bench{
+    bottom:auto!important;
+  }
+
+  /* Recupero un po' di dimensione sulle targhette titolari */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.50)!important;
+  }
+  #page-best11 .pitch-player .pp-name{
+    font-size:.82em!important;
+    line-height:1.02!important;
+  }
+  #page-best11 .pitch-player .pp-val{
+    font-size:.84em!important;
+    line-height:1!important;
+  }
+  #page-best11 .pitch-player .pp-ruolo{
+    font-size:.58em!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6964,6 +7013,56 @@ caricaDatiBorrachos()
   window.addEventListener('load',place62);
   window.addEventListener('resize',place62);
   window.addEventListener('orientationchange',place62);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-panels-v64">
+(function(){
+  function fitBottomPanels64(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    var page=document.getElementById('page-best11');
+    var layout=page && page.querySelector('.best11-layout');
+    if(!page || !layout)return;
+
+    var controls=page.querySelector('.best11-controls');
+    var presenze=page.querySelector('.best11-presenze-mobile-center');
+    var bench=page.querySelector('.best11-bench');
+    var panels=[controls,presenze,bench].filter(Boolean);
+
+    /* Il bordo inferiore dei tre pannelli viene fissato 78px SOPRA
+       il fondo realmente visibile della Best11, non rispetto a un'altezza CSS teorica. */
+    var safeBottom=78;
+    panels.forEach(function(el){
+      var h=el.getBoundingClientRect().height || el.offsetHeight || 0;
+      var top=Math.max(0, layout.clientHeight - safeBottom - h);
+      el.style.setProperty('top',top+'px','important');
+      el.style.setProperty('bottom','auto','important');
+    });
+
+    var pitch=document.getElementById('pitch-best11');
+    if(pitch && panels.length){
+      var firstTop=Math.min.apply(null,panels.map(function(el){
+        return parseFloat(el.style.top)||layout.clientHeight;
+      }));
+      var pitchTop=parseFloat(getComputedStyle(pitch).top)||62;
+      pitch.style.setProperty('height',Math.max(250,firstTop-pitchTop-12)+'px','important');
+      pitch.style.setProperty('bottom','auto','important');
+    }
+  }
+
+  var old64=window.updateBest11;
+  if(typeof old64==='function'){
+    window.updateBest11=function(){
+      var r=old64.apply(this,arguments);
+      fitBottomPanels64();
+      requestAnimationFrame(fitBottomPanels64);
+      return r;
+    };
+  }
+  window.addEventListener('load',fitBottomPanels64);
+  window.addEventListener('resize',fitBottomPanels64);
+  window.addEventListener('orientationchange',fitBottomPanels64);
 })();
 </script>
 
