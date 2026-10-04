@@ -4687,6 +4687,95 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-v56">
+@media(max-width:700px){
+  /* Targhette un po' più compatte: logo mantenuto ma leggermente ridotto */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.54)!important;
+  }
+  #page-best11 .pitch-player .pp-logo{
+    width:32px!important;
+    height:32px!important;
+    flex-basis:32px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-no-bench-v57">
+@media(max-width:700px){
+  /* Panchina rimossa solo nella Best 11 mobile */
+  #page-best11 .best11-bench{
+    display:none!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-bench-v58">
+@media(max-width:700px){
+  /* Panchina di nuovo visibile, ma molto più corta */
+  #page-best11 .best11-bench{
+    display:block!important;
+    position:absolute!important;
+    right:3px!important;
+    left:auto!important;
+    top:118px!important;
+    width:76px!important;
+    max-height:none!important;
+    padding:3px 2px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    z-index:20!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:8px!important;
+    line-height:1!important;
+    margin:0 0 2px!important;
+    padding:0!important;
+  }
+
+  /* Una riga più bassa: NOME + RUOLO, senza logo e voto */
+  #page-best11 .bench-player{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 19px!important;
+    align-items:center!important;
+    gap:1px!important;
+    min-height:0!important;
+    height:21px!important;
+    padding:0 1px!important;
+    margin:0!important;
+    line-height:1!important;
+  }
+  #page-best11 .bench-logo{
+    display:none!important;
+  }
+  #page-best11 .bench-name{
+    display:block!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+    font-size:7.5px!important;
+    font-weight:800!important;
+    line-height:1!important;
+    color:#fff!important;
+  }
+  #page-best11 .bench-role{
+    display:block!important;
+    width:19px!important;
+    font-size:7px!important;
+    font-weight:900!important;
+    line-height:1!important;
+    text-align:center!important;
+  }
+  #page-best11 .bench-vote{
+    display:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6555,6 +6644,45 @@ caricaDatiBorrachos()
   window.addEventListener('load',place55);
   window.addEventListener('resize',place55);
   window.addEventListener('orientationchange',place55);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-position-v56">
+(function(){
+  /* Più aria orizzontale tra le targhette, sfruttando lo spazio disponibile. */
+  var layouts56={
+    '352':[[50,17],[12,31],[50,31],[88,31],[4,53],[27,48],[50,45],[73,48],[96,53],[31,72],[69,72]],
+    '442':[[50,17],[5,32],[35,32],[65,32],[95,32],[7,53],[36,48],[64,48],[93,53],[31,72],[69,72]],
+    '433':[[50,17],[5,32],[35,30],[65,30],[95,32],[15,51],[50,47],[85,51],[8,72],[50,76],[92,72]],
+    '343':[[50,17],[12,32],[50,30],[88,32],[4,52],[34,48],[66,48],[96,52],[12,72],[50,76],[88,72]]
+  };
+  function place56(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch)return;
+    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
+    var pos=layouts56[key]||layouts56['352'];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      var p=pos[i]; if(!p)return;
+      el.style.setProperty('position','absolute','important');
+      el.style.setProperty('left',p[0]+'%','important');
+      el.style.setProperty('top',p[1]+'%','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+  var old56=window.updateBest11;
+  if(typeof old56==='function'){
+    window.updateBest11=function(){
+      var r=old56.apply(this,arguments);
+      place56();
+      requestAnimationFrame(place56);
+      return r;
+    };
+  }
+  window.addEventListener('load',place56);
+  window.addEventListener('resize',place56);
+  window.addEventListener('orientationchange',place56);
 })();
 </script>
 
