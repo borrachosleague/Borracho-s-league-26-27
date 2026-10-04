@@ -4481,6 +4481,40 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-risultati-raggruppati-v53">
+@media(max-width:700px){
+  /* Due righe della stessa partita più compatte e visivamente unite */
+  #page-risultati #tabella-risultati tbody td{
+    padding-top:3px!important;
+    padding-bottom:3px!important;
+    height:34px!important;
+    line-height:1.05!important;
+  }
+  #page-risultati #tabella-risultati .ris-logo{
+    width:28px!important;
+    height:28px!important;
+    flex:0 0 28px!important;
+  }
+
+  /* Niente separatore forte tra casa e trasferta della stessa partita */
+  #page-risultati #tabella-risultati .ris-match-first td{
+    border-top:0!important;
+    border-bottom:0!important;
+  }
+  #page-risultati #tabella-risultati .ris-match-second td{
+    border-top:1px solid rgba(255,255,255,.08)!important;
+    border-bottom:3px solid #ffd54a!important;
+    padding-bottom:5px!important;
+  }
+
+  /* Piccolo spazio ottico prima della partita successiva */
+  #page-risultati #tabella-risultati .ris-match-first:not(:first-child) td{
+    padding-top:7px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
