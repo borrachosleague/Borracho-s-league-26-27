@@ -5228,6 +5228,55 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-final-boxes-v83">
+@media(max-width:700px){
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:9px!important;
+    top:514px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:70px!important;
+    height:231px!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  #page-best11 .best11-bench{
+    position:absolute!important;
+    left:304px!important;
+    top:558px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:78px!important;
+    height:172px!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-only-top-editor-v84">
+@media(max-width:700px){
+  /* Best11 mobile: nasconde tutta la vecchia pulsantiera di modifica in basso.
+     Restano solo SPOSTA/RIDIMENSIONA e COPIA COORDINATE in cima. */
+  body:has(#page-best11.active) .layout-editor-tools,
+  body:has(#page-best11.active) .home-layout-tools{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  #best11-direct-editor-toggle,
+  #best11-copy-coordinates{
+    display:block!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -7333,7 +7382,7 @@ caricaDatiBorrachos()
   }
 
 
-  var STORE_KEY='borrachos_best11_mobile_boxes_v81';
+  var STORE_KEY='borrachos_best11_mobile_boxes_v83';
 
   function boxData(el){
     if(!el)return null;
