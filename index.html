@@ -4384,6 +4384,45 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-classifica-mobile-compact-v50">
+@media(max-width:400px){
+  /* Header mobile un po' più basso */
+  body:not(.home-active) .header{
+    padding:2px 4px!important;
+    gap:3px!important;
+  }
+  body:not(.home-active) .header .nav{
+    gap:3px!important;
+  }
+  body:not(.home-active) .header .nav-btn{
+    min-height:30px!important;
+    height:30px!important;
+    padding:2px 1px!important;
+    font-size:clamp(.49rem,2.1vw,.62rem)!important;
+  }
+
+  /* Classifica: stesso blocco approvato, leggermente più in alto e a sinistra */
+  #page-classifica .classifica-layout{
+    position:relative!important;
+    left:-5px!important;
+    top:-8px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-classifica-mobile-numeri-v51">
+@media(max-width:400px){
+  /* Solo numeri della tabella dati Classifica: leggermente più grandi */
+  #page-classifica .classifica-board[data-classifica-view="classifica"]
+  #classifica-chalk-data .chalk-row > span:nth-child(n+3){
+    font-size:14px!important;
+    font-weight:900!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
