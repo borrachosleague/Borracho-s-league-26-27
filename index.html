@@ -4777,105 +4777,9 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 
-<style id="borrachos-best11-mobile-v59">
+<style id="borrachos-best11-mobile-safe-v66">
 @media(max-width:700px){
-  /* Presenze minime separata dai tasti: centrata sotto la porta inferiore */
-  #page-best11 .best11-presenze-mobile-center{
-    position:absolute!important;
-    left:50%!important;
-    bottom:8px!important;
-    width:118px!important;
-    height:auto!important;
-    margin:0!important;
-    padding:0!important;
-    transform:translateX(-50%)!important;
-    transform-origin:center bottom!important;
-    z-index:35!important;
-  }
-  #page-best11 .best11-presenze-mobile-center .best11-presenze-control{
-    width:100%!important;
-    margin:0!important;
-    box-sizing:border-box!important;
-  }
-
-  /* Il blocco tasti a sinistra resta in basso, ora senza lo slider */
-  #page-best11 .best11-controls{
-    bottom:8px!important;
-  }
-
-  /* Panchina abbassata a destra della porta */
-  #page-best11 .best11-bench{
-    top:auto!important;
-    bottom:8px!important;
-    right:3px!important;
-    width:76px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-v60">
-@media(max-width:700px){
-  /* Presenze: rettangolo più grande, pallone-slider più piccolo */
-  #page-best11 .best11-presenze-mobile-center{
-    width:154px!important;
-    bottom:6px!important;
-  }
-  #page-best11 .best11-presenze-mobile-center.best11-presenze-unit{
-    transform:translateX(-50%)!important;
-    width:154px!important;
-    margin:0!important;
-  }
-  #page-best11 .best11-presenze-mobile-center .best11-presenze-control{
-    --ball-size:21px!important;
-  }
-  #page-best11 .best11-presenze-mobile-center #best-presenze-ball{
-    width:21px!important;
-    height:21px!important;
-  }
-
-  /* Panchina ancora più corta, mantenendo nome + ruolo */
-  #page-best11 .best11-bench{
-    width:78px!important;
-    padding:2px 2px!important;
-    bottom:6px!important;
-  }
-  #page-best11 .best11-bench-title{
-    font-size:7.5px!important;
-    margin-bottom:1px!important;
-  }
-  #page-best11 .bench-player{
-    height:17px!important;
-    min-height:17px!important;
-    grid-template-columns:minmax(0,1fr) 16px!important;
-    gap:1px!important;
-    padding:0 1px!important;
-  }
-  #page-best11 .bench-name{
-    font-size:7px!important;
-  }
-  #page-best11 .bench-role{
-    width:16px!important;
-    font-size:6.5px!important;
-  }
-
-  /* Titolari: targhette leggermente più piccole per creare più aria */
-  #page-best11 .pitch-player{
-    transform:translate(-50%,-50%) scale(.49)!important;
-  }
-
-  /* Ora che la panchina è compatta sfruttiamo più larghezza del campo */
-  #page-best11 #pitch-best11{
-    left:72px!important;
-    width:244px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-phone-fit-v61">
-@media(max-width:700px){
-  /* FIX TELEFONO REALE: niente altezza minima da 760px che veniva tagliata dal viewport */
+  /* TUTTE queste modifiche sono esclusivamente mobile */
   #page-best11{
     height:calc(100dvh - 38px)!important;
     min-height:0!important;
@@ -4883,124 +4787,142 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     overflow:hidden!important;
   }
   #page-best11 .best11-layout{
+    position:relative!important;
+    display:block!important;
+    width:100%!important;
     height:100%!important;
     min-height:0!important;
+    overflow:hidden!important;
   }
 
-  /* Campo compresso in altezza in base allo spazio realmente disponibile */
+  /* Campo mobile */
   #page-best11 #pitch-best11{
+    position:absolute!important;
+    left:66px!important;
     top:62px!important;
-    bottom:112px!important;
+    width:256px!important;
+    height:calc(100% - 205px)!important;
+    min-height:250px!important;
+    max-width:none!important;
+    aspect-ratio:auto!important;
+    overflow:visible!important;
+    z-index:10!important;
+  }
+
+  /* Targhette titolari */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.52)!important;
+    transform-origin:center center!important;
+    z-index:15!important;
+  }
+
+  /* Tasti sinistra: SOLO mobile */
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:5px!important;
+    top:auto!important;
+    bottom:76px!important;
+    width:70px!important;
     height:auto!important;
-    min-height:0!important;
-  }
-
-  /* I tre blocchi inferiori restano SEMPRE dentro il viewport */
-  #page-best11 .best11-controls{
-    top:auto!important;
-    bottom:5px!important;
-    max-height:104px!important;
-    overflow:hidden!important;
-  }
-  #page-best11 .best11-presenze-mobile-center{
-    top:auto!important;
-    bottom:5px!important;
-  }
-  #page-best11 .best11-bench{
-    top:auto!important;
-    bottom:5px!important;
-    max-height:104px!important;
-    overflow:hidden!important;
-  }
-
-  /* Compatto solo quanto serve per far vedere interi i blocchi inferiori */
-  #page-best11 .best11-controls{
+    max-height:112px!important;
     padding:3px!important;
     gap:0!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    z-index:30!important;
   }
   #page-best11 .best11-controls .best11-label{
-    margin:1px 0!important;
     font-size:7px!important;
+    line-height:1!important;
+    margin:1px 0!important;
   }
   #page-best11 .best11-controls .subnav.best11-v{
     gap:1px!important;
     margin:0 0 1px!important;
   }
   #page-best11 .best11-controls .subnav.best11-v .subnav-btn{
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
     padding:2px 1px!important;
+    margin:0!important;
     font-size:7.5px!important;
     line-height:1!important;
+    white-space:normal!important;
   }
 
-  /* Panchina ancora leggibile ma tutta visibile */
+  /* Presenze: JS la sposta fuori dai controlli SOLO su mobile */
+  #page-best11 .best11-presenze-unit.mobile-detached-presenze{
+    position:absolute!important;
+    left:50%!important;
+    top:auto!important;
+    bottom:76px!important;
+    width:154px!important;
+    height:auto!important;
+    margin:0!important;
+    padding:0!important;
+    transform:translateX(-50%)!important;
+    transform-origin:center bottom!important;
+    z-index:35!important;
+  }
+  #page-best11 .mobile-detached-presenze .best11-presenze-control{
+    --ball-size:21px!important;
+  }
+  #page-best11 .mobile-detached-presenze #best-presenze-ball{
+    width:21px!important;
+    height:21px!important;
+  }
+
+  /* Panchina compatta e rialzata */
+  #page-best11 .best11-bench{
+    display:block!important;
+    position:absolute!important;
+    right:3px!important;
+    left:auto!important;
+    top:auto!important;
+    bottom:76px!important;
+    width:78px!important;
+    max-height:112px!important;
+    padding:2px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    z-index:30!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:7.5px!important;
+    line-height:1!important;
+    margin:0 0 1px!important;
+    padding:0!important;
+  }
   #page-best11 .bench-player{
-    height:15px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 16px!important;
+    align-items:center!important;
+    gap:1px!important;
     min-height:15px!important;
-  }
-  #page-best11 .bench-name{font-size:6.6px!important;}
-  #page-best11 .bench-role{font-size:6px!important;}
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-spacing-v62">
-@media(max-width:700px){
-  /* Più spazio reale fra le targhette, senza cambiare i dati */
-  #page-best11 .pitch-player{
-    transform:translate(-50%,-50%) scale(.455)!important;
-  }
-  #page-best11 #pitch-best11{
-    left:66px!important;
-    width:256px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-bottom-panels-v63">
-@media(max-width:700px){
-  /* Alzo insieme i tre blocchi inferiori per evitare il taglio sul telefono reale */
-  #page-best11 .best11-controls{
-    bottom:34px!important;
-  }
-  #page-best11 .best11-presenze-mobile-center{
-    bottom:34px!important;
-  }
-  #page-best11 .best11-bench{
-    bottom:34px!important;
-  }
-
-  /* Lascio più margine anche al campo rispetto ai pannelli rialzati */
-  #page-best11 #pitch-best11{
-    bottom:136px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-v64">
-@media(max-width:700px){
-  /* v64: posizione dei tre pannelli inferiori gestita via JS in base all'altezza REALE visibile */
-  #page-best11 .best11-controls,
-  #page-best11 .best11-presenze-mobile-center,
-  #page-best11 .best11-bench{
-    bottom:auto!important;
-  }
-
-  /* Recupero un po' di dimensione sulle targhette titolari */
-  #page-best11 .pitch-player{
-    transform:translate(-50%,-50%) scale(.50)!important;
-  }
-  #page-best11 .pitch-player .pp-name{
-    font-size:.82em!important;
-    line-height:1.02!important;
-  }
-  #page-best11 .pitch-player .pp-val{
-    font-size:.84em!important;
+    height:15px!important;
+    padding:0 1px!important;
+    margin:0!important;
     line-height:1!important;
   }
-  #page-best11 .pitch-player .pp-ruolo{
-    font-size:.58em!important;
+  #page-best11 .bench-logo,
+  #page-best11 .bench-vote{display:none!important;}
+  #page-best11 .bench-name{
+    display:block!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+    font-size:6.6px!important;
+    font-weight:800!important;
+    color:#fff!important;
+  }
+  #page-best11 .bench-role{
+    display:block!important;
+    width:16px!important;
+    font-size:6px!important;
+    font-weight:900!important;
+    text-align:center!important;
   }
 }
 </style>
@@ -5217,7 +5139,13 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                 <button class="subnav-btn" onclick="setBestMetric('fvototit', this)">Media FVoto</button>
             </div>
             </div>
-
+            <div class="best11-choice-unit best11-presenze-unit">
+            <div class="best11-presenze-control">
+                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime"><span id="best-presenze-ball" aria-hidden="true"></span>
+                <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
+                <div class="best11-presenze-info" id="best-presenze-info"></div>
+            </div>
+            </div>
             <div class="best11-choice-unit">
             <div class="best11-label">Modulo</div>
             <div class="subnav best11-v" id="best-modulo">
@@ -5226,13 +5154,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
                 <button class="subnav-btn" onclick="setBestModulo('433', this)">4-3-3</button>
                 <button class="subnav-btn" onclick="setBestModulo('343', this)">3-4-3</button>
             </div>
-            </div>
-        </div>
-        <div class="best11-choice-unit best11-presenze-unit best11-presenze-mobile-center">
-            <div class="best11-presenze-control">
-                <input type="range" id="best-presenze-pct" min="0" max="100" step="5" value="50" oninput="setBestPresenzePct(this.value)" aria-label="Presenze minime"><span id="best-presenze-ball" aria-hidden="true"></span>
-                <div class="best11-presenze-value"><span id="best-presenze-pct-val">50</span>%</div>
-                <div class="best11-presenze-info" id="best-presenze-info"></div>
             </div>
         </div>
         <div class="pitch-container" id="pitch-best11">
@@ -6917,189 +6838,72 @@ caricaDatiBorrachos()
 </script>
 
 
-<script id="borrachos-best11-mobile-position-v60">
+<script id="borrachos-best11-mobile-safe-position-v66">
 (function(){
-  /* Disposizione più larga e più ariosa in tutti i moduli.
-     Nel 4-4-2 i quattro difensori sono spinti verso i bordi del campo. */
-  var layouts60={
-    '352':[[50,17],[8,31],[50,31],[92,31],[2,54],[25,48],[50,44],[75,48],[98,54],[28,73],[72,73]],
-    '442':[[50,17],[1,32],[34,32],[66,32],[99,32],[3,55],[34,48],[66,48],[97,55],[28,74],[72,74]],
-    '433':[[50,17],[1,32],[34,30],[66,30],[99,32],[12,52],[50,46],[88,52],[4,74],[50,78],[96,74]],
-    '343':[[50,17],[8,32],[50,29],[92,32],[2,53],[33,47],[67,47],[98,53],[8,74],[50,78],[92,74]]
+  var layouts={
+    '352':[[50,16],[7,31],[50,31],[93,31],[1,55],[25,48],[50,43],[75,48],[99,55],[26,74],[74,74]],
+    '442':[[50,16],[1,32],[33,32],[67,32],[99,32],[2,55],[33,48],[67,48],[98,55],[27,74],[73,74]],
+    '433':[[50,16],[1,32],[33,30],[67,30],[99,32],[10,52],[50,46],[90,52],[3,74],[50,78],[97,74]],
+    '343':[[50,16],[7,32],[50,29],[93,32],[1,53],[32,47],[68,47],[99,53],[7,74],[50,78],[93,74]]
   };
-  function place60(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
-    var pitch=document.getElementById('pitch-best11');
-    if(!pitch)return;
-    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
-    var pos=layouts60[key]||layouts60['352'];
-    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
-      var p=pos[i]; if(!p)return;
-      el.style.setProperty('position','absolute','important');
-      el.style.setProperty('left',p[0]+'%','important');
-      el.style.setProperty('top',p[1]+'%','important');
-      el.style.setProperty('margin','0','important');
-    });
-  }
-  var old60=window.updateBest11;
-  if(typeof old60==='function'){
-    window.updateBest11=function(){
-      var r=old60.apply(this,arguments);
-      place60();
-      requestAnimationFrame(place60);
-      return r;
-    };
-  }
-  window.addEventListener('load',place60);
-  window.addEventListener('resize',place60);
-  window.addEventListener('orientationchange',place60);
-})();
-</script>
 
-
-<script id="borrachos-best11-mobile-position-v62">
-(function(){
-  /* 3-5-2 trattato separatamente: la linea a 5 è la più critica.
-     Difesa a 3 larga; centrocampo a 5 distribuito quasi su tutta la larghezza. */
-  var layouts62={
-    '352':[
-      [50,16],
-      [7,31],[50,31],[93,31],
-      [1,55],[25,48],[50,43],[75,48],[99,55],
-      [26,74],[74,74]
-    ],
-    '442':[
-      [50,16],
-      [1,32],[33,32],[67,32],[99,32],
-      [2,55],[33,48],[67,48],[98,55],
-      [27,74],[73,74]
-    ],
-    '433':[
-      [50,16],
-      [1,32],[33,30],[67,30],[99,32],
-      [10,52],[50,46],[90,52],
-      [3,74],[50,78],[97,74]
-    ],
-    '343':[
-      [50,16],
-      [7,32],[50,29],[93,32],
-      [1,53],[32,47],[68,47],[99,53],
-      [7,74],[50,78],[93,74]
-    ]
-  };
-  function place62(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
-    var pitch=document.getElementById('pitch-best11');
-    if(!pitch)return;
-    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
-    var pos=layouts62[key]||layouts62['352'];
-    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
-      var p=pos[i]; if(!p)return;
-      el.style.setProperty('position','absolute','important');
-      el.style.setProperty('left',p[0]+'%','important');
-      el.style.setProperty('top',p[1]+'%','important');
-      el.style.setProperty('margin','0','important');
-    });
+  function mobile(){
+    return window.matchMedia('(max-width:700px)').matches;
   }
-  var old62=window.updateBest11;
-  if(typeof old62==='function'){
-    window.updateBest11=function(){
-      var r=old62.apply(this,arguments);
-      place62();
-      requestAnimationFrame(place62);
-      return r;
-    };
-  }
-  window.addEventListener('load',place62);
-  window.addEventListener('resize',place62);
-  window.addEventListener('orientationchange',place62);
-})();
-</script>
 
-
-<script id="borrachos-best11-mobile-panels-v64">
-(function(){
-  function fitBottomPanels64(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
+  function movePresenze(){
     var page=document.getElementById('page-best11');
-    var layout=page && page.querySelector('.best11-layout');
-    if(!page || !layout)return;
-
+    if(!page)return;
+    var layout=page.querySelector('.best11-layout');
     var controls=page.querySelector('.best11-controls');
-    var presenze=page.querySelector('.best11-presenze-mobile-center');
-    var bench=page.querySelector('.best11-bench');
-    var panels=[controls,presenze,bench].filter(Boolean);
+    var pres=page.querySelector('.best11-presenze-unit');
+    if(!layout || !controls || !pres)return;
 
-    /* Il bordo inferiore dei tre pannelli viene fissato 78px SOPRA
-       il fondo realmente visibile della Best11, non rispetto a un'altezza CSS teorica. */
-    var safeBottom=78;
-    panels.forEach(function(el){
-      var h=el.getBoundingClientRect().height || el.offsetHeight || 0;
-      var top=Math.max(0, layout.clientHeight - safeBottom - h);
-      el.style.setProperty('top',top+'px','important');
-      el.style.setProperty('bottom','auto','important');
-    });
-
-    var pitch=document.getElementById('pitch-best11');
-    if(pitch && panels.length){
-      var firstTop=Math.min.apply(null,panels.map(function(el){
-        return parseFloat(el.style.top)||layout.clientHeight;
-      }));
-      var pitchTop=parseFloat(getComputedStyle(pitch).top)||62;
-      pitch.style.setProperty('height',Math.max(250,firstTop-pitchTop-12)+'px','important');
-      pitch.style.setProperty('bottom','auto','important');
+    if(mobile()){
+      if(pres.parentNode!==layout){
+        layout.insertBefore(pres, document.getElementById('pitch-best11'));
+      }
+      pres.classList.add('mobile-detached-presenze');
+    }else{
+      /* Desktop: rimette ESATTAMENTE il blocco nella struttura originale */
+      if(pres.parentNode!==controls){
+        controls.appendChild(pres);
+      }
+      pres.classList.remove('mobile-detached-presenze');
+      pres.removeAttribute('style');
     }
   }
 
-  var old64=window.updateBest11;
-  if(typeof old64==='function'){
+  function place(){
+    movePresenze();
+    if(!mobile())return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch)return;
+    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
+    var pos=layouts[key]||layouts['352'];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      if(!pos[i])return;
+      el.style.setProperty('position','absolute','important');
+      el.style.setProperty('left',pos[i][0]+'%','important');
+      el.style.setProperty('top',pos[i][1]+'%','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+
+  var old=window.updateBest11;
+  if(typeof old==='function'){
     window.updateBest11=function(){
-      var r=old64.apply(this,arguments);
-      fitBottomPanels64();
-      requestAnimationFrame(fitBottomPanels64);
+      var r=old.apply(this,arguments);
+      place();
+      requestAnimationFrame(place);
       return r;
     };
   }
-  window.addEventListener('load',fitBottomPanels64);
-  window.addEventListener('resize',fitBottomPanels64);
-  window.addEventListener('orientationchange',fitBottomPanels64);
+  window.addEventListener('load',place);
+  window.addEventListener('resize',place);
+  window.addEventListener('orientationchange',place);
 })();
 </script>
-
-
-<style id="borrachos-best11-mobile-v65-FINAL-OVERRIDE">
-@media(max-width:700px){
-  /* SPOSTAMENTO VISIBILE E FORZATO: circa 90px verso l'alto */
-  #page-best11 .best11-controls{
-    transform:translateY(-90px)!important;
-  }
-  #page-best11 .best11-presenze-mobile-center{
-    transform:translate(-50%,-90px)!important;
-  }
-  #page-best11 .best11-bench{
-    transform:translateY(-90px)!important;
-  }
-
-  /* TARGHETTE TITOLARI: aumento effettivo, applicato per ultimo */
-  #page-best11 .pitch-player{
-    transform:translate(-50%,-50%) scale(.54)!important;
-  }
-
-  /* Font interni: ingrandimento reale applicato per ultimo */
-  #page-best11 .pitch-player .pp-name,
-  #page-best11 .pitch-player .player-name,
-  #page-best11 .pitch-player .pitch-player-name{
-    font-size:1.08em!important;
-    line-height:1.05!important;
-  }
-  #page-best11 .pitch-player .pp-vote,
-  #page-best11 .pitch-player .pp-val,
-  #page-best11 .pitch-player .player-vote{
-    font-size:1.10em!important;
-    line-height:1!important;
-  }
-}
-</style>
 
 </body>
 </html>
