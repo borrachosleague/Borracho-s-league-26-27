@@ -5277,6 +5277,103 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-real-phone-v85">
+@media(max-width:700px){
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:8px!important;
+    top:367px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:70px!important;
+    height:197px!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  #page-best11 .best11-bench{
+    position:absolute!important;
+    left:280px!important;
+    top:393px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:78px!important;
+    height:172px!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-presenze-editor-v86">
+@media(max-width:700px){
+  /* Tasti scelta e panchina definitivamente bloccati */
+  #page-best11 .best11-controls,
+  #page-best11 .best11-bench{
+    outline:none!important;
+    cursor:default!important;
+    touch-action:auto!important;
+  }
+
+  /* Editor diretto soltanto sul blocco percentuale presenze */
+  body.best11-presenze-edit #page-best11 .best11-presenze-unit{
+    outline:2px dashed #ffe600!important;
+    outline-offset:2px!important;
+    cursor:move!important;
+    touch-action:none!important;
+    overflow:visible!important;
+    z-index:99990!important;
+    transition:none!important;
+    animation:none!important;
+    will-change:left,top,width,height!important;
+  }
+
+  .best11-presenze-handle{display:none;}
+  body.best11-presenze-edit .best11-presenze-handle{
+    display:block!important;
+    position:absolute!important;
+    width:14px!important;height:14px!important;
+    padding:0!important;margin:0!important;
+    border:2px solid #111!important;
+    border-radius:2px!important;
+    background:#ffe600!important;
+    box-sizing:border-box!important;
+    z-index:99999!important;
+    touch-action:none!important;
+  }
+  .best11-presenze-handle[data-dir="nw"]{left:-8px;top:-8px}
+  .best11-presenze-handle[data-dir="n"]{left:50%;top:-8px;transform:translateX(-50%)}
+  .best11-presenze-handle[data-dir="ne"]{right:-8px;top:-8px}
+  .best11-presenze-handle[data-dir="e"]{right:-8px;top:50%;transform:translateY(-50%)}
+  .best11-presenze-handle[data-dir="se"]{right:-8px;bottom:-8px}
+  .best11-presenze-handle[data-dir="s"]{left:50%;bottom:-8px;transform:translateX(-50%)}
+  .best11-presenze-handle[data-dir="sw"]{left:-8px;bottom:-8px}
+  .best11-presenze-handle[data-dir="w"]{left:-8px;top:50%;transform:translateY(-50%)}
+
+  #best11-presenze-editor-toggle,#best11-presenze-copy{
+    display:block!important;
+    position:fixed!important;
+    top:4px!important;
+    bottom:auto!important;
+    z-index:1000001!important;
+    height:27px!important;
+    padding:3px 6px!important;
+    border:2px solid #ffe600!important;
+    border-radius:5px!important;
+    background:#111!important;color:#fff!important;
+    font:800 8px/1 Arial,sans-serif!important;
+  }
+  #best11-presenze-editor-toggle{right:5px!important;}
+  #best11-presenze-copy{right:151px!important;}
+  /* vecchi due tasti editor dei pannelli nascosti */
+  #best11-direct-editor-toggle,#best11-copy-coordinates{display:none!important;}
+}
+@media(min-width:701px){
+  #best11-presenze-editor-toggle,#best11-presenze-copy{display:none!important;}
+}
+</style>
+
 </head>
 <body>
 
@@ -7382,7 +7479,7 @@ caricaDatiBorrachos()
   }
 
 
-  var STORE_KEY='borrachos_best11_mobile_boxes_v83';
+  var STORE_KEY='borrachos_best11_mobile_boxes_v85';
 
   function boxData(el){
     if(!el)return null;
@@ -7484,6 +7581,82 @@ caricaDatiBorrachos()
   window.addEventListener('load',init);
   window.addEventListener('resize',init);
   setTimeout(init,300);
+})();
+</script>
+
+
+<script id="borrachos-best11-presenze-editor-v86-js">
+(function(){
+ const KEY='borrachos_best11_presenze_mobile_v86';
+ const mob=()=>matchMedia('(max-width:700px)').matches;
+ const el=()=>document.querySelector('#page-best11 .best11-presenze-unit');
+ let st=null;
+
+ function addHandles(){
+   const x=el(); if(!x||x.querySelector('.best11-presenze-handle'))return;
+   ['nw','n','ne','e','se','s','sw','w'].forEach(d=>{
+     let h=document.createElement('span');h.className='best11-presenze-handle';h.dataset.dir=d;x.appendChild(h);
+   });
+ }
+ function norm(x){
+   const r=x.getBoundingClientRect(), p=x.offsetParent||document.body, pr=p.getBoundingClientRect();
+   x.style.setProperty('position','absolute','important');
+   x.style.setProperty('left',(r.left-pr.left)+'px','important');
+   x.style.setProperty('top',(r.top-pr.top)+'px','important');
+   x.style.setProperty('right','auto','important');x.style.setProperty('bottom','auto','important');
+   x.style.setProperty('width',r.width+'px','important');x.style.setProperty('height',r.height+'px','important');
+ }
+ function data(){
+   const x=el(),c=getComputedStyle(x),r=x.getBoundingClientRect();
+   return {left:parseFloat(c.left)||0,top:parseFloat(c.top)||0,width:r.width,height:r.height};
+ }
+ function save(){try{localStorage.setItem(KEY,JSON.stringify(data()));}catch(_){}}
+ function restore(){
+   try{
+     const d=JSON.parse(localStorage.getItem(KEY)||'null'),x=el();if(!d||!x)return;
+     ['left','top','width','height'].forEach(k=>x.style.setProperty(k,d[k]+'px','important'));
+     x.style.setProperty('right','auto','important');x.style.setProperty('bottom','auto','important');
+   }catch(_){}
+ }
+ function buttons(){
+   if(!document.getElementById('best11-presenze-editor-toggle')){
+     let b=document.createElement('button');b.id='best11-presenze-editor-toggle';b.textContent='SPOSTA % PARTITE';
+     b.onclick=e=>{e.preventDefault();e.stopPropagation();document.body.classList.toggle('best11-presenze-edit');
+       b.textContent=document.body.classList.contains('best11-presenze-edit')?'FINE MODIFICA':'SPOSTA % PARTITE';};
+     document.body.appendChild(b);
+   }
+   if(!document.getElementById('best11-presenze-copy')){
+     let b=document.createElement('button');b.id='best11-presenze-copy';b.textContent='COPIA COORDINATE';
+     b.onclick=e=>{e.preventDefault();e.stopPropagation();let d=data();
+       let s='PRESENZE MINIME: X '+Math.round(d.left)+' Y '+Math.round(d.top)+' W '+Math.round(d.width)+' H '+Math.round(d.height);
+       navigator.clipboard?.writeText(s).then(()=>{b.textContent='COPIATO ✓';setTimeout(()=>b.textContent='COPIA COORDINATE',1000)}).catch(()=>prompt('Copia:',s));
+     };document.body.appendChild(b);
+   }
+ }
+ document.addEventListener('pointerdown',e=>{
+   if(!mob()||!document.body.classList.contains('best11-presenze-edit'))return;
+   const x=e.target.closest('.best11-presenze-unit');if(!x)return;
+   const h=e.target.closest('.best11-presenze-handle');e.preventDefault();e.stopPropagation();norm(x);
+   const c=getComputedStyle(x),r=x.getBoundingClientRect();
+   st={x:e.clientX,y:e.clientY,l:parseFloat(c.left)||0,t:parseFloat(c.top)||0,w:r.width,h:r.height,d:h?h.dataset.dir:'',drag:!h,dx:0,dy:0};
+ },true);
+ document.addEventListener('pointermove',e=>{
+   if(!st)return;e.preventDefault();const x=el(),dx=e.clientX-st.x,dy=e.clientY-st.y;
+   if(st.drag){st.dx=dx;st.dy=dy;x.style.setProperty('transform','translate3d('+dx+'px,'+dy+'px,0)','important');return;}
+   let l=st.l,t=st.t,w=st.w,h=st.h,d=st.d;
+   if(d.includes('e'))w=Math.max(50,st.w+dx);if(d.includes('s'))h=Math.max(35,st.h+dy);
+   if(d.includes('w')){w=Math.max(50,st.w-dx);l=st.l+(st.w-w)}
+   if(d.includes('n')){h=Math.max(35,st.h-dy);t=st.t+(st.h-h)}
+   x.style.setProperty('left',l+'px','important');x.style.setProperty('top',t+'px','important');
+   x.style.setProperty('width',w+'px','important');x.style.setProperty('height',h+'px','important');
+ },true);
+ document.addEventListener('pointerup',()=>{
+   if(!st)return;const x=el();
+   if(st.drag){x.style.setProperty('transform','none','important');x.style.setProperty('left',(st.l+st.dx)+'px','important');x.style.setProperty('top',(st.t+st.dy)+'px','important');}
+   save();st=null;
+ },true);
+ function init(){if(!mob())return;addHandles();restore();buttons();}
+ addEventListener('load',init);setTimeout(init,300);
 })();
 </script>
 
