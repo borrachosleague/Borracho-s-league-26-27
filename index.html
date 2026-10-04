@@ -6914,5 +6914,42 @@ caricaDatiBorrachos()
 })();
 </script>
 
+
+<script id="borrachos-best11-desktop-follow-background-v68">
+(function(){
+  var desktopShift = 34;
+
+  function alignDesktopPlayers68(){
+    if(!window.matchMedia('(min-width:701px)').matches) return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch) return;
+
+    var key=(typeof bestModulo!=='undefined' ? bestModulo : '352');
+    if(typeof best11Layouts==='undefined' || !best11Layouts[key]) return;
+
+    var pos=best11Layouts[key];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      if(!pos[i]) return;
+      el.style.setProperty('position','fixed','important');
+      el.style.setProperty('left',pos[i][0]+'px','important');
+      el.style.setProperty('top',(pos[i][1]+desktopShift)+'px','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+
+  var old68=window.updateBest11;
+  if(typeof old68==='function'){
+    window.updateBest11=function(){
+      var r=old68.apply(this,arguments);
+      alignDesktopPlayers68();
+      requestAnimationFrame(alignDesktopPlayers68);
+      return r;
+    };
+  }
+  window.addEventListener('load',alignDesktopPlayers68);
+  window.addEventListener('resize',alignDesktopPlayers68);
+})();
+</script>
+
 </body>
 </html>
