@@ -6489,7 +6489,7 @@ function updateBest11() {
         // Non reinterpretarle: devono coincidere con le posizioni impostate manualmente.
         el.style.setProperty('position','fixed','important');
         el.style.setProperty('left',pos[0] + 'px','important');
-        el.style.setProperty('top',pos[1] + 'px','important');
+        el.style.setProperty('top',(pos[1] + (window.innerWidth > 700 ? 34 : 0)) + 'px','important');
         el.style.setProperty('margin','0','important');
 
         var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
@@ -6913,15 +6913,6 @@ caricaDatiBorrachos()
   window.addEventListener('orientationchange',place);
 })();
 </script>
-
-
-<style id="borrachos-best11-desktop-player-shift-v70">
-@media(min-width:701px){
-  #page-best11 .pitch-player{
-    transform:translate(-50%, calc(-50% + 34px))!important;
-  }
-}
-</style>
 
 </body>
 </html>
