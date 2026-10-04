@@ -5001,6 +5001,23 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-two-box-editor-v77">
+@media(max-width:700px){
+  body.layout-editing #page-best11 .best11-controls.layout-editable,
+  body.layout-editing #page-best11 .best11-bench.layout-editable{
+    outline:3px dashed #ffd54a!important;
+    outline-offset:3px!important;
+    cursor:move!important;
+    touch-action:none!important;
+  }
+  body.layout-editing #page-best11 .best11-controls.layout-selected,
+  body.layout-editing #page-best11 .best11-bench.layout-selected{
+    outline-color:#55ff88!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5385,7 +5402,9 @@ function pageLayoutTargets(){
         'page-classifica':['.classifica-board','.classifica-chalk-data','.classifica-special-data','.classifica-menu-board','.classifica-menu-btn'],
         'page-risultati':['.page-title','#risultati-giornate','.table-container'],
         'page-statistiche':['.page-title','.subnav','.subpage.active .giocatori-controls','.subpage.active .table-container','#titolo-sq','#desc-sq'],
-        'page-best11':['.best11-choice-unit']
+        'page-best11':(window.matchMedia('(max-width:700px)').matches
+            ? ['.best11-controls','.best11-bench']
+            : ['.best11-choice-unit'])
     };
     var arr=selectors[p.id]||[];
     var seen=[];
@@ -5460,6 +5479,8 @@ function confirmLayoutEditor(){
 }
 function layoutElementName(el,i){
     if(el.id)return '#'+el.id;
+    if(el.classList.contains('best11-controls')) return '.best11-controls';
+    if(el.classList.contains('best11-bench')) return '.best11-bench';
     if(el.classList.contains('classifica-menu-btn')){
         var buttons=Array.from(el.parentElement.querySelectorAll('.classifica-menu-btn'));
         return '.classifica-menu-btn:nth-child('+(buttons.indexOf(el)+1)+')';
