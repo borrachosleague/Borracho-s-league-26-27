@@ -4423,6 +4423,64 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-risultati-mobile-due-righe-v52">
+@media(max-width:700px){
+  #page-risultati .table-container{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+  #page-risultati #tabella-risultati{
+    width:100%!important;
+    table-layout:fixed!important;
+  }
+  #page-risultati #tabella-risultati th:nth-child(1),
+  #page-risultati #tabella-risultati td:nth-child(1){
+    width:68%!important;
+    text-align:left!important;
+  }
+  #page-risultati #tabella-risultati th:nth-child(2),
+  #page-risultati #tabella-risultati td:nth-child(2){
+    width:18%!important;
+    text-align:center!important;
+  }
+  #page-risultati #tabella-risultati th:nth-child(3),
+  #page-risultati #tabella-risultati td:nth-child(3){
+    width:14%!important;
+    text-align:center!important;
+  }
+  #page-risultati #tabella-risultati .ris-team{
+    justify-content:flex-start!important;
+    min-width:0!important;
+    gap:8px!important;
+  }
+  #page-risultati #tabella-risultati .ris-team span{
+    min-width:0!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+  #page-risultati #tabella-risultati .ris-logo{
+    width:32px!important;
+    height:32px!important;
+    flex:0 0 32px!important;
+  }
+  #page-risultati #tabella-risultati .ris-gol{
+    color:#e94560!important;
+    font-size:18px!important;
+    font-weight:900!important;
+  }
+  #page-risultati #tabella-risultati .ris-match-first td{
+    border-top:3px solid #ffd54a!important;
+  }
+  #page-risultati #tabella-risultati .ris-match-second td{
+    border-top:1px solid #333!important;
+    border-bottom:5px solid transparent!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5671,7 +5729,14 @@ function updateRisultati() {
     g.partite.forEach(function(p) {
         var casa = '<div class="ris-team casa"><span>' + p.casa + '</span><img class="ris-logo" src="' + logoUrl(p.casa) + '" onerror="this.remove()"></div>';
         var trasferta = '<div class="ris-team trasferta"><img class="ris-logo" src="' + logoUrl(p.trasferta) + '" onerror="this.remove()"><span>' + p.trasferta + '</span></div>';
-        tbody.innerHTML += '<tr><td>' + casa + '</td><td>' + p.pt_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_trasferta + '</td><td>' + p.pt_trasferta + '</td><td>' + trasferta + '</td></tr>';
+        if (window.matchMedia('(max-width:700px)').matches) {
+            var casaMobile = '<div class="ris-team"><img class="ris-logo" src="' + logoUrl(p.casa) + '" onerror="this.remove()"><span>' + p.casa + '</span></div>';
+            var trasfertaMobile = '<div class="ris-team"><img class="ris-logo" src="' + logoUrl(p.trasferta) + '" onerror="this.remove()"><span>' + p.trasferta + '</span></div>';
+            tbody.innerHTML += '<tr class="ris-match-first"><td>' + casaMobile + '</td><td>' + p.pt_casa + '</td><td class="ris-gol">' + p.gol_casa + '</td></tr>' +
+                               '<tr class="ris-match-second"><td>' + trasfertaMobile + '</td><td>' + p.pt_trasferta + '</td><td class="ris-gol">' + p.gol_trasferta + '</td></tr>';
+        } else {
+            tbody.innerHTML += '<tr><td>' + casa + '</td><td>' + p.pt_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_casa + '</td><td style="text-align:center;font-weight:700;color:#e94560;">' + p.gol_trasferta + '</td><td>' + p.pt_trasferta + '</td><td>' + trasferta + '</td></tr>';
+        }
     });
 }
 
@@ -6189,6 +6254,24 @@ caricaDatiBorrachos()
     };
   }
   window.addEventListener('load',function(){ setTimeout(unisciSquadreMobile,0); });
+})();
+</script>
+
+
+<script id="borrachos-risultati-mobile-header-v52">
+(function(){
+  function aggiornaHeaderRisultatiMobile(){
+    var tr=document.querySelector('#tabella-risultati thead tr');
+    if(!tr)return;
+    if(window.matchMedia('(max-width:700px)').matches){
+      tr.innerHTML='<th>Squadra</th><th>Pt</th><th>Gol</th>';
+    }else{
+      tr.innerHTML='<th>Squadra Casa</th><th>Pt</th><th>Gol</th><th>Gol</th><th>Pt</th><th>Squadra Trasferta</th>';
+    }
+  }
+  window.addEventListener('load',aggiornaHeaderRisultatiMobile);
+  window.addEventListener('resize',aggiornaHeaderRisultatiMobile);
+  aggiornaHeaderRisultatiMobile();
 })();
 </script>
 
