@@ -4936,6 +4936,28 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-desktop-header-best11-v72">
+@media(min-width:701px){
+  /* Header più compatto su TUTTE le pagine */
+  header, .site-header, #site-header{
+    min-height:68px!important;
+    height:68px!important;
+  }
+  header .header-inner, .site-header .header-inner, #site-header .header-inner{
+    min-height:68px!important;
+    height:68px!important;
+  }
+
+  /* Best11: nessuna fascia nera fra header e stadio */
+  #page-best11{
+    margin-top:0!important;
+    padding-top:0!important;
+    background-position:center top!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6457,39 +6479,48 @@ function updateBest11() {
     // Layout Best 11 approvati manualmente a 1536x735.
     // Solo le 11 card cambiano col modulo; campo, panchina e comandi restano indipendenti.
     var best11Layouts = {
+        /* coordinate di riferimento 1907x905, calibrate sullo screenshot v72 */
         '352': [
-            [758,128],[542,192],[754,220],[967,179],
-            [406,403],[536,326],[762,307],[963,322],[1094,412],
-            [635,477],[845,540]
+            [950,365],
+            [565,438],[950,438],[1335,438],
+            [545,585],[735,550],[950,585],[1165,550],[1355,585],
+            [750,690],[1150,690]
         ],
         '442': [
-            [758,144],[472,213],[664,225],[851,226],[1044,213],
-            [431,403],[643,333],[847,333],[1068,395],
-            [631,472],[839,472]
+            [950,365],
+            [555,445],[815,430],[1085,430],[1345,445],
+            [590,570],[820,535],[1080,535],[1310,570],
+            [790,685],[1110,685]
         ],
         '433': [
-            [761,140],[461,240],[649,215],[834,216],[1028,245],
-            [503,351],[746,322],[949,359],
-            [402,467],[744,501],[1089,466]
+            [950,365],
+            [555,445],[815,430],[1085,430],[1345,445],
+            [690,560],[950,525],[1210,560],
+            [650,690],[950,715],[1250,690]
         ],
         '343': [
-            [754,141],[540,221],[754,222],[965,223],
-            [412,328],[627,325],[847,329],[1059,331],
-            [494,452],[746,496],[1001,441]
+            [950,365],
+            [650,445],[950,425],[1250,445],
+            [560,575],[820,535],[1080,535],[1340,575],
+            [680,690],[950,715],[1220,690]
         ]
     };
     var approvedLayout = best11Layouts[bestModulo] || best11Layouts['352'];
     var viewportW = 1536, viewportH = 735;
 
     players.forEach(function(g, playerIndex) {
-        var pos = approvedLayout[playerIndex] || [viewportW/2, viewportH/2];
+        var basePos = approvedLayout[playerIndex] || [1907/2,905/2];
+        var pos = [
+            basePos[0] * (window.innerWidth / 1907),
+            basePos[1] * (window.innerHeight / 905)
+        ];
         var el = document.createElement('div');
         el.className = 'pitch-player';
         // Coordinate esatte approvate nei PAGE LAYOUT a 1536x735.
         // Non reinterpretarle: devono coincidere con le posizioni impostate manualmente.
         el.style.setProperty('position','fixed','important');
         el.style.setProperty('left',pos[0] + 'px','important');
-        el.style.setProperty('top',(pos[1] + (window.innerWidth > 700 ? 34 : 0)) + 'px','important');
+        el.style.setProperty('top',pos[1] + 'px','important');
         el.style.setProperty('margin','0','important');
 
         var rl = g.ruolo === 'p' ? 'POR' : g.ruolo === 'd' ? 'DIF' : g.ruolo === 'c' ? 'CEN' : 'ATT';
