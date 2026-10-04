@@ -5198,6 +5198,36 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-editor-top-fast-v82">
+@media(max-width:700px){
+  #best11-direct-editor-toggle{
+    top:4px!important;
+    bottom:auto!important;
+    right:5px!important;
+    height:27px!important;
+    padding:3px 6px!important;
+    font-size:8px!important;
+  }
+  #best11-copy-coordinates{
+    top:4px!important;
+    bottom:auto!important;
+    right:142px!important;
+    height:27px!important;
+    padding:3px 6px!important;
+    font-size:8px!important;
+  }
+
+  /* durante l'editing niente transizioni/animazioni: il box segue il dito subito */
+  body.best11-direct-edit #page-best11 .best11-controls,
+  body.best11-direct-edit #page-best11 .best11-bench{
+    transition:none!important;
+    animation:none!important;
+    will-change:left,top,width,height!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -7263,7 +7293,7 @@ caricaDatiBorrachos()
       width:box.getBoundingClientRect().width,
       height:box.getBoundingClientRect().height
     };
-    try{box.setPointerCapture(e.pointerId);}catch(_){}
+    state.dx=0; state.dy=0; state.raf=0;
   }
 
   function move(e){
@@ -7273,8 +7303,14 @@ caricaDatiBorrachos()
     var el=state.el;
 
     if(state.mode==='drag'){
-      el.style.setProperty('left',(state.left+dx)+'px','important');
-      el.style.setProperty('top',(state.top+dy)+'px','important');
+      state.dx=dx; state.dy=dy;
+      if(!state.raf){
+        state.raf=requestAnimationFrame(function(){
+          if(!state)return;
+          state.el.style.setProperty('transform','translate3d('+state.dx+'px,'+state.dy+'px,0)','important');
+          state.raf=0;
+        });
+      }
       return;
     }
 
@@ -7369,7 +7405,15 @@ caricaDatiBorrachos()
   }
 
   function up(){
-    if(state) saveBoxes();
+    if(state){
+      if(state.mode==='drag'){
+        if(state.raf) cancelAnimationFrame(state.raf);
+        state.el.style.setProperty('transform','none','important');
+        state.el.style.setProperty('left',(state.left+(state.dx||0))+'px','important');
+        state.el.style.setProperty('top',(state.top+(state.dy||0))+'px','important');
+      }
+      saveBoxes();
+    }
     state=null;
   }
 
