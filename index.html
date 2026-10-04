@@ -4959,43 +4959,20 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 
-<style id="borrachos-best11-tabellone-anamorfico-v73">
-@media(min-width:701px){
+<style id="borrachos-best11-mobile-controls-up-v74">
+@media(max-width:700px){
   #page-best11 .best11-controls{
-    position:fixed!important;
-
-    /* area di riferimento del tabellone sinistro nello screenshot */
-    left:18px!important;
-    top:153px!important;
-    width:350px!important;
-    height:535px!important;
-
-    box-sizing:border-box!important;
-    margin:0!important;
-    padding:18px 24px 24px 35px!important;
-
-    /* il pannello segue i quattro lati del tabellone nello stadio */
-    clip-path:polygon(5% 0%, 100% 2.5%, 95% 94%, 0% 100%)!important;
-
-    /* lieve anamorfosi/prospettiva verso il centro del campo */
-    transform-origin:left center!important;
-    transform:perspective(1200px) rotateY(-4deg) skewY(-1.2deg)!important;
-
-    overflow:hidden!important;
-    z-index:30!important;
+    bottom:122px!important;
   }
+}
+</style>
 
-  /* il contenuto sfrutta tutta la superficie del tabellone */
-  #page-best11 .best11-controls .best11-choice-unit,
-  #page-best11 .best11-controls .best11-choice-title,
-  #page-best11 .best11-controls .subnav,
-  #page-best11 .best11-controls .subnav-btn{
-    max-width:100%!important;
-    box-sizing:border-box!important;
-  }
 
-  #page-best11 .best11-controls .subnav-btn{
-    width:100%!important;
+<style id="borrachos-best11-mobile-bench-up-v75">
+@media(max-width:700px){
+  #page-best11 .best11-bench{
+    bottom:122px!important;
+    top:auto!important;
   }
 }
 </style>
