@@ -4515,6 +4515,132 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-v54">
+@media(max-width:700px){
+  /* BEST 11 mobile: usa davvero i 390px disponibili */
+  #page-best11{
+    height:calc(100dvh - 68px)!important;
+    max-height:none!important;
+    min-height:760px!important;
+    width:100%!important;
+    overflow:hidden!important;
+    background-position:center top!important;
+    background-size:auto 100%!important;
+  }
+  #page-best11 .best11-layout{
+    position:relative!important;
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    overflow:hidden!important;
+  }
+
+  /* Comandi compatti sulla sinistra */
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:5px!important;
+    top:58px!important;
+    width:70px!important;
+    height:auto!important;
+    max-height:none!important;
+    padding:5px!important;
+    gap:1px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+    z-index:20!important;
+  }
+  #page-best11 .best11-controls .best11-label{
+    font-size:9px!important;
+    line-height:1!important;
+    margin:3px 0 2px!important;
+    letter-spacing:.7px!important;
+  }
+  #page-best11 .best11-controls .subnav.best11-v{
+    display:flex!important;
+    flex-direction:column!important;
+    flex-wrap:nowrap!important;
+    gap:2px!important;
+    margin:0 0 3px!important;
+  }
+  #page-best11 .best11-controls .subnav.best11-v .subnav-btn{
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:3px 2px!important;
+    margin:0!important;
+    font-size:9px!important;
+    line-height:1.02!important;
+    white-space:normal!important;
+  }
+  #page-best11 .best11-presenze-unit{
+    transform:scale(.78)!important;
+    transform-origin:top left!important;
+    width:128%!important;
+    margin-bottom:-12px!important;
+  }
+
+  /* Campo centrale: lascia spazio a comandi e panchina */
+  #page-best11 #pitch-best11{
+    position:absolute!important;
+    left:78px!important;
+    top:70px!important;
+    width:230px!important;
+    height:570px!important;
+    max-width:none!important;
+    aspect-ratio:auto!important;
+    overflow:visible!important;
+    z-index:10!important;
+  }
+
+  /* Panchina tutta dentro lo schermo */
+  #page-best11 .best11-bench{
+    position:absolute!important;
+    right:4px!important;
+    left:auto!important;
+    top:82px!important;
+    width:76px!important;
+    max-height:none!important;
+    padding:4px 3px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    z-index:20!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:9px!important;
+    line-height:1.05!important;
+    margin-bottom:3px!important;
+  }
+  #page-best11 .bench-player{
+    display:grid!important;
+    grid-template-columns:27px 1fr!important;
+    min-height:38px!important;
+    height:38px!important;
+    gap:2px!important;
+    padding:1px!important;
+  }
+  #page-best11 .bench-logo{
+    width:25px!important;height:25px!important;
+  }
+  #page-best11 .bench-name{display:none!important;}
+  #page-best11 .bench-role{
+    display:block!important;
+    font-size:8px!important;
+    text-align:center!important;
+  }
+  #page-best11 .bench-vote{
+    display:none!important;
+  }
+
+  /* Le targhette devono stare leggibili anche ridotte */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.58)!important;
+    transform-origin:center center!important;
+    z-index:15!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6306,6 +6432,44 @@ caricaDatiBorrachos()
   window.addEventListener('load',aggiornaHeaderRisultatiMobile);
   window.addEventListener('resize',aggiornaHeaderRisultatiMobile);
   aggiornaHeaderRisultatiMobile();
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-position-v54">
+(function(){
+  var layouts={
+    '352':[[50,8],[18,24],[50,24],[82,24],[10,48],[30,43],[50,40],[70,43],[90,48],[35,68],[65,68]],
+    '442':[[50,8],[12,25],[37,25],[63,25],[88,25],[15,48],[38,43],[62,43],[85,48],[35,68],[65,68]],
+    '433':[[50,8],[12,25],[37,23],[63,23],[88,25],[22,46],[50,42],[78,46],[18,68],[50,72],[82,68]],
+    '343':[[50,8],[20,25],[50,23],[80,25],[12,47],[37,43],[63,43],[88,47],[20,68],[50,72],[80,68]]
+  };
+  function place(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch)return;
+    var key=(typeof bestModulo!=='undefined' ? bestModulo : '352');
+    var pos=layouts[key]||layouts['352'];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      var p=pos[i]; if(!p)return;
+      el.style.setProperty('position','absolute','important');
+      el.style.setProperty('left',p[0]+'%','important');
+      el.style.setProperty('top',p[1]+'%','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+  var old=window.updateBest11;
+  if(typeof old==='function'){
+    window.updateBest11=function(){
+      var r=old.apply(this,arguments);
+      place();
+      requestAnimationFrame(place);
+      return r;
+    };
+  }
+  window.addEventListener('resize',place);
+  window.addEventListener('orientationchange',place);
+  window.addEventListener('load',place);
 })();
 </script>
 
