@@ -4315,6 +4315,58 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-live-mobile-v48">
+@media(max-width:700px){
+  /* Tabellone LIVE: ogni partita = due righe, una per squadra */
+  #page-live .live-scoreboard{
+    width:100%!important;
+    max-width:100%!important;
+  }
+  #page-live .live-scoreboard table{
+    width:100%!important;
+    table-layout:fixed!important;
+  }
+  #page-live .live-scoreboard th:nth-child(1),
+  #page-live .live-scoreboard td:nth-child(1){width:68%!important;text-align:left!important;}
+  #page-live .live-scoreboard th:nth-child(2),
+  #page-live .live-scoreboard td:nth-child(2){width:18%!important;text-align:center!important;}
+  #page-live .live-scoreboard th:nth-child(3),
+  #page-live .live-scoreboard td:nth-child(3){width:14%!important;text-align:center!important;}
+  #page-live .live-scoreboard .ris-team{
+    justify-content:flex-start!important;
+    min-width:0!important;
+  }
+  #page-live .live-scoreboard .ris-team span{
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+  #page-live .live-scoreboard .live-match-first td{
+    border-top:3px solid #ffd54a!important;
+  }
+  #page-live .live-scoreboard .live-match-second td{
+    border-top:1px solid #333!important;
+    border-bottom:5px solid #090807!important;
+  }
+
+  /* Dettaglio partita: nomi giocatori molto meno larghi */
+  #page-live .live-h2h .live-col-name{width:34%!important;}
+  #page-live .live-h2h .live-col-vote{width:16%!important;}
+  #page-live .live-h2h th,
+  #page-live .live-h2h td{
+    padding-left:3px!important;
+    padding-right:3px!important;
+  }
+  #page-live .live-h2h .live-name-home,
+  #page-live .live-h2h .live-name-away{
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -4369,7 +4421,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 <div id="page-live" class="page">
   <div class="live-head"><div class="live-title">LIVE BORRACHOS</div><div class="live-meta" id="live-meta">Caricamento…</div></div>
   <div id="live-home">
-    <div class="live-scoreboard"><table><thead><tr><th></th><th>Pt</th><th>Gol</th><th>Gol</th><th>Pt</th><th></th></tr></thead><tbody id="live-scoreboard-body"></tbody></table></div>
+    <div class="live-scoreboard"><table><thead><tr><th>Squadra</th><th>Pt</th><th>Gol</th></tr></thead><tbody id="live-scoreboard-body"></tbody></table></div>
   </div>
   <div id="live-detail" style="display:none">
     <div class="live-detail-layout">
@@ -4957,7 +5009,8 @@ function caricaLive(){
             var ap=(a.totale!=null&&Number(a.totale)!==0)?Number(a.totale).toFixed(1):'—';
             var hg=(p.risultato_reale&&p.risultato_reale.gol_casa!=null)?p.risultato_reale.gol_casa:(p.risultato&&p.risultato.gol_casa!=null?p.risultato.gol_casa:'—');
             var ag=(p.risultato_reale&&p.risultato_reale.gol_trasferta!=null)?p.risultato_reale.gol_trasferta:(p.risultato&&p.risultato.gol_trasferta!=null?p.risultato.gol_trasferta:'—');
-            return '<tr onclick="mostraLivePartita('+i+')"><td><div class="ris-team casa"><span>'+liveEsc(h.nome||'—')+'</span><img class="ris-logo" src="'+logoUrl(h.nome||'')+'" onerror="this.remove()"></div></td><td>'+hp+'</td><td class="live-goal">'+hg+'</td><td class="live-goal">'+ag+'</td><td>'+ap+'</td><td><div class="ris-team trasferta"><img class="ris-logo" src="'+logoUrl(a.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(a.nome||'—')+'</span></div></td></tr>';
+            return '<tr class="live-team-row live-match-first" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(h.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(h.nome||'—')+'</span></div></td><td>'+hp+'</td><td class="live-goal">'+hg+'</td></tr>'+
+                   '<tr class="live-team-row live-match-second" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(a.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(a.nome||'—')+'</span></div></td><td>'+ap+'</td><td class="live-goal">'+ag+'</td></tr>';
         }).join('');
         if(livePartitaAttiva>=livePartiteCache.length)livePartitaAttiva=0;
         if(!livePartiteCache.length) grid.innerHTML='<div class="live-error">Nessuna partita disponibile.</div>';
