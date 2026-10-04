@@ -5171,6 +5171,33 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-autosave-v81">
+@media(max-width:700px){
+  #best11-copy-coordinates{
+    display:block!important;
+    position:fixed!important;
+    right:6px!important;
+    bottom:40px!important;
+    z-index:1000000!important;
+    width:auto!important;
+    height:28px!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:4px 8px!important;
+    margin:0!important;
+    border:2px solid #ffe600!important;
+    border-radius:5px!important;
+    background:#111!important;
+    color:#fff!important;
+    font:800 9px/1 Arial,sans-serif!important;
+  }
+}
+@media(min-width:701px){
+  #best11-copy-coordinates{display:none!important;}
+}
+</style>
+
 </head>
 <body>
 
@@ -7269,7 +7296,82 @@ caricaDatiBorrachos()
     el.style.setProperty('height',h+'px','important');
   }
 
-  function up(){state=null;}
+
+  var STORE_KEY='borrachos_best11_mobile_boxes_v81';
+
+  function boxData(el){
+    if(!el)return null;
+    var cs=getComputedStyle(el);
+    return {
+      left:parseFloat(cs.left)||0,
+      top:parseFloat(cs.top)||0,
+      width:el.getBoundingClientRect().width,
+      height:el.getBoundingClientRect().height
+    };
+  }
+
+  function saveBoxes(){
+    var p=bestPage(); if(!p)return;
+    var data={
+      controls:boxData(p.querySelector('.best11-controls')),
+      bench:boxData(p.querySelector('.best11-bench'))
+    };
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(data));}catch(_){}
+  }
+
+  function applyBox(el,d){
+    if(!el||!d)return;
+    el.style.setProperty('position','absolute','important');
+    el.style.setProperty('left',d.left+'px','important');
+    el.style.setProperty('top',d.top+'px','important');
+    el.style.setProperty('right','auto','important');
+    el.style.setProperty('bottom','auto','important');
+    el.style.setProperty('width',d.width+'px','important');
+    el.style.setProperty('height',d.height+'px','important');
+    el.style.setProperty('min-height','0','important');
+    el.style.setProperty('max-height','none','important');
+  }
+
+  function restoreBoxes(){
+    if(!mobile())return;
+    var p=bestPage(); if(!p)return;
+    try{
+      var d=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+      if(!d)return;
+      applyBox(p.querySelector('.best11-controls'),d.controls);
+      applyBox(p.querySelector('.best11-bench'),d.bench);
+    }catch(_){}
+  }
+
+  function copyCoordinates(){
+    var p=bestPage(); if(!p)return;
+    var c=boxData(p.querySelector('.best11-controls'));
+    var b=boxData(p.querySelector('.best11-bench'));
+    var msg='BEST11 MOBILE\n'+
+      'TASTI SCELTA: X '+Math.round(c.left)+' Y '+Math.round(c.top)+' W '+Math.round(c.width)+' H '+Math.round(c.height)+'\n'+
+      'PANCHINA: X '+Math.round(b.left)+' Y '+Math.round(b.top)+' W '+Math.round(b.width)+' H '+Math.round(b.height);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(msg).then(function(){
+        var bt=document.getElementById('best11-copy-coordinates');
+        if(bt){var old=bt.textContent;bt.textContent='COPIATO ✓';setTimeout(function(){bt.textContent=old;},1200);}
+      }).catch(function(){prompt('Copia queste coordinate:',msg);});
+    }else prompt('Copia queste coordinate:',msg);
+  }
+
+  function ensureCopyButton(){
+    if(document.getElementById('best11-copy-coordinates'))return;
+    var b=document.createElement('button');
+    b.id='best11-copy-coordinates';
+    b.type='button';
+    b.textContent='COPIA COORDINATE';
+    b.onclick=function(e){e.preventDefault();e.stopPropagation();copyCoordinates();};
+    document.body.appendChild(b);
+  }
+
+  function up(){
+    if(state) saveBoxes();
+    state=null;
+  }
 
   function init(){
     if(!mobile()) return;
@@ -7278,6 +7380,8 @@ caricaDatiBorrachos()
     if(!p)return;
     addHandles(p.querySelector('.best11-controls'));
     addHandles(p.querySelector('.best11-bench'));
+    restoreBoxes();
+    ensureCopyButton();
   }
 
   document.addEventListener('pointerdown',down,true);
