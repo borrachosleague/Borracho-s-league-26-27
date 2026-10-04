@@ -4942,6 +4942,20 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-spacing-v62">
+@media(max-width:700px){
+  /* Più spazio reale fra le targhette, senza cambiare i dati */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.455)!important;
+  }
+  #page-best11 #pitch-best11{
+    left:66px!important;
+    width:256px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -6890,6 +6904,66 @@ caricaDatiBorrachos()
   window.addEventListener('load',place60);
   window.addEventListener('resize',place60);
   window.addEventListener('orientationchange',place60);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-position-v62">
+(function(){
+  /* 3-5-2 trattato separatamente: la linea a 5 è la più critica.
+     Difesa a 3 larga; centrocampo a 5 distribuito quasi su tutta la larghezza. */
+  var layouts62={
+    '352':[
+      [50,16],
+      [7,31],[50,31],[93,31],
+      [1,55],[25,48],[50,43],[75,48],[99,55],
+      [26,74],[74,74]
+    ],
+    '442':[
+      [50,16],
+      [1,32],[33,32],[67,32],[99,32],
+      [2,55],[33,48],[67,48],[98,55],
+      [27,74],[73,74]
+    ],
+    '433':[
+      [50,16],
+      [1,32],[33,30],[67,30],[99,32],
+      [10,52],[50,46],[90,52],
+      [3,74],[50,78],[97,74]
+    ],
+    '343':[
+      [50,16],
+      [7,32],[50,29],[93,32],
+      [1,53],[32,47],[68,47],[99,53],
+      [7,74],[50,78],[93,74]
+    ]
+  };
+  function place62(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    var pitch=document.getElementById('pitch-best11');
+    if(!pitch)return;
+    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
+    var pos=layouts62[key]||layouts62['352'];
+    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
+      var p=pos[i]; if(!p)return;
+      el.style.setProperty('position','absolute','important');
+      el.style.setProperty('left',p[0]+'%','important');
+      el.style.setProperty('top',p[1]+'%','important');
+      el.style.setProperty('margin','0','important');
+    });
+  }
+  var old62=window.updateBest11;
+  if(typeof old62==='function'){
+    window.updateBest11=function(){
+      var r=old62.apply(this,arguments);
+      place62();
+      requestAnimationFrame(place62);
+      return r;
+    };
+  }
+  window.addEventListener('load',place62);
+  window.addEventListener('resize',place62);
+  window.addEventListener('orientationchange',place62);
 })();
 </script>
 
