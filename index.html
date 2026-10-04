@@ -4367,6 +4367,23 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-classifica-390-v49">
+/* Adattamento della Classifica approvata agli schermi da 390px.
+   Scaliamo l'intero blocco insieme: lavagna, dati, loghi, Formula 1,
+   Battle Royale e pulsanti mantengono esattamente le loro proporzioni. */
+@media (max-width:400px){
+  #page-classifica .classifica-layout{
+    width:500px!important;
+    transform:scale(.78)!important;
+    transform-origin:top left!important;
+  }
+  #page-classifica{
+    overflow-x:hidden!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
