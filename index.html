@@ -838,6 +838,13 @@
             background-color: #1688F8 !important;
             color: #FFFFFF !important;
         }
+
+        /* Storico Borrachos: evidenzia solo il nome della ex fantasquadra. */
+        #tabella-giocatori tbody td.fantasquadra-ex {
+            color: #f4b942 !important;
+            font-weight: 800;
+            font-style: italic;
+        }
         #tabella-giocatori tbody tr.riga-svincolato:hover > td {
             background-color: #0F7FEA !important;
             color: #FFFFFF !important;
@@ -5737,6 +5744,7 @@ document.addEventListener("DOMContentLoaded", borrachosEditorApplyAuth);
 
 let datiSquadre = [];
 let datiGiocatori = [];
+let datiGiocatoriStorici = [];
 let datiGiocatoriSerieA = [];
 let datiGiocatoriSvincolati = [];
 let mappaBorrachoPerNome = Object.create(null);
@@ -6417,7 +6425,10 @@ function elencoGiocatoriAttivo() {
     var gruppo = document.getElementById('gruppo-giocatori').value;
     if (gruppo === 'seriea') return datiGiocatoriSerieA;
     if (gruppo === 'svincolati') return datiGiocatoriSvincolati;
-    return datiGiocatori;
+    // Le classifiche Borracho sono storiche: mantengono anche i periodi
+    // trascorsi nelle ex fantasquadre. Best 11 e rose continuano invece
+    // a usare datiGiocatori (le 250 rose correnti).
+    return datiGiocatoriStorici;
 }
 
 function popolaCriteriGiocatori() {
@@ -6558,7 +6569,9 @@ function updateGiocatori() {
         var classeRiga = '';
         if (gruppoAttivo === 'seriea' && !borracho) classeRiga = ' class="riga-svincolato"';
         if (gruppoAttivo === 'svincolati') classeRiga = ' class="riga-svincolato"';
-        righeHtml.push('<tr' + classeRiga + '><td class="pos">' + pos + '</td>' + logoCell + '<td>' + g.nome + '</td><td>' + g.squadra + '</td><td>' + valoreMostrato + '</td>' + (isMedia ? '<td>' + presenzeMostrate + '</td>' : '') + '</tr>');
+        var classeSquadra = (gruppoAttivo === 'borracho' && g.ex) ? ' class="fantasquadra-ex"' : '';
+        var titoloSquadra = (gruppoAttivo === 'borracho' && g.ex) ? ' title="Ex fantasquadra"' : '';
+        righeHtml.push('<tr' + classeRiga + '><td class="pos">' + pos + '</td>' + logoCell + '<td>' + g.nome + '</td><td' + classeSquadra + titoloSquadra + '>' + g.squadra + '</td><td>' + valoreMostrato + '</td>' + (isMedia ? '<td>' + presenzeMostrate + '</td>' : '') + '</tr>');
     });
     tbody.innerHTML = righeHtml.join('');
 }
@@ -7055,6 +7068,7 @@ caricaDatiBorrachos()
         uniformaNomiSquadre(d);
         datiSquadre = d.squadre;
         datiGiocatori = d.giocatori || [];
+        datiGiocatoriStorici = d.giocatori_storici || datiGiocatori;
         datiGiocatoriSerieA = d.giocatori_seriea || [];
         datiGiocatoriSvincolati = d.giocatori_svincolati || [];
 
