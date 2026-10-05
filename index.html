@@ -7241,120 +7241,13 @@ caricaDatiBorrachos()
 </script>
 
 
-<script id="borrachos-best11-mobile-position-v54">
-(function(){
-  var layouts={
-    '352':[[50,8],[18,24],[50,24],[82,24],[10,48],[30,43],[50,40],[70,43],[90,48],[35,68],[65,68]],
-    '442':[[50,8],[12,25],[37,25],[63,25],[88,25],[15,48],[38,43],[62,43],[85,48],[35,68],[65,68]],
-    '433':[[50,8],[12,25],[37,23],[63,23],[88,25],[22,46],[50,42],[78,46],[18,68],[50,72],[82,68]],
-    '343':[[50,8],[20,25],[50,23],[80,25],[12,47],[37,43],[63,43],[88,47],[20,68],[50,72],[80,68]]
-  };
-  function place(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
-    var pitch=document.getElementById('pitch-best11');
-    if(!pitch)return;
-    var key=(typeof bestModulo!=='undefined' ? bestModulo : '352');
-    var pos=layouts[key]||layouts['352'];
-    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
-      var p=pos[i]; if(!p)return;
-      el.style.setProperty('position','absolute','important');
-      el.style.setProperty('left',p[0]+'%','important');
-      el.style.setProperty('top',p[1]+'%','important');
-      el.style.setProperty('margin','0','important');
-    });
-  }
-  var old=window.updateBest11;
-  if(typeof old==='function'){
-    window.updateBest11=function(){
-      var r=old.apply(this,arguments);
-      place();
-      requestAnimationFrame(place);
-      return r;
-    };
-  }
-  window.addEventListener('resize',place);
-  window.addEventListener('orientationchange',place);
-  window.addEventListener('load',place);
-})();
-</script>
 
 
-<script id="borrachos-best11-mobile-position-v55">
-(function(){
-  /* Formazione abbassata: il portiere parte davanti alla porta superiore. */
-  var layouts55={
-    '352':[[50,17],[18,31],[50,31],[82,31],[10,53],[30,48],[50,45],[70,48],[90,53],[35,72],[65,72]],
-    '442':[[50,17],[12,32],[37,32],[63,32],[88,32],[15,53],[38,48],[62,48],[85,53],[35,72],[65,72]],
-    '433':[[50,17],[12,32],[37,30],[63,30],[88,32],[22,51],[50,47],[78,51],[18,72],[50,76],[82,72]],
-    '343':[[50,17],[20,32],[50,30],[80,32],[12,52],[37,48],[63,48],[88,52],[20,72],[50,76],[80,72]]
-  };
-  function place55(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
-    var pitch=document.getElementById('pitch-best11');
-    if(!pitch)return;
-    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
-    var pos=layouts55[key]||layouts55['352'];
-    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
-      var p=pos[i]; if(!p)return;
-      el.style.setProperty('position','absolute','important');
-      el.style.setProperty('left',p[0]+'%','important');
-      el.style.setProperty('top',p[1]+'%','important');
-      el.style.setProperty('margin','0','important');
-    });
-  }
-  var old55=window.updateBest11;
-  if(typeof old55==='function'){
-    window.updateBest11=function(){
-      var r=old55.apply(this,arguments);
-      place55();
-      requestAnimationFrame(place55);
-      return r;
-    };
-  }
-  window.addEventListener('load',place55);
-  window.addEventListener('resize',place55);
-  window.addEventListener('orientationchange',place55);
-})();
-</script>
 
 
-<script id="borrachos-best11-mobile-position-v56">
-(function(){
-  /* Più aria orizzontale tra le targhette, sfruttando lo spazio disponibile. */
-  var layouts56={
-    '352':[[50,17],[12,31],[50,31],[88,31],[4,53],[27,48],[50,45],[73,48],[96,53],[31,72],[69,72]],
-    '442':[[50,17],[5,32],[35,32],[65,32],[95,32],[7,53],[36,48],[64,48],[93,53],[31,72],[69,72]],
-    '433':[[50,17],[5,32],[35,30],[65,30],[95,32],[15,51],[50,47],[85,51],[8,72],[50,76],[92,72]],
-    '343':[[50,17],[12,32],[50,30],[88,32],[4,52],[34,48],[66,48],[96,52],[12,72],[50,76],[88,72]]
-  };
-  function place56(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
-    var pitch=document.getElementById('pitch-best11');
-    if(!pitch)return;
-    var key=(typeof bestModulo!=='undefined'?bestModulo:'352');
-    var pos=layouts56[key]||layouts56['352'];
-    pitch.querySelectorAll('.pitch-player').forEach(function(el,i){
-      var p=pos[i]; if(!p)return;
-      el.style.setProperty('position','absolute','important');
-      el.style.setProperty('left',p[0]+'%','important');
-      el.style.setProperty('top',p[1]+'%','important');
-      el.style.setProperty('margin','0','important');
-    });
-  }
-  var old56=window.updateBest11;
-  if(typeof old56==='function'){
-    window.updateBest11=function(){
-      var r=old56.apply(this,arguments);
-      place56();
-      requestAnimationFrame(place56);
-      return r;
-    };
-  }
-  window.addEventListener('load',place56);
-  window.addEventListener('resize',place56);
-  window.addEventListener('orientationchange',place56);
-})();
-</script>
+
+
+
 
 
 <script id="borrachos-best11-mobile-safe-position-v66">
