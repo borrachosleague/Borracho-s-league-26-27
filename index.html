@@ -7607,7 +7607,18 @@ caricaDatiBorrachos()
    if(st.drag){x.style.setProperty('transform','none','important');x.style.setProperty('left',(st.l+st.dx)+'px','important');x.style.setProperty('top',(st.t+st.dy)+'px','important');}
    save();st=null;
  },true);
- function init(){if(!mob())return;addHandles();restore();buttons();}
+ function init(){
+   if(!mob())return;
+   /* Layout mobile bloccato: elimina eventuali vecchie coordinate salvate
+      dall'editor e usa sempre la posizione definitiva del CSS v87. */
+   try{localStorage.removeItem(KEY);}catch(_){}
+   const x=el();
+   if(x){
+     ['position','left','top','right','bottom','width','height','transform'].forEach(k=>x.style.removeProperty(k));
+   }
+   addHandles();
+   buttons();
+ }
  addEventListener('load',init);setTimeout(init,300);
 })();
 </script>
