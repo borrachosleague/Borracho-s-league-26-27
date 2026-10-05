@@ -263,6 +263,19 @@ giocatori_totali = defaultdict(lambda: {
     "squadra": "", "ruolo": ""
 })
 
+# Storico Borrachos separato per coppia (giocatore, fantasquadra).
+# Serve a conservare i periodi nelle vecchie fantasquadre dopo svincoli/trasferimenti.
+def _nuove_stat_giocatore():
+    return {
+        "voti": [], "fvoti": [], "gol": 0, "assist": 0,
+        "golsub": 0, "rigseg": 0, "rigsba": 0, "rigpar": 0,
+        "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
+        "squadra": "", "ruolo": ""
+    }
+
+giocatori_storici_tit = defaultdict(_nuove_stat_giocatore)
+giocatori_storici_tot = defaultdict(_nuove_stat_giocatore)
+
 # Gol per reparto per squadra
 gol_reparto = defaultdict(lambda: {"d": 0, "c": 0, "a": 0})   
 
@@ -292,6 +305,17 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
     ruolo = row[3]
     g["ruolo"] = str(ruolo).strip().lower() if ruolo is not None else ""
 
+    # STORICO: la chiave comprende la fantasquadra, quindi un trasferimento
+    # crea due periodi distinti invece di spostare retroattivamente le statistiche.
+    fs = str(fantasquadra).strip()
+    chiave_storica = (nome, fs)
+    gst = giocatori_storici_tit[chiave_storica]
+    gst["squadra"] = fs
+    gst["ruolo"] = g["ruolo"]
+    gsall = giocatori_storici_tot[chiave_storica]
+    gsall["squadra"] = fs
+    gsall["ruolo"] = g["ruolo"]
+
     # TOTALI: usa Voto (F) e fanta voto generale (V), senza filtro FantaTit
     gt = giocatori_totali[nome]
     gt["squadra"] = str(fantasquadra).strip()
@@ -303,6 +327,7 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             v = float(str(voto_tot).replace(",", "."))
             if v > 0:
                 gt["voti"].append(v)
+                gsall["voti"].append(v)
         except (ValueError, TypeError):
             pass
 
@@ -312,6 +337,7 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             fv = float(str(fvoto_tot).replace(",", "."))
             if fv > 0:
                 gt["fvoti"].append(fv)
+                gsall["fvoti"].append(fv)
         except (ValueError, TypeError):
             pass
 
@@ -323,7 +349,9 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
         val_tot = row[idx]
         if val_tot is not None:
             try:
-                gt[chiave] += int(float(str(val_tot).replace(",", ".")))
+                bonus_val = int(float(str(val_tot).replace(",", ".")))
+                gt[chiave] += bonus_val
+                gsall[chiave] += bonus_val
             except (ValueError, TypeError):
                 pass
 
@@ -342,6 +370,7 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             v = float(str(voto).replace(",", "."))
             if v > 0:
                 g["voti"].append(v)
+                gst["voti"].append(v)
         except (ValueError, TypeError):
             pass
 
@@ -351,12 +380,15 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             fv = float(str(fvoto).replace(",", "."))
             if fv > 0:
                 g["fvoti"].append(fv)
+                gst["fvoti"].append(fv)
         except (ValueError, TypeError):
             pass
 
     val = row[18]
     if val is not None:
-        try: g["gol"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["gol"] += stat_val
+            gst["gol"] += stat_val
         except: pass
     # Gol per reparto
     if val is not None:
@@ -369,50 +401,96 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
         except: pass   
     val = row[14]
     if val is not None:
-        try: g["assist"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["assist"] += stat_val
+            gst["assist"] += stat_val
         except: pass
 
     val = row[7]
     if val is not None:
-        try: g["golsub"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["golsub"] += stat_val
+            gst["golsub"] += stat_val
         except: pass
 
     val = row[10]
     if val is not None:
-        try: g["rigseg"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["rigseg"] += stat_val
+            gst["rigseg"] += stat_val
         except: pass
 
     val = row[9]
     if val is not None:
-        try: g["rigsba"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["rigsba"] += stat_val
+            gst["rigsba"] += stat_val
         except: pass
 
     val = row[8]
     if val is not None:
-        try: g["rigpar"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["rigpar"] += stat_val
+            gst["rigpar"] += stat_val
         except: pass
 
     val = row[11]
     if val is not None:
-        try: g["autogol"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["autogol"] += stat_val
+            gst["autogol"] += stat_val
         except: pass
 
     val = row[12]
     if val is not None:
-        try: g["amm"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["amm"] += stat_val
+            gst["amm"] += stat_val
         except: pass
 
     val = row[13]
     if val is not None:
-        try: g["esp"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["esp"] += stat_val
+            gst["esp"] += stat_val
         except: pass
 
     val = row[16]
     if val is not None:
-        try: g["cleansheet"] += int(float(str(val).replace(",", ".")))
+        try: stat_val = int(float(str(val).replace(",", ".")))
+            g["cleansheet"] += stat_val
+            gst["cleansheet"] += stat_val
         except: pass
 
 wb_borr.close()
+
+# Costruisce la classifica storica per singolo periodo di appartenenza.
+# "ex" verrà valorizzato più avanti confrontando questo storico con le rose ufficiali correnti.
+lista_giocatori_storici = []
+for (nome, squadra_storica), hs in giocatori_storici_tit.items():
+    ht = giocatori_storici_tot[(nome, squadra_storica)]
+    nv = len(hs["voti"])
+    nfv = len(hs["fvoti"])
+    lista_giocatori_storici.append({
+        "nome": nome,
+        "squadra": squadra_storica,
+        "ruolo": hs["ruolo"],
+        "prestit": nv,
+        "presfvtit": nfv,
+        "mediavototit": round(sum(hs["voti"]) / nv, 2) if nv else 0,
+        "fvototit": round(sum(hs["fvoti"]) / nfv, 2) if nfv else 0,
+        "goltit": hs["gol"], "assisttit": hs["assist"],
+        "golsubititit": hs["golsub"], "cleansheettit": hs["cleansheet"],
+        "rigtit": hs["rigseg"], "risgsbtit": hs["rigsba"], "rigpartit": hs["rigpar"],
+        "autgoltit": hs["autogol"], "ammtit": hs["amm"], "esptit": hs["esp"],
+        "prestot": len(ht["voti"]), "presfvtot": len(ht["fvoti"]),
+        "mediavototot": round(sum(ht["voti"]) / len(ht["voti"]), 2) if ht["voti"] else 0,
+        "fvototot": round(sum(ht["fvoti"]) / len(ht["fvoti"]), 2) if ht["fvoti"] else 0,
+        "goltot": ht["gol"], "assisttot": ht["assist"],
+        "golsubititot": ht["golsub"], "cleansheettot": ht["cleansheet"],
+        "rigtot": ht["rigseg"], "risgsbtot": ht["rigsba"], "rigpartot": ht["rigpar"],
+        "autgoltot": ht["autogol"], "ammtot": ht["amm"], "esptot": ht["esp"]
+    })
 
 lista_giocatori = []
 for nome, g in giocatori.items():
@@ -766,7 +844,15 @@ if len(lista_giocatori) != len(roster_ufficiali):
         "dati.json NON viene sovrascritto."
     )
 
+# Marca come ex le appartenenze storiche che non coincidono con la rosa corrente.
+corrente_per_nome = {_norm_nome_fc(g["nome"]): g["squadra"] for g in lista_giocatori}
+for h in lista_giocatori_storici:
+    squadra_corrente = corrente_per_nome.get(_norm_nome_fc(h["nome"]))
+    h["ex"] = not squadra_corrente or _norm_nome_fc(squadra_corrente) != _norm_nome_fc(h["squadra"])
+lista_giocatori_storici.sort(key=lambda x: x["mediavototit"], reverse=True)
+
 print(f"Giocatori Borracho completi: {len(lista_giocatori)}")
+print(f"Righe storico Borracho: {len(lista_giocatori_storici)}")
 
 conteggio_ruoli_seriea = {r: sum(1 for g in giocatori_seriea if g.get("ruolo") == r) for r in ("p", "d", "c", "a")}
 senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
@@ -797,6 +883,7 @@ colonne_stat = [c for c in colonne_stat if c != "class"]
 dati = {
     "squadre": squadre,
     "giocatori": lista_giocatori,
+    "giocatori_storici": lista_giocatori_storici,
     "giocatori_seriea": giocatori_seriea,
     "giocatori_svincolati": giocatori_svincolati,
     "risultati": risultati,
