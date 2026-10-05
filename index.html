@@ -7518,13 +7518,17 @@ caricaDatiBorrachos()
 
   function init(){
     if(!mobile()) return;
-    ensureToggle();
+    /* I due pannelli mobile sono ormai bloccati: niente vecchie coordinate
+       dell'editor, così telefono reale e simulatore partono uguali. */
+    try{localStorage.removeItem(STORE_KEY);}catch(_){}
     var p=bestPage();
     if(!p)return;
-    addHandles(p.querySelector('.best11-controls'));
-    addHandles(p.querySelector('.best11-bench'));
-    restoreBoxes();
-    ensureCopyButton();
+    [p.querySelector('.best11-controls'),p.querySelector('.best11-bench')].forEach(function(el){
+      if(!el)return;
+      ['position','left','top','right','bottom','width','height','min-height','max-height','transform'].forEach(function(k){
+        el.style.removeProperty(k);
+      });
+    });
   }
 
   document.addEventListener('pointerdown',down,true);
