@@ -721,12 +721,34 @@ for g in lista_giocatori:
 # Completa giocatori con le rose ufficiali API. INSER DATA contiene lo storico
 # delle prestazioni e può non avere ancora una riga per chi non ha giocato:
 # quei giocatori entrano comunque con statistiche a zero.
-presenti_id = {g.get("id") for g in lista_giocatori if g.get("id") is not None}
+# La lista pubblica deve rappresentare la ROSA ATTUALE, mentre INSER DATA resta
+# lo storico delle prestazioni. Un giocatore svincolato non deve rimanere nella
+# rosa corrente solo perché compare nelle vecchie giornate di INSER DATA.
+#
+# Per i 250 giocatori attualmente tesserati conserviamo le statistiche storiche
+# già raccolte, ma forziamo la fantasquadra alla proprietà ufficiale corrente.
+# Gli ex giocatori restano fuori dalla rosa corrente: le loro vecchie righe in
+# INSER DATA continuano comunque ad alimentare le statistiche storiche di squadra.
+storico_by_id = {g.get("id"): g for g in lista_giocatori if g.get("id") is not None}
+storico_by_nome = {_norm_nome_fc(g["nome"]): g for g in lista_giocatori}
+lista_giocatori_attuali = []
+
 for rp in roster_ufficiali:
-    if rp["id"] in presenti_id:
-        continue
     info = listone_fc.get(_norm_nome_fc(rp["nome"])) or {}
-    lista_giocatori.append({
+    g = storico_by_id.get(rp["id"]) or storico_by_nome.get(_norm_nome_fc(rp["nome"]))
+    if g is not None:
+        g = dict(g)
+        g["squadra"] = rp["squadra"]
+        if not g.get("id"):
+            g["id"] = rp["id"]
+        if info.get("ruolo"):
+            g["ruolo"] = info["ruolo"]
+        g["qi"] = info.get("qi", g.get("qi", 0))
+        g["qa"] = info.get("qa", g.get("qa", 0))
+        lista_giocatori_attuali.append(g)
+        continue
+
+    lista_giocatori_attuali.append({
         "nome": rp["nome"], "squadra": rp["squadra"], "ruolo": info.get("ruolo", ""),
         "prestit": 0, "presfvtit": 0, "mediavototit": 0, "fvototit": 0,
         "goltit": 0, "assisttit": 0, "golsubititit": 0, "cleansheettit": 0,
@@ -736,7 +758,13 @@ for rp in roster_ufficiali:
         "rigtot": 0, "risgsbtot": 0, "rigpartot": 0, "autgoltot": 0, "ammtot": 0, "esptot": 0,
         "id": rp["id"], "qi": info.get("qi", 0), "qa": info.get("qa", 0)
     })
-    presenti_id.add(rp["id"])
+# Da qui in avanti "giocatori" significa esclusivamente i 250 tesserati attuali.
+lista_giocatori = lista_giocatori_attuali
+if len(lista_giocatori) != len(roster_ufficiali):
+    raise RuntimeError(
+        f"Controllo rose fallito: API={len(roster_ufficiali)} giocatori, JSON={len(lista_giocatori)}. "
+        "dati.json NON viene sovrascritto."
+    )
 
 print(f"Giocatori Borracho completi: {len(lista_giocatori)}")
 
