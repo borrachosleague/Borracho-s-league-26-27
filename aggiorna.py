@@ -793,6 +793,19 @@ giocatori_seriea = scarica_statistiche_statistiche_fc()
 # Per i ruoli P/D/C/A usiamo invece il Listone ufficiale Classic, che è la fonte corretta.
 print("Scarico ruoli Classic + QI/QA dal Listone ufficiale Fantacalcio...")
 listone_fc = scarica_listone_classic_fc()
+
+# Correzioni ruoli Classic confermate dalla lega.
+# Usiamo l'ID Fantacalcio per evitare ambiguita' sui nomi.
+RUOLI_CLASSIC_OVERRIDE = {
+    5792: "c",  # Ederson D.S.
+}
+for _info in listone_fc.values():
+    _pid = _info.get("id")
+    if _pid in RUOLI_CLASSIC_OVERRIDE:
+        _ruolo_orig = _info.get("ruolo", "")
+        _info["ruolo"] = RUOLI_CLASSIC_OVERRIDE[_pid]
+        print(f"Override ruolo Classic ID {_pid}: {_ruolo_orig} -> {_info['ruolo']}")
+
 ruoli_borracho = {_norm_nome_fc(g["nome"]): g.get("ruolo", "") for g in lista_giocatori}
 
 for g in giocatori_seriea:
