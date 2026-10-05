@@ -878,10 +878,40 @@ if len(lista_giocatori) != len(roster_ufficiali):
     )
 
 # Marca come ex le appartenenze storiche che non coincidono con la rosa corrente.
+# I nomi delle fantasquadre in Excel e API non sono sempre identici
+# (es. TRICCHETRACHT vs Tricchetracht Francoforte): normalizziamo gli alias.
+def _norm_fantasquadra(s):
+    key = _norm_nome_fc(s)
+    alias = {
+        "tricchetracht": "tricchetracht",
+        "tricchetrachtfrankfurt": "tricchetracht",
+        "tricchetrachtfrancoforte": "tricchetracht",
+        "tricchettracht": "tricchetracht",
+        "sestoasensio": "sestoasensio",
+        "ilsestoasensio": "sestoasensio",
+        "atlimprovvisato": "atleticoimprovvisato",
+        "atleticoimprovvisato": "atleticoimprovvisato",
+        "sangria": "sangria",
+        "pesciculini": "pesciculini",
+        "pesciculinifc": "pesciculini",
+        "partizandegrado": "partizandegrado",
+        "acasparaghese": "asparaghese",
+        "asparaghese": "asparaghese",
+        "shark": "shark",
+        "aspipperia": "aspipperia",
+        "pipperia": "aspipperia",
+        "fcinternazioanale": "internazioanale",
+        "internazioanale": "internazioanale",
+    }
+    return alias.get(key, key)
+
 corrente_per_nome = {_norm_nome_fc(g["nome"]): g["squadra"] for g in lista_giocatori}
 for h in lista_giocatori_storici:
     squadra_corrente = corrente_per_nome.get(_norm_nome_fc(h["nome"]))
-    h["ex"] = not squadra_corrente or _norm_nome_fc(squadra_corrente) != _norm_nome_fc(h["squadra"])
+    h["ex"] = (
+        not squadra_corrente
+        or _norm_fantasquadra(squadra_corrente) != _norm_fantasquadra(h["squadra"])
+    )
 lista_giocatori_storici.sort(key=lambda x: x["mediavototit"], reverse=True)
 
 print(f"Giocatori Borracho completi: {len(lista_giocatori)}")
