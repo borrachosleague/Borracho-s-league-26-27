@@ -386,10 +386,12 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
 
     val = row[18]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["gol"] += stat_val
             gst["gol"] += stat_val
-        except: pass
+        except:
+            pass
     # Gol per reparto
     if val is not None:
         try:
@@ -401,66 +403,84 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
         except: pass   
     val = row[14]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["assist"] += stat_val
             gst["assist"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[7]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["golsub"] += stat_val
             gst["golsub"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[10]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["rigseg"] += stat_val
             gst["rigseg"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[9]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["rigsba"] += stat_val
             gst["rigsba"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[8]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["rigpar"] += stat_val
             gst["rigpar"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[11]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["autogol"] += stat_val
             gst["autogol"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[12]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["amm"] += stat_val
             gst["amm"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[13]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["esp"] += stat_val
             gst["esp"] += stat_val
-        except: pass
+        except:
+            pass
 
     val = row[16]
     if val is not None:
-        try: stat_val = int(float(str(val).replace(",", ".")))
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
             g["cleansheet"] += stat_val
             gst["cleansheet"] += stat_val
-        except: pass
+        except:
+            pass
 
 wb_borr.close()
 
