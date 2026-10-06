@@ -4927,6 +4927,110 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-live-desktop-separator-v52">
+/* LIVE desktop: separatore giallo evidente tra le 5 partite */
+@media(min-width:701px){
+  #page-live .live-scoreboard tbody tr.live-match-second:not(:last-child) td{
+    border-bottom:4px solid #ffd54a!important;
+  }
+  #page-live .live-scoreboard tbody tr.live-match-first:not(:first-child) td{
+    border-top:0!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-live-mobile-height-v53">
+@media(max-width:700px){
+  /* Recupero altezza: niente intestazione LIVE BORRACHOS su cellulare */
+  #page-live .live-head{
+    display:none!important;
+  }
+
+  /* Pagina Live più compatta verticalmente */
+  #page-live{
+    padding-top:2px!important;
+    padding-bottom:2px!important;
+    min-height:0!important;
+  }
+  #page-live #live-detail{
+    margin:0!important;
+    padding:0!important;
+  }
+  #page-live .live-detail-layout{
+    margin:0!important;
+    gap:2px!important;
+  }
+
+  /* Barra scelta partita: più bassa e tutta su una riga */
+  #page-live .live-detail-nav{
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    gap:3px!important;
+    margin:0 0 2px!important;
+    padding:0!important;
+    width:100%!important;
+  }
+  #page-live .live-back{
+    flex:0 0 auto!important;
+    height:34px!important;
+    padding:2px 5px!important;
+    font-size:9px!important;
+    line-height:1!important;
+    border-radius:5px!important;
+  }
+  #page-live .live-detail-nav #live-match-nav{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:2px!important;
+  }
+  #page-live .live-match-jump{
+    width:100%!important;
+    min-width:0!important;
+    height:34px!important;
+    padding:1px!important;
+    border-radius:5px!important;
+  }
+  #page-live .live-match-jump .live-nav-logos{
+    gap:1px!important;
+  }
+  #page-live .live-match-jump img{
+    width:23px!important;
+    height:23px!important;
+  }
+
+  /* Avvicina la testata della partita ai tasti */
+  #page-live .live-grid{
+    margin:0!important;
+  }
+  #page-live .live-match{
+    margin:0!important;
+  }
+  #page-live .live-h2h-head{
+    margin:0!important;
+  }
+
+  /* Qualche pixel in meno per riga, senza cambiare le larghezze approvate */
+  #page-live .live-h2h td{
+    height:29px!important;
+  }
+  #page-live .live-vote-stack{
+    height:24px!important;
+  }
+  #page-live .live-totals-main td{
+    height:27px!important;
+  }
+  #page-live .live-totals-sub td{
+    height:16px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
