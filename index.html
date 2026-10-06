@@ -4723,6 +4723,98 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
+
+<style id="borrachos-live-mobile-v50">
+@media(max-width:700px){
+  /* LIVE mobile: separatore giallo netto tra una partita e la successiva */
+  #page-live .live-scoreboard .live-match-first td{
+    border-top:0!important;
+  }
+  #page-live .live-scoreboard .live-match-first:not(:first-child) td{
+    border-top:3px solid #ffd54a!important;
+  }
+  #page-live .live-scoreboard .live-match-second td{
+    border-bottom:0!important;
+  }
+
+  /* Dettaglio LIVE: usa davvero tutta e solo la larghezza del telefono */
+  #page-live{
+    padding-left:5px!important;
+    padding-right:5px!important;
+  }
+  #page-live .live-detail-layout,
+  #page-live .live-grid,
+  #page-live .live-match,
+  #page-live .live-h2h-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  #page-live .live-h2h-wrap{
+    overflow-x:hidden!important;
+  }
+  #page-live .live-h2h{
+    width:100%!important;
+    min-width:0!important;
+    table-layout:fixed!important;
+  }
+
+  /* 4 colonne: nomi più compatti, voti leggibili e nessun taglio laterale */
+  #page-live .live-h2h .live-col-name{width:36%!important;}
+  #page-live .live-h2h .live-col-vote{width:14%!important;}
+  #page-live .live-h2h th,
+  #page-live .live-h2h td{
+    padding-left:2px!important;
+    padding-right:2px!important;
+    font-size:11px!important;
+  }
+  #page-live .live-voto-pagella{font-size:11px!important;}
+  #page-live .live-fantavoto{font-size:14px!important;}
+
+  /* Testata della singola partita più compatta */
+  #page-live .live-h2h-head{
+    gap:4px!important;
+  }
+  #page-live .live-h2h-head img{
+    width:42px!important;
+    height:42px!important;
+  }
+  #page-live .live-h2h-head b{
+    font-size:16px!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  #page-live .live-h2h-head strong{
+    font-size:17px!important;
+    white-space:nowrap!important;
+  }
+  #page-live .live-h2h-head>div{
+    min-width:0!important;
+    gap:4px!important;
+  }
+  #page-live .live-h2h-head small{
+    font-size:9px!important;
+  }
+
+  #page-live .live-totals-main td{
+    padding-left:2px!important;
+    padding-right:2px!important;
+    font-size:17px!important;
+  }
+  #page-live .live-totals-sub td{
+    padding-left:2px!important;
+    padding-right:2px!important;
+    font-size:9px!important;
+  }
+  #page-live .live-totals-sub .live-summary-value{
+    font-size:10px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
