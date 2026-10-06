@@ -14,7 +14,6 @@ CREDENTIALS_FILE = os.path.abspath(os.path.join(BASE_DIR, "..", "PRIVATO BORRACH
 BORRACHOS_FILE = os.path.join(DATA_DIR, "BORRACHOSLEAGUE 26.27.xlsm")
 OUTPUT_FILE = os.path.join(BASE_DIR, "dati.json")
 STAT_FILE = os.path.join(DATA_DIR, "nuovo statistiche.xlsm")
-LISTONE_CLASSIC_FILE = os.path.join(DATA_DIR, "lista_calciatori_lista calciatori_classic_borracho-s-league.xlsx")
 
 TEAMS_URL = (
     "https://apileague.fantacalcio.it/onboarding/v1/league/competition/"
@@ -24,6 +23,7 @@ CALENDAR_URL = (
     "https://apileague.fantacalcio.it/onboarding/v1/league/competition/"
     f"calendar/{COMPETITION_ID}"
 )
+PLAYERS_URL = "https://apileague.fantacalcio.it/onboarding/v1/league/players"
 
 def read_credentials(path):
     if not os.path.exists(path):
@@ -89,6 +89,27 @@ teams_api = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
 calendar_api = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
 
 team_names = {int(t["id"]): str(t["n"]).strip() for t in teams_api}
+
+# Rose ufficiali della lega: il campo "cal" di ogni team contiene gli ID
+# Fantacalcio dei 25 giocatori, separati da ";". Questa è la fonte corretta
+# per avere sempre tutte le 10 rose, anche per chi non ha ancora statistiche.
+league_players_payload = fetch_json(PLAYERS_URL, app_key, bearer)
+league_players = league_players_payload.get("players", []) if isinstance(league_players_payload, dict) else []
+league_player_by_id = {
+    int(p["id"]): p for p in league_players
+    if isinstance(p, dict) and p.get("id") is not None
+}
+roster_ufficiali = []
+for t in teams_api:
+    squadra = str(t.get("n") or "").strip()
+    raw_ids = str(t.get("cal") or "").strip()
+    ids = [int(x) for x in raw_ids.split(";") if x.strip().isdigit()]
+    for pid in ids:
+        p = league_player_by_id.get(pid, {})
+        nome = str(p.get("name") or "").strip()
+        if nome:
+            roster_ufficiali.append({"id": pid, "nome": nome, "squadra": squadra})
+print(f"Rose ufficiali API: {len(roster_ufficiali)} giocatori")
 stats_api = {
     tid: {
         "nome": name, "g": 0, "v": 0, "n": 0, "p": 0,
@@ -220,26 +241,6 @@ wb_stat.close()
 # === 2. GIOCATORI (INSER DATA) ===
 wb_borr = openpyxl.load_workbook(BORRACHOS_FILE, read_only=True, data_only=True)
 ws_data = wb_borr["INSER DATA"]
-ws_rose = wb_borr["ROSE SQUADRE"]
-
-# Rosa corrente AUTOREVOLE: 10 squadre x 25 giocatori dal foglio ROSE SQUADRE.
-# INSER DATA resta la fonte delle statistiche, ma non decide piu' chi appartiene alle rose.
-rose_correnti = {}
-for col in range(2, 12):
-    squadra_rosa = str(ws_rose.cell(row=2, column=col).value or "").strip()
-    if not squadra_rosa:
-        continue
-    for r in range(3, 28):
-        nome_rosa = str(ws_rose.cell(row=r, column=col).value or "").strip()
-        ruolo_rosa = str(ws_rose.cell(row=r, column=1).value or "").strip().lower()[:1]
-        if nome_rosa:
-            rose_correnti[nome_rosa] = {"squadra": squadra_rosa, "ruolo": ruolo_rosa}
-
-if len(rose_correnti) != 250:
-    raise RuntimeError(
-        f"ROSE SQUADRE inatteso: trovati {len(rose_correnti)} giocatori invece di 250. "
-        "dati.json NON viene sovrascritto."
-    )
 
 last_row = 1
 for row in ws_data.iter_rows(min_row=2, max_col=5, values_only=True):
@@ -261,6 +262,19 @@ giocatori_totali = defaultdict(lambda: {
     "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
     "squadra": "", "ruolo": ""
 })
+
+# Storico Borrachos separato per coppia (giocatore, fantasquadra).
+# Serve a conservare i periodi nelle vecchie fantasquadre dopo svincoli/trasferimenti.
+def _nuove_stat_giocatore():
+    return {
+        "voti": [], "fvoti": [], "gol": 0, "assist": 0,
+        "golsub": 0, "rigseg": 0, "rigsba": 0, "rigpar": 0,
+        "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
+        "squadra": "", "ruolo": ""
+    }
+
+giocatori_storici_tit = defaultdict(_nuove_stat_giocatore)
+giocatori_storici_tot = defaultdict(_nuove_stat_giocatore)
 
 # Gol per reparto per squadra
 gol_reparto = defaultdict(lambda: {"d": 0, "c": 0, "a": 0})   
@@ -291,6 +305,17 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
     ruolo = row[3]
     g["ruolo"] = str(ruolo).strip().lower() if ruolo is not None else ""
 
+    # STORICO: la chiave comprende la fantasquadra, quindi un trasferimento
+    # crea due periodi distinti invece di spostare retroattivamente le statistiche.
+    fs = str(fantasquadra).strip()
+    chiave_storica = (nome, fs)
+    gst = giocatori_storici_tit[chiave_storica]
+    gst["squadra"] = fs
+    gst["ruolo"] = g["ruolo"]
+    gsall = giocatori_storici_tot[chiave_storica]
+    gsall["squadra"] = fs
+    gsall["ruolo"] = g["ruolo"]
+
     # TOTALI: usa Voto (F) e fanta voto generale (V), senza filtro FantaTit
     gt = giocatori_totali[nome]
     gt["squadra"] = str(fantasquadra).strip()
@@ -302,6 +327,7 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             v = float(str(voto_tot).replace(",", "."))
             if v > 0:
                 gt["voti"].append(v)
+                gsall["voti"].append(v)
         except (ValueError, TypeError):
             pass
 
@@ -311,6 +337,7 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             fv = float(str(fvoto_tot).replace(",", "."))
             if fv > 0:
                 gt["fvoti"].append(fv)
+                gsall["fvoti"].append(fv)
         except (ValueError, TypeError):
             pass
 
@@ -322,7 +349,9 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
         val_tot = row[idx]
         if val_tot is not None:
             try:
-                gt[chiave] += int(float(str(val_tot).replace(",", ".")))
+                bonus_val = int(float(str(val_tot).replace(",", ".")))
+                gt[chiave] += bonus_val
+                gsall[chiave] += bonus_val
             except (ValueError, TypeError):
                 pass
 
@@ -341,6 +370,7 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             v = float(str(voto).replace(",", "."))
             if v > 0:
                 g["voti"].append(v)
+                gst["voti"].append(v)
         except (ValueError, TypeError):
             pass
 
@@ -350,13 +380,18 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
             fv = float(str(fvoto).replace(",", "."))
             if fv > 0:
                 g["fvoti"].append(fv)
+                gst["fvoti"].append(fv)
         except (ValueError, TypeError):
             pass
 
     val = row[18]
     if val is not None:
-        try: g["gol"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["gol"] += stat_val
+            gst["gol"] += stat_val
+        except:
+            pass
     # Gol per reparto
     if val is not None:
         try:
@@ -368,85 +403,114 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
         except: pass   
     val = row[14]
     if val is not None:
-        try: g["assist"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["assist"] += stat_val
+            gst["assist"] += stat_val
+        except:
+            pass
 
     val = row[7]
     if val is not None:
-        try: g["golsub"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["golsub"] += stat_val
+            gst["golsub"] += stat_val
+        except:
+            pass
 
     val = row[10]
     if val is not None:
-        try: g["rigseg"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["rigseg"] += stat_val
+            gst["rigseg"] += stat_val
+        except:
+            pass
 
     val = row[9]
     if val is not None:
-        try: g["rigsba"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["rigsba"] += stat_val
+            gst["rigsba"] += stat_val
+        except:
+            pass
 
     val = row[8]
     if val is not None:
-        try: g["rigpar"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["rigpar"] += stat_val
+            gst["rigpar"] += stat_val
+        except:
+            pass
 
     val = row[11]
     if val is not None:
-        try: g["autogol"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["autogol"] += stat_val
+            gst["autogol"] += stat_val
+        except:
+            pass
 
     val = row[12]
     if val is not None:
-        try: g["amm"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["amm"] += stat_val
+            gst["amm"] += stat_val
+        except:
+            pass
 
     val = row[13]
     if val is not None:
-        try: g["esp"] += int(float(str(val).replace(",", ".")))
-        except: pass
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["esp"] += stat_val
+            gst["esp"] += stat_val
+        except:
+            pass
 
     val = row[16]
     if val is not None:
-        try: g["cleansheet"] += int(float(str(val).replace(",", ".")))
-        except: pass
-
-# Riallinea i giocatori alla rosa CORRENTE.
-# Chi e' in ROSE SQUADRE ma non ha ancora righe in INSER DATA viene creato con statistiche a zero.
-# Chi compare nello storico INSER DATA ma non e' piu' nelle rose non entra nella lista Borracho corrente.
-_giocatori_correnti = {}
-_giocatori_totali_correnti = {}
-for nome_rosa, info_rosa in rose_correnti.items():
-    if nome_rosa in giocatori:
-        g = giocatori[nome_rosa]
-    else:
-        g = {
-            "voti": [], "fvoti": [], "gol": 0, "assist": 0,
-            "golsub": 0, "rigseg": 0, "rigsba": 0, "rigpar": 0,
-            "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
-            "squadra": "", "ruolo": ""
-        }
-    g["squadra"] = info_rosa["squadra"]
-    g["ruolo"] = info_rosa["ruolo"]
-    _giocatori_correnti[nome_rosa] = g
-
-    if nome_rosa in giocatori_totali:
-        gt = giocatori_totali[nome_rosa]
-    else:
-        gt = {
-            "voti": [], "fvoti": [], "gol": 0, "assist": 0,
-            "golsub": 0, "rigseg": 0, "rigsba": 0, "rigpar": 0,
-            "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0,
-            "squadra": "", "ruolo": ""
-        }
-    gt["squadra"] = info_rosa["squadra"]
-    gt["ruolo"] = info_rosa["ruolo"]
-    _giocatori_totali_correnti[nome_rosa] = gt
-
-giocatori = _giocatori_correnti
-giocatori_totali = _giocatori_totali_correnti
+        try:
+            stat_val = int(float(str(val).replace(",", ".")))
+            g["cleansheet"] += stat_val
+            gst["cleansheet"] += stat_val
+        except:
+            pass
 
 wb_borr.close()
+
+# Costruisce la classifica storica per singolo periodo di appartenenza.
+# "ex" verrà valorizzato più avanti confrontando questo storico con le rose ufficiali correnti.
+lista_giocatori_storici = []
+for (nome, squadra_storica), hs in giocatori_storici_tit.items():
+    ht = giocatori_storici_tot[(nome, squadra_storica)]
+    nv = len(hs["voti"])
+    nfv = len(hs["fvoti"])
+    lista_giocatori_storici.append({
+        "nome": nome,
+        "squadra": squadra_storica,
+        "ruolo": hs["ruolo"],
+        "prestit": nv,
+        "presfvtit": nfv,
+        "mediavototit": round(sum(hs["voti"]) / nv, 2) if nv else 0,
+        "fvototit": round(sum(hs["fvoti"]) / nfv, 2) if nfv else 0,
+        "goltit": hs["gol"], "assisttit": hs["assist"],
+        "golsubititit": hs["golsub"], "cleansheettit": hs["cleansheet"],
+        "rigtit": hs["rigseg"], "risgsbtit": hs["rigsba"], "rigpartit": hs["rigpar"],
+        "autgoltit": hs["autogol"], "ammtit": hs["amm"], "esptit": hs["esp"],
+        "prestot": len(ht["voti"]), "presfvtot": len(ht["fvoti"]),
+        "mediavototot": round(sum(ht["voti"]) / len(ht["voti"]), 2) if ht["voti"] else 0,
+        "fvototot": round(sum(ht["fvoti"]) / len(ht["fvoti"]), 2) if ht["fvoti"] else 0,
+        "goltot": ht["gol"], "assisttot": ht["assist"],
+        "golsubititot": ht["golsub"], "cleansheettot": ht["cleansheet"],
+        "rigtot": ht["rigseg"], "risgsbtot": ht["rigsba"], "rigpartot": ht["rigpar"],
+        "autgoltot": ht["autogol"], "ammtot": ht["amm"], "esptot": ht["esp"]
+    })
 
 lista_giocatori = []
 for nome, g in giocatori.items():
@@ -590,10 +654,8 @@ def _ruolo_classic_da_riga(cells, metas, idx_nome):
 
 QUOTAZIONI_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
 
-def scarica_ruoli_classic_fc():
-    """Scarica il Listone/quotazioni ufficiale e costruisce nome -> ruolo Classic.
-    Le statistiche restano quelle Voto Statistico; questa seconda pagina serve solo per P/D/C/A.
-    """
+def scarica_listone_classic_fc():
+    """Scarica il Listone ufficiale e restituisce ruolo Classic, QI e QA per giocatore."""
     req = urllib.request.Request(
         QUOTAZIONI_URL,
         headers={"User-Agent": "Mozilla/5.0", "Accept": "text/html,application/xhtml+xml"},
@@ -603,27 +665,42 @@ def scarica_ruoli_classic_fc():
         with urllib.request.urlopen(req, timeout=30) as response:
             raw = response.read().decode("utf-8", errors="replace")
     except Exception as e:
-        raise RuntimeError("Impossibile scaricare i ruoli Classic dal Listone Fantacalcio: " + str(e))
+        raise RuntimeError("Impossibile scaricare il Listone Fantacalcio: " + str(e))
 
     parser = _StatsTableParser()
     parser.feed(raw)
-    ruoli = {}
+    listone = {}
     for cells, metas in parser.rows:
         idx_sq = None
-        for i, c in enumerate(cells):
-            if re.fullmatch(r"[A-Z]{3}", c or ""):
+        for i, cella in enumerate(cells):
+            if re.fullmatch(r"[A-Z]{3}", cella or ""):
                 idx_sq = i
                 break
-        if idx_sq is None or idx_sq < 1:
+        # Nel Listone Classic: Nome | Sq | QI | QA | FVM/1000.
+        if idx_sq is None or idx_sq < 1 or len(cells) <= idx_sq + 2:
             continue
         nome = str(cells[idx_sq - 1] or "").strip()
         if not nome or nome.lower() == "calciatore":
             continue
-        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
-        if ruolo:
-            ruoli[_norm_nome_fc(nome)] = ruolo
 
-    return ruoli
+        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
+        qi = int(_num_fc(cells[idx_sq + 1], 0))
+        qa = int(_num_fc(cells[idx_sq + 2], 0))
+        # Il link del profilo Fantacalcio termina con l'ID ufficiale del giocatore,
+        # es. /martinez-l/2764. Il parser conserva l'href nei metadati della cella.
+        pid = None
+        meta_nome = str(metas[idx_sq - 1] or "")
+        m_pid = re.search(r"/(\d+)(?:[/?#\s]|$)", meta_nome)
+        if m_pid:
+            pid = int(m_pid.group(1))
+        listone[_norm_nome_fc(nome)] = {"id": pid, "ruolo": ruolo, "qi": qi, "qa": qa}
+
+    if len(listone) < 100:
+        raise RuntimeError(
+            "Listone Fantacalcio non riconosciuto correttamente "
+            f"(trovati {len(listone)} giocatori). dati.json NON viene sovrascritto."
+        )
+    return listone
 
 def scarica_statistiche_statistiche_fc():
     req = urllib.request.Request(
@@ -709,162 +786,159 @@ def scarica_statistiche_statistiche_fc():
         )
     return out
 
-def carica_listone_classic_excel(path):
-    """Carica il listone Classic pulito fornito dalla Lega.
-    Questo file e' l'universo AUTOREVOLE dei giocatori utilizzabili.
-    Le statistiche online possono aggiornare i dati, ma non aggiungere nomi.
-    """
-    if not os.path.exists(path):
-        raise RuntimeError(
-            "Listone Classic pulito non trovato: " + path +
-            ". dati.json NON viene sovrascritto."
-        )
-
-    wb = openpyxl.load_workbook(path, data_only=True, read_only=True)
-    if "Lista calciatori" not in wb.sheetnames:
-        wb.close()
-        raise RuntimeError(
-            "Nel Listone Classic manca il foglio 'Lista calciatori'. "
-            "dati.json NON viene sovrascritto."
-        )
-    ws = wb["Lista calciatori"]
-    headers = {str(c.value or "").strip(): i for i, c in enumerate(next(ws.iter_rows()), start=0)}
-    richieste = ("Nome", "Sq.", "R.")
-    mancanti = [h for h in richieste if h not in headers]
-    if mancanti:
-        wb.close()
-        raise RuntimeError(
-            "Colonne mancanti nel Listone Classic: " + ", ".join(mancanti) +
-            ". dati.json NON viene sovrascritto."
-        )
-
-    out = []
-    visti = set()
-    for row in ws.iter_rows(values_only=True):
-        nome = str(row[headers["Nome"]] or "").strip()
-        if not nome or nome.lower() == "nome":
-            continue
-        k = _norm_nome_fc(nome)
-        if not k or k in visti:
-            continue
-        visti.add(k)
-        ruolo = str(row[headers["R."]] or "").strip().lower()[:1]
-        if ruolo not in ("p", "d", "c", "a"):
-            ruolo = ""
-        squadra = str(row[headers["Sq."]] or "").strip()
-        def val(col, default=0):
-            if col not in headers:
-                return default
-            return _num_fc(row[headers[col]], default)
-        pv = int(val("PGv", 0))
-        out.append({
-            "nome": nome,
-            "squadra": squadra,
-            "ruolo": ruolo,
-            "prestot": pv,
-            "presfvtot": pv,
-            "mediavototot": round(val("MV", 0), 2),
-            "fvototot": round(val("FM", 0), 2),
-            "goltot": 0,
-            "assisttot": 0,
-            "golsubititot": 0,
-            "cleansheettot": 0,
-            "rigtot": 0,
-            "risgsbtot": 0,
-            "rigpartot": 0,
-            "autgoltot": 0,
-            "ammtot": 0,
-            "esptot": 0,
-        })
-    wb.close()
-    return out
-
-print("Carico Listone Classic pulito della Lega...")
-listone_excel = carica_listone_classic_excel(LISTONE_CLASSIC_FILE)
-
-# Controllo forte sul file concordato: deve essere esattamente quello da 536.
-nomi_listone = {_norm_nome_fc(g["nome"]) for g in listone_excel}
-if len(listone_excel) != 536:
-    raise RuntimeError(
-        f"Listone Classic inatteso: trovati {len(listone_excel)} giocatori invece di 536. "
-        "dati.json NON viene sovrascritto."
-    )
-if _norm_nome_fc("Obric") not in nomi_listone:
-    raise RuntimeError("Controllo Listone fallito: Obric non presente. dati.json NON viene sovrascritto.")
-if _norm_nome_fc("Lukaku") in nomi_listone:
-    raise RuntimeError("Controllo Listone fallito: Lukaku risulta presente. dati.json NON viene sovrascritto.")
-
 print("Scarico statistiche Serie A - Voto Statistico FC (Alvin482)...")
-statistiche_online = scarica_statistiche_statistiche_fc()
-stat_per_nome = {_norm_nome_fc(g["nome"]): g for g in statistiche_online}
+giocatori_seriea = scarica_statistiche_statistiche_fc()
 
-# IMPORTANTE: si parte SEMPRE dai 536 dell'Excel.
-# Le statistiche online aggiornano soltanto giocatori gia' presenti nel Listone.
-giocatori_seriea = []
-for base in listone_excel:
-    k = _norm_nome_fc(base["nome"])
-    online = stat_per_nome.get(k)
-    if online:
-        g = dict(online)
-        # Nome e ruolo Classic restano quelli del Listone pulito.
-        g["nome"] = base["nome"]
-        g["ruolo"] = base["ruolo"]
-        # Se la pagina statistica non espone la squadra, conserva quella Excel.
-        if not str(g.get("squadra", "")).strip():
-            g["squadra"] = base["squadra"]
-    else:
-        # Giocatore corretto di Listone ma non ancora presente nella pagina statistica.
-        g = dict(base)
-    giocatori_seriea.append(g)
+# I voti/statistiche arrivano SEMPRE dalla pagina Statistico.
+# Per i ruoli P/D/C/A usiamo invece il Listone ufficiale Classic, che è la fonte corretta.
+print("Scarico ruoli Classic + QI/QA dal Listone ufficiale Fantacalcio...")
+listone_fc = scarica_listone_classic_fc()
 
-senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
-if senza_ruolo:
+# Correzioni ruoli Classic confermate dalla lega.
+# Usiamo l'ID Fantacalcio per evitare ambiguita' sui nomi.
+RUOLI_CLASSIC_OVERRIDE = {
+    5792: "c",  # Ederson D.S.
+}
+for _info in listone_fc.values():
+    _pid = _info.get("id")
+    if _pid in RUOLI_CLASSIC_OVERRIDE:
+        _ruolo_orig = _info.get("ruolo", "")
+        _info["ruolo"] = RUOLI_CLASSIC_OVERRIDE[_pid]
+        print(f"Override ruolo Classic ID {_pid}: {_ruolo_orig} -> {_info['ruolo']}")
+
+ruoli_borracho = {_norm_nome_fc(g["nome"]): g.get("ruolo", "") for g in lista_giocatori}
+
+for g in giocatori_seriea:
+    k = _norm_nome_fc(g["nome"])
+    info = listone_fc.get(k)
+    if info:
+        if info.get("ruolo"):
+            g["ruolo"] = info["ruolo"]
+        g["id"] = info.get("id")
+        g["qi"] = info["qi"]
+        g["qa"] = info["qa"]
+    elif k in ruoli_borracho:
+        # Fallback per eventuali differenze di rendering/nome nel Listone.
+        g["ruolo"] = ruoli_borracho[k]
+
+# Anche i giocatori Borracho devono ricevere QI e QA: la Best 11 usa questa lista.
+for g in lista_giocatori:
+    info = listone_fc.get(_norm_nome_fc(g["nome"]))
+    if info:
+        g["id"] = info.get("id")
+        g["qi"] = info["qi"]
+        g["qa"] = info["qa"]
+
+# Completa giocatori con le rose ufficiali API. INSER DATA contiene lo storico
+# delle prestazioni e può non avere ancora una riga per chi non ha giocato:
+# quei giocatori entrano comunque con statistiche a zero.
+# La lista pubblica deve rappresentare la ROSA ATTUALE, mentre INSER DATA resta
+# lo storico delle prestazioni. Un giocatore svincolato non deve rimanere nella
+# rosa corrente solo perché compare nelle vecchie giornate di INSER DATA.
+#
+# Per i 250 giocatori attualmente tesserati conserviamo le statistiche storiche
+# già raccolte, ma forziamo la fantasquadra alla proprietà ufficiale corrente.
+# Gli ex giocatori restano fuori dalla rosa corrente: le loro vecchie righe in
+# INSER DATA continuano comunque ad alimentare le statistiche storiche di squadra.
+storico_by_id = {g.get("id"): g for g in lista_giocatori if g.get("id") is not None}
+storico_by_nome = {_norm_nome_fc(g["nome"]): g for g in lista_giocatori}
+lista_giocatori_attuali = []
+
+for rp in roster_ufficiali:
+    info = listone_fc.get(_norm_nome_fc(rp["nome"])) or {}
+    g = storico_by_id.get(rp["id"]) or storico_by_nome.get(_norm_nome_fc(rp["nome"]))
+    if g is not None:
+        g = dict(g)
+        g["squadra"] = rp["squadra"]
+        if not g.get("id"):
+            g["id"] = rp["id"]
+        if info.get("ruolo"):
+            g["ruolo"] = info["ruolo"]
+        g["qi"] = info.get("qi", g.get("qi", 0))
+        g["qa"] = info.get("qa", g.get("qa", 0))
+        lista_giocatori_attuali.append(g)
+        continue
+
+    lista_giocatori_attuali.append({
+        "nome": rp["nome"], "squadra": rp["squadra"], "ruolo": info.get("ruolo", ""),
+        "prestit": 0, "presfvtit": 0, "mediavototit": 0, "fvototit": 0,
+        "goltit": 0, "assisttit": 0, "golsubititit": 0, "cleansheettit": 0,
+        "rigtit": 0, "risgsbtit": 0, "rigpartit": 0, "autgoltit": 0, "ammtit": 0, "esptit": 0,
+        "prestot": 0, "presfvtot": 0, "mediavototot": 0, "fvototot": 0,
+        "goltot": 0, "assisttot": 0, "golsubititot": 0, "cleansheettot": 0,
+        "rigtot": 0, "risgsbtot": 0, "rigpartot": 0, "autgoltot": 0, "ammtot": 0, "esptot": 0,
+        "id": rp["id"], "qi": info.get("qi", 0), "qa": info.get("qa", 0)
+    })
+# Da qui in avanti "giocatori" significa esclusivamente i 250 tesserati attuali.
+lista_giocatori = lista_giocatori_attuali
+if len(lista_giocatori) != len(roster_ufficiali):
     raise RuntimeError(
-        "Ruoli mancanti nel Listone Excel: " + ", ".join(senza_ruolo[:10]) +
-        ". dati.json NON viene sovrascritto."
-    )
-
-# Controlli finali PRIMA di scrivere dati.json.
-nomi_finali = {_norm_nome_fc(g["nome"]) for g in giocatori_seriea}
-if len(giocatori_seriea) != 536 or len(nomi_finali) != 536:
-    raise RuntimeError(
-        f"Controllo finale fallito: {len(giocatori_seriea)} righe / {len(nomi_finali)} nomi unici. "
+        f"Controllo rose fallito: API={len(roster_ufficiali)} giocatori, JSON={len(lista_giocatori)}. "
         "dati.json NON viene sovrascritto."
     )
-if _norm_nome_fc("Obric") not in nomi_finali or _norm_nome_fc("Lukaku") in nomi_finali:
-    raise RuntimeError("Controllo finale Obric/Lukaku fallito. dati.json NON viene sovrascritto.")
+
+# Marca come ex le appartenenze storiche che non coincidono con la rosa corrente.
+# I nomi delle fantasquadre in Excel e API non sono sempre identici
+# (es. TRICCHETRACHT vs Tricchetracht Francoforte): normalizziamo gli alias.
+def _norm_fantasquadra(s):
+    key = _norm_nome_fc(s)
+    alias = {
+        "tricchetracht": "tricchetracht",
+        "tricchetrachtfrankfurt": "tricchetracht",
+        "tricchetrachtfrancoforte": "tricchetracht",
+        "tricchettracht": "tricchetracht",
+        "sestoasensio": "sestoasensio",
+        "ilsestoasensio": "sestoasensio",
+        "atlimprovvisato": "atleticoimprovvisato",
+        "atleticoimprovvisato": "atleticoimprovvisato",
+        "sangria": "sangria",
+        "pesciculini": "pesciculini",
+        "pesciculinifc": "pesciculini",
+        "partizandegrado": "partizandegrado",
+        "acasparaghese": "asparaghese",
+        "asparaghese": "asparaghese",
+        "shark": "shark",
+        "aspipperia": "aspipperia",
+        "pipperia": "aspipperia",
+        "fcinternazioanale": "internazioanale",
+        "internazioanale": "internazioanale",
+    }
+    return alias.get(key, key)
+
+corrente_per_nome = {_norm_nome_fc(g["nome"]): g["squadra"] for g in lista_giocatori}
+for h in lista_giocatori_storici:
+    squadra_corrente = corrente_per_nome.get(_norm_nome_fc(h["nome"]))
+    h["ex"] = (
+        not squadra_corrente
+        or _norm_fantasquadra(squadra_corrente) != _norm_fantasquadra(h["squadra"])
+    )
+lista_giocatori_storici.sort(key=lambda x: x["mediavototit"], reverse=True)
+
+print(f"Giocatori Borracho completi: {len(lista_giocatori)}")
+print(f"Righe storico Borracho: {len(lista_giocatori_storici)}")
 
 conteggio_ruoli_seriea = {r: sum(1 for g in giocatori_seriea if g.get("ruolo") == r) for r in ("p", "d", "c", "a")}
-print("OK Listone Classic Excel:", len(giocatori_seriea), "giocatori")
+senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
 print("Ruoli Serie A:", conteggio_ruoli_seriea)
-print("OK controllo: Obric presente / Lukaku assente")
+print("Giocatori senza ruolo:", len(senza_ruolo))
 
-# Svincolati = i 536 del Listone meno i 250 giocatori presenti in ROSE SQUADRE.
-nomi_borracho = {_norm_nome_fc(g["nome"]) for g in lista_giocatori}
-if len(lista_giocatori) != 250 or len(nomi_borracho) != 250:
+# Blocco di sicurezza: una Best 11 Serie A con centinaia di ruoli mancanti sarebbe falsata.
+# Non sovrascriviamo dati.json finché il Listone non è stato letto correttamente.
+if len(senza_ruolo) > 10:
+    esempio = ", ".join(senza_ruolo[:10])
     raise RuntimeError(
-        f"Controllo rose fallito: {len(lista_giocatori)} righe / {len(nomi_borracho)} nomi unici invece di 250. "
+        "Ruoli Classic non letti correttamente dal Listone Fantacalcio: "
+        f"{len(senza_ruolo)} giocatori senza ruolo (esempio: {esempio}). "
         "dati.json NON viene sovrascritto."
     )
-nomi_fuori_listone = sorted(g["nome"] for g in lista_giocatori if _norm_nome_fc(g["nome"]) not in nomi_finali)
-if nomi_fuori_listone:
-    raise RuntimeError(
-        "Giocatori in ROSE SQUADRE assenti dal Listone 536: " + ", ".join(nomi_fuori_listone) +
-        ". dati.json NON viene sovrascritto."
-    )
+
+# Svincolati = tutti Serie A meno i giocatori presenti nelle rose Borracho.
+nomi_borracho = {_norm_nome_fc(g["nome"]) for g in lista_giocatori}
 giocatori_svincolati = [
     g for g in giocatori_seriea
     if _norm_nome_fc(g["nome"]) not in nomi_borracho
 ]
 
-
-if len(giocatori_svincolati) != 286:
-    raise RuntimeError(
-        f"Controllo svincolati fallito: trovati {len(giocatori_svincolati)} invece di 286. "
-        "dati.json NON viene sovrascritto."
-    )
-print("OK ROSE SQUADRE:", len(lista_giocatori), "giocatori")
-print("OK svincolati:", len(giocatori_svincolati))
 
 # === 4. GENERA JSON ===
 
@@ -872,6 +946,7 @@ colonne_stat = [c for c in colonne_stat if c != "class"]
 dati = {
     "squadre": squadre,
     "giocatori": lista_giocatori,
+    "giocatori_storici": lista_giocatori_storici,
     "giocatori_seriea": giocatori_seriea,
     "giocatori_svincolati": giocatori_svincolati,
     "risultati": risultati,
