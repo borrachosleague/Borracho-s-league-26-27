@@ -5090,6 +5090,103 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-bench-drawer-v97">
+@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
+  /* La vecchia panchina diventa un cassetto laterale e non occupa più spazio a riposo */
+  #page-best11 .best11-bench{
+    display:block!important;
+    position:fixed!important;
+    z-index:10020!important;
+    top:42px!important;
+    right:0!important;
+    left:auto!important;
+    bottom:auto!important;
+    width:min(78vw,330px)!important;
+    height:calc(100dvh - 52px)!important;
+    max-height:none!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:10px 8px!important;
+    box-sizing:border-box!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    transform:translateX(105%)!important;
+    transition:transform .24s ease!important;
+    border-radius:14px 0 0 14px!important;
+    box-shadow:-8px 0 20px rgba(0,0,0,.48)!important;
+  }
+  #page-best11 .best11-bench.mobile-bench-open{
+    transform:translateX(0)!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:16px!important;
+    line-height:1.1!important;
+    margin:3px 34px 10px 2px!important;
+  }
+  #page-best11 .bench-name{
+    font-size:13px!important;
+    line-height:1.1!important;
+  }
+  #page-best11 .bench-role{
+    font-size:11px!important;
+    line-height:1.1!important;
+  }
+
+  #best11-mobile-bench-toggle{
+    display:flex!important;
+    position:fixed!important;
+    z-index:10030!important;
+    right:0!important;
+    top:46%!important;
+    width:29px!important;
+    min-width:29px!important;
+    height:92px!important;
+    padding:4px 2px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    writing-mode:vertical-rl!important;
+    transform:translateY(-50%) rotate(180deg)!important;
+    font-size:10px!important;
+    font-weight:1000!important;
+    letter-spacing:.5px!important;
+    line-height:1!important;
+    border-radius:8px 0 0 8px!important;
+    border:2px solid #ffd54a!important;
+    background:#111!important;
+    color:#ffd54a!important;
+    box-shadow:-3px 2px 8px rgba(0,0,0,.45)!important;
+    cursor:pointer!important;
+  }
+  #best11-mobile-bench-toggle.is-open{
+    right:min(78vw,330px)!important;
+  }
+  #best11-mobile-bench-close{
+    display:flex!important;
+    position:absolute!important;
+    z-index:2!important;
+    right:7px!important;
+    top:7px!important;
+    width:28px!important;
+    height:28px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    border-radius:50%!important;
+    border:2px solid #ffd54a!important;
+    background:#111!important;
+    color:#ffd54a!important;
+    font-size:18px!important;
+    font-weight:1000!important;
+    line-height:1!important;
+  }
+}
+@media (min-width:701px){
+  #best11-mobile-bench-toggle,
+  #best11-mobile-bench-close{display:none!important;}
+}
+</style>
+
 </head>
 <body>
 
@@ -6939,6 +7036,62 @@ caricaDatiBorrachos()
   window.addEventListener('load',place);
   window.addEventListener('resize',place);
   window.addEventListener('orientationchange',place);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-bench-drawer-js-v97">
+(function(){
+  function isMobile(){ return window.matchMedia('(max-width:700px)').matches; }
+
+  function setupBenchDrawer(){
+    var page=document.getElementById('page-best11');
+    if(!page)return;
+    var bench=page.querySelector('.best11-bench');
+    if(!bench)return;
+
+    var toggle=document.getElementById('best11-mobile-bench-toggle');
+    if(!toggle){
+      toggle=document.createElement('button');
+      toggle.type='button';
+      toggle.id='best11-mobile-bench-toggle';
+      toggle.textContent='PANCHINA';
+      toggle.setAttribute('aria-label','Apri panchina');
+      toggle.setAttribute('aria-expanded','false');
+      document.body.appendChild(toggle);
+    }
+
+    var close=document.getElementById('best11-mobile-bench-close');
+    if(!close){
+      close=document.createElement('button');
+      close.type='button';
+      close.id='best11-mobile-bench-close';
+      close.textContent='×';
+      close.setAttribute('aria-label','Chiudi panchina');
+      bench.insertBefore(close,bench.firstChild);
+    }
+
+    function setOpen(open){
+      if(!isMobile()) open=false;
+      bench.classList.toggle('mobile-bench-open',open);
+      toggle.classList.toggle('is-open',open);
+      toggle.setAttribute('aria-expanded',open?'true':'false');
+      toggle.textContent=open?'CHIUDI':'PANCHINA';
+    }
+    toggle.onclick=function(){ setOpen(!bench.classList.contains('mobile-bench-open')); };
+    close.onclick=function(){ setOpen(false); };
+
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape')setOpen(false);
+    });
+    window.addEventListener('resize',function(){ if(!isMobile())setOpen(false); });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',setupBenchDrawer);
+  }else{
+    setupBenchDrawer();
+  }
 })();
 </script>
 
