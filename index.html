@@ -6416,7 +6416,7 @@ function attivaStatsBtn(containerId, btn) {
 }
 var statsCriterioFamiglia = 'mediavoto';
 var statsTipoBorrachoMem = 'titolari';
-var statsCriterioSquadreIndice = 0;
+var statsCriterioSquadreMem = ''; // conserva la statistica per nome/id, non la posizione
 
 function statsFamigliaDaCriterio(c) {
     return String(c || '').replace(/tit$/, '').replace(/tot$/, '');
@@ -6465,11 +6465,8 @@ function setStatsCategoria(valore, btn) {
     popolaCriteriSquadre();
 }
 function setStatsCriterioSquadra(valore, btn) {
-    var categoria = document.getElementById('categoria-squadre').value;
     document.getElementById('criterio-squadre2').value = valore;
-    var lista = categorieSquadre[categoria] || [];
-    var indice = lista.indexOf(valore);
-    if (indice >= 0) statsCriterioSquadreIndice = indice;
+    statsCriterioSquadreMem = valore;
     attivaStatsBtn('stats-criteri-squadre', btn);
     updateSquadre();
 }
@@ -6680,9 +6677,25 @@ function popolaCriteriSquadre() {
         sel.innerHTML += '<option value="' + c + '">' + def.titolo + '</option>';
     });
     if (criteri.length) {
-        var indice = Math.min(statsCriterioSquadreIndice, criteri.length - 1);
-        if (indice < 0) indice = 0;
-        sel.value = criteri[indice];
+        // Mantieni la STATISTICA scelta, non la posizione fisica del pulsante.
+        // Prima prova l'id esatto; poi il titolo visibile (utile se due categorie
+        // rappresentano la stessa statistica con chiavi interne diverse).
+        var scelto = '';
+        if (statsCriterioSquadreMem && criteri.indexOf(statsCriterioSquadreMem) >= 0) {
+            scelto = statsCriterioSquadreMem;
+        } else if (statsCriterioSquadreMem) {
+            var titoloMem = (definizioni[statsCriterioSquadreMem] || {titolo: statsCriterioSquadreMem}).titolo;
+            for (var i = 0; i < criteri.length; i++) {
+                var titoloQui = (definizioni[criteri[i]] || {titolo: criteri[i]}).titolo;
+                if (String(titoloQui).trim().toLowerCase() === String(titoloMem).trim().toLowerCase()) {
+                    scelto = criteri[i];
+                    break;
+                }
+            }
+        }
+        if (!scelto) scelto = criteri[0];
+        sel.value = scelto;
+        if (!statsCriterioSquadreMem) statsCriterioSquadreMem = scelto;
         renderStatsCriteriSquadre();
         updateSquadre();
         resizeSelect(sel);
