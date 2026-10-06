@@ -6416,7 +6416,7 @@ function attivaStatsBtn(containerId, btn) {
 }
 var statsCriterioFamiglia = 'mediavoto';
 var statsTipoBorrachoMem = 'titolari';
-var statsCriterioSquadreMem = { 'reali': 'pt', 'bonus-malus': 'gol r', 'best': 'pt best' };
+var statsCriterioSquadreIndice = 0;
 
 function statsFamigliaDaCriterio(c) {
     return String(c || '').replace(/tit$/, '').replace(/tot$/, '');
@@ -6467,7 +6467,9 @@ function setStatsCategoria(valore, btn) {
 function setStatsCriterioSquadra(valore, btn) {
     var categoria = document.getElementById('categoria-squadre').value;
     document.getElementById('criterio-squadre2').value = valore;
-    statsCriterioSquadreMem[categoria] = valore;
+    var lista = categorieSquadre[categoria] || [];
+    var indice = lista.indexOf(valore);
+    if (indice >= 0) statsCriterioSquadreIndice = indice;
     attivaStatsBtn('stats-criteri-squadre', btn);
     updateSquadre();
 }
@@ -6678,9 +6680,9 @@ function popolaCriteriSquadre() {
         sel.innerHTML += '<option value="' + c + '">' + def.titolo + '</option>';
     });
     if (criteri.length) {
-        var ricordato = statsCriterioSquadreMem[categoria];
-        sel.value = (ricordato && criteri.indexOf(ricordato) !== -1) ? ricordato : criteri[0];
-        statsCriterioSquadreMem[categoria] = sel.value;
+        var indice = Math.min(statsCriterioSquadreIndice, criteri.length - 1);
+        if (indice < 0) indice = 0;
+        sel.value = criteri[indice];
         renderStatsCriteriSquadre();
         updateSquadre();
         resizeSelect(sel);
