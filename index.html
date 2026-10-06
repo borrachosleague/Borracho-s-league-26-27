@@ -5210,6 +5210,120 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-controls-horizontal-v99">
+@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
+  /* Pannello comandi: tre livelli orizzontali ordinati */
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:7px!important;
+    right:7px!important;
+    top:auto!important;
+    bottom:42px!important;
+    width:auto!important;
+    height:auto!important;
+    max-height:none!important;
+    padding:5px!important;
+    margin:0!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:4px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+    z-index:40!important;
+    border-radius:10px!important;
+    background:rgba(8,8,8,.82)!important;
+  }
+
+  #page-best11 .best11-controls .best11-choice-unit{
+    min-width:0!important;
+    margin:0!important;
+    padding:3px!important;
+    border-radius:7px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Giocatori: prima riga completa */
+  #page-best11 .best11-controls .best11-choice-unit:has(#best-gruppo){
+    grid-column:1 / -1!important;
+    background:rgba(29,112,184,.88)!important;
+  }
+
+  /* Voti: seconda riga sinistra */
+  #page-best11 .best11-controls #best-tipo-wrap{
+    grid-column:1!important;
+    background:rgba(184,74,35,.90)!important;
+  }
+
+  /* Medie: seconda riga destra */
+  #page-best11 .best11-controls .best11-choice-unit:has(#best-metrica){
+    grid-column:2!important;
+    background:rgba(122,65,168,.90)!important;
+  }
+
+  /* Modulo: terza riga completa */
+  #page-best11 .best11-controls .best11-choice-unit:has(#best-modulo){
+    grid-column:1 / -1!important;
+    background:rgba(35,126,68,.92)!important;
+  }
+
+  #page-best11 .best11-controls .best11-label{
+    display:block!important;
+    margin:0 0 2px!important;
+    padding:0!important;
+    font-size:9px!important;
+    line-height:1!important;
+    font-weight:1000!important;
+    text-align:center!important;
+    color:#fff!important;
+    text-transform:uppercase!important;
+  }
+
+  #page-best11 .best11-controls .subnav.best11-v{
+    display:grid!important;
+    width:100%!important;
+    gap:3px!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  #page-best11 #best-gruppo{grid-template-columns:1fr 1fr!important;}
+  #page-best11 #best-tipo{grid-template-columns:1fr 1fr!important;}
+  #page-best11 #best-metrica{grid-template-columns:1fr 1fr!important;}
+  #page-best11 #best-modulo{grid-template-columns:repeat(4,1fr)!important;}
+
+  #page-best11 .best11-controls .subnav-btn{
+    width:100%!important;
+    min-width:0!important;
+    height:25px!important;
+    min-height:25px!important;
+    padding:2px 3px!important;
+    margin:0!important;
+    border:1px solid rgba(255,255,255,.65)!important;
+    border-radius:5px!important;
+    background:#171717!important;
+    color:#fff!important;
+    font-size:9px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Selezione comune: giallo Borrachos, immediatamente riconoscibile */
+  #page-best11 .best11-controls .subnav-btn.active{
+    background:#ffd54a!important;
+    color:#050505!important;
+    border-color:#fff!important;
+    box-shadow:0 0 0 1px #111,0 2px 5px rgba(0,0,0,.45)!important;
+  }
+
+  /* Presenze resta separata: la sistemiamo come slider largo nel passaggio successivo */
+  #page-best11 .best11-controls .best11-presenze-unit{
+    display:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5334,7 +5448,7 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
                 
                 <div class="stats-choice-row" id="stats-gruppo-btns">
                     <button class="stats-choice-btn active" onclick="setStatsGruppo('borracho',this)">Fantasquadre</button>
-                    <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Tutti Serie A</button>
+                    <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Serie A</button>
                     <button class="stats-choice-btn" onclick="setStatsGruppo('svincolati',this)">Svincolati</button>
                 </div>
                 <div id="stats-tipo-wrap">
@@ -5403,8 +5517,8 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
             <div class="best11-choice-unit">
             <div class="best11-label">Giocatori</div>
             <div class="subnav best11-v" id="best-gruppo">
-                <button class="subnav-btn active" onclick="setBestGruppo('borracho', this)">Rosa Borracho</button>
-                <button class="subnav-btn" onclick="setBestGruppo('seriea', this)">Tutti Serie A</button>
+                <button class="subnav-btn active" onclick="setBestGruppo('borracho', this)">Lega</button>
+                <button class="subnav-btn" onclick="setBestGruppo('seriea', this)">Serie A</button>
             </div>
             </div>
             <div id="best-tipo-wrap" class="best11-choice-unit">
