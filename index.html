@@ -5032,34 +5032,25 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 
-<style id="borrachos-best11-mobile-modulo-slider-v90">
-@media(max-width:700px){
-  /* Pannello scelte: alzato per mostrare interamente anche il blocco Modulo */
-  #page-best11 .best11-controls{
-    top:347px!important;
-  }
 
-  /* Panchina e filtro presenze seguono leggermente verso l'alto */
-  #page-best11 .best11-bench{
-    top:373px!important;
-  }
-  #page-best11 .best11-presenze-unit{
-    top:474px!important;
-  }
 
-  /* Cursore presenze: niente trasparenza su telefono */
-  #page-best11 #best-presenze-pct{
-    opacity:1!important;
+<style id="borrachos-best11-slider-mobile-v93">
+@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
+  /* SOLO cursore percentuale presenze: più grande e molto più leggibile */
+  #page-best11 .mobile-detached-presenze .best11-presenze-control{
+    --ball-size:34px!important;
   }
   #page-best11 #best-presenze-ball{
+    width:34px!important;
+    height:34px!important;
     opacity:1!important;
+    border-radius:50%!important;
+    background-color:#f4f0dc!important;
+    border:3px solid #111!important;
+    box-shadow:
+      0 0 0 3px #ffd54a,
+      0 3px 6px #000!important;
     filter:none!important;
-  }
-  #page-best11 #best-presenze-pct::-webkit-slider-thumb{
-    opacity:1!important;
-  }
-  #page-best11 #best-presenze-pct::-moz-range-thumb{
-    opacity:1!important;
   }
 }
 </style>
@@ -6852,14 +6843,14 @@ caricaDatiBorrachos()
 <script id="borrachos-best11-mobile-safe-position-v66">
 (function(){
   var layouts={
-    '352':[[50,16],[7,31],[50,31],[93,31],[1,55],[25,48],[50,43],[75,48],[99,55],[26,69],[74,69]],
-    '442':[[50,16],[1,32],[33,32],[67,32],[99,32],[2,55],[33,48],[67,48],[98,55],[27,69],[73,69]],
-    '433':[[50,16],[1,32],[33,30],[67,30],[99,32],[10,52],[50,46],[90,52],[3,69],[50,73],[97,69]],
-    '343':[[50,16],[7,32],[50,29],[93,32],[1,53],[32,47],[68,47],[99,53],[7,69],[50,73],[93,69]]
+    '352':[[50,16],[7,31],[50,31],[93,31],[1,55],[25,48],[50,43],[75,48],[99,55],[26,74],[74,74]],
+    '442':[[50,16],[1,32],[33,32],[67,32],[99,32],[2,55],[33,48],[67,48],[98,55],[27,74],[73,74]],
+    '433':[[50,16],[1,32],[33,30],[67,30],[99,32],[10,52],[50,46],[90,52],[3,74],[50,78],[97,74]],
+    '343':[[50,16],[7,32],[50,29],[93,32],[1,53],[32,47],[68,47],[99,53],[7,74],[50,78],[93,74]]
   };
 
   function mobile(){
-    return window.matchMedia('(max-width:700px)').matches;
+    return window.matchMedia('(max-width:700px), (max-device-width:700px), (pointer:coarse) and (orientation:portrait)').matches;
   }
 
   function movePresenze(){
