@@ -4815,6 +4815,118 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-live-v51">
+/* LIVE TABELLONE - separatore giallo fra tutte le partite, desktop + mobile */
+#page-live .live-scoreboard .live-match-first:not(:first-child) td{
+  border-top:3px solid #ffd54a!important;
+}
+#page-live .live-scoreboard .live-match-first:first-child td{
+  border-top:1px solid #333!important;
+}
+#page-live .live-scoreboard .live-match-second td{
+  border-bottom:0!important;
+}
+
+/* TABELLONE - nomi squadra sempre su una sola riga */
+#page-live .live-scoreboard .ris-team{
+  min-width:0!important;
+  flex-wrap:nowrap!important;
+}
+#page-live .live-scoreboard .ris-team span{
+  display:block!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+/* DETTAGLIO PARTITA - nomi delle due fantasquadre mai a capo */
+#page-live .live-h2h-head>div{
+  min-width:0!important;
+}
+#page-live .live-h2h-head b{
+  display:block!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+
+@media(max-width:700px){
+  /* Il dettaglio occupa soltanto la larghezza realmente disponibile */
+  #page-live .live-detail-layout{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  #page-live .live-grid,
+  #page-live .live-match,
+  #page-live .live-h2h-wrap,
+  #page-live .live-h2h{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  #page-live .live-h2h-wrap{
+    overflow:hidden!important;
+  }
+
+  /* Nomi giocatori / voti: geometria fissa che non può allargare la pagina */
+  #page-live .live-h2h{
+    table-layout:fixed!important;
+  }
+  #page-live .live-h2h .live-col-name{width:37%!important;}
+  #page-live .live-h2h .live-col-vote{width:13%!important;}
+  #page-live .live-h2h th,
+  #page-live .live-h2h td{
+    box-sizing:border-box!important;
+    padding-left:1px!important;
+    padding-right:1px!important;
+    font-size:10.5px!important;
+  }
+
+  /* Testata: due squadre + risultato, sempre nella stessa riga */
+  #page-live .live-h2h-head{
+    width:100%!important;
+    max-width:100%!important;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+    gap:3px!important;
+  }
+  #page-live .live-h2h-head>div{
+    grid-template-columns:34px minmax(0,1fr)!important;
+    gap:3px!important;
+  }
+  #page-live .live-h2h-head>div:last-child{
+    grid-template-columns:minmax(0,1fr) 34px!important;
+  }
+  #page-live .live-h2h-head img{
+    width:34px!important;
+    height:34px!important;
+  }
+  #page-live .live-h2h-head b{
+    font-size:12px!important;
+    line-height:1!important;
+  }
+  #page-live .live-h2h-head strong{
+    font-size:14px!important;
+    line-height:1!important;
+  }
+  #page-live .live-h2h-head small{
+    font-size:8px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  /* Anche nel tabellone i nomi lunghi non aumentano mai la larghezza */
+  #page-live .live-scoreboard .ris-team span{
+    font-size:12px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
