@@ -4934,16 +4934,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
-
-<style id="borrachos-best11-desktop-bernabeer-v67">
-@media(min-width:701px){
-  #page-best11{
-    background-position:center 34px!important;
-  }
-}
-</style>
-
-
 <style id="borrachos-desktop-header-best11-v72">
 @media(min-width:701px){
   /* Header più compatto su TUTTE le pagine */
@@ -4964,241 +4954,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
-
-
-<style id="borrachos-best11-mobile-controls-up-v74">
-@media(max-width:700px){
-  #page-best11 .best11-controls{
-    bottom:122px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-bench-up-v75">
-@media(max-width:700px){
-  #page-best11 .best11-bench{
-    bottom:122px!important;
-    top:auto!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-boxes-taller-v76">
-@media(max-width:700px){
-  /* Tasti scelta: più alto, così Fantamedia/Media Voto e moduli non vengono tagliati */
-  #page-best11 .best11-controls{
-    bottom:122px!important;
-    height:255px!important;
-    max-height:255px!important;
-    min-height:255px!important;
-    overflow:visible!important;
-  }
-
-  /* Panchina: rettangolo più alto per mostrare tutta la lista */
-  #page-best11 .best11-bench{
-    top:auto!important;
-    bottom:122px!important;
-    height:255px!important;
-    max-height:255px!important;
-    min-height:255px!important;
-    overflow:visible!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-two-box-editor-v77">
-@media(max-width:700px){
-  body.layout-editing #page-best11 .best11-controls.layout-editable,
-  body.layout-editing #page-best11 .best11-bench.layout-editable{
-    outline:3px dashed #ffd54a!important;
-    outline-offset:3px!important;
-    cursor:move!important;
-    touch-action:none!important;
-  }
-  body.layout-editing #page-best11 .best11-controls.layout-selected,
-  body.layout-editing #page-best11 .best11-bench.layout-selected{
-    outline-color:#55ff88!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-editor-visible-v78">
-@media(max-width:700px){
-  body:not(.home-active):has(#page-best11.active) .layout-editor-tools{
-    display:flex!important;
-    position:fixed!important;
-    left:4px!important;
-    right:4px!important;
-    bottom:4px!important;
-    width:auto!important;
-    max-width:none!important;
-    z-index:999999!important;
-    flex-wrap:wrap!important;
-    gap:3px!important;
-    padding:4px!important;
-    box-sizing:border-box!important;
-  }
-  body:not(.home-active):has(#page-best11.active) .layout-editor-tools button{
-    display:block!important;
-    font-size:9px!important;
-    line-height:1!important;
-    min-height:27px!important;
-    padding:4px 6px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-editor-compact-v79">
-@media(max-width:700px){
-
-  /* Barra editor compatta: niente più colonne giganti */
-  body:not(.home-active):has(#page-best11.active) .layout-editor-tools{
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    grid-auto-rows:25px!important;
-    position:fixed!important;
-    left:5px!important;
-    right:5px!important;
-    bottom:5px!important;
-    top:auto!important;
-    width:auto!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:58px!important;
-    margin:0!important;
-    padding:3px!important;
-    gap:2px!important;
-    overflow:visible!important;
-    box-sizing:border-box!important;
-    z-index:999999!important;
-    transform:none!important;
-  }
-
-  body:not(.home-active):has(#page-best11.active) .layout-editor-tools > *{
-    position:static!important;
-    float:none!important;
-    width:100%!important;
-    height:25px!important;
-    min-width:0!important;
-    min-height:0!important;
-    max-width:none!important;
-    max-height:25px!important;
-    margin:0!important;
-    padding:2px 1px!important;
-    box-sizing:border-box!important;
-    transform:none!important;
-  }
-
-  body:not(.home-active):has(#page-best11.active) .layout-editor-tools button{
-    display:block!important;
-    font-size:7px!important;
-    line-height:9px!important;
-    white-space:normal!important;
-    overflow:hidden!important;
-    text-overflow:clip!important;
-  }
-
-  /* Durante la modifica i due pannelli restano davanti e trascinabili */
-  body.layout-editing #page-best11 .best11-controls,
-  body.layout-editing #page-best11 .best11-bench{
-    touch-action:none!important;
-    cursor:move!important;
-    z-index:500!important;
-  }
-}
-</style>
-
-<<<<<<< Updated upstream
-
-
-
-=======
-<style id="borrachos-best11-mobile-autosave-v81">
-@media(max-width:700px){
-  #best11-copy-coordinates{
-    display:block!important;
-    position:fixed!important;
-    right:6px!important;
-    bottom:40px!important;
-    z-index:1000000!important;
-    width:auto!important;
-    height:28px!important;
-    min-width:0!important;
-    min-height:0!important;
-    padding:4px 8px!important;
-    margin:0!important;
-    border:2px solid #ffe600!important;
-    border-radius:5px!important;
-    background:#111!important;
-    color:#fff!important;
-    font:800 9px/1 Arial,sans-serif!important;
-  }
-}
-@media(min-width:701px){
-  #best11-copy-coordinates{display:none!important;}
-}
-</style>
->>>>>>> Stashed changes
-
-
-
-
-
-
-
-<style id="borrachos-best11-mobile-final-boxes-v83">
-@media(max-width:700px){
-  #page-best11 .best11-controls{
-    position:absolute!important;
-    left:9px!important;
-    top:514px!important;
-    right:auto!important;
-    bottom:auto!important;
-    width:70px!important;
-    height:231px!important;
-    min-height:0!important;
-    max-height:none!important;
-  }
-  #page-best11 .best11-bench{
-    position:absolute!important;
-    left:304px!important;
-    top:558px!important;
-    right:auto!important;
-    bottom:auto!important;
-    width:78px!important;
-    height:172px!important;
-    min-height:0!important;
-    max-height:none!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-only-top-editor-v84">
-@media(max-width:700px){
-  /* Best11 mobile: nasconde tutta la vecchia pulsantiera di modifica in basso.
-     Restano solo SPOSTA/RIDIMENSIONA e COPIA COORDINATE in cima. */
-  body:has(#page-best11.active) .layout-editor-tools,
-  body:has(#page-best11.active) .home-layout-tools{
-    display:none!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-  }
-
-  #best11-direct-editor-toggle,
-  #best11-copy-coordinates{
-    display:block!important;
-    visibility:visible!important;
-    pointer-events:auto!important;
-  }
-}
-</style>
-
 
 <style id="borrachos-best11-mobile-real-phone-v85">
 @media(max-width:700px){
@@ -5227,13 +4982,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
-<<<<<<< Updated upstream
-
-
-
-
-=======
->>>>>>> Stashed changes
 <style id="borrachos-best11-mobile-presenze-final-v87">
 @media(max-width:700px){
   #page-best11 .best11-presenze-unit{
@@ -5254,12 +5002,29 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <style id="borrachos-best11-mobile-locked-v88">
 @media(max-width:700px){
+  #best11-direct-editor-toggle,
+  #best11-copy-coordinates,
+  #best11-presenze-editor-toggle,
+  #best11-presenze-copy,
+  body:has(#page-best11.active) .layout-editor-tools,
+  body:has(#page-best11.active) .home-layout-tools{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
   #page-best11 .best11-controls,
   #page-best11 .best11-bench,
   #page-best11 .best11-presenze-unit{
     outline:none!important;
     cursor:default!important;
-  }}
+  }
+
+  #page-best11 .best11-direct-handle,
+  #page-best11 .best11-presenze-handle{
+    display:none!important;
+  }
+}
 </style>
 
 
@@ -7212,9 +6977,6 @@ caricaDatiBorrachos()
   window.addEventListener('orientationchange',place);
 })();
 </script>
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 </body>
 </html>
