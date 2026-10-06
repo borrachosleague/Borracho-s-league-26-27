@@ -5324,6 +5324,39 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-bench-toggle-scope-v100">
+@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
+  /* Mai visibile fuori dalla pagina Best 11 */
+  #best11-mobile-bench-toggle{
+    display:none!important;
+  }
+  body:has(#page-best11.active) #best11-mobile-bench-toggle{
+    display:flex!important;
+    top:43px!important;
+    right:7px!important;
+    bottom:auto!important;
+    width:auto!important;
+    min-width:76px!important;
+    height:28px!important;
+    padding:3px 8px!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+    border-radius:7px!important;
+    font-size:9px!important;
+  }
+  body:has(#page-best11.active) #best11-mobile-bench-toggle.is-open{
+    right:7px!important;
+  }
+
+  /* Se si cambia pagina con la panchina aperta, il pannello non deve restare sopra le altre pagine */
+  body:not(:has(#page-best11.active)) #page-best11 .best11-bench{
+    transform:translateX(105%)!important;
+    pointer-events:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
