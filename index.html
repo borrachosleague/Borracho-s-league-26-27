@@ -163,9 +163,6 @@
         }
 
 
-
-
-
         .layout-editor-tools {
             position: fixed; top: 8px; right: 8px; z-index: 100000;
             display: none; gap: 5px; flex-wrap: wrap; justify-content: flex-end;
@@ -1160,7 +1157,6 @@
         }
 
 
-
         /* F1 e Battle Royale: stesso linguaggio grafico della Classifica. */
         #page-classifica .classifica-board #classifica-special-data {
             position:absolute !important;
@@ -1271,7 +1267,6 @@
             height:100% !important;
             text-align:center !important;
         }
-
 
 
         /* === F1 / BATTLE ROYALE · STRUTTURA PULITA ===
@@ -2307,7 +2302,6 @@
         #page-best11 .best11-quote-diff{margin:5px 0 0!important;font-size:12px!important;align-self:center!important}
 
 
-
         /* === BEST 11 · FIGURINA APPROVATA · IMPLEMENTAZIONE FEDELE === */
         #page-best11 .best11-hover-card{
             width:382px!important;height:548px!important;left:50%!important;bottom:9px!important;
@@ -3276,8 +3270,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 </style>
 
 
-
-
 <style id="borrachos-v19-lock-approved">
 @media(max-width:700px){
 
@@ -3324,8 +3316,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
-
-
 
 
 <style id="borrachos-v24-classifica-mobile">
@@ -3379,9 +3369,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
-
-
-
 
 
 <style id="borrachos-mobile-logo-name-columns-v27">
@@ -3600,12 +3587,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
-
-
-
-
-
-
 
 
 <style id="borrachos-special-mobile-alignment-v33">
@@ -4410,70 +4391,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
-<style id="borrachos-best11-mobile-bench-v58">
-@media(max-width:700px){
-  /* Panchina di nuovo visibile, ma molto più corta */
-  #page-best11 .best11-bench{
-    display:block!important;
-    position:absolute!important;
-    right:3px!important;
-    left:auto!important;
-    top:118px!important;
-    width:76px!important;
-    max-height:none!important;
-    padding:3px 2px!important;
-    box-sizing:border-box!important;
-    overflow:hidden!important;
-    z-index:20!important;
-  }
-  #page-best11 .best11-bench-title{
-    font-size:8px!important;
-    line-height:1!important;
-    margin:0 0 2px!important;
-    padding:0!important;
-  }
-
-  /* Una riga più bassa: NOME + RUOLO, senza logo e voto */
-  #page-best11 .bench-player{
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) 19px!important;
-    align-items:center!important;
-    gap:1px!important;
-    min-height:0!important;
-    height:21px!important;
-    padding:0 1px!important;
-    margin:0!important;
-    line-height:1!important;
-  }
-  #page-best11 .bench-logo{
-    display:none!important;
-  }
-  #page-best11 .bench-name{
-    display:block!important;
-    min-width:0!important;
-    overflow:hidden!important;
-    white-space:nowrap!important;
-    text-overflow:ellipsis!important;
-    font-size:7.5px!important;
-    font-weight:800!important;
-    line-height:1!important;
-    color:#fff!important;
-  }
-  #page-best11 .bench-role{
-    display:block!important;
-    width:19px!important;
-    font-size:7px!important;
-    font-weight:900!important;
-    line-height:1!important;
-    text-align:center!important;
-  }
-  #page-best11 .bench-vote{
-    display:none!important;
-  }
-}
-</style>
-
-
 <style id="borrachos-best11-mobile-safe-v66">
 @media(max-width:700px){
   /* TUTTE queste modifiche sono esclusivamente mobile */
@@ -4587,6 +4504,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
   #page-best11 .best11-bench-title{
     font-size:7.5px!important;
+    padding:0!important;
     line-height:1!important;
     margin:0 0 1px!important;
     padding:0!important;
@@ -4611,6 +4529,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     white-space:nowrap!important;
     text-overflow:ellipsis!important;
     font-size:6.6px!important;
+    line-height:1!important;
     font-weight:800!important;
     color:#fff!important;
   }
@@ -4618,6 +4537,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     display:block!important;
     width:16px!important;
     font-size:6px!important;
+    line-height:1!important;
     font-weight:900!important;
     text-align:center!important;
   }
@@ -4843,7 +4763,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <!-- CLASSIFICA -->
 <div id="page-classifica" class="page">
-
 
 
     <input type="hidden" id="tipo-classifica" value="classifica">
@@ -5147,8 +5066,6 @@ function resizeSelect(sel) {
 
 
 document.body.classList.add('home-active');
-
-
 
 
 var layoutEditorOn=false, layoutSelected=null, layoutDrag=null;
@@ -6475,32 +6392,6 @@ caricaDatiBorrachos()
 </script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <style id="borrachos-team-name-dot-fallback">
 #page-classifica .chalk-team .ultra-dot-fallback,
 #page-classifica .mobile-short-name .ultra-dot-fallback{
@@ -6550,7 +6441,6 @@ caricaDatiBorrachos()
 </script>
 
 
-
 <script id="borrachos-statistiche-squadre-unica-js-v46">
 (function(){
   function unisciSquadreMobile(){
@@ -6590,15 +6480,6 @@ caricaDatiBorrachos()
   aggiornaHeaderRisultatiMobile();
 })();
 </script>
-
-
-
-
-
-
-
-
-
 
 
 <script id="borrachos-best11-mobile-safe-position-v66">
