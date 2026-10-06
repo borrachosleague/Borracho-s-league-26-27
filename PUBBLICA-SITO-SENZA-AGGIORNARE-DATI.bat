@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 setlocal EnableExtensions
 cd /d "%~dp0"
 title Borrachos League - Pubblica senza aggiornare dati
