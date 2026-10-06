@@ -5223,29 +5223,12 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <style id="borrachos-best11-mobile-locked-v88">
 @media(max-width:700px){
-  #best11-direct-editor-toggle,
-  #best11-copy-coordinates,
-  #best11-presenze-editor-toggle,
-  #best11-presenze-copy,
-  body:has(#page-best11.active) .layout-editor-tools,
-  body:has(#page-best11.active) .home-layout-tools{
-    display:none!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-  }
-
   #page-best11 .best11-controls,
   #page-best11 .best11-bench,
   #page-best11 .best11-presenze-unit{
     outline:none!important;
     cursor:default!important;
-  }
-
-  #page-best11 .best11-direct-handle,
-  #page-best11 .best11-presenze-handle{
-    display:none!important;
-  }
-}
+  }}
 </style>
 
 
@@ -7198,25 +7181,5 @@ caricaDatiBorrachos()
   window.addEventListener('orientationchange',place);
 })();
 </script>
-
-
-
-
-
-
-
-
-<script id="borrachos-best11-mobile-lock-v88-js">
-(function(){
-  function lockBest11Mobile(){
-    if(!window.matchMedia('(max-width:700px)').matches)return;
-    document.body.classList.remove('best11-direct-edit','best11-presenze-edit');
-  }
-  window.addEventListener('load',lockBest11Mobile);
-  window.addEventListener('resize',lockBest11Mobile);
-  setTimeout(lockBest11Mobile,250);
-})();
-</script>
-
 </body>
 </html>
