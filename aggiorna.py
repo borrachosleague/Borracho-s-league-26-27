@@ -262,6 +262,13 @@ giocatori_totali = defaultdict(lambda: {
     "squadra": "", "ruolo": ""
 })
 
+# Statistiche da INSER DATA per TUTTI i giocatori Serie A, anche senza FantaSquadra.
+# Serve in particolare per Clean Sheet e altri bonus/malus non presenti nella tabella statistica online.
+seriea_inser_data = defaultdict(lambda: {
+    "gol": 0, "assist": 0, "golsub": 0, "rigseg": 0, "rigsba": 0, "rigpar": 0,
+    "amm": 0, "esp": 0, "autogol": 0, "cleansheet": 0
+})
+
 # Gol per reparto per squadra
 gol_reparto = defaultdict(lambda: {"d": 0, "c": 0, "a": 0})   
 
@@ -272,6 +279,21 @@ for row in ws_data.iter_rows(min_row=2, max_row=last_row + 1, values_only=True):
     nome = str(nome).strip()
     if not nome:
         continue
+
+    # Prima di filtrare per FantaSquadra, accumula le statistiche reali Serie A.
+    # In questo modo anche gli svincolati alimentano Clean Sheet / bonus / malus.
+    sa = seriea_inser_data[nome]
+    for idx, chiave in [
+        (18, "gol"), (14, "assist"), (7, "golsub"), (10, "rigseg"),
+        (9, "rigsba"), (8, "rigpar"), (11, "autogol"), (12, "amm"),
+        (13, "esp"), (16, "cleansheet")
+    ]:
+        val_sa = row[idx]
+        if val_sa is not None:
+            try:
+                sa[chiave] += int(float(str(val_sa).replace(",", ".")))
+            except (ValueError, TypeError):
+                pass
 
     fantasquadra = row[17]
     if fantasquadra is None or not str(fantasquadra).strip():
@@ -815,6 +837,20 @@ for base in listone_excel:
     else:
         # Giocatore corretto di Listone ma non ancora presente nella pagina statistica.
         g = dict(base)
+
+    # Bonus/malus che la tabella statistica online non espone (Clean Sheet, autogol)
+    # vengono recuperati da INSER DATA per tutti i giocatori, anche svincolati.
+    sa = seriea_inser_data.get(base["nome"])
+    if sa is None:
+        # fallback normalizzato per eventuali differenze minime di accenti/punteggiatura
+        kbase = _norm_nome_fc(base["nome"])
+        for nome_sa, dati_sa in seriea_inser_data.items():
+            if _norm_nome_fc(nome_sa) == kbase:
+                sa = dati_sa
+                break
+    if sa:
+        g["cleansheettot"] = sa["cleansheet"]
+        g["autgoltot"] = sa["autogol"]
     giocatori_seriea.append(g)
 
 senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]

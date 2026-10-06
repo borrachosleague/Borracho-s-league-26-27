@@ -163,6 +163,9 @@
         }
 
 
+
+
+
         .layout-editor-tools {
             position: fixed; top: 8px; right: 8px; z-index: 100000;
             display: none; gap: 5px; flex-wrap: wrap; justify-content: flex-end;
@@ -1157,6 +1160,7 @@
         }
 
 
+
         /* F1 e Battle Royale: stesso linguaggio grafico della Classifica. */
         #page-classifica .classifica-board #classifica-special-data {
             position:absolute !important;
@@ -1267,6 +1271,7 @@
             height:100% !important;
             text-align:center !important;
         }
+
 
 
         /* === F1 / BATTLE ROYALE · STRUTTURA PULITA ===
@@ -2302,6 +2307,7 @@
         #page-best11 .best11-quote-diff{margin:5px 0 0!important;font-size:12px!important;align-self:center!important}
 
 
+
         /* === BEST 11 · FIGURINA APPROVATA · IMPLEMENTAZIONE FEDELE === */
         #page-best11 .best11-hover-card{
             width:382px!important;height:548px!important;left:50%!important;bottom:9px!important;
@@ -3269,6 +3275,21 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+<meta name="borrachos-mobile-build-v14" content="v12-base-data-only">
+
+
+
+<meta name="borrachos-mobile-build-v15" content="editor-mobile">
+
+<meta name="borrachos-mobile-build-v16" content="editor-fast">
+
+
+
+<meta name="borrachos-mobile-build-v17" content="drag-drop">
+
+
+
+<meta name="borrachos-mobile-build-v18" content="drag-buttons-fixed">
 
 <style id="borrachos-v19-lock-approved">
 @media(max-width:700px){
@@ -3317,6 +3338,23 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+<meta name="borrachos-mobile-build-v19" content="lavagna-tasti-locked">
+
+
+
+<meta name="borrachos-mobile-build-v20" content="editor-only-data">
+
+
+
+<meta name="borrachos-mobile-build-v21" content="data-editor-always-visible">
+
+
+
+<meta name="borrachos-mobile-build-v22" content="editor-data-active-view">
+
+
+
+<meta name="borrachos-mobile-build-v23" content="classifica-data-fixed-logos-shifted">
 
 <style id="borrachos-v24-classifica-mobile">
 @media (max-width:700px){
@@ -3337,6 +3375,15 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
  }
 }
 </style>
+
+<meta name="borrachos-mobile-build-v24" content="short-team-names-with-logos">
+
+
+
+
+
+
+
 <style id="borrachos-ultra-fresh-team-names-only">
 @font-face{
   font-family:'Ultra Fresh';
@@ -3369,6 +3416,9 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
+
+
+
 
 
 <style id="borrachos-mobile-logo-name-columns-v27">
@@ -3587,6 +3637,12 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
+
+
+
+
+
+
 
 
 <style id="borrachos-special-mobile-alignment-v33">
@@ -3898,13 +3954,88 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <style id="borrachos-statistiche-mobile-v39">
 @media(max-width:700px){
-  #page-statistiche #stats-gruppo-btns .stats-choice-btn{color:#fff!important;background:#163f82!important;border-color:#2874c8!important;}
-  #page-statistiche #stats-gruppo-btns .stats-choice-btn.active{color:#fff!important;background:#159ee4!important;border-color:#71d4ff!important;}
+  /* Ricerca più corta */
+  #page-statistiche #sub-giocatori .ricerca-input{
+    width:150px!important;
+    max-width:150px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* I tre pulsanti Gruppo: testo bianco; inattivi blu, attivo azzurro */
+  #page-statistiche #stats-gruppo-btns .stats-choice-btn{
+    color:#fff!important;
+    background:#163f82!important;
+    border-color:#2874c8!important;
+  }
+  #page-statistiche #stats-gruppo-btns .stats-choice-btn.active{
+    color:#fff!important;
+    background:#159ee4!important;
+    border-color:#71d4ff!important;
+  }
+
+  /* Compatta il pannello sinistro e avvicina la tabella */
+  #page-statistiche #sub-giocatori .giocatori-layout{
+    display:grid!important;
+    grid-template-columns:260px minmax(0,1fr)!important;
+    column-gap:3px!important;
+    align-items:start!important;
+  }
+  #page-statistiche #sub-giocatori .giocatori-controls{
+    width:260px!important;
+    max-width:260px!important;
+    margin-right:0!important;
+    padding-right:0!important;
+  }
+  #page-statistiche #sub-giocatori .table-container{
+    margin-left:0!important;
+    transform:translateX(-2px)!important;
+  }
 }
 </style>
+
+
+<style id="borrachos-statistiche-mobile-v40">
+@media(max-width:700px){
+  /* Tutti i tasti di scelta del pannello giocatori più corti */
+  #page-statistiche #sub-giocatori .stats-choice-row{
+    width:150px!important;
+    max-width:150px!important;
+  }
+  #page-statistiche #sub-giocatori .stats-choice-btn{
+    width:150px!important;
+    max-width:150px!important;
+    box-sizing:border-box!important;
+  }
+  #page-statistiche #stats-criteri-giocatori{
+    width:150px!important;
+    max-width:150px!important;
+  }
+  #page-statistiche #stats-criteri-giocatori .stats-choice-btn{
+    width:150px!important;
+    max-width:150px!important;
+  }
+}
+</style>
+
+
 <style id="borrachos-statistiche-mobile-v41">
 @media(max-width:700px){
-  #page-statistiche #sub-giocatori .table-container{margin-left:0!important;transform:translateX(-1px)!important;}
+  /* Porta la tabella Giocatori il più possibile verso sinistra.
+     I controlli restano larghi 150px; la seconda colonna parte subito dopo. */
+  #page-statistiche #sub-giocatori .giocatori-layout{
+    grid-template-columns:150px minmax(0,1fr)!important;
+    column-gap:0!important;
+  }
+  #page-statistiche #sub-giocatori .giocatori-controls{
+    width:150px!important;
+    max-width:150px!important;
+    margin:0!important;
+    padding-right:0!important;
+  }
+  #page-statistiche #sub-giocatori .table-container{
+    margin-left:0!important;
+    transform:translateX(-1px)!important;
+  }
 }
 </style>
 
@@ -4391,6 +4522,268 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-best11-mobile-v54">
+@media(max-width:700px){
+  /* BEST 11 mobile: usa davvero i 390px disponibili */
+  #page-best11{
+    height:calc(100dvh - 68px)!important;
+    max-height:none!important;
+    min-height:760px!important;
+    width:100%!important;
+    overflow:hidden!important;
+    background-position:center top!important;
+    background-size:auto 100%!important;
+  }
+  #page-best11 .best11-layout{
+    position:relative!important;
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    overflow:hidden!important;
+  }
+
+  /* Comandi compatti sulla sinistra */
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:5px!important;
+    top:58px!important;
+    width:70px!important;
+    height:auto!important;
+    max-height:none!important;
+    padding:5px!important;
+    gap:1px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+    z-index:20!important;
+  }
+  #page-best11 .best11-controls .best11-label{
+    font-size:9px!important;
+    line-height:1!important;
+    margin:3px 0 2px!important;
+    letter-spacing:.7px!important;
+  }
+  #page-best11 .best11-controls .subnav.best11-v{
+    display:flex!important;
+    flex-direction:column!important;
+    flex-wrap:nowrap!important;
+    gap:2px!important;
+    margin:0 0 3px!important;
+  }
+  #page-best11 .best11-controls .subnav.best11-v .subnav-btn{
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:3px 2px!important;
+    margin:0!important;
+    font-size:9px!important;
+    line-height:1.02!important;
+    white-space:normal!important;
+  }
+  #page-best11 .best11-presenze-unit{
+    transform:scale(.78)!important;
+    transform-origin:top left!important;
+    width:128%!important;
+    margin-bottom:-12px!important;
+  }
+
+  /* Campo centrale: lascia spazio a comandi e panchina */
+  #page-best11 #pitch-best11{
+    position:absolute!important;
+    left:78px!important;
+    top:70px!important;
+    width:230px!important;
+    height:570px!important;
+    max-width:none!important;
+    aspect-ratio:auto!important;
+    overflow:visible!important;
+    z-index:10!important;
+  }
+
+  /* Panchina tutta dentro lo schermo */
+  #page-best11 .best11-bench{
+    position:absolute!important;
+    right:4px!important;
+    left:auto!important;
+    top:82px!important;
+    width:76px!important;
+    max-height:none!important;
+    padding:4px 3px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    z-index:20!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:9px!important;
+    line-height:1.05!important;
+    margin-bottom:3px!important;
+  }
+  #page-best11 .bench-player{
+    display:grid!important;
+    grid-template-columns:27px 1fr!important;
+    min-height:38px!important;
+    height:38px!important;
+    gap:2px!important;
+    padding:1px!important;
+  }
+  #page-best11 .bench-logo{
+    width:25px!important;height:25px!important;
+  }
+  #page-best11 .bench-name{display:none!important;}
+  #page-best11 .bench-role{
+    display:block!important;
+    font-size:8px!important;
+    text-align:center!important;
+  }
+  #page-best11 .bench-vote{
+    display:none!important;
+  }
+
+  /* Le targhette devono stare leggibili anche ridotte */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.58)!important;
+    transform-origin:center center!important;
+    z-index:15!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-v55">
+@media(max-width:700px){
+  /* Tabellone scelte: in basso, a fianco della porta inferiore */
+  #page-best11 .best11-controls{
+    left:5px!important;
+    top:auto!important;
+    bottom:10px!important;
+    width:70px!important;
+    z-index:30!important;
+  }
+
+  /* Panchina più pulita: niente loghi fantasquadra */
+  #page-best11 .best11-bench{
+    top:118px!important;
+    right:3px!important;
+    width:66px!important;
+    padding:4px 2px!important;
+  }
+  #page-best11 .bench-player{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:32px!important;
+    height:32px!important;
+    padding:1px 0!important;
+  }
+  #page-best11 .bench-logo{display:none!important;}
+  #page-best11 .bench-name{display:none!important;}
+  #page-best11 .bench-vote{display:none!important;}
+  #page-best11 .bench-role{
+    display:block!important;
+    width:100%!important;
+    font-size:9px!important;
+    font-weight:900!important;
+    text-align:center!important;
+  }
+
+  /* Più spazio verticale per la formazione */
+  #page-best11 #pitch-best11{
+    top:92px!important;
+    height:610px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-v56">
+@media(max-width:700px){
+  /* Targhette un po' più compatte: logo mantenuto ma leggermente ridotto */
+  #page-best11 .pitch-player{
+    transform:translate(-50%,-50%) scale(.54)!important;
+  }
+  #page-best11 .pitch-player .pp-logo{
+    width:32px!important;
+    height:32px!important;
+    flex-basis:32px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-no-bench-v57">
+@media(max-width:700px){
+  /* Panchina rimossa solo nella Best 11 mobile */
+  #page-best11 .best11-bench{
+    display:none!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-bench-v58">
+@media(max-width:700px){
+  /* Panchina di nuovo visibile, ma molto più corta */
+  #page-best11 .best11-bench{
+    display:block!important;
+    position:absolute!important;
+    right:3px!important;
+    left:auto!important;
+    top:118px!important;
+    width:76px!important;
+    max-height:none!important;
+    padding:3px 2px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    z-index:20!important;
+  }
+  #page-best11 .best11-bench-title{
+    font-size:8px!important;
+    line-height:1!important;
+    margin:0 0 2px!important;
+    padding:0!important;
+  }
+
+  /* Una riga più bassa: NOME + RUOLO, senza logo e voto */
+  #page-best11 .bench-player{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 19px!important;
+    align-items:center!important;
+    gap:1px!important;
+    min-height:0!important;
+    height:21px!important;
+    padding:0 1px!important;
+    margin:0!important;
+    line-height:1!important;
+  }
+  #page-best11 .bench-logo{
+    display:none!important;
+  }
+  #page-best11 .bench-name{
+    display:block!important;
+    min-width:0!important;
+    overflow:hidden!important;
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+    font-size:7.5px!important;
+    font-weight:800!important;
+    line-height:1!important;
+    color:#fff!important;
+  }
+  #page-best11 .bench-role{
+    display:block!important;
+    width:19px!important;
+    font-size:7px!important;
+    font-weight:900!important;
+    line-height:1!important;
+    text-align:center!important;
+  }
+  #page-best11 .bench-vote{
+    display:none!important;
+  }
+}
+</style>
+
+
 <style id="borrachos-best11-mobile-safe-v66">
 @media(max-width:700px){
   /* TUTTE queste modifiche sono esclusivamente mobile */
@@ -4504,7 +4897,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
   #page-best11 .best11-bench-title{
     font-size:7.5px!important;
-    padding:0!important;
     line-height:1!important;
     margin:0 0 1px!important;
     padding:0!important;
@@ -4529,7 +4921,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     white-space:nowrap!important;
     text-overflow:ellipsis!important;
     font-size:6.6px!important;
-    line-height:1!important;
     font-weight:800!important;
     color:#fff!important;
   }
@@ -4537,12 +4928,21 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     display:block!important;
     width:16px!important;
     font-size:6px!important;
-    line-height:1!important;
     font-weight:900!important;
     text-align:center!important;
   }
 }
 </style>
+
+
+<style id="borrachos-best11-desktop-bernabeer-v67">
+@media(min-width:701px){
+  #page-best11{
+    background-position:center 34px!important;
+  }
+}
+</style>
+
 
 <style id="borrachos-desktop-header-best11-v72">
 @media(min-width:701px){
@@ -4564,6 +4964,326 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
+
+
+<style id="borrachos-best11-mobile-controls-up-v74">
+@media(max-width:700px){
+  #page-best11 .best11-controls{
+    bottom:122px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-bench-up-v75">
+@media(max-width:700px){
+  #page-best11 .best11-bench{
+    bottom:122px!important;
+    top:auto!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-boxes-taller-v76">
+@media(max-width:700px){
+  /* Tasti scelta: più alto, così Fantamedia/Media Voto e moduli non vengono tagliati */
+  #page-best11 .best11-controls{
+    bottom:122px!important;
+    height:255px!important;
+    max-height:255px!important;
+    min-height:255px!important;
+    overflow:visible!important;
+  }
+
+  /* Panchina: rettangolo più alto per mostrare tutta la lista */
+  #page-best11 .best11-bench{
+    top:auto!important;
+    bottom:122px!important;
+    height:255px!important;
+    max-height:255px!important;
+    min-height:255px!important;
+    overflow:visible!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-two-box-editor-v77">
+@media(max-width:700px){
+  body.layout-editing #page-best11 .best11-controls.layout-editable,
+  body.layout-editing #page-best11 .best11-bench.layout-editable{
+    outline:3px dashed #ffd54a!important;
+    outline-offset:3px!important;
+    cursor:move!important;
+    touch-action:none!important;
+  }
+  body.layout-editing #page-best11 .best11-controls.layout-selected,
+  body.layout-editing #page-best11 .best11-bench.layout-selected{
+    outline-color:#55ff88!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-editor-visible-v78">
+@media(max-width:700px){
+  body:not(.home-active):has(#page-best11.active) .layout-editor-tools{
+    display:flex!important;
+    position:fixed!important;
+    left:4px!important;
+    right:4px!important;
+    bottom:4px!important;
+    width:auto!important;
+    max-width:none!important;
+    z-index:999999!important;
+    flex-wrap:wrap!important;
+    gap:3px!important;
+    padding:4px!important;
+    box-sizing:border-box!important;
+  }
+  body:not(.home-active):has(#page-best11.active) .layout-editor-tools button{
+    display:block!important;
+    font-size:9px!important;
+    line-height:1!important;
+    min-height:27px!important;
+    padding:4px 6px!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-editor-compact-v79">
+@media(max-width:700px){
+
+  /* Barra editor compatta: niente più colonne giganti */
+  body:not(.home-active):has(#page-best11.active) .layout-editor-tools{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    grid-auto-rows:25px!important;
+    position:fixed!important;
+    left:5px!important;
+    right:5px!important;
+    bottom:5px!important;
+    top:auto!important;
+    width:auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:58px!important;
+    margin:0!important;
+    padding:3px!important;
+    gap:2px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+    z-index:999999!important;
+    transform:none!important;
+  }
+
+  body:not(.home-active):has(#page-best11.active) .layout-editor-tools > *{
+    position:static!important;
+    float:none!important;
+    width:100%!important;
+    height:25px!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:none!important;
+    max-height:25px!important;
+    margin:0!important;
+    padding:2px 1px!important;
+    box-sizing:border-box!important;
+    transform:none!important;
+  }
+
+  body:not(.home-active):has(#page-best11.active) .layout-editor-tools button{
+    display:block!important;
+    font-size:7px!important;
+    line-height:9px!important;
+    white-space:normal!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+  }
+
+  /* Durante la modifica i due pannelli restano davanti e trascinabili */
+  body.layout-editing #page-best11 .best11-controls,
+  body.layout-editing #page-best11 .best11-bench{
+    touch-action:none!important;
+    cursor:move!important;
+    z-index:500!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-direct-box-editor-v80">
+@media(max-width:700px){
+  body.best11-direct-edit .layout-editor-tools{display:none!important;}
+
+  body.best11-direct-edit #page-best11 .best11-controls,
+  body.best11-direct-edit #page-best11 .best11-bench{
+    outline:2px dashed #ffe600!important;
+    outline-offset:1px!important;
+    cursor:move!important;
+    touch-action:none!important;
+    overflow:visible!important;
+    z-index:99990!important;
+  }
+
+  .best11-direct-handle{
+    display:none;
+  }
+  body.best11-direct-edit .best11-direct-handle{
+    display:block!important;
+    position:absolute!important;
+    width:14px!important;
+    height:14px!important;
+    padding:0!important;
+    margin:0!important;
+    border:2px solid #111!important;
+    border-radius:2px!important;
+    background:#ffe600!important;
+    box-sizing:border-box!important;
+    z-index:99999!important;
+    touch-action:none!important;
+  }
+  body.best11-direct-edit .best11-direct-handle[data-dir="nw"]{left:-8px;top:-8px;cursor:nwse-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="n"] {left:50%;top:-8px;transform:translateX(-50%);cursor:ns-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="ne"]{right:-8px;top:-8px;cursor:nesw-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="e"] {right:-8px;top:50%;transform:translateY(-50%);cursor:ew-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="se"]{right:-8px;bottom:-8px;cursor:nwse-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="s"] {left:50%;bottom:-8px;transform:translateX(-50%);cursor:ns-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="sw"]{left:-8px;bottom:-8px;cursor:nesw-resize!important}
+  body.best11-direct-edit .best11-direct-handle[data-dir="w"] {left:-8px;top:50%;transform:translateY(-50%);cursor:ew-resize!important}
+
+  #best11-direct-editor-toggle{
+    display:block!important;
+    position:fixed!important;
+    right:6px!important;
+    bottom:6px!important;
+    z-index:1000000!important;
+    width:auto!important;
+    height:30px!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:4px 8px!important;
+    margin:0!important;
+    border:2px solid #ffe600!important;
+    border-radius:5px!important;
+    background:#111!important;
+    color:#fff!important;
+    font:800 9px/1 Arial,sans-serif!important;
+  }
+}
+@media(min-width:701px){
+  #best11-direct-editor-toggle{display:none!important;}
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-autosave-v81">
+@media(max-width:700px){
+  #best11-copy-coordinates{
+    display:block!important;
+    position:fixed!important;
+    right:6px!important;
+    bottom:40px!important;
+    z-index:1000000!important;
+    width:auto!important;
+    height:28px!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:4px 8px!important;
+    margin:0!important;
+    border:2px solid #ffe600!important;
+    border-radius:5px!important;
+    background:#111!important;
+    color:#fff!important;
+    font:800 9px/1 Arial,sans-serif!important;
+  }
+}
+@media(min-width:701px){
+  #best11-copy-coordinates{display:none!important;}
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-editor-top-fast-v82">
+@media(max-width:700px){
+  #best11-direct-editor-toggle{
+    top:4px!important;
+    bottom:auto!important;
+    right:5px!important;
+    height:27px!important;
+    padding:3px 6px!important;
+    font-size:8px!important;
+  }
+  #best11-copy-coordinates{
+    top:4px!important;
+    bottom:auto!important;
+    right:142px!important;
+    height:27px!important;
+    padding:3px 6px!important;
+    font-size:8px!important;
+  }
+
+  /* durante l'editing niente transizioni/animazioni: il box segue il dito subito */
+  body.best11-direct-edit #page-best11 .best11-controls,
+  body.best11-direct-edit #page-best11 .best11-bench{
+    transition:none!important;
+    animation:none!important;
+    will-change:left,top,width,height!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-final-boxes-v83">
+@media(max-width:700px){
+  #page-best11 .best11-controls{
+    position:absolute!important;
+    left:9px!important;
+    top:514px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:70px!important;
+    height:231px!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  #page-best11 .best11-bench{
+    position:absolute!important;
+    left:304px!important;
+    top:558px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:78px!important;
+    height:172px!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+}
+</style>
+
+
+<style id="borrachos-best11-mobile-only-top-editor-v84">
+@media(max-width:700px){
+  /* Best11 mobile: nasconde tutta la vecchia pulsantiera di modifica in basso.
+     Restano solo SPOSTA/RIDIMENSIONA e COPIA COORDINATE in cima. */
+  body:has(#page-best11.active) .layout-editor-tools,
+  body:has(#page-best11.active) .home-layout-tools{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  #best11-direct-editor-toggle,
+  #best11-copy-coordinates{
+    display:block!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+}
+</style>
+
 
 <style id="borrachos-best11-mobile-real-phone-v85">
 @media(max-width:700px){
@@ -4591,6 +5311,76 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
+
+
+<style id="borrachos-best11-presenze-editor-v86">
+@media(max-width:700px){
+  /* Tasti scelta e panchina definitivamente bloccati */
+  #page-best11 .best11-controls,
+  #page-best11 .best11-bench{
+    outline:none!important;
+    cursor:default!important;
+    touch-action:auto!important;
+  }
+
+  /* Editor diretto soltanto sul blocco percentuale presenze */
+  body.best11-presenze-edit #page-best11 .best11-presenze-unit{
+    outline:2px dashed #ffe600!important;
+    outline-offset:2px!important;
+    cursor:move!important;
+    touch-action:none!important;
+    overflow:visible!important;
+    z-index:99990!important;
+    transition:none!important;
+    animation:none!important;
+    will-change:left,top,width,height!important;
+  }
+
+  .best11-presenze-handle{display:none;}
+  body.best11-presenze-edit .best11-presenze-handle{
+    display:block!important;
+    position:absolute!important;
+    width:14px!important;height:14px!important;
+    padding:0!important;margin:0!important;
+    border:2px solid #111!important;
+    border-radius:2px!important;
+    background:#ffe600!important;
+    box-sizing:border-box!important;
+    z-index:99999!important;
+    touch-action:none!important;
+  }
+  .best11-presenze-handle[data-dir="nw"]{left:-8px;top:-8px}
+  .best11-presenze-handle[data-dir="n"]{left:50%;top:-8px;transform:translateX(-50%)}
+  .best11-presenze-handle[data-dir="ne"]{right:-8px;top:-8px}
+  .best11-presenze-handle[data-dir="e"]{right:-8px;top:50%;transform:translateY(-50%)}
+  .best11-presenze-handle[data-dir="se"]{right:-8px;bottom:-8px}
+  .best11-presenze-handle[data-dir="s"]{left:50%;bottom:-8px;transform:translateX(-50%)}
+  .best11-presenze-handle[data-dir="sw"]{left:-8px;bottom:-8px}
+  .best11-presenze-handle[data-dir="w"]{left:-8px;top:50%;transform:translateY(-50%)}
+
+  #best11-presenze-editor-toggle,#best11-presenze-copy{
+    display:block!important;
+    position:fixed!important;
+    top:4px!important;
+    bottom:auto!important;
+    z-index:1000001!important;
+    height:27px!important;
+    padding:3px 6px!important;
+    border:2px solid #ffe600!important;
+    border-radius:5px!important;
+    background:#111!important;color:#fff!important;
+    font:800 8px/1 Arial,sans-serif!important;
+  }
+  #best11-presenze-editor-toggle{right:5px!important;}
+  #best11-presenze-copy{right:151px!important;}
+  /* vecchi due tasti editor dei pannelli nascosti */
+  #best11-direct-editor-toggle,#best11-copy-coordinates{display:none!important;}
+}
+@media(min-width:701px){
+  #best11-presenze-editor-toggle,#best11-presenze-copy{display:none!important;}
+}
+</style>
+
 
 <style id="borrachos-best11-mobile-presenze-final-v87">
 @media(max-width:700px){
@@ -4697,666 +5487,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
-
-<style id="borrachos-risultati-mobile-giornate-compatte-v90">
-@media(max-width:700px){
-  /* Risultati mobile: 36 giornate più compatte per alzare la tabella */
-  #page-risultati .risultati-giornate{
-    grid-template-columns:repeat(12,minmax(0,1fr))!important;
-    gap:2px!important;
-    margin:0 0 4px 0!important;
-  }
-  #page-risultati .giornata-btn{
-    min-width:0!important;
-    width:100%!important;
-    height:25px!important;
-    min-height:25px!important;
-    padding:0!important;
-    border-width:1px!important;
-    border-radius:4px!important;
-    font-size:.72rem!important;
-    line-height:23px!important;
-  }
-  #page-risultati .page-title{
-    margin-bottom:1px!important;
-    padding-bottom:1px!important;
-  }
-}
-</style>
-
-<style id="borrachos-live-mobile-v50">
-@media(max-width:700px){
-  /* LIVE mobile: separatore giallo netto tra una partita e la successiva */
-  #page-live .live-scoreboard .live-match-first td{
-    border-top:0!important;
-  }
-  #page-live .live-scoreboard .live-match-first:not(:first-child) td{
-    border-top:3px solid #ffd54a!important;
-  }
-  #page-live .live-scoreboard .live-match-second td{
-    border-bottom:0!important;
-  }
-
-  /* Dettaglio LIVE: usa davvero tutta e solo la larghezza del telefono */
-  #page-live{
-    padding-left:5px!important;
-    padding-right:5px!important;
-  }
-  #page-live .live-detail-layout,
-  #page-live .live-grid,
-  #page-live .live-match,
-  #page-live .live-h2h-wrap{
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-  #page-live .live-h2h-wrap{
-    overflow-x:hidden!important;
-  }
-  #page-live .live-h2h{
-    width:100%!important;
-    min-width:0!important;
-    table-layout:fixed!important;
-  }
-
-  /* 4 colonne: nomi più compatti, voti leggibili e nessun taglio laterale */
-  #page-live .live-h2h .live-col-name{width:36%!important;}
-  #page-live .live-h2h .live-col-vote{width:14%!important;}
-  #page-live .live-h2h th,
-  #page-live .live-h2h td{
-    padding-left:2px!important;
-    padding-right:2px!important;
-    font-size:11px!important;
-  }
-  #page-live .live-voto-pagella{font-size:11px!important;}
-  #page-live .live-fantavoto{font-size:14px!important;}
-
-  /* Testata della singola partita più compatta */
-  #page-live .live-h2h-head{
-    gap:4px!important;
-  }
-  #page-live .live-h2h-head img{
-    width:42px!important;
-    height:42px!important;
-  }
-  #page-live .live-h2h-head b{
-    font-size:16px!important;
-    min-width:0!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    white-space:nowrap!important;
-  }
-  #page-live .live-h2h-head strong{
-    font-size:17px!important;
-    white-space:nowrap!important;
-  }
-  #page-live .live-h2h-head>div{
-    min-width:0!important;
-    gap:4px!important;
-  }
-  #page-live .live-h2h-head small{
-    font-size:9px!important;
-  }
-
-  #page-live .live-totals-main td{
-    padding-left:2px!important;
-    padding-right:2px!important;
-    font-size:17px!important;
-  }
-  #page-live .live-totals-sub td{
-    padding-left:2px!important;
-    padding-right:2px!important;
-    font-size:9px!important;
-  }
-  #page-live .live-totals-sub .live-summary-value{
-    font-size:10px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-live-v51">
-/* LIVE TABELLONE - separatore giallo fra tutte le partite, desktop + mobile */
-#page-live .live-scoreboard .live-match-first:not(:first-child) td{
-  border-top:3px solid #ffd54a!important;
-}
-#page-live .live-scoreboard .live-match-first:first-child td{
-  border-top:1px solid #333!important;
-}
-#page-live .live-scoreboard .live-match-second td{
-  border-bottom:0!important;
-}
-
-/* TABELLONE - nomi squadra sempre su una sola riga */
-#page-live .live-scoreboard .ris-team{
-  min-width:0!important;
-  flex-wrap:nowrap!important;
-}
-#page-live .live-scoreboard .ris-team span{
-  display:block!important;
-  min-width:0!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-
-/* DETTAGLIO PARTITA - nomi delle due fantasquadre mai a capo */
-#page-live .live-h2h-head>div{
-  min-width:0!important;
-}
-#page-live .live-h2h-head b{
-  display:block!important;
-  min-width:0!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-
-@media(max-width:700px){
-  /* Il dettaglio occupa soltanto la larghezza realmente disponibile */
-  #page-live .live-detail-layout{
-    display:block!important;
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-  }
-  #page-live .live-grid,
-  #page-live .live-match,
-  #page-live .live-h2h-wrap,
-  #page-live .live-h2h{
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-  }
-  #page-live .live-h2h-wrap{
-    overflow:hidden!important;
-  }
-
-  /* Nomi giocatori / voti: geometria fissa che non può allargare la pagina */
-  #page-live .live-h2h{
-    table-layout:fixed!important;
-  }
-  #page-live .live-h2h .live-col-name{width:37%!important;}
-  #page-live .live-h2h .live-col-vote{width:13%!important;}
-  #page-live .live-h2h th,
-  #page-live .live-h2h td{
-    box-sizing:border-box!important;
-    padding-left:1px!important;
-    padding-right:1px!important;
-    font-size:10.5px!important;
-  }
-
-  /* Testata: due squadre + risultato, sempre nella stessa riga */
-  #page-live .live-h2h-head{
-    width:100%!important;
-    max-width:100%!important;
-    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
-    gap:3px!important;
-  }
-  #page-live .live-h2h-head>div{
-    grid-template-columns:34px minmax(0,1fr)!important;
-    gap:3px!important;
-  }
-  #page-live .live-h2h-head>div:last-child{
-    grid-template-columns:minmax(0,1fr) 34px!important;
-  }
-  #page-live .live-h2h-head img{
-    width:34px!important;
-    height:34px!important;
-  }
-  #page-live .live-h2h-head b{
-    font-size:12px!important;
-    line-height:1!important;
-  }
-  #page-live .live-h2h-head strong{
-    font-size:14px!important;
-    line-height:1!important;
-  }
-  #page-live .live-h2h-head small{
-    font-size:8px!important;
-    white-space:nowrap!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-  }
-
-  /* Anche nel tabellone i nomi lunghi non aumentano mai la larghezza */
-  #page-live .live-scoreboard .ris-team span{
-    font-size:12px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-live-desktop-separator-v52">
-/* LIVE desktop: separatore giallo evidente tra le 5 partite */
-@media(min-width:701px){
-  #page-live .live-scoreboard tbody tr.live-match-second:not(:last-child) td{
-    border-bottom:4px solid #ffd54a!important;
-  }
-  #page-live .live-scoreboard tbody tr.live-match-first:not(:first-child) td{
-    border-top:0!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-live-mobile-height-v53">
-@media(max-width:700px){
-  /* Recupero altezza: niente intestazione LIVE BORRACHOS su cellulare */
-  #page-live .live-head{
-    display:none!important;
-  }
-
-  /* Pagina Live più compatta verticalmente */
-  #page-live{
-    padding-top:2px!important;
-    padding-bottom:2px!important;
-    min-height:0!important;
-  }
-  #page-live #live-detail{
-    margin:0!important;
-    padding:0!important;
-  }
-  #page-live .live-detail-layout{
-    margin:0!important;
-    gap:2px!important;
-  }
-
-  /* Barra scelta partita: più bassa e tutta su una riga */
-  #page-live .live-detail-nav{
-    display:flex!important;
-    flex-direction:row!important;
-    flex-wrap:nowrap!important;
-    align-items:center!important;
-    gap:3px!important;
-    margin:0 0 2px!important;
-    padding:0!important;
-    width:100%!important;
-  }
-  #page-live .live-back{
-    flex:0 0 auto!important;
-    height:34px!important;
-    padding:2px 5px!important;
-    font-size:9px!important;
-    line-height:1!important;
-    border-radius:5px!important;
-  }
-  #page-live .live-detail-nav #live-match-nav{
-    flex:1 1 auto!important;
-    min-width:0!important;
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    gap:2px!important;
-  }
-  #page-live .live-match-jump{
-    width:100%!important;
-    min-width:0!important;
-    height:34px!important;
-    padding:1px!important;
-    border-radius:5px!important;
-  }
-  #page-live .live-match-jump .live-nav-logos{
-    gap:1px!important;
-  }
-  #page-live .live-match-jump img{
-    width:23px!important;
-    height:23px!important;
-  }
-
-  /* Avvicina la testata della partita ai tasti */
-  #page-live .live-grid{
-    margin:0!important;
-  }
-  #page-live .live-match{
-    margin:0!important;
-  }
-  #page-live .live-h2h-head{
-    margin:0!important;
-  }
-
-  /* Qualche pixel in meno per riga, senza cambiare le larghezze approvate */
-  #page-live .live-h2h td{
-    height:29px!important;
-  }
-  #page-live .live-vote-stack{
-    height:24px!important;
-  }
-  #page-live .live-totals-main td{
-    height:27px!important;
-  }
-  #page-live .live-totals-sub td{
-    height:16px!important;
-  }
-}
-</style>
-
-
-
-
-<style id="borrachos-best11-slider-mobile-v93">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-  /* SOLO cursore percentuale presenze: più grande e molto più leggibile */
-  #page-best11 .mobile-detached-presenze .best11-presenze-control{
-    --ball-size:34px!important;
-  }
-  #page-best11 #best-presenze-ball{
-    width:34px!important;
-    height:34px!important;
-    opacity:1!important;
-    border-radius:50%!important;
-    background-color:#f4f0dc!important;
-    border:3px solid #111!important;
-    box-shadow:
-      0 0 0 3px #ffd54a,
-      0 3px 6px #000!important;
-    filter:none!important;
-  }
-}
-</style>
-
-<style id="best11-slider-css-v94">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-#page-best11 .mobile-detached-presenze .best11-presenze-control{--ball-size:36px!important}
-#page-best11 #best-presenze-ball{
-width:36px!important;height:36px!important;opacity:1!important;border-radius:50%!important;
-background-image:none!important;background-size:auto!important;background-position:center!important;background-repeat:no-repeat!important;
-background:radial-gradient(circle at 50% 47%,#111 0 17%,transparent 18%),radial-gradient(circle at 27% 29%,#111 0 10%,transparent 11%),radial-gradient(circle at 73% 29%,#111 0 10%,transparent 11%),radial-gradient(circle at 29% 73%,#111 0 10%,transparent 11%),radial-gradient(circle at 71% 73%,#111 0 10%,transparent 11%),#fff!important;
-border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!important;filter:none!important}
-}
-</style>
-
-<style id="borrachos-best11-new-mobile-background-v95">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-  /* Nuovo Santiago Bernabeer dedicato esclusivamente alla Best 11 telefono */
-  #page-best11{
-    background-image:url('SFONDO_BEST11_MOBILE_SANTIAGO_BERNABEER.webp')!important;
-    background-repeat:no-repeat!important;
-    background-position:center top!important;
-    background-size:100% auto!important;
-    background-color:#07180a!important;
-  }
-
-  /* Il campo/targhette sfrutta più superficie del nuovo fondale verticale */
-  #page-best11 #pitch-best11{
-    left:31px!important;
-    top:8px!important;
-    width:calc(100% - 62px)!important;
-    height:calc(100% - 180px)!important;
-    min-height:0!important;
-    max-width:none!important;
-    background:transparent!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-bench-drawer-v97">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-  /* La vecchia panchina diventa un cassetto laterale e non occupa più spazio a riposo */
-  #page-best11 .best11-bench{
-    display:block!important;
-    position:fixed!important;
-    z-index:10020!important;
-    top:42px!important;
-    right:0!important;
-    left:auto!important;
-    bottom:auto!important;
-    width:min(78vw,330px)!important;
-    height:calc(100dvh - 52px)!important;
-    max-height:none!important;
-    min-height:0!important;
-    margin:0!important;
-    padding:10px 8px!important;
-    box-sizing:border-box!important;
-    overflow-y:auto!important;
-    overflow-x:hidden!important;
-    transform:translateX(105%)!important;
-    transition:transform .24s ease!important;
-    border-radius:14px 0 0 14px!important;
-    box-shadow:-8px 0 20px rgba(0,0,0,.48)!important;
-  }
-  #page-best11 .best11-bench.mobile-bench-open{
-    transform:translateX(0)!important;
-  }
-  #page-best11 .best11-bench-title{
-    font-size:16px!important;
-    line-height:1.1!important;
-    margin:3px 34px 10px 2px!important;
-  }
-  #page-best11 .bench-name{
-    font-size:13px!important;
-    line-height:1.1!important;
-  }
-  #page-best11 .bench-role{
-    font-size:11px!important;
-    line-height:1.1!important;
-  }
-
-  #best11-mobile-bench-toggle{
-    display:flex!important;
-    position:fixed!important;
-    z-index:10030!important;
-    right:0!important;
-    top:46%!important;
-    width:29px!important;
-    min-width:29px!important;
-    height:92px!important;
-    padding:4px 2px!important;
-    align-items:center!important;
-    justify-content:center!important;
-    writing-mode:vertical-rl!important;
-    transform:translateY(-50%) rotate(180deg)!important;
-    font-size:10px!important;
-    font-weight:1000!important;
-    letter-spacing:.5px!important;
-    line-height:1!important;
-    border-radius:8px 0 0 8px!important;
-    border:2px solid #ffd54a!important;
-    background:#111!important;
-    color:#ffd54a!important;
-    box-shadow:-3px 2px 8px rgba(0,0,0,.45)!important;
-    cursor:pointer!important;
-  }
-  #best11-mobile-bench-toggle.is-open{
-    right:min(78vw,330px)!important;
-  }
-  #best11-mobile-bench-close{
-    display:flex!important;
-    position:absolute!important;
-    z-index:2!important;
-    right:7px!important;
-    top:7px!important;
-    width:28px!important;
-    height:28px!important;
-    align-items:center!important;
-    justify-content:center!important;
-    padding:0!important;
-    border-radius:50%!important;
-    border:2px solid #ffd54a!important;
-    background:#111!important;
-    color:#ffd54a!important;
-    font-size:18px!important;
-    font-weight:1000!important;
-    line-height:1!important;
-  }
-}
-@media (min-width:701px){
-  #best11-mobile-bench-toggle,
-  #best11-mobile-bench-close{display:none!important;}
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-bench-button-bottom-v98">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-  #best11-mobile-bench-toggle{
-    right:7px!important;
-    top:auto!important;
-    bottom:8px!important;
-    width:auto!important;
-    min-width:82px!important;
-    height:30px!important;
-    padding:3px 9px!important;
-    writing-mode:horizontal-tb!important;
-    transform:none!important;
-    font-size:10px!important;
-    letter-spacing:.4px!important;
-    border-radius:8px!important;
-  }
-  #best11-mobile-bench-toggle.is-open{
-    right:7px!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-controls-horizontal-v99">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-  /* Pannello comandi: tre livelli orizzontali ordinati */
-  #page-best11 .best11-controls{
-    position:absolute!important;
-    left:7px!important;
-    right:7px!important;
-    top:auto!important;
-    bottom:42px!important;
-    width:auto!important;
-    height:auto!important;
-    max-height:none!important;
-    padding:5px!important;
-    margin:0!important;
-    display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    gap:4px!important;
-    overflow:visible!important;
-    box-sizing:border-box!important;
-    z-index:40!important;
-    border-radius:10px!important;
-    background:rgba(8,8,8,.82)!important;
-  }
-
-  #page-best11 .best11-controls .best11-choice-unit{
-    min-width:0!important;
-    margin:0!important;
-    padding:3px!important;
-    border-radius:7px!important;
-    box-sizing:border-box!important;
-  }
-
-  /* Giocatori: prima riga completa */
-  #page-best11 .best11-controls .best11-choice-unit:has(#best-gruppo){
-    grid-column:1 / -1!important;
-    background:rgba(29,112,184,.88)!important;
-  }
-
-  /* Voti: seconda riga sinistra */
-  #page-best11 .best11-controls #best-tipo-wrap{
-    grid-column:1!important;
-    background:rgba(184,74,35,.90)!important;
-  }
-
-  /* Medie: seconda riga destra */
-  #page-best11 .best11-controls .best11-choice-unit:has(#best-metrica){
-    grid-column:2!important;
-    background:rgba(122,65,168,.90)!important;
-  }
-
-  /* Modulo: terza riga completa */
-  #page-best11 .best11-controls .best11-choice-unit:has(#best-modulo){
-    grid-column:1 / -1!important;
-    background:rgba(35,126,68,.92)!important;
-  }
-
-  #page-best11 .best11-controls .best11-label{
-    display:block!important;
-    margin:0 0 2px!important;
-    padding:0!important;
-    font-size:9px!important;
-    line-height:1!important;
-    font-weight:1000!important;
-    text-align:center!important;
-    color:#fff!important;
-    text-transform:uppercase!important;
-  }
-
-  #page-best11 .best11-controls .subnav.best11-v{
-    display:grid!important;
-    width:100%!important;
-    gap:3px!important;
-    margin:0!important;
-    padding:0!important;
-  }
-  #page-best11 #best-gruppo{grid-template-columns:1fr 1fr!important;}
-  #page-best11 #best-tipo{grid-template-columns:1fr 1fr!important;}
-  #page-best11 #best-metrica{grid-template-columns:1fr 1fr!important;}
-  #page-best11 #best-modulo{grid-template-columns:repeat(4,1fr)!important;}
-
-  #page-best11 .best11-controls .subnav-btn{
-    width:100%!important;
-    min-width:0!important;
-    height:25px!important;
-    min-height:25px!important;
-    padding:2px 3px!important;
-    margin:0!important;
-    border:1px solid rgba(255,255,255,.65)!important;
-    border-radius:5px!important;
-    background:#171717!important;
-    color:#fff!important;
-    font-size:9px!important;
-    line-height:1!important;
-    font-weight:900!important;
-    white-space:nowrap!important;
-    box-sizing:border-box!important;
-  }
-
-  /* Selezione comune: giallo Borrachos, immediatamente riconoscibile */
-  #page-best11 .best11-controls .subnav-btn.active{
-    background:#ffd54a!important;
-    color:#050505!important;
-    border-color:#fff!important;
-    box-shadow:0 0 0 1px #111,0 2px 5px rgba(0,0,0,.45)!important;
-  }
-
-  /* Presenze resta separata: la sistemiamo come slider largo nel passaggio successivo */
-  #page-best11 .best11-controls .best11-presenze-unit{
-    display:none!important;
-  }
-}
-</style>
-
-
-<style id="borrachos-best11-mobile-bench-toggle-scope-v100">
-@media (max-width:700px), (max-device-width:700px), ((pointer:coarse) and (orientation:portrait)){
-  /* Mai visibile fuori dalla pagina Best 11 */
-  #best11-mobile-bench-toggle{
-    display:none!important;
-  }
-  body:has(#page-best11.active) #best11-mobile-bench-toggle{
-    display:flex!important;
-    top:43px!important;
-    right:7px!important;
-    bottom:auto!important;
-    width:auto!important;
-    min-width:76px!important;
-    height:28px!important;
-    padding:3px 8px!important;
-    writing-mode:horizontal-tb!important;
-    transform:none!important;
-    border-radius:7px!important;
-    font-size:9px!important;
-  }
-  body:has(#page-best11.active) #best11-mobile-bench-toggle.is-open{
-    right:7px!important;
-  }
-
-  /* Se si cambia pagina con la panchina aperta, il pannello non deve restare sopra le altre pagine */
-  body:not(:has(#page-best11.active)) #page-best11 .best11-bench{
-    transform:translateX(105%)!important;
-    pointer-events:none!important;
-  }
-}
-</style>
-
 </head>
 <body>
 
@@ -5425,6 +5555,7 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
 <div id="page-classifica" class="page">
 
 
+
     <input type="hidden" id="tipo-classifica" value="classifica">
     <div class="classifica-layout">
         <div class="classifica-menu-board" aria-hidden="true"></div>
@@ -5481,7 +5612,7 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
                 
                 <div class="stats-choice-row" id="stats-gruppo-btns">
                     <button class="stats-choice-btn active" onclick="setStatsGruppo('borracho',this)">Fantasquadre</button>
-                    <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Serie A</button>
+                    <button class="stats-choice-btn" onclick="setStatsGruppo('seriea',this)">Tutti Serie A</button>
                     <button class="stats-choice-btn" onclick="setStatsGruppo('svincolati',this)">Svincolati</button>
                 </div>
                 <div id="stats-tipo-wrap">
@@ -5550,8 +5681,8 @@ border:3px solid #111!important;box-shadow:0 0 0 3px #ffd54a,0 3px 7px #000!impo
             <div class="best11-choice-unit">
             <div class="best11-label">Giocatori</div>
             <div class="subnav best11-v" id="best-gruppo">
-                <button class="subnav-btn active" onclick="setBestGruppo('borracho', this)">Lega</button>
-                <button class="subnav-btn" onclick="setBestGruppo('seriea', this)">Serie A</button>
+                <button class="subnav-btn active" onclick="setBestGruppo('borracho', this)">Rosa Borracho</button>
+                <button class="subnav-btn" onclick="setBestGruppo('seriea', this)">Tutti Serie A</button>
             </div>
             </div>
             <div id="best-tipo-wrap" class="best11-choice-unit">
@@ -5726,6 +5857,8 @@ function resizeSelect(sel) {
 
 
 document.body.classList.add('home-active');
+
+
 
 
 var layoutEditorOn=false, layoutSelected=null, layoutDrag=null;
@@ -6281,6 +6414,20 @@ function attivaStatsBtn(containerId, btn) {
     if (box) box.querySelectorAll('.stats-choice-btn').forEach(function(b) { b.classList.remove('active'); });
     if (btn) btn.classList.add('active');
 }
+var statsCriterioFamiglia = 'mediavoto';
+var statsTipoBorrachoMem = 'titolari';
+
+function statsFamigliaDaCriterio(c) {
+    return String(c || '').replace(/tit$/, '').replace(/tot$/, '');
+}
+function statsCriterioPerTipo(famiglia, tipo) {
+    var lista = criteriGiocatori[tipo] || [];
+    for (var i = 0; i < lista.length; i++) {
+        if (statsFamigliaDaCriterio(lista[i][0]) === famiglia) return lista[i][0];
+    }
+    return lista.length ? lista[0][0] : '';
+}
+
 function setStatsGruppo(valore, btn) {
     document.getElementById('gruppo-giocatori').value = valore;
     attivaStatsBtn('stats-gruppo-btns', btn);
@@ -6288,11 +6435,13 @@ function setStatsGruppo(valore, btn) {
 }
 function setStatsTipo(valore, btn) {
     document.getElementById('tipo-giocatori').value = valore;
+    if (document.getElementById('gruppo-giocatori').value === 'borracho') statsTipoBorrachoMem = valore;
     attivaStatsBtn('stats-tipo-btns', btn);
     popolaCriteriGiocatori();
 }
 function setStatsCriterioGiocatore(valore, btn) {
     document.getElementById('criterio-giocatori').value = valore;
+    statsCriterioFamiglia = statsFamigliaDaCriterio(valore);
     attivaStatsBtn('stats-criteri-giocatori', btn);
     updateGiocatori();
 }
@@ -6303,7 +6452,7 @@ function renderStatsCriteriGiocatori() {
     box.innerHTML = '';
     criteriGiocatori[tipo].forEach(function(item, i) {
         var b = document.createElement('button');
-        b.className = 'stats-choice-btn' + (i === 0 ? ' active' : '');
+        b.className = 'stats-choice-btn' + (item[0] === document.getElementById('criterio-giocatori').value ? ' active' : '');
         b.textContent = item[1].replace(' Tit','').replace(' Tot','');
         b.onclick = function() { setStatsCriterioGiocatore(item[0], b); };
         box.appendChild(b);
@@ -6338,10 +6487,13 @@ function cambiaGruppoGiocatori() {
     var tipo = document.getElementById('tipo-giocatori');
     var tipoWrapBtns = document.getElementById('stats-tipo-wrap');
     if (gruppo === 'borracho') {
+        tipo.value = statsTipoBorrachoMem;
         tipo.style.display = '';
         if (tipoWrapBtns) tipoWrapBtns.style.display = '';
-        if (tipo.value !== 'titolari' && tipo.value !== 'totali') tipo.value = 'titolari';
+        var tipoBtn = document.querySelector('#stats-tipo-btns .stats-choice-btn[onclick*="' + tipo.value + '"]');
+        if (tipoBtn) attivaStatsBtn('stats-tipo-btns', tipoBtn);
     } else {
+        if (tipo.value === 'titolari' || tipo.value === 'totali') statsTipoBorrachoMem = tipo.value;
         tipo.value = 'totali';
         tipo.style.display = 'none';
         if (tipoWrapBtns) tipoWrapBtns.style.display = 'none';
@@ -6369,6 +6521,8 @@ function popolaCriteriGiocatori() {
         opt.textContent = item[1];
         sel.appendChild(opt);
     });
+    var criterioPersistente = statsCriterioPerTipo(statsCriterioFamiglia, tipo);
+    if (criterioPersistente) sel.value = criterioPersistente;
     resizeSelect(sel);
     renderStatsCriteriGiocatori();
     updateGiocatori();
@@ -7052,6 +7206,32 @@ caricaDatiBorrachos()
 </script>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <style id="borrachos-team-name-dot-fallback">
 #page-classifica .chalk-team .ultra-dot-fallback,
 #page-classifica .mobile-short-name .ultra-dot-fallback{
@@ -7101,6 +7281,7 @@ caricaDatiBorrachos()
 </script>
 
 
+
 <script id="borrachos-statistiche-squadre-unica-js-v46">
 (function(){
   function unisciSquadreMobile(){
@@ -7142,6 +7323,15 @@ caricaDatiBorrachos()
 </script>
 
 
+
+
+
+
+
+
+
+
+
 <script id="borrachos-best11-mobile-safe-position-v66">
 (function(){
   var layouts={
@@ -7152,7 +7342,7 @@ caricaDatiBorrachos()
   };
 
   function mobile(){
-    return window.matchMedia('(max-width:700px), (max-device-width:700px), (pointer:coarse) and (orientation:portrait)').matches;
+    return window.matchMedia('(max-width:700px)').matches;
   }
 
   function movePresenze(){
@@ -7210,58 +7400,325 @@ caricaDatiBorrachos()
 </script>
 
 
-<script id="borrachos-best11-mobile-bench-drawer-js-v97">
+<script id="borrachos-best11-direct-box-editor-v80-js">
 (function(){
-  function isMobile(){ return window.matchMedia('(max-width:700px)').matches; }
+  function mobile(){return window.matchMedia('(max-width:700px)').matches;}
+  function bestPage(){return document.getElementById('page-best11');}
+  function activeBest(){
+    var p=bestPage();
+    return p && (p.classList.contains('active') || getComputedStyle(p).display!=='none');
+  }
 
-  function setupBenchDrawer(){
-    var page=document.getElementById('page-best11');
-    if(!page)return;
-    var bench=page.querySelector('.best11-bench');
-    if(!bench)return;
+  function ensureToggle(){
+    if(document.getElementById('best11-direct-editor-toggle')) return;
+    var b=document.createElement('button');
+    b.id='best11-direct-editor-toggle';
+    b.type='button';
+    b.textContent='SPOSTA / RIDIMENSIONA';
+    b.onclick=function(e){
+      e.preventDefault(); e.stopPropagation();
+      document.body.classList.toggle('best11-direct-edit');
+      b.textContent=document.body.classList.contains('best11-direct-edit')?'FINE MODIFICA':'SPOSTA / RIDIMENSIONA';
+    };
+    document.body.appendChild(b);
+  }
 
-    var toggle=document.getElementById('best11-mobile-bench-toggle');
-    if(!toggle){
-      toggle=document.createElement('button');
-      toggle.type='button';
-      toggle.id='best11-mobile-bench-toggle';
-      toggle.textContent='PANCHINA';
-      toggle.setAttribute('aria-label','Apri panchina');
-      toggle.setAttribute('aria-expanded','false');
-      document.body.appendChild(toggle);
-    }
-
-    var close=document.getElementById('best11-mobile-bench-close');
-    if(!close){
-      close=document.createElement('button');
-      close.type='button';
-      close.id='best11-mobile-bench-close';
-      close.textContent='×';
-      close.setAttribute('aria-label','Chiudi panchina');
-      bench.insertBefore(close,bench.firstChild);
-    }
-
-    function setOpen(open){
-      if(!isMobile()) open=false;
-      bench.classList.toggle('mobile-bench-open',open);
-      toggle.classList.toggle('is-open',open);
-      toggle.setAttribute('aria-expanded',open?'true':'false');
-      toggle.textContent=open?'CHIUDI':'PANCHINA';
-    }
-    toggle.onclick=function(){ setOpen(!bench.classList.contains('mobile-bench-open')); };
-    close.onclick=function(){ setOpen(false); };
-
-    document.addEventListener('keydown',function(e){
-      if(e.key==='Escape')setOpen(false);
+  function addHandles(el){
+    if(!el || el.querySelector('.best11-direct-handle')) return;
+    ['nw','n','ne','e','se','s','sw','w'].forEach(function(dir){
+      var h=document.createElement('span');
+      h.className='best11-direct-handle';
+      h.dataset.dir=dir;
+      el.appendChild(h);
     });
-    window.addEventListener('resize',function(){ if(!isMobile())setOpen(false); });
   }
 
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',setupBenchDrawer);
-  }else{
-    setupBenchDrawer();
+  function px(v){return parseFloat(v)||0;}
+
+  function normalize(el){
+    var r=el.getBoundingClientRect();
+    var parent=el.offsetParent || document.body;
+    var pr=parent.getBoundingClientRect();
+    el.style.setProperty('position','absolute','important');
+    el.style.setProperty('left',(r.left-pr.left)+'px','important');
+    el.style.setProperty('top',(r.top-pr.top)+'px','important');
+    el.style.setProperty('right','auto','important');
+    el.style.setProperty('bottom','auto','important');
+    el.style.setProperty('width',r.width+'px','important');
+    el.style.setProperty('height',r.height+'px','important');
+    el.style.setProperty('min-height','0','important');
+    el.style.setProperty('max-height','none','important');
   }
+
+  var state=null;
+
+  function down(e){
+    if(!mobile() || !document.body.classList.contains('best11-direct-edit')) return;
+    var box=e.target.closest('.best11-controls,.best11-bench');
+    if(!box) return;
+
+    var handle=e.target.closest('.best11-direct-handle');
+    /* clic sui normali controlli interni: in modalità editor trascina comunque il box */
+    e.preventDefault();
+    e.stopPropagation();
+
+    normalize(box);
+    var cs=getComputedStyle(box);
+    state={
+      el:box,
+      mode:handle?'resize':'drag',
+      dir:handle?handle.dataset.dir:'',
+      x:e.clientX, y:e.clientY,
+      left:px(cs.left), top:px(cs.top),
+      width:box.getBoundingClientRect().width,
+      height:box.getBoundingClientRect().height
+    };
+    state.dx=0; state.dy=0; state.raf=0;
+  }
+
+  function move(e){
+    if(!state) return;
+    e.preventDefault();
+    var dx=e.clientX-state.x, dy=e.clientY-state.y;
+    var el=state.el;
+
+    if(state.mode==='drag'){
+      state.dx=dx; state.dy=dy;
+      if(!state.raf){
+        state.raf=requestAnimationFrame(function(){
+          if(!state)return;
+          state.el.style.setProperty('transform','translate3d('+state.dx+'px,'+state.dy+'px,0)','important');
+          state.raf=0;
+        });
+      }
+      return;
+    }
+
+    var d=state.dir, l=state.left, t=state.top, w=state.width, h=state.height;
+    var minW=55, minH=55;
+    if(d.indexOf('e')>=0) w=Math.max(minW,state.width+dx);
+    if(d.indexOf('s')>=0) h=Math.max(minH,state.height+dy);
+    if(d.indexOf('w')>=0){
+      w=Math.max(minW,state.width-dx);
+      l=state.left+(state.width-w);
+    }
+    if(d.indexOf('n')>=0){
+      h=Math.max(minH,state.height-dy);
+      t=state.top+(state.height-h);
+    }
+    el.style.setProperty('left',l+'px','important');
+    el.style.setProperty('top',t+'px','important');
+    el.style.setProperty('width',w+'px','important');
+    el.style.setProperty('height',h+'px','important');
+  }
+
+
+  var STORE_KEY='borrachos_best11_mobile_boxes_v85';
+
+  function boxData(el){
+    if(!el)return null;
+    var cs=getComputedStyle(el);
+    return {
+      left:parseFloat(cs.left)||0,
+      top:parseFloat(cs.top)||0,
+      width:el.getBoundingClientRect().width,
+      height:el.getBoundingClientRect().height
+    };
+  }
+
+  function saveBoxes(){
+    var p=bestPage(); if(!p)return;
+    var data={
+      controls:boxData(p.querySelector('.best11-controls')),
+      bench:boxData(p.querySelector('.best11-bench'))
+    };
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(data));}catch(_){}
+  }
+
+  function applyBox(el,d){
+    if(!el||!d)return;
+    el.style.setProperty('position','absolute','important');
+    el.style.setProperty('left',d.left+'px','important');
+    el.style.setProperty('top',d.top+'px','important');
+    el.style.setProperty('right','auto','important');
+    el.style.setProperty('bottom','auto','important');
+    el.style.setProperty('width',d.width+'px','important');
+    el.style.setProperty('height',d.height+'px','important');
+    el.style.setProperty('min-height','0','important');
+    el.style.setProperty('max-height','none','important');
+  }
+
+  function restoreBoxes(){
+    if(!mobile())return;
+    var p=bestPage(); if(!p)return;
+    try{
+      var d=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+      if(!d)return;
+      applyBox(p.querySelector('.best11-controls'),d.controls);
+      applyBox(p.querySelector('.best11-bench'),d.bench);
+    }catch(_){}
+  }
+
+  function copyCoordinates(){
+    var p=bestPage(); if(!p)return;
+    var c=boxData(p.querySelector('.best11-controls'));
+    var b=boxData(p.querySelector('.best11-bench'));
+    var msg='BEST11 MOBILE\n'+
+      'TASTI SCELTA: X '+Math.round(c.left)+' Y '+Math.round(c.top)+' W '+Math.round(c.width)+' H '+Math.round(c.height)+'\n'+
+      'PANCHINA: X '+Math.round(b.left)+' Y '+Math.round(b.top)+' W '+Math.round(b.width)+' H '+Math.round(b.height);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(msg).then(function(){
+        var bt=document.getElementById('best11-copy-coordinates');
+        if(bt){var old=bt.textContent;bt.textContent='COPIATO ✓';setTimeout(function(){bt.textContent=old;},1200);}
+      }).catch(function(){prompt('Copia queste coordinate:',msg);});
+    }else prompt('Copia queste coordinate:',msg);
+  }
+
+  function ensureCopyButton(){
+    if(document.getElementById('best11-copy-coordinates'))return;
+    var b=document.createElement('button');
+    b.id='best11-copy-coordinates';
+    b.type='button';
+    b.textContent='COPIA COORDINATE';
+    b.onclick=function(e){e.preventDefault();e.stopPropagation();copyCoordinates();};
+    document.body.appendChild(b);
+  }
+
+  function up(){
+    if(state){
+      if(state.mode==='drag'){
+        if(state.raf) cancelAnimationFrame(state.raf);
+        state.el.style.setProperty('transform','none','important');
+        state.el.style.setProperty('left',(state.left+(state.dx||0))+'px','important');
+        state.el.style.setProperty('top',(state.top+(state.dy||0))+'px','important');
+      }
+      saveBoxes();
+    }
+    state=null;
+  }
+
+  function init(){
+    if(!mobile()) return;
+    /* I due pannelli mobile sono ormai bloccati: niente vecchie coordinate
+       dell'editor, così telefono reale e simulatore partono uguali. */
+    try{localStorage.removeItem(STORE_KEY);}catch(_){}
+    var p=bestPage();
+    if(!p)return;
+    [p.querySelector('.best11-controls'),p.querySelector('.best11-bench')].forEach(function(el){
+      if(!el)return;
+      ['position','left','top','right','bottom','width','height','min-height','max-height','transform'].forEach(function(k){
+        el.style.removeProperty(k);
+      });
+    });
+  }
+
+  document.addEventListener('pointerdown',down,true);
+  document.addEventListener('pointermove',move,true);
+  document.addEventListener('pointerup',up,true);
+  document.addEventListener('pointercancel',up,true);
+  window.addEventListener('load',init);
+  window.addEventListener('resize',init);
+  setTimeout(init,300);
+})();
+</script>
+
+
+<script id="borrachos-best11-presenze-editor-v86-js">
+(function(){
+ const KEY='borrachos_best11_presenze_mobile_v87';
+ const mob=()=>matchMedia('(max-width:700px)').matches;
+ const el=()=>document.querySelector('#page-best11 .best11-presenze-unit');
+ let st=null;
+
+ function addHandles(){
+   const x=el(); if(!x||x.querySelector('.best11-presenze-handle'))return;
+   ['nw','n','ne','e','se','s','sw','w'].forEach(d=>{
+     let h=document.createElement('span');h.className='best11-presenze-handle';h.dataset.dir=d;x.appendChild(h);
+   });
+ }
+ function norm(x){
+   const r=x.getBoundingClientRect(), p=x.offsetParent||document.body, pr=p.getBoundingClientRect();
+   x.style.setProperty('position','absolute','important');
+   x.style.setProperty('left',(r.left-pr.left)+'px','important');
+   x.style.setProperty('top',(r.top-pr.top)+'px','important');
+   x.style.setProperty('right','auto','important');x.style.setProperty('bottom','auto','important');
+   x.style.setProperty('width',r.width+'px','important');x.style.setProperty('height',r.height+'px','important');
+ }
+ function data(){
+   const x=el(),c=getComputedStyle(x),r=x.getBoundingClientRect();
+   return {left:parseFloat(c.left)||0,top:parseFloat(c.top)||0,width:r.width,height:r.height};
+ }
+ function save(){try{localStorage.setItem(KEY,JSON.stringify(data()));}catch(_){}}
+ function restore(){
+   try{
+     const d=JSON.parse(localStorage.getItem(KEY)||'null'),x=el();if(!d||!x)return;
+     ['left','top','width','height'].forEach(k=>x.style.setProperty(k,d[k]+'px','important'));
+     x.style.setProperty('right','auto','important');x.style.setProperty('bottom','auto','important');
+   }catch(_){}
+ }
+ function buttons(){
+   if(!document.getElementById('best11-presenze-editor-toggle')){
+     let b=document.createElement('button');b.id='best11-presenze-editor-toggle';b.textContent='SPOSTA % PARTITE';
+     b.onclick=e=>{e.preventDefault();e.stopPropagation();document.body.classList.toggle('best11-presenze-edit');
+       b.textContent=document.body.classList.contains('best11-presenze-edit')?'FINE MODIFICA':'SPOSTA % PARTITE';};
+     document.body.appendChild(b);
+   }
+   if(!document.getElementById('best11-presenze-copy')){
+     let b=document.createElement('button');b.id='best11-presenze-copy';b.textContent='COPIA COORDINATE';
+     b.onclick=e=>{e.preventDefault();e.stopPropagation();let d=data();
+       let s='PRESENZE MINIME: X '+Math.round(d.left)+' Y '+Math.round(d.top)+' W '+Math.round(d.width)+' H '+Math.round(d.height);
+       navigator.clipboard?.writeText(s).then(()=>{b.textContent='COPIATO ✓';setTimeout(()=>b.textContent='COPIA COORDINATE',1000)}).catch(()=>prompt('Copia:',s));
+     };document.body.appendChild(b);
+   }
+ }
+ document.addEventListener('pointerdown',e=>{
+   if(!mob()||!document.body.classList.contains('best11-presenze-edit'))return;
+   const x=e.target.closest('.best11-presenze-unit');if(!x)return;
+   const h=e.target.closest('.best11-presenze-handle');e.preventDefault();e.stopPropagation();norm(x);
+   const c=getComputedStyle(x),r=x.getBoundingClientRect();
+   st={x:e.clientX,y:e.clientY,l:parseFloat(c.left)||0,t:parseFloat(c.top)||0,w:r.width,h:r.height,d:h?h.dataset.dir:'',drag:!h,dx:0,dy:0};
+ },true);
+ document.addEventListener('pointermove',e=>{
+   if(!st)return;e.preventDefault();const x=el(),dx=e.clientX-st.x,dy=e.clientY-st.y;
+   if(st.drag){st.dx=dx;st.dy=dy;x.style.setProperty('transform','translate3d('+dx+'px,'+dy+'px,0)','important');return;}
+   let l=st.l,t=st.t,w=st.w,h=st.h,d=st.d;
+   if(d.includes('e'))w=Math.max(50,st.w+dx);if(d.includes('s'))h=Math.max(35,st.h+dy);
+   if(d.includes('w')){w=Math.max(50,st.w-dx);l=st.l+(st.w-w)}
+   if(d.includes('n')){h=Math.max(35,st.h-dy);t=st.t+(st.h-h)}
+   x.style.setProperty('left',l+'px','important');x.style.setProperty('top',t+'px','important');
+   x.style.setProperty('width',w+'px','important');x.style.setProperty('height',h+'px','important');
+ },true);
+ document.addEventListener('pointerup',()=>{
+   if(!st)return;const x=el();
+   if(st.drag){x.style.setProperty('transform','none','important');x.style.setProperty('left',(st.l+st.dx)+'px','important');x.style.setProperty('top',(st.t+st.dy)+'px','important');}
+   save();st=null;
+ },true);
+ function init(){
+   if(!mob())return;
+   /* Layout mobile bloccato: elimina eventuali vecchie coordinate salvate
+      dall'editor e usa sempre la posizione definitiva del CSS v87. */
+   try{localStorage.removeItem(KEY);}catch(_){}
+   const x=el();
+   if(x){
+     ['position','left','top','right','bottom','width','height','transform'].forEach(k=>x.style.removeProperty(k));
+   }
+   addHandles();
+   buttons();
+ }
+ addEventListener('load',init);setTimeout(init,300);
+})();
+</script>
+
+
+<script id="borrachos-best11-mobile-lock-v88-js">
+(function(){
+  function lockBest11Mobile(){
+    if(!window.matchMedia('(max-width:700px)').matches)return;
+    document.body.classList.remove('best11-direct-edit','best11-presenze-edit');
+  }
+  window.addEventListener('load',lockBest11Mobile);
+  window.addEventListener('resize',lockBest11Mobile);
+  setTimeout(lockBest11Mobile,250);
 })();
 </script>
 
