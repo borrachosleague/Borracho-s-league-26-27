@@ -151,39 +151,6 @@ def main():
             print("ATTENZIONE lettura anagrafica dati.json:", e)
     print(f"Nomi giocatori LIVE disponibili (rose Borrachos): {len(PLAYER_NAMES)}")
 
-    # FIX NOMI LIVE BORRACHOS DA LISTONE ID
-    # Il campo # del Listone Classic e l'ID Fantacalcio (pid).
-    # I dati della rosa autenticata coprono solo Tricchetracht.
-    import openpyxl
-    listone = os.path.join(BASE_DIR, "lista_calciatori_lista calciatori_classic_borracho-s-league.xlsx")
-    if not os.path.isfile(listone):
-        raise RuntimeError("Listone Classic mancante: " + listone)
-    wb_listone = openpyxl.load_workbook(listone, read_only=True, data_only=True)
-    try:
-        sheet = wb_listone["Lista calciatori"]
-        iterator = sheet.iter_rows(values_only=True)
-        headers = [str(v or "").strip() for v in next(iterator)]
-        if "#" not in headers or "Nome" not in headers:
-            raise RuntimeError("Nel Listone mancano le colonne # e Nome")
-        idcol, namecol = headers.index("#"), headers.index("Nome")
-        loaded = 0
-        for record in iterator:
-            pid, nome = record[idcol], record[namecol]
-            if pid is None or not str(nome or "").strip():
-                continue
-            try:
-                pid = str(int(pid))
-            except (TypeError, ValueError):
-                continue
-            if not PLAYER_NAMES.get(pid):
-                PLAYER_NAMES[pid] = str(nome).strip()
-            loaded += 1
-    finally:
-        wb_listone.close()
-    if loaded < 250:
-        raise RuntimeError(f"Listone incompleto: solo {loaded} codici letti")
-    print(f"Nomi LIVE: {len(PLAYER_NAMES)} ID disponibili (Listone: {loaded})")
-
     teams = unwrap_list(fetch_json(TEAMS_URL, app_key, bearer))
     calendar = unwrap_list(fetch_json(CALENDAR_URL, app_key, bearer))
     team_names = {int(t["id"]): str(t.get("n") or t["id"]).strip() for t in teams}
