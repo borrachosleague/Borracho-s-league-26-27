@@ -107,6 +107,18 @@ def side(side_data, name, tid):
         "lply": side_data.get("lply"),
     }
 
+def has_real_scores(team):
+    """Rileva voti effettivi; esclude i segnaposto 56/100 dell'API."""
+    for group in ("titolari", "panchina"):
+        for player in team.get(group, []):
+            for field, placeholder in (("scr", 56), ("cscr", 100)):
+                value = player.get(field)
+                if isinstance(value, (int, float)) and not isinstance(value, bool):
+                    if value != placeholder and 0 < value < 20:
+                        return True
+    return False
+
+
 def choose_day(calendar, mday):
     for d in calendar:
         try:
@@ -246,7 +258,8 @@ def main():
 
         calculated = bool(detail.get("cal"))
         all_calculated = all_calculated and calculated
-        if home["lply"] is not None or away["lply"] is not None:
+        if (home["lply"] is not None or away["lply"] is not None
+                or has_real_scores(home) or has_real_scores(away)):
             any_live = True
 
         output["partite"].append({
