@@ -3003,6 +3003,22 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 #page-live .live-h2h thead th{position:sticky;top:0;z-index:2}
 #page-live .live-h2h tfoot{position:sticky;bottom:0;z-index:2;background:#171723}
 
+
+/* BORRACHOS LIVE - collegamento dinamico Supabase e tabella compatta */
+#page-live .live-h2h-wrap{max-height:none!important;overflow:visible!important}
+#page-live .live-h2h thead th,#page-live .live-h2h tfoot{position:static!important}
+#page-live .live-h2h{table-layout:fixed!important}
+#page-live .live-h2h tbody td{height:clamp(19px,2.6vh,23px)!important;padding:0 4px!important;font-size:clamp(10px,1.6vh,12px)!important;line-height:1!important}
+#page-live .live-h2h .live-vote-stack{height:clamp(18px,2.5vh,22px)!important;gap:0!important;line-height:1!important;justify-content:center!important}
+#page-live .live-h2h .live-voto-pagella{font-size:clamp(9px,1.4vh,11px)!important;line-height:1!important}
+#page-live .live-h2h .live-fantavoto{font-size:clamp(10px,1.55vh,12px)!important;line-height:1!important;margin:0!important}
+#page-live .live-h2h .live-bench-separator td{height:18px!important;padding:1px!important;font-size:10px!important}
+#page-live .live-h2h .live-totals-main td{height:25px!important;font-size:17px!important}
+#page-live .live-h2h .live-totals-sub td{height:17px!important;font-size:10px!important}
+#page-live .live-h2h-head img{width:42px!important;height:42px!important}
+#page-live .live-h2h-head b{font-size:clamp(15px,2.8vh,21px)!important}
+#page-live .live-h2h th{padding:3px!important}
+#page-live .live-h2h tbody tr:has(.live-vote-stack) td{vertical-align:middle!important}
 </style>
 
 
@@ -6094,6 +6110,7 @@ function liveVotoDoppio(p){
     if(!p)return '';
     return '<div class="live-vote-stack"><span class="live-voto-pagella">'+liveVotoPagella(p)+'</span><span class="live-fantavoto">'+liveFantaVoto(p)+'</span></div>';
 }
+function liveTotale(v){var n=Number(v);return v!=null&&v!==''&&Number.isFinite(n)&&n>0&&n<200?n.toFixed(1):'—';}
 function liveSommaTitolari(team,campo){
     var giocatori=team.titolari||[], somma=0, validi=0;
     giocatori.forEach(function(g){var v=liveVotoValido(g&&g[campo]);if(v!==null){somma+=v;validi++;}});
@@ -6110,7 +6127,7 @@ function renderLiveMatch(p){
     for(i=0;i<Math.max(ht.length,at.length,11);i++)rows+=riga(ht[i],at[i]);
     rows+='<tr class="live-bench-separator"><td colspan="4">PANCHINA</td></tr>';
     for(i=0;i<Math.max(hb.length,ab.length,14);i++)rows+=riga(hb[i],ab[i]);
-    var htot=liveNumeroVoto(h.totale),atot=liveNumeroVoto(a.totale);
+    var htot=liveTotale(h.totale),atot=liveTotale(a.totale);
     // I subtotali sono calcolati sui titolari; i panchinari sono mostrati ma non sommati.
     // Il modificatore non viene ricostruito senza conoscere le sostituzioni e il calcolo ufficiale.
     function subtotale(label,home,away){return '<tr class="live-totals-sub"><td>'+label+'</td><td class="live-summary-value">'+home+'</td><td class="live-summary-value">'+away+'</td><td>'+label+'</td></tr>';}
@@ -6140,15 +6157,15 @@ function tornaLiveTabellone(){
 }
 function caricaLive(){
     var meta=document.getElementById('live-meta'), grid=document.getElementById('live-grid'); if(!meta||!grid)return;
-    fetch((window.BORRACHOS_LIVE_URL || 'live.json') + ((window.BORRACHOS_LIVE_URL || 'live.json').includes('?') ? '&' : '?') + 'ts=' + Date.now(), {cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
+    fetch((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live') + ((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live').includes('?') ? '&' : '?') + 'ts=' + Date.now(), {cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
         uniformaNomiSquadre(d);
         meta.innerHTML='Giornata Borrachos '+liveEsc(d.giornata_borrachos)+' · Serie A '+liveEsc(d.giornata_serie_a)+' · Formazioni '+liveEsc(d.formazioni_consegnate)+'/10 <span class="live-status">'+liveEsc(String(d.stato||'attesa').toUpperCase())+'</span>';
         livePartiteCache=d.partite||[];
         var sb=document.getElementById('live-scoreboard-body');
         if(sb) sb.innerHTML=livePartiteCache.map(function(p,i){
             var h=p.casa||{}, a=p.trasferta||{};
-            var hp=(h.totale!=null&&Number(h.totale)!==0)?Number(h.totale).toFixed(1):'—';
-            var ap=(a.totale!=null&&Number(a.totale)!==0)?Number(a.totale).toFixed(1):'—';
+            var hp=liveTotale(h.totale);
+            var ap=liveTotale(a.totale);
             var hg=(p.risultato_reale&&p.risultato_reale.gol_casa!=null)?p.risultato_reale.gol_casa:(p.risultato&&p.risultato.gol_casa!=null?p.risultato.gol_casa:'—');
             var ag=(p.risultato_reale&&p.risultato_reale.gol_trasferta!=null)?p.risultato_reale.gol_trasferta:(p.risultato&&p.risultato.gol_trasferta!=null?p.risultato.gol_trasferta:'—');
             return '<tr class="live-team-row live-match-first" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(h.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(h.nome||'—')+'</span></div></td><td>'+hp+'</td><td class="live-goal">'+hg+'</td></tr>'+
