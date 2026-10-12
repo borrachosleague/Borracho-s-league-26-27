@@ -155,7 +155,7 @@ def main():
     # Il campo # del Listone Classic e l'ID Fantacalcio (pid).
     # I dati della rosa autenticata coprono solo Tricchetracht.
     import openpyxl
-    listone = os.path.join(BASE_DIR, "lista_calciatori_lista calciatori_classic_borracho-s-league.xlsx")
+    listone = os.path.join(BASE_DIR, "DATI_ESSENZIALI_NON_CANCELLARE", "lista_calciatori_lista calciatori_classic_borracho-s-league.xlsx")
     if not os.path.isfile(listone):
         raise RuntimeError("Listone Classic mancante: " + listone)
     wb_listone = openpyxl.load_workbook(listone, read_only=True, data_only=True)
