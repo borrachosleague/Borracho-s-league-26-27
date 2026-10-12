@@ -6072,7 +6072,7 @@ function liveNumeroVoto(v){
     return (v!=null && v!=='' && Number(v)!==0 && Number.isFinite(Number(v))) ? Number(v).toFixed(1) : '—';
 }
 function liveVotoPagella(p){
-    return liveNumeroVoto(p && p.m);
+    return liveNumeroVoto(p && p.scr);
 }
 function liveFantaVoto(p){
     if(!p) return '—';
@@ -6139,6 +6139,7 @@ function caricaLive(){
         }).join('');
         if(livePartitaAttiva>=livePartiteCache.length)livePartitaAttiva=0;
         if(!livePartiteCache.length) grid.innerHTML='<div class="live-error">Nessuna partita disponibile.</div>';
+        else if(document.getElementById('live-detail') && document.getElementById('live-detail').style.display==='block') mostraLivePartita(livePartitaAttiva);
     }).catch(function(e){meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">Errore caricamento LIVE: '+liveEsc(e && e.message ? e.message : e)+'</div>'; console.error('LIVE BORRACHOS',e);});
 }
 setInterval(function(){if(document.getElementById('page-live')&&document.getElementById('page-live').classList.contains('active'))caricaLive();},30000);
