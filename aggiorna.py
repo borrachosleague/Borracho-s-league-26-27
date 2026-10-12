@@ -612,9 +612,9 @@ def _ruolo_classic_da_riga(cells, metas, idx_nome):
 
 QUOTAZIONI_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
 
-def scarica_ruoli_classic_fc():
-    """Scarica il Listone/quotazioni ufficiale e costruisce nome -> ruolo Classic.
-    Le statistiche restano quelle Voto Statistico; questa seconda pagina serve solo per P/D/C/A.
+def scarica_listone_quotazioni_fc():
+    """Ripristino QI/QA Classic dal Listone Fantacalcio, come nella versione 14ee139.
+    Se la fonte cambia formato, interrompe la generazione anziche' cancellare le quotazioni.
     """
     req = urllib.request.Request(
         QUOTAZIONI_URL,
@@ -625,27 +625,33 @@ def scarica_ruoli_classic_fc():
         with urllib.request.urlopen(req, timeout=30) as response:
             raw = response.read().decode("utf-8", errors="replace")
     except Exception as e:
-        raise RuntimeError("Impossibile scaricare i ruoli Classic dal Listone Fantacalcio: " + str(e))
+        raise RuntimeError("Impossibile scaricare QI/QA dal Listone Fantacalcio: " + str(e))
 
     parser = _StatsTableParser()
     parser.feed(raw)
-    ruoli = {}
+    quotazioni = {}
     for cells, metas in parser.rows:
-        idx_sq = None
-        for i, c in enumerate(cells):
-            if re.fullmatch(r"[A-Z]{3}", c or ""):
-                idx_sq = i
-                break
-        if idx_sq is None or idx_sq < 1:
+        idx_sq = next((i for i, c in enumerate(cells) if re.fullmatch(r"[A-Z]{3}", c or "")), None)
+        if idx_sq is None or idx_sq < 1 or len(cells) <= idx_sq + 2:
             continue
         nome = str(cells[idx_sq - 1] or "").strip()
         if not nome or nome.lower() == "calciatore":
             continue
-        ruolo = _ruolo_classic_da_riga(cells, metas, idx_sq - 1)
-        if ruolo:
-            ruoli[_norm_nome_fc(nome)] = ruolo
+        qi_raw = str(cells[idx_sq + 1] or "").strip()
+        qa_raw = str(cells[idx_sq + 2] or "").strip()
+        if not re.fullmatch(r"\d+(?:[.,]0+)?", qi_raw) or not re.fullmatch(r"\d+(?:[.,]0+)?", qa_raw):
+            continue
+        quotazioni[_norm_nome_fc(nome)] = {
+            "qi": int(float(qi_raw.replace(",", "."))),
+            "qa": int(float(qa_raw.replace(",", "."))),
+        }
 
-    return ruoli
+    if len(quotazioni) < 100:
+        raise RuntimeError(
+            f"Listone quotazioni non riconosciuto ({len(quotazioni)} giocatori). "
+            "dati.json NON viene sovrascritto."
+        )
+    return quotazioni
 
 def scarica_statistiche_statistiche_fc():
     req = urllib.request.Request(
@@ -852,6 +858,24 @@ for base in listone_excel:
         g["cleansheettot"] = sa["cleansheet"]
         g["autgoltot"] = sa["autogol"]
     giocatori_seriea.append(g)
+
+# Ripristino QI e QA nelle rose e nella Serie A, senza alterare ruoli o statistiche.
+print("Scarico QI/QA Classic dal Listone Fantacalcio...")
+quotazioni_fc = scarica_listone_quotazioni_fc()
+for elenco in (lista_giocatori, giocatori_seriea):
+    for g in elenco:
+        q = quotazioni_fc.get(_norm_nome_fc(g["nome"]))
+        if q is not None:
+            g["qi"] = q["qi"]
+            g["qa"] = q["qa"]
+
+copertura_rose = sum(1 for g in lista_giocatori if "qi" in g and "qa" in g)
+print(f"QI/QA: {copertura_rose}/{len(lista_giocatori)} giocatori nelle rose")
+if copertura_rose < 200:
+    raise RuntimeError(
+        f"QI/QA disponibili per soli {copertura_rose} giocatori delle rose. "
+        "dati.json NON viene sovrascritto."
+    )
 
 senza_ruolo = [g["nome"] for g in giocatori_seriea if g.get("ruolo") not in ("p", "d", "c", "a")]
 if senza_ruolo:
