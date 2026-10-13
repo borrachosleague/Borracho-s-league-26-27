@@ -2,123 +2,123 @@
   "squadre": [
     {
       "nome": "Tricchetracht Francoforte",
-      "g": 3,
+      "g": 4,
       "v": 3,
-      "n": 0,
-      "p": 0,
-      "gf": 8,
-      "gs": 1,
-      "dr": 7,
-      "pt": 9,
-      "pt_totali": 231.0
-    },
-    {
-      "nome": "AC Asparaghese",
-      "g": 3,
-      "v": 2,
       "n": 1,
       "p": 0,
-      "gf": 8,
-      "gs": 5,
-      "dr": 3,
-      "pt": 7,
-      "pt_totali": 237.0
+      "gf": 9,
+      "gs": 2,
+      "dr": 7,
+      "pt": 10,
+      "pt_totali": 300.0
     },
     {
       "nome": "PARTIZAN DEGRADO",
-      "g": 3,
+      "g": 4,
       "v": 2,
-      "n": 1,
+      "n": 2,
       "p": 0,
-      "gf": 6,
-      "gs": 1,
+      "gf": 7,
+      "gs": 2,
       "dr": 5,
-      "pt": 7,
-      "pt_totali": 221.5
-    },
-    {
-      "nome": "Il sesto Asensio",
-      "g": 3,
-      "v": 2,
-      "n": 0,
-      "p": 1,
-      "gf": 5,
-      "gs": 4,
-      "dr": 1,
-      "pt": 6,
-      "pt_totali": 215.0
+      "pt": 8,
+      "pt_totali": 291.0
     },
     {
       "nome": "San Gria",
-      "g": 3,
-      "v": 1,
+      "g": 4,
+      "v": 2,
       "n": 1,
       "p": 1,
-      "gf": 4,
+      "gf": 7,
       "gs": 6,
-      "dr": -2,
-      "pt": 4,
-      "pt_totali": 214.5
+      "dr": 1,
+      "pt": 7,
+      "pt_totali": 296.5
+    },
+    {
+      "nome": "AC Asparaghese",
+      "g": 4,
+      "v": 2,
+      "n": 1,
+      "p": 1,
+      "gf": 8,
+      "gs": 9,
+      "dr": -1,
+      "pt": 7,
+      "pt_totali": 295.5
+    },
+    {
+      "nome": "Il sesto Asensio",
+      "g": 4,
+      "v": 2,
+      "n": 1,
+      "p": 1,
+      "gf": 6,
+      "gs": 5,
+      "dr": 1,
+      "pt": 7,
+      "pt_totali": 281.0
+    },
+    {
+      "nome": "FC INTERNAZIOANALE",
+      "g": 4,
+      "v": 2,
+      "n": 0,
+      "p": 2,
+      "gf": 8,
+      "gs": 8,
+      "dr": 0,
+      "pt": 6,
+      "pt_totali": 295.5
     },
     {
       "nome": "AS Pipperia",
-      "g": 3,
+      "g": 4,
       "v": 1,
-      "n": 0,
+      "n": 1,
       "p": 2,
       "gf": 5,
       "gs": 4,
       "dr": 1,
-      "pt": 3,
-      "pt_totali": 218.5
+      "pt": 4,
+      "pt_totali": 284.0
     },
     {
       "nome": "Atletico Improvvisato",
-      "g": 3,
+      "g": 4,
       "v": 1,
-      "n": 0,
+      "n": 1,
       "p": 2,
       "gf": 5,
       "gs": 7,
       "dr": -2,
-      "pt": 3,
-      "pt_totali": 214.5
-    },
-    {
-      "nome": "FC INTERNAZIOANALE",
-      "g": 3,
-      "v": 1,
-      "n": 0,
-      "p": 2,
-      "gf": 4,
-      "gs": 8,
-      "dr": -4,
-      "pt": 3,
-      "pt_totali": 211.0
-    },
-    {
-      "nome": "shark",
-      "g": 3,
-      "v": 0,
-      "n": 1,
-      "p": 2,
-      "gf": 3,
-      "gs": 7,
-      "dr": -4,
-      "pt": 1,
-      "pt_totali": 205.0
+      "pt": 4,
+      "pt_totali": 275.0
     },
     {
       "nome": "Pesciculini FC",
-      "g": 3,
+      "g": 4,
       "v": 0,
-      "n": 0,
+      "n": 1,
       "p": 3,
-      "gf": 4,
-      "gs": 9,
+      "gf": 5,
+      "gs": 10,
       "dr": -5,
-      "pt": 0,
-      "pt_totali": 211.5
+      "pt": 1,
+      "pt_totali": 278.0
+    },
+    {
+      "nome": "shark",
+      "g": 4,
+      "v": 0,
+      "n": 1,
+      "p": 3,
+      "gf": 3,
+      "gs": 10,
+      "dr": -7,
+      "pt": 1,
+      "pt_totali": 270.5
     }
   ],
   "giocatori": [
@@ -26280,42 +26280,42 @@
       "partite": [
         {
           "casa": "Pesciculini FC",
-          "pt_casa": 0,
-          "gol_casa": 0,
-          "gol_trasferta": 0,
-          "pt_trasferta": 0,
+          "pt_casa": 66.5,
+          "gol_casa": 1,
+          "gol_trasferta": 1,
+          "pt_trasferta": 69.5,
           "trasferta": "PARTIZAN DEGRADO"
         },
         {
           "casa": "AC Asparaghese",
-          "pt_casa": 0,
+          "pt_casa": 58.5,
           "gol_casa": 0,
-          "gol_trasferta": 0,
-          "pt_trasferta": 0,
+          "gol_trasferta": 4,
+          "pt_trasferta": 84.5,
           "trasferta": "FC INTERNAZIOANALE"
         },
         {
           "casa": "AS Pipperia",
-          "pt_casa": 0,
+          "pt_casa": 65.5,
           "gol_casa": 0,
           "gol_trasferta": 0,
-          "pt_trasferta": 0,
+          "pt_trasferta": 60.5,
           "trasferta": "Atletico Improvvisato"
         },
         {
           "casa": "shark",
-          "pt_casa": 0,
+          "pt_casa": 65.5,
           "gol_casa": 0,
-          "gol_trasferta": 0,
-          "pt_trasferta": 0,
+          "gol_trasferta": 3,
+          "pt_trasferta": 82.0,
           "trasferta": "San Gria"
         },
         {
           "casa": "Tricchetracht Francoforte",
-          "pt_casa": 0,
-          "gol_casa": 0,
-          "gol_trasferta": 0,
-          "pt_trasferta": 0,
+          "pt_casa": 69.0,
+          "gol_casa": 1,
+          "gol_trasferta": 1,
+          "pt_trasferta": 66.0,
           "trasferta": "Il sesto Asensio"
         }
       ]

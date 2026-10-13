@@ -1,19 +1,75 @@
 {
   "versione": 1,
-  "aggiornato_il": "2026-10-12T23:33:53+02:00",
+  "aggiornato_il": "2026-10-13T07:29:21+02:00",
   "idcomp": 324951,
-  "giornata_borrachos": 4,
-  "giornata_serie_a": 6,
-  "stato": "live",
-  "formazioni_consegnate": 10,
+  "giornata_borrachos": 5,
+  "giornata_serie_a": 7,
+  "stato": "attesa",
+  "formazioni_consegnate": 4,
   "partite": [
+    {
+      "casa": {
+        "id": 15374505,
+        "nome": "Atletico Improvvisato",
+        "consegnata": false,
+        "modulo": null,
+        "totale": null,
+        "punti": null,
+        "titolari": [],
+        "panchina": [],
+        "lply": null
+      },
+      "trasferta": {
+        "id": 13138740,
+        "nome": "AC Asparaghese",
+        "consegnata": false,
+        "modulo": null,
+        "totale": null,
+        "punti": null,
+        "titolari": [],
+        "panchina": [],
+        "lply": null
+      },
+      "calcolata": false,
+      "segno": null,
+      "risultato": null,
+      "risultato_reale": null
+    },
+    {
+      "casa": {
+        "id": 19167528,
+        "nome": "FC INTERNAZIOANALE",
+        "consegnata": false,
+        "modulo": null,
+        "totale": null,
+        "punti": null,
+        "titolari": [],
+        "panchina": [],
+        "lply": null
+      },
+      "trasferta": {
+        "id": 13253444,
+        "nome": "San Gria",
+        "consegnata": false,
+        "modulo": null,
+        "totale": null,
+        "punti": null,
+        "titolari": [],
+        "panchina": [],
+        "lply": null
+      },
+      "calcolata": false,
+      "segno": null,
+      "risultato": null,
+      "risultato_reale": null
+    },
     {
       "casa": {
         "id": 13104984,
         "nome": "Pesciculini FC",
         "consegnata": true,
         "modulo": "343",
-        "totale": 39.0,
+        "totale": 0,
         "punti": 0,
         "titolari": [
           {
@@ -22,62 +78,62 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5877,
             "nome": "Carlos Augusto",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2296,
             "nome": "Mancini",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7181,
             "nome": "Wesley",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6827,
             "nome": "Njie",
             "m": 0,
-            "scr": 5,
-            "cscr": 5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 536,
             "nome": "Politano",
             "m": 0,
-            "scr": 55,
+            "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6398,
             "nome": "Isaksen",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 10.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;1;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 1870,
@@ -85,8 +141,8 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5995,
@@ -94,8 +150,8 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2097,
@@ -103,17 +159,17 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6967,
             "nome": "Diao",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           }
         ],
         "panchina": [
@@ -121,19 +177,19 @@
             "pid": 2521,
             "nome": "De Gea",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 3.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "0;0;0;2;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 572,
             "nome": "Meret",
             "m": 0,
-            "scr": 6,
-            "cscr": 7,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4887,
@@ -142,25 +198,25 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5273,
             "nome": "Estupinan",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4210,
             "nome": "Mina",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6826,
@@ -169,7 +225,7 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2724,
@@ -178,7 +234,7 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5422,
@@ -187,25 +243,25 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 22,
             "nome": "De Roon",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6503,
             "nome": "Stankovic A.",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4349,
@@ -214,16 +270,16 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6215,
             "nome": "Lucca",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6435,
@@ -232,1225 +288,26 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7561,
             "nome": "Lontani",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           }
         ],
         "lply": null
       },
       "trasferta": {
-        "id": 13137726,
-        "nome": "PARTIZAN DEGRADO",
-        "consegnata": true,
-        "modulo": "433",
-        "totale": 35.5,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 4431,
-            "nome": "Carnesecchi",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 4807,
-            "nome": "Hermoso",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6989,
-            "nome": "Tiago Gabriel",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6956,
-            "nome": "Solet",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 7219,
-            "nome": "Bernasconi",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 6274,
-            "nome": "Diouf",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5559,
-            "nome": "Da Cunha",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6684,
-            "nome": "Ekkelenkamp",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 531,
-            "nome": "Berardi",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5637,
-            "nome": "Davis K.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 6204,
-            "nome": "Kvernadze",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 2134,
-            "nome": "Falcone",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 3.5,
-            "ptype": "-",
-            "bonus": "0;0;0;2;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6662,
-            "nome": "Corvi",
-            "m": 0,
-            "scr": 5,
-            "cscr": 2,
-            "ptype": "-",
-            "bonus": "0;0;0;3;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6869,
-            "nome": "Ramon",
-            "m": 0,
-            "scr": 7,
-            "cscr": 7,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1"
-          },
-          {
-            "pid": 4994,
-            "nome": "Vojvoda",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7599,
-            "nome": "Lulli",
-            "m": 0,
-            "scr": 55,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7294,
-            "nome": "Valdepenas",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7060,
-            "nome": "Cacciamani",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5172,
-            "nome": "Jones C.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5823,
-            "nome": "Baldanzi",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5888,
-            "nome": "Casadei",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7311,
-            "nome": "Romano",
-            "m": 0,
-            "scr": 7,
-            "cscr": 7,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4923,
-            "nome": "Colombo",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6675,
-            "nome": "Dovbyk",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6434,
-            "nome": "Yildiz",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "lply": null
-      },
-      "calcolata": false,
-      "segno": "X",
-      "risultato": "0-0",
-      "risultato_reale": null
-    },
-    {
-      "casa": {
-        "id": 13138740,
-        "nome": "AC Asparaghese",
-        "consegnata": true,
-        "modulo": "442",
-        "totale": 49.5,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 4236,
-            "nome": "Muric",
-            "m": 0,
-            "scr": 6,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 4976,
-            "nome": "Kalulu",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5514,
-            "nome": "Vasquez",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 3,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;1;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6320,
-            "nome": "Doekhi",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5739,
-            "nome": "De Winter",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 2423,
-            "nome": "Pulisic",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7078,
-            "nome": "Mastantuono",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5589,
-            "nome": "Konè M.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 184,
-            "nome": "Bernardeschi",
-            "m": 0,
-            "scr": 55,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 5734,
-            "nome": "Soulè",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5585,
-            "nome": "Malen",
-            "m": 0,
-            "scr": 4.5,
-            "cscr": 3.5,
-            "ptype": "-",
-            "bonus": "0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 4360,
-            "nome": "Caprile",
-            "m": 0,
-            "scr": 7,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": "0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;1"
-          },
-          {
-            "pid": 4485,
-            "nome": "Thiam",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6021,
-            "nome": "Abankwah",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6867,
-            "nome": "Valle",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7532,
-            "nome": "Kofler",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7436,
-            "nome": "Alajbegovic",
-            "m": 0,
-            "scr": 7,
-            "cscr": 8,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0"
-          },
-          {
-            "pid": 7070,
-            "nome": "Sucic P.",
-            "m": 0,
-            "scr": 7.5,
-            "cscr": 11.5,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;1;0;0;0;0;0;0;1"
-          },
-          {
-            "pid": 1850,
-            "nome": "Kessiè",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6908,
-            "nome": "Atta",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7523,
-            "nome": "Varela G.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7272,
-            "nome": "Gueye",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7554,
-            "nome": "Romero D.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7622,
-            "nome": "Robinho Junior",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "lply": null
-      },
-      "trasferta": {
-        "id": 19167528,
-        "nome": "FC INTERNAZIOANALE",
-        "consegnata": true,
-        "modulo": "433",
-        "totale": 64.0,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 5116,
-            "nome": "Martinez Jo.",
-            "m": 0,
-            "scr": 6,
-            "cscr": 7,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0"
-          },
-          {
-            "pid": 4734,
-            "nome": "Miranda J.",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7012,
-            "nome": "Provstgaard",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5675,
-            "nome": "Theate",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 7220,
-            "nome": "Belghali",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 2517,
-            "nome": "De Bruyne",
-            "m": 0,
-            "scr": 7.5,
-            "cscr": 14.5,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;1;0;1;0;0;0;0;0;0;1"
-          },
-          {
-            "pid": 5687,
-            "nome": "Vlasic",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 6294,
-            "nome": "Ndour",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4871,
-            "nome": "Thuram",
-            "m": 0,
-            "scr": 7,
-            "cscr": 10,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6556,
-            "nome": "Noslin",
-            "m": 0,
-            "scr": 7.5,
-            "cscr": 9.5,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;2;0;1"
-          },
-          {
-            "pid": 309,
-            "nome": "Dybala",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 2814,
-            "nome": "Provedel",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 1926,
-            "nome": "Di Gennaro",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4317,
-            "nome": "N'Dicka",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5695,
-            "nome": "Haps",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4657,
-            "nome": "Celik",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7069,
-            "nome": "Fortini",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 1933,
-            "nome": "Mandragora",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5792,
-            "nome": "Ederson D.S.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5844,
-            "nome": "Thorstvedt",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6010,
-            "nome": "Fazzini",
-            "m": 0,
-            "scr": 55,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4777,
-            "nome": "McTominay",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7374,
-            "nome": "Mendy P.",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 7.5,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0"
-          },
-          {
-            "pid": 6646,
-            "nome": "Adams C.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4371,
-            "nome": "Raspadori",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "lply": null
-      },
-      "calcolata": false,
-      "segno": "X",
-      "risultato": "0-0",
-      "risultato_reale": null
-    },
-    {
-      "casa": {
-        "id": 18853479,
-        "nome": "AS Pipperia",
-        "consegnata": true,
-        "modulo": "343",
-        "totale": 46.5,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 6482,
-            "nome": "Mandas",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": "0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6531,
-            "nome": "Jimenez A.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2816,
-            "nome": "Di Lorenzo",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6485,
-            "nome": "Kristensen T.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 632,
-            "nome": "Zaccagni",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7625,
-            "nome": "Goncalves P.",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6875,
-            "nome": "Paz N.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5119,
-            "nome": "Samardzic",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 6397,
-            "nome": "Ramos G.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6052,
-            "nome": "Hojlund",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2061,
-            "nome": "Simeone",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 6534,
-            "nome": "Perri",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7332,
-            "nome": "Bijlow",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": "0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6727,
-            "nome": "Couto",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5838,
-            "nome": "Birindelli",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4705,
-            "nome": "Balerdi",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6821,
-            "nome": "Hainaut",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6664,
-            "nome": "Delprato",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4973,
-            "nome": "McKennie",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6372,
-            "nome": "Moreira",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6190,
-            "nome": "Pisilli",
-            "m": 0,
-            "scr": 55,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5878,
-            "nome": "Colpani",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2038,
-            "nome": "Pinamonti",
-            "m": 0,
-            "scr": 7,
-            "cscr": 10,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5029,
-            "nome": "Geubbels",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7484,
-            "nome": "Adams A.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "lply": null
-      },
-      "trasferta": {
-        "id": 15374505,
-        "nome": "Atletico Improvvisato",
-        "consegnata": true,
-        "modulo": "343",
-        "totale": 45.0,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 7337,
-            "nome": "Motta",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 1852,
-            "nome": "Spinazzola",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7274,
-            "nome": "Zè Pedro",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5520,
-            "nome": "Cambiaso",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4220,
-            "nome": "Zambo Anguissa",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 5500,
-            "nome": "Cancellieri",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 6666,
-            "nome": "Bernabè",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 152,
-            "nome": "Zielinski",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 4896,
-            "nome": "Maldini",
-            "m": 0,
-            "scr": 7,
-            "cscr": 10,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 7071,
-            "nome": "Esposito F.P.",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6669,
-            "nome": "Bonny",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 6462,
-            "nome": "Okoye",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7611,
-            "nome": "Mrozek",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6217,
-            "nome": "Bisseck",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4177,
-            "nome": "Pavard",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7329,
-            "nome": "Obrador",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7253,
-            "nome": "Bella-Kotchap",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4502,
-            "nome": "Gallo",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2077,
-            "nome": "Pasalic",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6717,
-            "nome": "Konè I.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 827,
-            "nome": "Locatelli",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7203,
-            "nome": "Jashari",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6752,
-            "nome": "Woltemade",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7120,
-            "nome": "Lang",
-            "m": 0,
-            "scr": 7,
-            "cscr": 10,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6229,
-            "nome": "Tourè E.",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "lply": null
-      },
-      "calcolata": false,
-      "segno": "X",
-      "risultato": "0-0",
-      "risultato_reale": null
-    },
-    {
-      "casa": {
         "id": 18753606,
         "nome": "shark",
         "consegnata": true,
         "modulo": "442",
-        "totale": 47.0,
+        "totale": 0,
         "punti": 0,
         "titolari": [
           {
@@ -1459,35 +316,35 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5641,
             "nome": "Chalobah T.",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5750,
             "nome": "Ostigard",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4409,
             "nome": "Rrahmani",
             "m": 0,
-            "scr": 7,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4159,
@@ -1495,17 +352,17 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5295,
             "nome": "Musah",
             "m": 0,
-            "scr": 5,
-            "cscr": 5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6680,
@@ -1513,44 +370,44 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6898,
             "nome": "Keita M.",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4287,
             "nome": "Lobotka",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4463,
             "nome": "Esposito Se.",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7023,
             "nome": "Pellegrino M.",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           }
         ],
         "panchina": [
@@ -1561,52 +418,52 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7235,
             "nome": "Troilo",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2167,
             "nome": "Orsolini",
             "m": 0,
-            "scr": 7,
-            "cscr": 10,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4359,
             "nome": "Piccoli",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6831,
             "nome": "Neres",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7314,
             "nome": "Taylor K.",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4845,
@@ -1615,25 +472,25 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5982,
             "nome": "Spence",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5457,
             "nome": "Maleh",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2155,
@@ -1642,16 +499,16 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 5336,
             "nome": "Nzola",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4199,
@@ -1660,7 +517,7 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2514,
@@ -1669,7 +526,7 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4957,
@@ -1678,316 +535,344 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "lply": null
-      },
-      "trasferta": {
-        "id": 13253444,
-        "nome": "San Gria",
-        "consegnata": true,
-        "modulo": "343",
-        "totale": 68.0,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 5841,
-            "nome": "Svilar",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 2120,
-            "nome": "Bastoni",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 5620,
-            "nome": "Tavares N.",
-            "m": 0,
-            "scr": 7,
-            "cscr": 10,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5833,
-            "nome": "Gila",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5791,
-            "nome": "Frendrup",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6884,
-            "nome": "Conceicao",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4856,
-            "nome": "Chukwueze",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2379,
-            "nome": "Rabiot",
-            "m": 0,
-            "scr": 7,
-            "cscr": 10,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 5694,
-            "nome": "Beto",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7600,
-            "nome": "Osmajic",
-            "m": 0,
-            "scr": 7.5,
-            "cscr": 11.5,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;1;0;1"
-          },
-          {
-            "pid": 5951,
-            "nome": "Kolo Muani",
-            "m": 0,
-            "scr": 6,
-            "cscr": 9,
-            "ptype": "-",
-            "bonus": "0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 610,
-            "nome": "Gollini",
-            "m": 0,
-            "scr": 7,
-            "cscr": 8,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0"
-          },
-          {
-            "pid": 7048,
-            "nome": "De Marzi",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7564,
-            "nome": "Leysen F.",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7410,
-            "nome": "Viery",
-            "m": 0,
-            "scr": 6,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 7469,
-            "nome": "Bracaglia",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7537,
-            "nome": "Mitaj",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2728,
-            "nome": "Pellegrini Lu.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6151,
-            "nome": "Perrone",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 779,
-            "nome": "Cristante",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4892,
-            "nome": "Saelemaekers",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2766,
-            "nome": "Zaniolo",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7623,
-            "nome": "Gnonto",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7482,
-            "nome": "Lauberbach",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6145,
-            "nome": "Ngonge",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           }
         ],
         "lply": null
       },
       "calcolata": false,
-      "segno": "2",
-      "risultato": "0-1",
+      "segno": "X",
+      "risultato": "0-0",
       "risultato_reale": null
     },
     {
       "casa": {
+        "id": 13104877,
+        "nome": "Il sesto Asensio",
+        "consegnata": false,
+        "modulo": null,
+        "totale": 0,
+        "punti": 0,
+        "titolari": [],
+        "panchina": [],
+        "lply": null
+      },
+      "trasferta": {
+        "id": 18853479,
+        "nome": "AS Pipperia",
+        "consegnata": true,
+        "modulo": "343",
+        "totale": 0,
+        "punti": 0,
+        "titolari": [
+          {
+            "pid": 6482,
+            "nome": "Mandas",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6531,
+            "nome": "Jimenez A.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 2816,
+            "nome": "Di Lorenzo",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6485,
+            "nome": "Kristensen T.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6875,
+            "nome": "Paz N.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 4973,
+            "nome": "McKennie",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 632,
+            "nome": "Zaccagni",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5119,
+            "nome": "Samardzic",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6397,
+            "nome": "Ramos G.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6052,
+            "nome": "Hojlund",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 2061,
+            "nome": "Simeone",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          }
+        ],
+        "panchina": [
+          {
+            "pid": 6534,
+            "nome": "Perri",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 7332,
+            "nome": "Bijlow",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6727,
+            "nome": "Couto",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6496,
+            "nome": "Bartesaghi",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6660,
+            "nome": "Marcandalli",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6632,
+            "nome": "Gaspar K.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6664,
+            "nome": "Delprato",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6372,
+            "nome": "Moreira",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 4911,
+            "nome": "Douglas Luiz",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5878,
+            "nome": "Colpani",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 2765,
+            "nome": "Odgaard",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 2038,
+            "nome": "Pinamonti",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5029,
+            "nome": "Geubbels",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 7484,
+            "nome": "Adams A.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          }
+        ],
+        "lply": null
+      },
+      "calcolata": false,
+      "segno": "X",
+      "risultato": "0-0",
+      "risultato_reale": null
+    },
+    {
+      "casa": {
+        "id": 13137726,
+        "nome": "PARTIZAN DEGRADO",
+        "consegnata": false,
+        "modulo": null,
+        "totale": 0,
+        "punti": 0,
+        "titolari": [],
+        "panchina": [],
+        "lply": null
+      },
+      "trasferta": {
         "id": 13100010,
         "nome": "Tricchetracht Francoforte",
         "consegnata": true,
         "modulo": "442",
-        "totale": 45.0,
+        "totale": 0,
         "punti": 0,
         "titolari": [
           {
             "pid": 4964,
             "nome": "Vicario",
             "m": 0,
-            "scr": 6,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": "0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 7573,
-            "nome": "Cinquegrano",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5555,
-            "nome": "Kamara H.",
-            "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 254,
-            "nome": "Dimarco",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 4998,
             "nome": "Molina N.",
             "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 2194,
-            "nome": "Calhanoglu",
+            "pid": 7414,
+            "nome": "Kaiki",
             "m": 0,
-            "scr": 7,
-            "cscr": 10,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": "0;0;0;0;0;0;1;0;0;0;0;0;0;0;0;0"
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5862,
+            "nome": "Valeri",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 254,
+            "nome": "Dimarco",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 7412,
+            "nome": "Milla",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 6844,
@@ -1995,35 +880,35 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2848,
             "nome": "Frattesi",
             "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 5800,
-            "nome": "Gudmundsson A.",
+            "pid": 2194,
+            "nome": "Calhanoglu",
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2764,
             "nome": "Martinez L.",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
+            "scr": 56,
+            "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 2137,
@@ -2031,8 +916,8 @@
             "m": 0,
             "scr": 56,
             "cscr": 100,
-            "ptype": "U",
-            "bonus": null
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           }
         ],
         "panchina": [
@@ -2043,34 +928,7 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 4364,
-            "nome": "Gaetano",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5735,
-            "nome": "Volpato",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5761,
-            "nome": "Zhegrova",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7546,
@@ -2079,7 +937,88 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5761,
+            "nome": "Zhegrova",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 4364,
+            "nome": "Gaetano",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6238,
+            "nome": "Oyono A.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 7485,
+            "nome": "Mangas",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 7342,
+            "nome": "Elphege",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5555,
+            "nome": "Kamara H.",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 6415,
+            "nome": "Palmisani",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 5735,
+            "nome": "Volpato",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
+          },
+          {
+            "pid": 7573,
+            "nome": "Cinquegrano",
+            "m": 0,
+            "scr": 56,
+            "cscr": 100,
+            "ptype": "-",
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 283,
@@ -2088,61 +1027,16 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
-            "pid": 7485,
-            "nome": "Mangas",
+            "pid": 5800,
+            "nome": "Gudmundsson A.",
             "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6238,
-            "nome": "Oyono A.",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7412,
-            "nome": "Milla",
-            "m": 0,
-            "scr": 55,
+            "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7414,
-            "nome": "Kaiki",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5862,
-            "nome": "Valeri",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7342,
-            "nome": "Elphege",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           },
           {
             "pid": 7351,
@@ -2151,254 +1045,7 @@
             "scr": 56,
             "cscr": 100,
             "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6415,
-            "nome": "Palmisani",
-            "m": 0,
-            "scr": 6,
-            "cscr": 3,
-            "ptype": "-",
-            "bonus": "0;0;0;3;0;0;0;0;0;0;0;0;0;0;0;0"
-          }
-        ],
-        "lply": null
-      },
-      "trasferta": {
-        "id": 13104877,
-        "nome": "Il sesto Asensio",
-        "consegnata": true,
-        "modulo": "433",
-        "totale": 53.0,
-        "punti": 0,
-        "titolari": [
-          {
-            "pid": 4312,
-            "nome": "Maignan",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": "0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 2788,
-            "nome": "Bremer",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5526,
-            "nome": "Scalvini",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 5022,
-            "nome": "Pavlovic",
-            "m": 0,
-            "scr": 6,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6495,
-            "nome": "Comuzzo",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "U",
-            "bonus": null
-          },
-          {
-            "pid": 6618,
-            "nome": "Cissè A.",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2606,
-            "nome": "Modric",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 7.5,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0"
-          },
-          {
-            "pid": 7126,
-            "nome": "Baturina",
-            "m": 0,
-            "scr": 6,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": "1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
-          },
-          {
-            "pid": 6060,
-            "nome": "Laurientè",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 6.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5436,
-            "nome": "Raimondo",
-            "m": 0,
-            "scr": 5.5,
-            "cscr": 5.5,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7017,
-            "nome": "Douvikas",
-            "m": 0,
-            "scr": 5,
-            "cscr": 5,
-            "ptype": "-",
-            "bonus": null
-          }
-        ],
-        "panchina": [
-          {
-            "pid": 6966,
-            "nome": "Butez",
-            "m": 0,
-            "scr": 6.5,
-            "cscr": 7.5,
-            "ptype": "-",
-            "bonus": "0;0;0;0;0;0;0;0;0;0;1;0;0;0;0;0"
-          },
-          {
-            "pid": 4,
-            "nome": "Sportiello",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 2404,
-            "nome": "Alaba",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6042,
-            "nome": "Lucumì",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5851,
-            "nome": "Doig",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5831,
-            "nome": "Gatti",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7223,
-            "nome": "Vergara",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 5685,
-            "nome": "Koopmeiners",
-            "m": 0,
-            "scr": 55,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7556,
-            "nome": "Mora",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 530,
-            "nome": "Pellegrini Lo.",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6677,
-            "nome": "Adzic",
-            "m": 0,
-            "scr": 6,
-            "cscr": 6,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 7349,
-            "nome": "Kulenovic",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6572,
-            "nome": "Castro S.",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
-          },
-          {
-            "pid": 6519,
-            "nome": "Camarda",
-            "m": 0,
-            "scr": 56,
-            "cscr": 100,
-            "ptype": "-",
-            "bonus": null
+            "bonus": "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"
           }
         ],
         "lply": null
