@@ -9,7 +9,15 @@ from datetime import datetime
 COMPETITION_ID = 324951
 DIVISION = "A"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CREDENTIALS_FILE = os.path.abspath(os.path.join(BASE_DIR, "..", "PRIVATO BORRACHOS", "DATI_FANTACALCIO.txt"))
+# Stesso file gia utilizzato da aggiorna.py sul PC, con alternative non pubbliche.
+# Nessuna credenziale viene memorizzata nel repository.
+CREDENTIALS_CANDIDATES = [
+    os.environ.get("BORRACHOS_CREDENTIALS_FILE", ""),
+    r"E:\--- fantacalcio tot uff\ISTRUZIONI DEFINITIVE\dati per accessi sito\DATI_FANTACALCIO.txt",
+    os.path.abspath(os.path.join(BASE_DIR, "..", "PRIVATO BORRACHOS", "DATI_FANTACALCIO.txt")),
+]
+CREDENTIALS_FILE = next((p for p in CREDENTIALS_CANDIDATES if p and os.path.isfile(p)), "")
+
 OUTPUT_FILE = os.path.join(BASE_DIR, "live.json")
 DATA_FILE = os.path.join(BASE_DIR, "dati.json")
 
@@ -131,6 +139,9 @@ def choose_day(calendar, mday):
 def main():
     global PLAYER_NAMES
     print("LIVE BORRACHOS - aggiornamento")
+    if not CREDENTIALS_FILE:
+        raise RuntimeError("Credenziali Fantacalcio non trovate nei percorsi configurati.")
+    print("File credenziali individuato:", CREDENTIALS_FILE)
     app_key, bearer = read_credentials(CREDENTIALS_FILE)
 
     # Il dettaglio formazione restituisce i pid ma non i nomi.
