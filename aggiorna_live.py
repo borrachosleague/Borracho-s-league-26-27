@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -297,5 +298,37 @@ def main():
     print(f"Stato: {output['stato'].upper()}")
     print(f"Salvato: {OUTPUT_FILE}")
 
+def diagnostica_connessione():
+    """Solo GET, stampa esiti sintetici senza dati privati, non scrive live.json."""
+    print("DIAGNOSTICA BORRACHOS LIVE - nessun file sara modificato")
+    if not CREDENTIALS_FILE:
+        print("CREDENZIALI: FILE NON TROVATO")
+        return 1
+    app_key, bearer = read_credentials(CREDENTIALS_FILE)
+    print("CREDENZIALI: file trovato e campi presenti (valori non mostrati)")
+    endpoints = [
+        ("SQUADRE", TEAMS_URL),
+        ("CALENDARIO", CALENDAR_URL),
+        ("FORMAZIONI", MY_LINEUP_URL),
+    ]
+    esiti = []
+    for nome, url in endpoints:
+        try:
+            risposta = fetch_json(url, app_key, bearer)
+            tipo = type(risposta).__name__
+            print(f"{nome}: HTTP 200 - JSON {tipo}")
+            esiti.append((nome, True))
+        except Exception as exc:
+            messaggio = str(exc)
+            # Non mostrare il body di risposta: potrebbe contenere dettagli della sessione.
+            codice = messaggio.split(":", 1)[0] if messaggio.startswith("HTTP ") else type(exc).__name__
+            print(f"{nome}: ERRORE {codice}")
+            esiti.append((nome, False))
+    print("RIEPILOGO:", ", ".join(nome + (" OK" if ok else " KO") for nome, ok in esiti))
+    return 0 if all(ok for _, ok in esiti) else 1
+
+
 if __name__ == "__main__":
+    if "--diagnostica" in sys.argv:
+        sys.exit(diagnostica_connessione())
     main()
