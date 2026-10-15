@@ -3,7 +3,7 @@ setlocal EnableExtensions DisableDelayedExpansion
 cd /d "%~dp0"
 title BORRACHOS - Aggiorna e pubblica in sicurezza
 set "URL=https://borrachosleague.github.io/Borracho-s-league-26-27/"
-set "FAILED=0"
+set "LIVE_OK=1"
 echo.
 echo ===== BORRACHOS LEAGUE - AGGIORNAMENTO COMPLETO =====
 where git >nul 2>&1 || (echo ERRORE: Git non trovato.& goto ERRORE)
@@ -18,10 +18,11 @@ echo.
 echo [1/5] Sincronizzazione sicura con GitHub...
 rem --autostash conserva temporaneamente modifiche tracciate durante il rebase.
 rem In caso di conflitto Git si ferma: non sovrascriviamo i file.
+git diff --cached --quiet
+if errorlevel 1 (echo ERRORE: modifiche gia preparate per commit. Operazione interrotta.& goto ERRORE)
 git fetch origin || goto ERRORE
-for /f "delims=" %%S in ('git status --porcelain --untracked-files=no') do set "DIRTY=1"
-rem Se il ramo remoto e' avanzato, il pull con autostash gestisce anche file modificati.
-git -c rebase.autoStash=true pull --rebase origin main
+rem Sincronizzazione fast-forward senza merge o rebase.
+git pull --ff-only origin main
 if errorlevel 1 (
  echo ERRORE: sincronizzazione non completata. Non proseguire prima di risolvere il conflitto Git.
  goto ERRORE
@@ -36,21 +37,34 @@ if not exist "dati.json" (echo ERRORE: dati.json non generato.& goto ERRORE)
 echo.
 echo [3/5] Generazione dati Live statici...
 python aggiorna_live.py
-if errorlevel 1 (echo ERRORE: aggiorna_live.py non riuscito.& goto ERRORE)
-if not exist "live.json" (echo ERRORE: live.json non generato.& goto ERRORE)
+if errorlevel 1 (
+ echo ATTENZIONE: aggiornamento LIVE fallito. Proseguo con gli altri dati.
+ set "LIVE_OK=0"
+)
+if not exist "live.json" (
+ echo ATTENZIONE: live.json assente. Proseguo senza LIVE.
+ set "LIVE_OK=0"
+)
 
 echo.
 echo [4/5] Preparazione delle modifiche...
-rem Aggiorna tutti i file gia' tracciati, compresi BAT e pagine HTML.
-rem Non aggiunge __pycache__, diagnostica o altri file nuovi non richiesti.
-git add -u
+rem Selezioniamo solo i file del sito: gli Excel locali NON vanno pubblicati.
+rem Gli script diagnostici e __pycache__ restano locali.
+git add -u -- index.html asta.html aggiorna.py aggiorna_live.py dati.json README.md apri-sito-online-DEFINITIVO.bat PUBBLICA-SITO-SENZA-AGGIORNARE-DATI.bat
 if errorlevel 1 goto ERRORE
-rem Includi nuovi file grafici / del sito nelle cartelle previste.
-for %%D in (assets "3d" "loghi finiti" templates) do if exist "%%~D" git add -A -- "%%~D"
-if errorlevel 1 goto ERRORE
-rem Includi eventuali nuovi file web nella cartella principale.
-for %%F in (*.html *.css *.js *.webp *.png *.jpg *.jpeg *.gif *.svg *.woff *.woff2) do if exist "%%~F" git add -- "%%~F"
-if errorlevel 1 goto ERRORE
+if "%LIVE_OK%"=="1" (
+ git add -u -- live.json
+ if errorlevel 1 goto ERRORE
+)
+for %%D in (assets "3d" "loghi finiti" templates) do (
+ if exist "%%~D" git add -A -- "%%~D"
+ if errorlevel 1 goto ERRORE
+)
+for %%F in (*.html *.css *.js *.webp *.png *.jpg *.jpeg *.gif *.svg *.woff *.woff2) do (
+ if exist "%%F" git add -- "%%F"
+ if errorlevel 1 goto ERRORE
+)
+if "%LIVE_OK%"=="0" echo NOTA: LIVE non aggiornato, ma i dati ordinari possono essere pubblicati.
 
 git diff --cached --quiet
 if not errorlevel 1 (
@@ -77,7 +91,8 @@ if errorlevel 1 (
 )
 :APERTURA
 echo.
-echo OK: aggiornamento completato.
+echo OK: pubblicazione completata.
+if "%LIVE_OK%"=="0" echo ATTENZIONE: LIVE non aggiornato, verificare fase [3/5].
 echo Apro il sito pubblicato.
 start "" "%URL%"
 goto FINE
