@@ -6155,9 +6155,35 @@ function tornaLiveTabellone(){
     var home=document.getElementById('live-home'), detail=document.getElementById('live-detail');
     if(home)home.style.display='block'; if(detail)detail.style.display='none';
 }
+// Monitor LIVE: distingue il controllo del sito dalla freschezza dei dati Fantacalcio.
+var blMonitor={ultimoControllo:null,ultimoDato:null,ultimoTimestamp:null,errore:null,controlloInCorso:false};
+function blOra(t){return t?new Date(t).toLocaleTimeString('it-IT',{hour12:false}):'—';}
+function blMonitorDisegna(){
+    var meta=document.getElementById('live-meta');if(!meta)return;
+    var panel=document.getElementById('live-monitor-stato');
+    if(!panel){panel=document.createElement('div');panel.id='live-monitor-stato';panel.setAttribute('role','status');panel.style.cssText='margin:8px auto 12px;padding:8px 12px;max-width:980px;border:1px solid #7a672c;border-radius:8px;background:#16151a;color:#f4e8c6;font-size:12px;line-height:1.7;text-align:center;font-weight:700';meta.insertAdjacentElement('afterend',panel);}
+    var now=Date.now(),age=blMonitor.ultimoControllo?Math.floor((now-blMonitor.ultimoControllo)/1000):null;
+    var next=age===null?'—':Math.max(0,30-age)+'s';
+    var testo=blMonitor.errore?'COLLEGAMENTO IN ERRORE':blMonitor.controlloInCorso?'CONTROLLO IN CORSO':blMonitor.ultimoControllo?'SUPABASE RISPONDE':'IN ATTESA DI CONTROLLO';
+    var colore=blMonitor.errore?'#ff8686':blMonitor.ultimoControllo?'#8ff0ac':'#ffdf88';
+    if(age!==null&&age>65&&!blMonitor.controlloInCorso){testo='CONTROLLO IN RITARDO';colore='#ff8686';}
+    var freschezza=blMonitor.ultimoDato?'Dati Fantacalcio: '+blMonitor.ultimoDato:'Dati Fantacalcio: data non comunicata';
+    panel.textContent='● '+testo+'  |  Ultima risposta: '+blOra(blMonitor.ultimoControllo)+'  |  Prossimo controllo: '+next+'  |  '+freschezza+(blMonitor.errore?'  |  '+blMonitor.errore:'');
+    panel.style.borderColor=colore;
+}
+function blMonitorRicevuto(d){
+    blMonitor.ultimoControllo=Date.now();blMonitor.controlloInCorso=false;blMonitor.errore=null;
+    var ts=d&&d.aggiornato_il;
+    if(ts){var parsed=Date.parse(ts);blMonitor.ultimoDato=Number.isFinite(parsed)?new Date(parsed).toLocaleString('it-IT',{dateStyle:'short',timeStyle:'medium'}):String(ts);}
+    blMonitorDisegna();
+}
+function blMonitorErrore(e){blMonitor.controlloInCorso=false;blMonitor.errore=(e&&e.message)||'Errore di rete';blMonitorDisegna();}
+setInterval(blMonitorDisegna,1000);
 function caricaLive(){
     var meta=document.getElementById('live-meta'), grid=document.getElementById('live-grid'); if(!meta||!grid)return;
+    blMonitor.controlloInCorso=true;blMonitorDisegna();
     fetch((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live') + ((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live').includes('?') ? '&' : '?') + 'ts=' + Date.now(), {cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
+        blMonitorRicevuto(d);
         uniformaNomiSquadre(d);
         meta.innerHTML='Giornata Borrachos '+liveEsc(d.giornata_borrachos)+' · Serie A '+liveEsc(d.giornata_serie_a)+' · Formazioni '+liveEsc(d.formazioni_consegnate)+'/10 <span class="live-status">'+liveEsc(String(d.stato||'attesa').toUpperCase())+'</span>';
         livePartiteCache=d.partite||[];
@@ -6174,7 +6200,7 @@ function caricaLive(){
         if(livePartitaAttiva>=livePartiteCache.length)livePartitaAttiva=0;
         if(!livePartiteCache.length) grid.innerHTML='<div class="live-error">Nessuna partita disponibile.</div>';
         else if(document.getElementById('live-detail') && document.getElementById('live-detail').style.display==='block') mostraLivePartita(livePartitaAttiva);
-    }).catch(function(e){meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">Errore caricamento LIVE: '+liveEsc(e && e.message ? e.message : e)+'</div>'; console.error('LIVE BORRACHOS',e);});
+    }).catch(function(e){blMonitorErrore(e);meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">Errore caricamento LIVE: '+liveEsc(e && e.message ? e.message : e)+'</div>'; console.error('LIVE BORRACHOS',e);});
 }
 setInterval(function(){if(document.getElementById('page-live')&&document.getElementById('page-live').classList.contains('active'))caricaLive();},30000);
 
