@@ -55,6 +55,10 @@ if errorlevel 1 goto ERRORE
 if "%LIVE_OK%"=="1" (
  git add -u -- live.json
  if errorlevel 1 goto ERRORE
+ if exist "live_names.json" (
+  git add -- live_names.json
+  if errorlevel 1 goto ERRORE
+ )
 )
 for %%D in (assets "3d" "loghi finiti" templates) do (
  if exist "%%~D" git add -A -- "%%~D"
