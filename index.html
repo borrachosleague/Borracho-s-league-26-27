@@ -6354,6 +6354,14 @@ function blMonitorRicevuto(d){
 function blMonitorErrore(e){blMonitor.controlloInCorso=false;blMonitor.errore=(e&&e.message)||'Errore di rete';blMonitorDisegna();}
 setInterval(blMonitorDisegna,1000);
 function caricaLive(){
+    // ACCESSO AUTOMATICO DISATTIVATO per richiesta Fantacalcio 16/10/2026.
+    // Non chiamare Supabase o altre API di Fantacalcio.
+    var gridSicuro=document.getElementById('live-grid');
+    var metaSicuro=document.getElementById('live-meta');
+    if(gridSicuro)gridSicuro.innerHTML='<div class="live-error">LIVE temporaneamente sospeso: accessi automatici a Fantacalcio disattivati.</div>';
+    if(metaSicuro)metaSicuro.textContent='LIVE sospeso per conformita alle condizioni Fantacalcio';
+    return;
+
     var meta=document.getElementById('live-meta'), grid=document.getElementById('live-grid'); if(!meta||!grid)return;
     blMonitor.controlloInCorso=true;blMonitorDisegna();
     fetch((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live') + ((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live').includes('?') ? '&' : '?') + 'ts=' + Date.now(), {cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
@@ -6376,7 +6384,7 @@ function caricaLive(){
         else if(document.getElementById('live-detail') && document.getElementById('live-detail').style.display==='block') mostraLivePartita(livePartitaAttiva);
     }).catch(function(e){blMonitorErrore(e);meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">Errore caricamento LIVE: '+liveEsc(e && e.message ? e.message : e)+'</div>'; console.error('LIVE BORRACHOS',e);});
 }
-setInterval(function(){if(document.getElementById('page-live')&&document.getElementById('page-live').classList.contains('active'))caricaLive();},30000);
+// Polling LIVE disattivato per richiesta Fantacalcio (16/10/2026).
 
 function showPage(page, btn) {
     document.querySelectorAll('.page').forEach(function(p) {
