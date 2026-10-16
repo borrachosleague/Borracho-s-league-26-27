@@ -1,3 +1,8 @@
+# ACCESSI AUTOMATICI FANTACALCIO DISABILITATI IL 16/10/2026.
+# Non rimuovere questo blocco senza autorizzazione esplicita del fornitore.
+print("BLOCCATO: accessi automatici Fantacalcio disattivati su richiesta degli amministratori.")
+raise SystemExit(1)
+
 import json
 import openpyxl
 import os
