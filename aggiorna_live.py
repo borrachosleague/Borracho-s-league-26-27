@@ -59,6 +59,8 @@ def fetch_json(url, app_key, bearer):
     req = urllib.request.Request(url, headers={
         "App_key": app_key,
         "Authorization": "Bearer " + bearer,
+        "Origin": "https://leghe.fantacalcio.it",
+        "Referer": "https://leghe.fantacalcio.it/",
         "Accept": "application/json",
         "User-Agent": "Mozilla/5.0",
     }, method="GET")
