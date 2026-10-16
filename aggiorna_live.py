@@ -1,4 +1,5 @@
 import json
+import base64
 import os
 import sys
 import urllib.request
@@ -328,7 +329,58 @@ def diagnostica_connessione():
     return 0 if all(ok for _, ok in esiti) else 1
 
 
+def diagnostica_auth():
+    """Controllo locale scadenza JWT e due GET di prova, senza esporre segreti."""
+    print("DIAGNOSTICA ACCESSO - sola lettura, nessuna scrittura")
+    if not CREDENTIALS_FILE:
+        print("Credenziali: file non trovato")
+        return 1
+    app_key, bearer = read_credentials(CREDENTIALS_FILE)
+    print("Credenziali: campi presenti (valori nascosti)")
+    parts = bearer.split(".")
+    if len(parts) == 3:
+        try:
+            payload = parts[1] + "=" * (-len(parts[1]) % 4)
+            claims = json.loads(base64.urlsafe_b64decode(payload.encode("ascii")))
+            exp = claims.get("exp")
+            if isinstance(exp, (int, float)) and not isinstance(exp, bool):
+                now = datetime.now().timestamp()
+                print("Scadenza dichiarata nel Bearer:", "SCADUTO" if exp < now else "NON SCADUTO")
+                print("Nota: la scadenza non prova che il server accetti il token.")
+            else:
+                print("Bearer: formato JWT, nessuna scadenza leggibile.")
+        except (ValueError, UnicodeError, TypeError):
+            print("Bearer: impossibile interpretare la scadenza.")
+    else:
+        print("Bearer: formato non JWT; scadenza non verificabile localmente.")
+    for label, extra in (
+        ("Richiesta standard", {}),
+        ("Richiesta con Origin/Referer", {
+            "Origin": "https://leghe.fantacalcio.it",
+            "Referer": "https://leghe.fantacalcio.it/",
+        }),
+    ):
+        headers = {
+            "App_key": app_key, "Authorization": "Bearer " + bearer,
+            "Accept": "application/json", "User-Agent": "Mozilla/5.0",
+            **extra,
+        }
+        req = urllib.request.Request(TEAMS_URL, headers=headers, method="GET")
+        try:
+            with urllib.request.urlopen(req, timeout=20) as response:
+                print(label + ": HTTP " + str(response.status))
+        except urllib.error.HTTPError as e:
+            print(label + ": HTTP " + str(e.code))
+            e.close()
+        except Exception as e:
+            print(label + ": errore di rete (" + type(e).__name__ + ")")
+    print("Un HTTP 403, da solo, non distingue token rifiutato e blocco della richiesta.")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--diagnostica-auth" in sys.argv:
+        sys.exit(diagnostica_auth())
     if "--diagnostica" in sys.argv:
         sys.exit(diagnostica_connessione())
     main()
