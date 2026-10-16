@@ -5618,6 +5618,16 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
  #page-live .live-side-summary{margin-top:0}
 }
 </style>
+
+<style id="borrachos-live-eventi-v2">
+#page-live .live-evento{display:inline-flex;vertical-align:middle;width:27px;height:27px;margin-left:2px;align-items:center;justify-content:center;flex:none}
+#page-live .live-evento svg{display:block;width:100%;height:100%;overflow:visible}
+#page-live .live-evento-count{font-size:11px;font-weight:900;color:#ffd54a;margin-left:2px}
+#page-live .live-h2h .live-name-home,#page-live .live-h2h .live-name-away{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:700px){
+ #page-live .live-evento{width:23px;height:23px;margin-left:1px}
+}
+</style>
 </head>
 <body>
 
@@ -6234,18 +6244,33 @@ function liveSommaTitolari(team,campo){
 // Cartellini LIVE: utilizziamo soltanto campi evento espliciti.
 // Il campo compatto bonus (16 valori separati da ;) non e' ancora mappato:
 // non attribuire indici a caso per evitare cartellini inesatti.
+// Bonus/malus LIVE: mappa concordata con la lega; indici 0-based.
+// 9,11,12,14 non identificati; 15 Best Player escluso.
+var liveEventiBorrachos=[
+  [0,'ammonizione','Ammonizione'],[1,'espulsione','Espulsione'],
+  [2,'gol','Gol segnato'],[3,'gol-subito','Gol subito'],
+  [4,'rigore-parato','Rigore parato'],[5,'rigore-sbagliato','Rigore sbagliato'],
+  [6,'rigore-segnato','Rigore segnato'],[7,'autogol','Autogol'],
+  [8,'gol-decisivo','Gol decisivo'],[10,'clean-sheet','Porta inviolata'],
+  [13,'assist','Assist']
+];
 function liveCartellini(p){
-    if(!p || typeof p!=='object')return '';
-    function positivo(v){return v===true || (typeof v==='number' && v>0) || (typeof v==='string' && /^(true|si|yes|[1-9][0-9]*)$/i.test(v.trim()));}
-    function presente(keys){
-        return keys.some(function(k){return Object.prototype.hasOwnProperty.call(p,k) && positivo(p[k]);});
+  if(!p || typeof p!=='object') return '';
+  var valori=typeof p.bonus==='string'?p.bonus.split(';'):null;
+  if(!valori || valori.length!==16)return '';
+  var html='';
+  liveEventiBorrachos.forEach(function(e){
+    var n=Number(String(valori[e[0]]).trim());
+    if(!Number.isInteger(n)||n<=0)return;
+    // Più eventi uguali sono rappresentati singolarmente; da 5 in su badge numerico.
+    var quanti=Math.min(n,4);
+    for(var j=0;j<quanti;j++){
+      html+='<span class="live-evento" title="'+liveEsc(e[2])+'" aria-label="'+liveEsc(e[2])+'">'+
+        '<svg viewBox="0 0 96 96" aria-hidden="true"><use href="assets/icone-live-borrachos.svg#'+e[1]+'"></use></svg></span>';
     }
-    var giallo=presente(['ammonizioni','ammonizione','ammonito','yellowCards','yellowCard']);
-    var rosso=presente(['espulsioni','espulsione','espulso','redCards','redCard']);
-    var out='';
-    if(giallo)out+='<span class="live-cartellino live-cartellino-giallo" title="Ammonizione" aria-label="Ammonizione"></span>';
-    if(rosso)out+='<span class="live-cartellino live-cartellino-rosso" title="Espulsione" aria-label="Espulsione"></span>';
-    return out;
+    if(n>4) html+='<span class="live-evento-count" title="'+liveEsc(e[2])+'">+'+(n-4)+'</span>';
+  });
+  return html;
 }
 function renderLiveMatch(p){
     var h=p&&p.casa?p.casa:{}, a=p&&p.trasferta?p.trasferta:{};
