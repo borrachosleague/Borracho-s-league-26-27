@@ -1,4 +1,9 @@
 @echo off
+echo OPERAZIONE BLOCCATA: aggiornamenti automatici Fantacalcio disattivati.
+echo Non utilizzare questo BAT. Usare soltanto PUBBLICA-SITO-SENZA-AGGIORNARE-DATI.bat per file locali gia autorizzati.
+pause
+exit /b 1
+@echo off
 setlocal EnableExtensions DisableDelayedExpansion
 cd /d "%~dp0"
 title BORRACHOS - Aggiorna e pubblica in sicurezza
