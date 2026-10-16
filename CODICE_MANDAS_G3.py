@@ -1,3 +1,8 @@
+# ACCESSI AUTOMATICI FANTACALCIO DISABILITATI IL 16/10/2026.
+# Diagnostica storica conservata, ma esecuzione vietata senza autorizzazione.
+print('BLOCCATO: questo script effettuava accessi automatici a Fantacalcio.')
+raise SystemExit(1)
+
 # Controllo sola lettura: Mandas, 3a giornata Borrachos.
 import aggiorna_live as l
 app, bearer = l.read_credentials(l.CREDENTIALS_FILE)
