@@ -152,6 +152,27 @@
       result.archivioSenzaFormazioni=false;
       return result;
     };
+    // Match Center archivio: riepilogo fedele al referto, senza sommare i soli titolari.
+    // Il referto non indica quali riserve siano effettivamente conteggiate.
+    if(typeof renderLiveMatch==='function'){
+      var renderOriginale=renderLiveMatch;
+      renderLiveMatch=function(p){
+        var html=renderOriginale(p);
+        if(!p||p.archivioSenzaFormazioni||!p.casa||!p.trasferta)return html;
+        var teams=[p.casa,p.trasferta],n=0;
+        return html.replace(/<aside class="live-side-summary live-side-[^"]+">[\\s\\S]*?<\\/aside>/g,function(blocco){
+          var t=teams[n++];if(!t)return blocco;
+          var mod=t.mod_dif==null?null:Number(t.mod_dif);
+          var totale=Number(t.totale);
+          var fmt=function(v){return Number.isFinite(v)?v.toFixed(1).replace('.',','):'—';};
+          var primaMod=(Number.isFinite(totale)&&Number.isFinite(mod))?fmt(totale-mod):'—';
+          return blocco
+            .replace(/<span>PAGELLA<\\/span><strong>[^<]*<\\/strong>/,'<span>PAGELLA (NON DISPONIBILE)</span><strong>—</strong>')
+            .replace(/<span>FANTAVOTO<\\/span><strong>[^<]*<\\/strong>/,'<span>PUNTI PRIMA MOD. DIFESA</span><strong>'+primaMod+'</strong>')
+            .replace(/<span>MOD\\. DIFESA<\\/span><strong>[^<]*<\\/strong>/,'<span>MOD. DIFESA</span><strong>'+(mod===null?'—':fmt(mod))+'</strong>');
+        });
+      };
+    }
     if(typeof liveCartellini==='function'){
       var icons={gol:'⚽',assist:'🅰️',ammonizione:'🟨',espulsione:'🟥',gol_subito:'🥅',rig_parato:'🧤',rig_sbagliato:'❌',autogol:'🔴',gol_decisivo:'🏆'};
       var base=liveCartellini;
