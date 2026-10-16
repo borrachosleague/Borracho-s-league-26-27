@@ -5528,6 +5528,12 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   }
 }
 </style>
+
+<style id="borrachos-live-cartellini-v1">
+#page-live .live-cartellino{display:inline-block;width:9px;height:14px;border-radius:1px;vertical-align:-2px;margin-left:5px;border:1px solid rgba(0,0,0,.35);box-shadow:1px 1px 0 rgba(0,0,0,.4);flex-shrink:0}
+#page-live .live-cartellino-giallo{background:#ffdc2b}
+#page-live .live-cartellino-rosso{background:#f2343e}
+</style>
 </head>
 <body>
 
@@ -6141,12 +6147,28 @@ function liveSommaTitolari(team,campo){
     giocatori.forEach(function(g){var v=liveVotoValido(g&&g[campo]);if(v!==null){somma+=v;validi++;}});
     return validi?somma.toFixed(1):'—';
 }
+// Cartellini LIVE: utilizziamo soltanto campi evento espliciti.
+// Il campo compatto bonus (16 valori separati da ;) non e' ancora mappato:
+// non attribuire indici a caso per evitare cartellini inesatti.
+function liveCartellini(p){
+    if(!p || typeof p!=='object')return '';
+    function positivo(v){return v===true || (typeof v==='number' && v>0) || (typeof v==='string' && /^(true|si|yes|[1-9][0-9]*)$/i.test(v.trim()));}
+    function presente(keys){
+        return keys.some(function(k){return Object.prototype.hasOwnProperty.call(p,k) && positivo(p[k]);});
+    }
+    var giallo=presente(['ammonizioni','ammonizione','ammonito','yellowCards','yellowCard']);
+    var rosso=presente(['espulsioni','espulsione','espulso','redCards','redCard']);
+    var out='';
+    if(giallo)out+='<span class="live-cartellino live-cartellino-giallo" title="Ammonizione" aria-label="Ammonizione"></span>';
+    if(rosso)out+='<span class="live-cartellino live-cartellino-rosso" title="Espulsione" aria-label="Espulsione"></span>';
+    return out;
+}
 function renderLiveMatch(p){
     var h=p&&p.casa?p.casa:{}, a=p&&p.trasferta?p.trasferta:{};
     var ht=h.titolari||[], at=a.titolari||[], hb=h.panchina||[], ab=a.panchina||[];
     var hlogo='',alogo='';try{hlogo=logoUrl(h.nome||'');}catch(e){}try{alogo=logoUrl(a.nome||'');}catch(e){}
     function riga(hp,ap){
-        return '<tr><td class="live-name-home">'+(hp?liveEsc(livePlayerName(hp)):'')+'</td><td class="live-vote">'+liveVotoDoppio(hp)+'</td><td class="live-vote">'+liveVotoDoppio(ap)+'</td><td class="live-name-away">'+(ap?liveEsc(livePlayerName(ap)):'')+'</td></tr>';
+        return '<tr><td class="live-name-home">'+(hp?liveEsc(livePlayerName(hp))+liveCartellini(hp):'')+'</td><td class="live-vote">'+liveVotoDoppio(hp)+'</td><td class="live-vote">'+liveVotoDoppio(ap)+'</td><td class="live-name-away">'+(ap?liveEsc(livePlayerName(ap))+liveCartellini(ap):'')+'</td></tr>';
     }
     var rows='',i;
     for(i=0;i<Math.max(ht.length,at.length,11);i++)rows+=riga(ht[i],at[i]);
