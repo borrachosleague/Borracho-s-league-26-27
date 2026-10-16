@@ -5636,7 +5636,15 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 #page-live .live-evento-cartoon{display:inline-block!important;vertical-align:middle;width:39px!important;height:39px!important;position:relative!important;margin:0 3px!important;background-image:url('assets/icone-live-cartoon-sprite.webp')!important;background-repeat:no-repeat!important;background-size:400% 300%!important;background-position:calc(var(--icon-x) * 100% / 3) calc(var(--icon-y) * 100% / 2)!important;overflow:visible!important}
 @media(max-width:700px){#page-live .live-evento-cartoon{width:34px!important;height:34px!important}}
 </style>
-</head>
+<style id="borrachos-match-center-archive-v1">
+#page-live .match-day-picker{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px auto 14px;color:#ffd54a;font-weight:900}
+#page-live .match-day-picker select{font-size:16px;font-weight:800;border:2px solid #ffd54a;background:#181723;color:#ffd54a;border-radius:9px;padding:8px 14px}
+#page-live .mc-result-summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px auto;max-width:630px;text-align:center}
+#page-live .mc-result-summary>div{background:#242231;border:1px solid #7d6536;border-radius:12px;padding:16px}
+#page-live .mc-result-summary small{display:block;font-size:12px;color:#ddd}
+#page-live .mc-result-summary strong{display:block;font-size:32px;color:#ffd54a;margin-top:8px}
+#page-live .mc-await{text-align:center;font-size:15px;line-height:1.5;color:#eee;background:#2a2430;border:1px dashed #7d6536;padding:15px;border-radius:10px;margin:16px auto;max-width:790px}
+</style></head>
 <body>
 
 <div class="header">
@@ -5669,7 +5677,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
         <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
         <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
-        <button class="nav-btn" onclick="showPage('live', this)">🍺 LIVE BORRACHOS</button>
+        <button class="nav-btn" onclick="showPage('live', this)">🍺 MATCH CENTER</button>
         <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
     <div class="home-layout-tools">
@@ -5688,8 +5696,9 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 
 <!-- LIVE BORRACHOS -->
 <div id="page-live" class="page">
-  <div class="live-head"><div class="live-title">LIVE BORRACHOS</div><div class="live-meta" id="live-meta">Caricamento…</div></div>
+  <div class="live-head"><div class="live-title">BORRACHOS MATCH CENTER</div><div class="live-meta" id="live-meta">Archivio delle giornate concluse · dati locali</div></div>
   <div id="live-home">
+    <div class="match-day-picker"><label for="match-day-select">GIORNATA</label><select id="match-day-select" onchange="mcRenderGiornata(this.value)"></select></div>
     <div class="live-scoreboard"><table><thead><tr><th>Squadra</th><th>Pt</th><th>Gol</th></tr></thead><tbody id="live-scoreboard-body"></tbody></table></div>
   </div>
   <div id="live-detail" style="display:none">
@@ -6278,6 +6287,13 @@ function liveCartellini(p){
   return html;
 }
 function renderLiveMatch(p){
+    if(p && p.archivioSenzaFormazioni){
+      var h=p.casa||{},a=p.trasferta||{},r=p.risultato_reale||{};
+      return '<div class="live-h2h-head"><div><img src="'+logoUrl(h.nome)+'" alt=""><b>'+liveEsc(h.nome)+'</b></div><strong>'+r.gol_casa+' - '+r.gol_trasferta+'</strong><div><b>'+liveEsc(a.nome)+'</b><img src="'+logoUrl(a.nome)+'" alt=""></div></div>'+
+       '<div class="mc-result-summary"><div><small>FANTAPUNTI CASA</small><strong>'+liveTotale(h.totale)+'</strong></div><div><small>FANTAPUNTI OSPITE</small><strong>'+liveTotale(a.totale)+'</strong></div></div>'+
+       '<p class="mc-await">Formazioni, voti e bonus/malus non ancora importati per questa giornata. Il risultato è già consultabile; nessun collegamento LIVE è attivo.</p>';
+    }
+
     var h=p&&p.casa?p.casa:{}, a=p&&p.trasferta?p.trasferta:{};
     var ht=h.titolari||[], at=a.titolari||[], hb=h.panchina||[], ab=a.panchina||[];
     var hlogo='',alogo='';try{hlogo=logoUrl(h.nome||'');}catch(e){}try{alogo=logoUrl(a.nome||'');}catch(e){}
@@ -6353,36 +6369,46 @@ function blMonitorRicevuto(d){
 }
 function blMonitorErrore(e){blMonitor.controlloInCorso=false;blMonitor.errore=(e&&e.message)||'Errore di rete';blMonitorDisegna();}
 setInterval(blMonitorDisegna,1000);
+// Archivio delle giornate: esclusivamente file statici pubblicati nel nostro repository.
+// NESSUNA chiamata a Fantacalcio o a funzioni Supabase.
+var mcArchivio=null, mcGiornata=null;
+function mcPartita(r){
+  return {casa:{nome:r.casa,totale:r.pt_casa,titolari:[],panchina:[],consegnata:false},
+    trasferta:{nome:r.trasferta,totale:r.pt_trasferta,titolari:[],panchina:[],consegnata:false},
+    risultato_reale:{gol_casa:r.gol_casa,gol_trasferta:r.gol_trasferta},archivioSenzaFormazioni:true};
+}
+function mcRenderGiornata(gg){
+  if(!mcArchivio)return;
+  var g=mcArchivio.find(function(x){return String(x.giornata)===String(gg);});
+  if(!g)return;
+  mcGiornata=g.giornata;
+  livePartiteCache=(g.partite||[]).map(mcPartita);
+  var sb=document.getElementById('live-scoreboard-body');
+  if(sb)sb.innerHTML=livePartiteCache.map(function(p,i){
+    var h=p.casa,a=p.trasferta,r=p.risultato_reale;
+    return '<tr class="live-team-row live-match-first" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(h.nome)+'" onerror="this.remove()"><span>'+liveEsc(h.nome)+'</span></div></td><td>'+liveTotale(h.totale)+'</td><td class="live-goal">'+r.gol_casa+'</td></tr>'+
+      '<tr class="live-team-row live-match-second" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(a.nome)+'" onerror="this.remove()"><span>'+liveEsc(a.nome)+'</span></div></td><td>'+liveTotale(a.totale)+'</td><td class="live-goal">'+r.gol_trasferta+'</td></tr>';
+  }).join('');
+  var meta=document.getElementById('live-meta');
+  if(meta)meta.textContent='Giornata '+mcGiornata+' · risultati definitivi · archivio locale Borrachos';
+  tornaLiveTabellone();
+}
 function caricaLive(){
-    // ACCESSO AUTOMATICO DISATTIVATO per richiesta Fantacalcio 16/10/2026.
-    // Non chiamare Supabase o altre API di Fantacalcio.
-    var gridSicuro=document.getElementById('live-grid');
-    var metaSicuro=document.getElementById('live-meta');
-    if(gridSicuro)gridSicuro.innerHTML='<div class="live-error">LIVE temporaneamente sospeso: accessi automatici a Fantacalcio disattivati.</div>';
-    if(metaSicuro)metaSicuro.textContent='LIVE sospeso per conformita alle condizioni Fantacalcio';
-    return;
-
-    var meta=document.getElementById('live-meta'), grid=document.getElementById('live-grid'); if(!meta||!grid)return;
-    blMonitor.controlloInCorso=true;blMonitorDisegna();
-    fetch((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live') + ((window.BORRACHOS_LIVE_URL || 'https://tlgzvgdxhtiavobyyxze.supabase.co/functions/v1/borrachos-live').includes('?') ? '&' : '?') + 'ts=' + Date.now(), {cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
-        blMonitorRicevuto(d);
-        uniformaNomiSquadre(d);
-        meta.innerHTML='Giornata Borrachos '+liveEsc(d.giornata_borrachos)+' · Serie A '+liveEsc(d.giornata_serie_a)+' · Formazioni '+liveEsc(d.formazioni_consegnate)+'/10 <span class="live-status">'+liveEsc(String(d.stato||'attesa').toUpperCase())+'</span>';
-        livePartiteCache=d.partite||[];
-        var sb=document.getElementById('live-scoreboard-body');
-        if(sb) sb.innerHTML=livePartiteCache.map(function(p,i){
-            var h=p.casa||{}, a=p.trasferta||{};
-            var hp=liveTotale(h.totale);
-            var ap=liveTotale(a.totale);
-            var hg=(p.risultato_reale&&p.risultato_reale.gol_casa!=null)?p.risultato_reale.gol_casa:(p.risultato&&p.risultato.gol_casa!=null?p.risultato.gol_casa:'—');
-            var ag=(p.risultato_reale&&p.risultato_reale.gol_trasferta!=null)?p.risultato_reale.gol_trasferta:(p.risultato&&p.risultato.gol_trasferta!=null?p.risultato.gol_trasferta:'—');
-            return '<tr class="live-team-row live-match-first" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(h.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(h.nome||'—')+'</span></div></td><td>'+hp+'</td><td class="live-goal">'+hg+'</td></tr>'+
-                   '<tr class="live-team-row live-match-second" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(a.nome||'')+'" onerror="this.remove()"><span>'+liveEsc(a.nome||'—')+'</span></div></td><td>'+ap+'</td><td class="live-goal">'+ag+'</td></tr>';
-        }).join('');
-        if(livePartitaAttiva>=livePartiteCache.length)livePartitaAttiva=0;
-        if(!livePartiteCache.length) grid.innerHTML='<div class="live-error">Nessuna partita disponibile.</div>';
-        else if(document.getElementById('live-detail') && document.getElementById('live-detail').style.display==='block') mostraLivePartita(livePartitaAttiva);
-    }).catch(function(e){blMonitorErrore(e);meta.textContent='LIVE BORRACHOS';grid.innerHTML='<div class="live-error">Errore caricamento LIVE: '+liveEsc(e && e.message ? e.message : e)+'</div>'; console.error('LIVE BORRACHOS',e);});
+  var sel=document.getElementById('match-day-select');
+  var meta=document.getElementById('live-meta');
+  if(!sel)return;
+  if(mcArchivio){mcRenderGiornata(mcGiornata);return;}
+  fetch('dati.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('Impossibile leggere dati.json');return r.json();
+  }).then(function(d){
+    mcArchivio=(d.risultati||[]).filter(function(g){
+      return (g.partite||[]).length && g.partite.some(function(p){return Number(p.pt_casa)>0||Number(p.pt_trasferta)>0;});
+    });
+    sel.innerHTML=mcArchivio.map(function(g){return '<option value="'+g.giornata+'">Giornata '+g.giornata+'</option>';}).join('');
+    if(!mcArchivio.length){if(meta)meta.textContent='Nessuna giornata conclusa in archivio';return;}
+    mcRenderGiornata(mcArchivio[mcArchivio.length-1].giornata);
+    sel.value=String(mcGiornata);
+  }).catch(function(e){if(meta)meta.textContent='Archivio non disponibile: '+e.message;});
 }
 // Polling LIVE disattivato per richiesta Fantacalcio (16/10/2026).
 
