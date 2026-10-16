@@ -10,7 +10,7 @@ from collections import defaultdict
 COMPETITION_ID = 324951
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "DATI_ESSENZIALI_NON_CANCELLARE")
-CREDENTIALS_FILE = os.path.abspath(os.path.join(BASE_DIR, "..", "PRIVATO BORRACHOS", "DATI_FANTACALCIO.txt"))
+CREDENTIALS_FILE = r"E:\--- fantacalcio tot uff\ISTRUZIONI DEFINITIVE\dati per accessi sito\DATI_FANTACALCIO.txt"
 BORRACHOS_FILE = os.path.join(DATA_DIR, "BORRACHOSLEAGUE 26.27.xlsm")
 OUTPUT_FILE = os.path.join(BASE_DIR, "dati.json")
 STAT_FILE = os.path.join(DATA_DIR, "nuovo statistiche.xlsm")
@@ -50,6 +50,8 @@ def fetch_json(url, app_key, bearer):
         headers={
             "App_key": app_key,
             "Authorization": "Bearer " + bearer,
+            "Origin": "https://leghe.fantacalcio.it",
+            "Referer": "https://leghe.fantacalcio.it/",
             "Accept": "application/json",
             "User-Agent": "Mozilla/5.0",
         },
