@@ -34,7 +34,9 @@ if errorlevel 1 (
 echo Modalita ridotta: nessuna rigenerazione dati.
 echo.
 echo === PREPARO SOLO I FILE DEL SITO ===
-git add -A -- index.html asta.html aggiorna.py aggiorna_live.py dati.json live.json README.md "3d" "assets" "loghi finiti" "templates"
+rem SICUREZZA: non pubblicare copie locali obsolete degli script bloccati.
+echo SICUREZZA: esclusi aggiorna.py, aggiorna_live.py e live.json.
+git add -A -- index.html asta.html dati.json README.md "3d" "assets" "loghi finiti" "templates"
 if errorlevel 1 goto ERRORE
 for %%F in (*.webp *.png *.jpg *.jpeg *.gif *.svg *.css *.js *.woff *.woff2 *.ttf) do (
  if exist "%%F" git add -A -- "%%F"
