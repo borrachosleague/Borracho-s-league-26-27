@@ -1,3 +1,8 @@
+# ACCESSI AUTOMATICI FANTACALCIO DISABILITATI IL 16/10/2026.
+# Diagnostica storica conservata, ma esecuzione vietata senza autorizzazione.
+print('BLOCCATO: questo script effettuava accessi automatici a Fantacalcio.')
+raise SystemExit(1)
+
 # Lettura sola lettura dei codici bonus/malus richiesti, senza salvare file.
 import aggiorna_live as live
 
