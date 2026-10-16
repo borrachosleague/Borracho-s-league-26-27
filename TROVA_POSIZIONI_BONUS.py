@@ -1,3 +1,8 @@
+# ACCESSI AUTOMATICI FANTACALCIO DISABILITATI IL 16/10/2026.
+# Diagnostica storica conservata, ma esecuzione vietata senza autorizzazione.
+print('BLOCCATO: questo script effettuava accessi automatici a Fantacalcio.')
+raise SystemExit(1)
+
 """Trova un esempio per ciascuna posizione bonus ancora da identificare.
 Sola lettura API; nessuna modifica ai dati o alle formazioni.
 """
