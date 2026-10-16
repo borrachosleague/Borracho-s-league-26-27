@@ -5639,6 +5639,9 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 <style id="borrachos-match-center-archive-v1">
 #page-live .match-day-picker{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px auto 14px;color:#ffd54a;font-weight:900}
 #page-live .match-day-picker select{font-size:16px;font-weight:800;border:2px solid #ffd54a;background:#181723;color:#ffd54a;border-radius:9px;padding:8px 14px}
+#page-live .mc-day-step{font-size:17px;font-weight:900;border:2px solid #ffd54a;background:#181723;color:#ffd54a;border-radius:9px;padding:8px 12px;cursor:pointer}
+#page-live .mc-day-step:disabled{opacity:.28;cursor:default}
+@media(max-width:550px){#page-live .match-day-picker{gap:6px}#page-live .match-day-picker select{font-size:14px;padding:7px}#page-live .mc-day-step{padding:7px}}
 #page-live .mc-result-summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px auto;max-width:630px;text-align:center}
 #page-live .mc-result-summary>div{background:#242231;border:1px solid #7d6536;border-radius:12px;padding:16px}
 #page-live .mc-result-summary small{display:block;font-size:12px;color:#ddd}
@@ -5661,7 +5664,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
         <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
         <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
-        <button class="nav-btn" onclick="showPage('live', this)">🍺 Live</button>
+        <button class="nav-btn" onclick="showPage('live', this)">🍺 MATCH CENTER</button>
         <button class="nav-btn" onclick="showPage('asta', this)">🔨 Asta</button>
     </div>
 </div>
@@ -5698,7 +5701,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 <div id="page-live" class="page">
   <div class="live-head"><div class="live-title">BORRACHOS MATCH CENTER</div><div class="live-meta" id="live-meta">Archivio delle giornate concluse · dati locali</div></div>
   <div id="live-home">
-    <div class="match-day-picker"><label for="match-day-select">GIORNATA</label><select id="match-day-select" onchange="mcRenderGiornata(this.value)"></select></div>
+    <div class="match-day-picker"><button type="button" class="mc-day-step" onclick="mcSpostaGiornata(-1)" aria-label="Giornata precedente">◀</button><label for="match-day-select">GIORNATA</label><select id="match-day-select" onchange="mcRenderGiornata(this.value)"></select><button type="button" class="mc-day-step" onclick="mcSpostaGiornata(1)" aria-label="Giornata successiva">▶</button></div>
     <div class="live-scoreboard"><table><thead><tr><th>Squadra</th><th>Pt</th><th>Gol</th></tr></thead><tbody id="live-scoreboard-body"></tbody></table></div>
   </div>
   <div id="live-detail" style="display:none">
@@ -6377,11 +6380,22 @@ function mcPartita(r){
     trasferta:{nome:r.trasferta,totale:r.pt_trasferta,titolari:[],panchina:[],consegnata:false},
     risultato_reale:{gol_casa:r.gol_casa,gol_trasferta:r.gol_trasferta},archivioSenzaFormazioni:true};
 }
+function mcSpostaGiornata(direzione){
+  if(!mcArchivio||!mcArchivio.length)return;
+  var indice=mcArchivio.findIndex(function(g){return String(g.giornata)===String(mcGiornata);});
+  var nuovo=Math.max(0,Math.min(mcArchivio.length-1,indice+direzione));
+  mcRenderGiornata(mcArchivio[nuovo].giornata);
+}
 function mcRenderGiornata(gg){
   if(!mcArchivio)return;
   var g=mcArchivio.find(function(x){return String(x.giornata)===String(gg);});
   if(!g)return;
   mcGiornata=g.giornata;
+  var sel=document.getElementById('match-day-select');
+  if(sel)sel.value=String(mcGiornata);
+  var steps=document.querySelectorAll('#page-live .mc-day-step');
+  var indice=mcArchivio.indexOf(g);
+  if(steps.length===2){steps[0].disabled=indice===0;steps[1].disabled=indice===mcArchivio.length-1;}
   livePartiteCache=(g.partite||[]).map(mcPartita);
   var sb=document.getElementById('live-scoreboard-body');
   if(sb)sb.innerHTML=livePartiteCache.map(function(p,i){
