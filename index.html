@@ -5534,6 +5534,45 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 #page-live .live-cartellino-giallo{background:#ffdc2b}
 #page-live .live-cartellino-rosso{background:#f2343e}
 </style>
+
+<style id="borrachos-live-compatto-laterali-v1">
+/* Partite singole: tabella centrale stretta, riepiloghi laterali e altezza compressa. */
+#page-live .live-detail-layout{max-width:none;width:100%;grid-template-columns:86px minmax(0,1fr);gap:10px}
+#page-live .live-match{padding:6px 10px 8px}
+#page-live .live-h2h-head{margin-bottom:4px}
+#page-live .live-h2h-head img{width:39px;height:39px}
+#page-live .live-h2h-head b{font-size:clamp(15px,1.5vw,22px)}
+#page-live .live-h2h-head strong{font-size:20px}
+#page-live .live-match-body{display:grid;grid-template-columns:minmax(125px,1fr) minmax(0,780px) minmax(125px,1fr);align-items:start;gap:10px;margin:auto}
+#page-live .live-h2h-wrap{min-width:0;overflow-x:hidden}
+#page-live .live-h2h{width:100%;table-layout:fixed}
+#page-live .live-h2h col.live-col-name{width:39%}
+#page-live .live-h2h col.live-col-vote{width:11%}
+#page-live .live-h2h th{height:20px;padding:1px 4px;font-size:11px}
+#page-live .live-h2h td{height:clamp(18px,2.45vh,22px);padding:0 5px;font-size:clamp(10px,.85vw,12px);line-height:1}
+#page-live .live-vote-stack{height:auto;min-height:18px;line-height:.85}
+#page-live .live-voto-pagella{font-size:10px}
+#page-live .live-fantavoto{font-size:13px;margin-top:1px}
+#page-live .live-bench-separator td{height:18px!important;padding:1px!important}
+#page-live .live-side-summary{border:1px solid #7c632d;border-radius:10px;background:#1b1920;padding:12px 10px;color:#fff;margin-top:26px;min-width:0}
+#page-live .live-side-label{text-align:center;font-size:12px;font-weight:900;color:#ffd54a;letter-spacing:1px}
+#page-live .live-side-total{text-align:center;font-size:clamp(24px,2.4vw,38px);font-weight:950;color:#ffd54a;margin:4px 0 10px}
+#page-live .live-side-line{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:7px 0;border-top:1px solid #594e3b;font-size:11px}
+#page-live .live-side-line strong{font-size:14px;color:#fff}
+@media(max-width:700px){
+ #page-live .live-detail-layout{grid-template-columns:46px minmax(0,1fr)!important;gap:4px!important}
+ #page-live .live-match{padding:3px!important}
+ #page-live .live-match-body{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px}
+ #page-live .live-h2h-wrap{grid-column:1/-1;grid-row:1;overflow-x:auto}
+ #page-live .live-side-summary{grid-row:2;margin-top:0;padding:5px 6px}
+ #page-live .live-side-total{font-size:20px;margin:2px 0 4px}
+ #page-live .live-side-line{font-size:9px;padding:3px 0}
+ #page-live .live-side-line strong{font-size:11px}
+ #page-live .live-h2h td{height:22px;font-size:10px}
+ #page-live .live-h2h-head b{font-size:13px}
+ #page-live .live-h2h-head img{width:28px;height:28px}
+}
+</style>
 </head>
 <body>
 
@@ -6175,14 +6214,19 @@ function renderLiveMatch(p){
     rows+='<tr class="live-bench-separator"><td colspan="4">PANCHINA</td></tr>';
     for(i=0;i<Math.max(hb.length,ab.length,14);i++)rows+=riga(hb[i],ab[i]);
     var htot=liveTotale(h.totale),atot=liveTotale(a.totale);
-    // I subtotali sono calcolati sui titolari; i panchinari sono mostrati ma non sommati.
-    // Il modificatore non viene ricostruito senza conoscere le sostituzioni e il calcolo ufficiale.
-    function subtotale(label,home,away){return '<tr class="live-totals-sub"><td>'+label+'</td><td class="live-summary-value">'+home+'</td><td class="live-summary-value">'+away+'</td><td>'+label+'</td></tr>';}
+    // Riepiloghi laterali: nessuna ricostruzione del modificatore senza dato ufficiale.
+    function riepilogo(team,totale,lato){
+        return '<aside class="live-side-summary live-side-'+lato+'">'+
+          '<div class="live-side-label">TOTALE</div><div class="live-side-total">'+totale+'</div>'+
+          '<div class="live-side-line"><span>PAGELLA</span><strong>'+liveSommaTitolari(team,'scr')+'</strong></div>'+
+          '<div class="live-side-line"><span>FANTAVOTO</span><strong>'+liveSommaTitolari(team,'cscr')+'</strong></div>'+
+          '<div class="live-side-line"><span>MOD. DIFESA</span><strong>—</strong></div>'+
+          '</aside>';
+    }
     return '<div class="live-h2h-head"><div>'+(hlogo?'<img src="'+hlogo+'" alt="">':'')+'<b>'+liveEsc(h.nome||'Casa')+'</b><small>'+(h.consegnata?'Modulo '+liveEsc(h.modulo||'—'):'Formazione non consegnata')+'</small></div><strong>'+htot+' - '+atot+'</strong><div><b>'+liveEsc(a.nome||'Trasferta')+'</b>'+(alogo?'<img src="'+alogo+'" alt="">':'')+'<small>'+(a.consegnata?'Modulo '+liveEsc(a.modulo||'—'):'Formazione non consegnata')+'</small></div></div>'+
-      '<div class="live-h2h-wrap"><table class="live-h2h"><colgroup><col class="live-col-name"><col class="live-col-vote"><col class="live-col-vote"><col class="live-col-name"></colgroup><thead><tr><th></th><th>Voto</th><th>Voto</th><th></th></tr></thead><tbody>'+rows+'</tbody><tfoot><tr class="live-totals-main"><td>TOTALE</td><td>'+htot+'</td><td>'+atot+'</td><td>TOTALE</td></tr>'+
-      subtotale('PAGELLA',liveSommaTitolari(h,'scr'),liveSommaTitolari(a,'scr'))+
-      subtotale('FANTAVOTO',liveSommaTitolari(h,'cscr'),liveSommaTitolari(a,'cscr'))+
-      subtotale('MOD. DIFESA','—','—')+'</tfoot></table></div>';
+      '<div class="live-match-body">'+riepilogo(h,htot,'home')+
+      '<div class="live-h2h-wrap"><table class="live-h2h"><colgroup><col class="live-col-name"><col class="live-col-vote"><col class="live-col-vote"><col class="live-col-name"></colgroup><thead><tr><th></th><th>Voto</th><th>Voto</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      riepilogo(a,atot,'away')+'</div>';
 }
 var livePartiteCache=[], livePartitaAttiva=0;
 function mostraLivePartita(indice){
