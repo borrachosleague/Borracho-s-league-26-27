@@ -6088,9 +6088,19 @@ document.addEventListener('DOMContentLoaded',function(){
 
 
 function liveEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x];});}
+// Nomi completi dal Listone: corregge i pid non coperti dal payload Supabase.
+var liveNomiListone={};
+fetch('live_names.json?ts='+Date.now(),{cache:'no-store'})
+ .then(function(r){if(!r.ok)throw new Error('Mappa nomi non disponibile');return r.json();})
+ .then(function(d){
+   liveNomiListone=d&&d.nomi||{};
+   if(typeof livePartiteCache!=='undefined' && livePartiteCache.length &&
+      document.getElementById('live-detail')?.style.display==='block') mostraLivePartita(livePartitaAttiva);
+ }).catch(function(){/* La pagina LIVE continua a funzionare anche senza il file nomi. */});
 function livePlayerName(p){
     if(p && p.nome) return p.nome;
     var pid=p&&p.pid;
+    if(pid!=null && liveNomiListone[String(pid)]) return liveNomiListone[String(pid)];
     var all=(datiGiocatori||[]).concat(datiGiocatoriSerieA||[]);
     for(var i=0;i<all.length;i++) if(Number(all[i].id||all[i].pid)===Number(pid)) return all[i].nome||('Giocatore '+pid);
     return 'Giocatore '+pid;
