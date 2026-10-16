@@ -21,6 +21,7 @@ CREDENTIALS_CANDIDATES = [
 CREDENTIALS_FILE = next((p for p in CREDENTIALS_CANDIDATES if p and os.path.isfile(p)), "")
 
 OUTPUT_FILE = os.path.join(BASE_DIR, "live.json")
+NAMES_FILE = os.path.join(BASE_DIR, "live_names.json")
 DATA_FILE = os.path.join(BASE_DIR, "dati.json")
 
 TEAMS_URL = (
@@ -296,6 +297,17 @@ def main():
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
+
+    # Tabella completa degli ID del Listone per la funzione Supabase.
+    # Solo ID e nomi dei calciatori: nessuna credenziale o dato delle fantasquadre.
+    names_payload = {
+        "versione": 1,
+        "nomi": {k: v for k, v in sorted(PLAYER_NAMES.items(), key=lambda item: int(item[0]))
+                 if k.isdigit() and v},
+    }
+    with open(NAMES_FILE, "w", encoding="utf-8") as f:
+        json.dump(names_payload, f, ensure_ascii=False, indent=2)
+    print(f"Mappa nomi LIVE: {len(names_payload['nomi'])} giocatori, salvata in live_names.json")
 
     print(f"Formazioni consegnate: {output['formazioni_consegnate']}/10")
     print(f"Stato: {output['stato'].upper()}")
