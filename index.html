@@ -5513,6 +5513,21 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 }
 </style>
 
+
+<style id="borrachos-live-separator-v1">
+/* Linea gialla fra una partita e la successiva (due righe per incontro). */
+#page-live .live-scoreboard tbody tr.live-match-second:not(:last-child) > td{
+  border-bottom:3px solid #ffd54a!important;
+}
+@media(max-width:700px){
+  #page-live .live-scoreboard tbody tr.live-match-second:not(:last-child) > td{
+    border-bottom:3px solid #ffd54a!important;
+  }
+  #page-live .live-scoreboard tbody tr.live-match-first:not(:first-child) > td{
+    border-top:1px solid #333!important;
+  }
+}
+</style>
 </head>
 <body>
 
