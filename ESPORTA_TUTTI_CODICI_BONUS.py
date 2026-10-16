@@ -1,3 +1,8 @@
+# ACCESSI AUTOMATICI FANTACALCIO DISABILITATI IL 16/10/2026.
+# Diagnostica storica conservata, ma esecuzione vietata senza autorizzazione.
+print('BLOCCATO: questo script effettuava accessi automatici a Fantacalcio.')
+raise SystemExit(1)
+
 """Esporta tutti i codici bonus/malus delle giornate concluse: sola lettura API.
 Crea soltanto CSV locali per Excel italiano; non modifica il sito ne' i dati LIVE.
 """
