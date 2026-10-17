@@ -3,484 +3,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Fanta Asta</title>
-<!-- v8 d: squadra derivata da Supabase Auth; RPC allineate al SQL v7 -->
-
+<title>Asta Borracho's League</title>
+<!-- v30 (17/10/2026): nuova grafica, sezione Istruzioni, meno letture dal database, chiusura timer da qualunque browser -->
 <style>
+:root{
+  --bg:#0b1220;--panel:#131c30;--panel2:#0e1627;--line:rgba(255,255,255,.09);
+  --text:#eef2f8;--muted:#9aa6bd;--gold:#f4b324;--gold2:#ffd36b;--red:#e94560;--green:#22c55e;
+  --por:#8b5cf6;--dif:#2f7de1;--cen:#22a35a;--att:#e23b3b;
+}
 *{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Trebuchet MS','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:12px;min-height:100vh;
+  background-image:radial-gradient(1200px 500px at 50% -200px,rgba(244,179,36,.10),transparent 70%)}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+h1,h2,h3,h4{font-family:"Arial Black",'Trebuchet MS',sans-serif;letter-spacing:.02em}
 
-body{
-  font-family:system-ui,sans-serif;
-  background:#1a1a2e;
-  color:#fff;
-  padding:10px
-}
+/* ---------- titolo ---------- */
+.asta-title{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 12px;text-align:center}
+.asta-title h1{font-size:1.25rem;text-transform:uppercase;color:var(--gold);text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.asta-title .sub{display:block;font-family:'Trebuchet MS',sans-serif;font-size:.72rem;color:var(--muted);letter-spacing:.12em;font-weight:700}
+.hammer{font-size:1.6rem;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
 
-h1{
-  text-align:center;
-  margin-bottom:10px;
-  font-size:1.3rem
-}
+/* ---------- pulsanti ---------- */
+.btn,.tab-btn,.btn-start,.btn-reset,.btn-new,.btn-home,.btn-help{border:1px solid var(--line);border-radius:9px;padding:9px 14px;font-size:.84rem;font-weight:700;white-space:nowrap;transition:filter .15s,transform .05s}
+.btn:active,.tab-btn:active,.btn-start:active,.btn-reset:active,.btn-new:active,.btn-home:active{transform:translateY(1px)}
+.tab-btn,.btn-home,.btn-help{background:var(--panel);color:var(--text)}
+.tab-btn:hover,.btn-home:hover,.btn-help:hover{filter:brightness(1.25)}
+.tab-btn.active{background:var(--gold);color:#1b1300;border-color:var(--gold)}
+.btn-start{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1b1300;border-color:#c98d00}
+.btn-start:disabled{background:#26304a;color:#7b86a0;border-color:var(--line);cursor:default}
+.btn-reset{background:#3a2a0b;color:var(--gold2);border-color:#6b4d10}
+.btn-new{background:#4a1220;color:#ffd6dc;border-color:#7c1d33}
+.btn-help{color:var(--gold2)}
 
-.toolbar{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-bottom:12px;
-  flex-wrap:wrap
-}
+/* ---------- card ---------- */
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.card h3{font-size:.92rem;color:var(--gold);margin-bottom:8px;text-transform:uppercase}
+.error{color:#ff7b8f;margin-top:6px;font-size:.86rem;min-height:0}
+.home-status{font-size:.84rem;color:var(--muted);line-height:1.45}
 
-.tab-btn{
-  padding:8px 14px;
-  border:none;
-  border-radius:6px;
-  font-size:.85rem;
-  cursor:pointer;
-  background:#16213e;
-  color:#888;
-  white-space:nowrap
-}
+/* ---------- login ---------- */
+#login-card{max-width:420px;margin:30px auto;text-align:center;padding:22px 18px}
+#login-card h3{font-size:1.05rem}
+#login-password{width:100%;max-width:280px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0a1120;color:var(--text);font-size:1rem;margin:10px 0}
+#login-password:focus{outline:2px solid var(--gold);border-color:transparent}
+.login-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px}
 
-.tab-btn.active{
-  background:#4ecca3;
-  color:#1a1a2e;
-  font-weight:bold
-}
+/* ---------- form ---------- */
+select,input[type=number],input[type=text],input[type=password]{padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:#0a1120;color:var(--text);font-size:.9rem}
+select{max-width:100%}
+select:focus,input:focus{outline:2px solid var(--gold);outline-offset:0}
 
-.search-wrap{
-  position:relative;
-  flex:1;
-  min-width:140px;
-  max-width:260px
-}
+/* ---------- home ---------- */
+.home-shell{max-width:1100px;margin:0 auto}
+.home-hero{text-align:center;padding:18px 14px}
+.home-hero h2{color:var(--gold);margin-bottom:6px;font-size:1.15rem;text-transform:uppercase}
+.home-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.home-actions .btn-start{font-size:1rem;padding:11px 20px}
+.home-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.home-card{text-align:left}
+.admin-badge{color:var(--gold);font-weight:800}
+.transfer-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.transfer-row select{flex:1;min-width:160px}
+.admin-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.admin-tools > div{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:10px;padding:10px}
+.admin-tools h3{font-size:.85rem}
+.admin-tools select,.admin-tools input{width:100%;margin:5px 0}
+.delegation-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.danger-zone{margin-top:14px;border:1px dashed #7c1d33;border-radius:10px;padding:10px;background:rgba(233,69,96,.06)}
+.danger-zone h3{color:#ff8da0}
+.danger-zone .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 
-.search-wrap input{
-  width:100%;
-  padding:8px 10px;
-  border-radius:6px;
-  border:2px solid #4ecca3;
-  background:#1a1a2e;
-  color:#fff;
-  font-size:.85rem
-}
+/* ---------- testata asta ---------- */
+.auction-head{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:10px}
+.phase-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.phase-badge{font-family:"Arial Black",sans-serif;font-size:.72rem;padding:4px 9px;border-radius:999px;letter-spacing:.06em}
+.phase-badge.pre{background:#2a2f45;color:#cdd6ea}
+.phase-badge.pausa{background:#3a2a0b;color:var(--gold2)}
+.phase-badge.live{background:var(--red);color:#fff;animation:livepulse 1.6s infinite}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(233,69,96,.6)}50%{box-shadow:0 0 0 6px rgba(233,69,96,0)}}
+.team-info{margin-top:6px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ti-name{font-family:"Arial Black",sans-serif;font-size:1rem}
+.ti-tag{font-family:'Trebuchet MS',sans-serif;font-size:.62rem;font-weight:800;color:#1b1300;background:var(--gold);padding:2px 6px;border-radius:5px;vertical-align:middle;letter-spacing:.05em}
+.ti-tag.deleg{background:#8ab4ff}
+.ti-credits{color:var(--muted);font-size:.85rem}
+.ti-credits b{color:var(--gold2);font-size:1.15rem}
+.my-slots{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.slot-chip{font-size:.7rem;font-weight:800;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.06);border-left:3px solid var(--c);color:#dfe6f3}
+.slot-chip.full{opacity:.55}
+.team-selector{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.team-selector label{font-size:.8rem;color:var(--muted)}
+.team-selector select{min-width:190px;border-color:var(--gold)}
 
-.search-dropdown{
-  position:absolute;
-  top:100%;
-  left:0;
-  right:0;
-  background:#16213e;
-  border:1px solid #333;
-  border-radius:0 0 6px 6px;
-  max-height:180px;
-  overflow-y:auto;
-  z-index:100;
-  display:none
-}
+/* ---------- toolbar ---------- */
+.toolbar{display:flex;align-items:center;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.toolbar .spacer{flex:1}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:320px}
+.search-wrap input{width:100%;border:2px solid var(--gold);background:#0a1120;padding:9px 12px}
+.search-dropdown{position:absolute;top:100%;left:0;right:0;background:#0f1830;border:1px solid var(--line);border-radius:0 0 10px 10px;max-height:260px;overflow-y:auto;z-index:100;display:none;box-shadow:0 10px 24px rgba(0,0,0,.4)}
+.search-dropdown div{padding:8px 12px;cursor:pointer;font-size:.86rem;border-bottom:1px solid var(--line)}
+.search-dropdown div:hover{background:var(--gold);color:#1b1300}
+.s-role{font-size:.68rem;font-weight:800;opacity:.8}
 
-.search-dropdown div{
-  padding:6px 10px;
-  cursor:pointer;
-  font-size:.85rem
-}
+/* ---------- giocatore in asta ---------- */
+.tab-content{display:none}
+.tab-content.active{display:block}
+#auction-card{text-align:center;padding:18px 14px;border-color:rgba(244,179,36,.35);
+  background:radial-gradient(600px 220px at 50% 0,rgba(244,179,36,.12),transparent 70%),linear-gradient(180deg,var(--panel),var(--panel2))}
+.player-name{font-family:"Arial Black",sans-serif;font-size:1.6rem;line-height:1.15;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.role-chip{font-family:'Trebuchet MS',sans-serif;font-size:.78rem;font-weight:800;color:#fff;background:var(--c,#555);padding:4px 9px;border-radius:7px;letter-spacing:.06em}
+.r-POR{--c:var(--por)}.r-DIF{--c:var(--dif)}.r-CENTRO{--c:var(--cen)}.r-ATT{--c:var(--att)}
+.auction-status{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;max-width:620px;margin:14px auto 6px}
+.auction-status-box{border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line);padding:12px 14px;min-width:0}
+.auction-status-label{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.bidder{color:var(--gold2);font-family:"Arial Black",sans-serif;font-size:1.65rem;line-height:1.1;overflow-wrap:anywhere}
+.bidder.mine{color:#4ade80}
+.timer-box{background:none;border:0;padding:0}
+.timer-ring{position:relative;width:118px;height:118px}
+.timer-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer-ring circle{fill:none;stroke-width:9}
+.timer-ring .trk{stroke:rgba(255,255,255,.1)}
+.timer-ring .prg{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .25s linear,stroke .2s}
+.timer-ring.warn .prg{stroke:var(--gold)}
+.timer-ring.hot .prg{stroke:var(--red)}
+.timer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"Arial Black",sans-serif;font-size:2.6rem;color:#fff}
+.timer-ring.hot .timer{color:#ff8da0;animation:tick 1s infinite}
+@keyframes tick{0%{transform:scale(1.12)}40%{transform:scale(1)}}
+.bid-input{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.bid-input input{width:110px;font-size:1.1rem;text-align:center;font-weight:800}
+.bid-input button{border:0;border-radius:10px;padding:11px 18px;font-size:1rem;font-weight:800;color:#fff;background:var(--red)}
+.bid-input button.quick{background:#24304d;border:1px solid var(--line);min-width:58px}
+.bid-input button.main{background:linear-gradient(180deg,#ff6b84,var(--red));box-shadow:0 4px 0 #8f1f35}
+.bid-hint{font-size:.76rem;color:var(--muted);margin-top:8px;min-height:1em}
+.btn-sell{margin-top:12px;border:1px solid #1d7a45;border-radius:9px;padding:8px 16px;font-weight:800;background:#0f3a24;color:#86efac}
+#poor-bid-message{display:none;margin:12px auto 0;max-width:520px;padding:12px;border-radius:12px;background:#4a1620;color:#fff;text-align:center;font-weight:900;font-size:1.15rem}
+#auction-idle{display:none;text-align:center;padding:26px 14px;color:var(--muted)}
+#auction-card[style*="none"] + #auction-idle{display:block}
+#auction-idle .big{font-size:2.2rem;margin-bottom:6px}
 
-.search-dropdown div:hover{
-  background:#4ecca3;
-  color:#1a1a2e
-}
-
-.btn-start{
-  padding:8px 14px;
-  border:none;
-  border-radius:6px;
-  background:#4ecca3;
-  color:#1a1a2e;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:.8rem
-}
-
-.btn-start:disabled{
-  background:#333;
-  color:#666;
-  cursor:default
-}
-
-.btn-reset{
-  padding:8px 14px;
-  border:none;
-  border-radius:6px;
-  background:#f5c542;
-  color:#1a1a2e;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:.8rem
-}
-
-.btn-new{
-  padding:8px 14px;
-  border:none;
-  border-radius:6px;
-  background:#e94560;
-  color:#fff;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:.8rem
-}
-
-.tab-content{
-  display:none
-}
-
-.tab-content.active{
-  display:block
-}
-
-.card{
-  background:#16213e;
-  border-radius:10px;
-  padding:15px;
-  margin-bottom:12px;
-  text-align:center
-}
-
-.auction-status{
-  display:flex;
-  align-items:stretch;
-  justify-content:center;
-  gap:12px;
-  margin:12px 0;
-}
-
-.auction-status-box{
-  flex:1 1 0;
-  min-width:0;
-  min-height:92px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:#0f1730;
-  border:2px solid rgba(255,255,255,.12);
-  padding:10px 14px;
-}
-
-.auction-status-label{
-  font-size:.78rem;
-  font-weight:800;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  color:#aeb7d0;
-  margin-bottom:3px;
-}
-
-.timer{
-  font-size:3.2rem;
-  line-height:1;
-  font-weight:900;
-  color:#e94560
-}
-
-.player-name{
-  font-size:1.3rem;
-  font-weight:bold;
-  color:#4ecca3
-}
-
-.bidder{
-  color:#f5c542;
-  font-size:2rem;
-  line-height:1.08;
-  font-weight:900;
-  margin:0;
-  overflow-wrap:anywhere
-}
-
-@media (max-width:600px){
-  .auction-status{gap:7px}
-  .auction-status-box{min-height:82px;padding:8px 6px}
-  .bidder{font-size:1.35rem}
-  .timer{font-size:2.7rem}
-  .auction-status-label{font-size:.65rem}
-}
-
-.bid-input{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  margin-top:10px
-}
-
-.bid-input input{
-  width:90px;
-  padding:8px;
-  border-radius:6px;
-  border:none;
-  font-size:1rem
-}
-
-.bid-input button{
-  padding:8px 16px;
-  border:none;
-  border-radius:6px;
-  background:#e94560;
-  color:#fff;
-  font-size:1rem;
-  cursor:pointer
-}
-
-.btn-sell{
-  margin-top:8px;
-  padding:6px 16px;
-  border:none;
-  border-radius:6px;
-  background:#4ecca3;
-  color:#1a1a2e;
-  cursor:pointer;
-  font-weight:bold
-}
-
-.error{
-  color:#e94560;
-  margin-top:6px;
-  font-size:.9rem
-}
-
+/* ---------- movimenti ---------- */
+.movements-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.movements-team{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:left;min-width:0}
+.movements-team h4{font-size:.78rem;margin:0 0 6px;text-align:center;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.movements-title{font-size:.64rem;font-weight:800;margin-top:7px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.movements-item{font-size:.76rem;padding:3px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.movements-item[data-event-type="purchase"]{color:#bbf7d0}
+.movements-item[data-event-type="release"]{color:#fecaca}
+.movements-empty{font-size:.72rem;color:#5d6880;padding:3px 0}
 .sold-list{display:none}
 
-.movements-board{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(150px,1fr));
-  gap:6px;
-  overflow-x:auto;
-  padding-bottom:6px
-}
-.movements-team{
-  min-width:150px;
-  background:#16213e;
-  border:1px solid #333;
-  border-radius:7px;
-  padding:7px;
-  text-align:left
-}
-.movements-team h4{font-size:.82rem;margin:0 0 7px;text-align:center;color:#4ecca3}
-.movements-title{font-size:.7rem;font-weight:bold;margin-top:7px;color:#aaa;text-transform:uppercase}
-.movements-item{font-size:.76rem;padding:3px 0;border-bottom:1px solid #2d3555}
-.movements-empty{font-size:.72rem;color:#777;padding:3px 0}
+/* ---------- rose ---------- */
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding-bottom:10px}
+.column{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:9px;min-width:0}
+.col-header{text-align:center;border-bottom:2px solid var(--gold);padding-bottom:6px;margin-bottom:8px}
+.col-header .team-name{font-family:"Arial Black",sans-serif;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col-header .team-crediti{color:var(--gold2);font-size:1rem;font-weight:800;margin-top:2px}
+.role-group{margin-bottom:7px}
+.role-title{font-size:.64rem;color:var(--muted);text-transform:uppercase;margin-bottom:2px;border-bottom:1px solid var(--line);padding-bottom:2px;font-weight:800;letter-spacing:.06em}
+.role-title .slots{color:var(--gold2)}
+.player-row{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:2px 0;font-size:.74rem}
+.player-row .p-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-row .p-recovery{color:var(--gold2);font-size:.66rem;min-width:24px;text-align:right}
+.empty-role{color:#55607a;font-size:.7rem;font-style:italic;padding:1px 0}
+.p-del{background:none;border:none;color:var(--red);cursor:pointer;font-size:1rem;padding:0 4px}
 
-.board{
-  display:flex;
-  gap:4px;
-  padding-bottom:10px
-}
-
-.column{
-  flex:1;
-  min-width:0;
-  background:#16213e;
-  border-radius:8px;
-  padding:8px
-}
-
-.col-header{
-  text-align:center;
-  border-bottom:2px solid #4ecca3;
-  padding-bottom:5px;
-  margin-bottom:8px
-}
-
-.col-header .team-name{
-  font-weight:bold;
-  font-size:.7rem
-}
-
-.col-header .team-crediti{
-  color:#4ecca3;
-  font-size:.9rem;
-  font-weight:bold;
-  margin-top:2px
-}
-
-.role-group{
-  margin-bottom:6px
-}
-
-.role-title{
-  font-size:.65rem;
-  color:#888;
-  text-transform:uppercase;
-  margin-bottom:2px;
-  border-bottom:1px solid #333;
-  padding-bottom:1px
-}
-
-.role-title .slots{
-  color:#4ecca3
-}
-
-.player-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:2px 0;
-  font-size:.75rem
-}
-
-.player-row .p-name{
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap
-}
-
-.player-row .p-recovery{
-  color:#f5c542;
-  font-size:.65rem;
-  min-width:22px;
-  text-align:right
-}
-
-.player-row .p-del{
-  background:none;
-  border:none;
-  color:#e94560;
-  cursor:pointer;
-  font-size:.9rem;
-  padding:0 2px
-}
-
-.empty-role{
-  color:#555;
-  font-size:.7rem;
-  font-style:italic;
-  padding:1px 0
-}
-
-.phase-info{
-  text-align:center;
-  font-size:.8rem;
-  color:#888;
-  margin-bottom:8px
-}
-
-.phase-info .active{
-  color:#4ecca3;
-  font-weight:bold
-}
-
-.team-selector{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  margin-bottom:10px;
-  flex-wrap:wrap
-}
-
-.team-selector label{
-  font-size:.85rem;
-  color:#aaa
-}
-
-.team-selector select{
-  padding:8px 12px;
-  border-radius:6px;
-  border:2px solid #4ecca3;
-  background:#16213e;
-  color:#fff;
-  font-size:.9rem;
-  min-width:180px;
-  width:auto;
-  margin:0
-}
-
-.team-info{
-  text-align:center;
-  color:#4ecca3;
-  font-size:.8rem;
-  margin-bottom:8px
-}
-
-
-select{
-  padding:8px 12px;
-  border-radius:6px;
-  border:2px solid #4ecca3;
-  background:#16213e;
-  color:#fff;
-  font-size:.9rem;
-  min-width:180px;
-  width:auto;
-  margin:0
-}
-
-.team-info{
-  text-align:center;
-  color:#4ecca3;
-  font-size:.8rem;
-  margin-bottom:8px
-}
-
-select{
-  padding:8px;
-  border-radius:6px;
-  border:none;
-  font-size:.9rem;
-  margin:8px 0;
-  width:100%;
-  max-width:250px
-}
-
-/* ===== v21 COMPATTA: testata orizzontale ===== */
-.top-dashboard{display:grid;grid-template-columns:minmax(260px,1.05fr) minmax(300px,1fr) minmax(280px,.9fr);gap:8px;align-items:start;margin-bottom:8px}
-.top-dashboard .card{margin-bottom:0;padding:10px;text-align:left}
-.top-dashboard h3{font-size:.9rem;margin:0}
-.top-main{min-height:100%;display:flex;flex-direction:column;justify-content:center}
-.top-main-title{font-weight:700;font-size:.95rem;color:#4ecca3;margin-bottom:5px}
-.top-main .phase-info,.top-main .team-info{margin:2px 0;text-align:left;font-size:.75rem}
-.top-main .team-selector{justify-content:flex-start;margin:4px 0;gap:5px}
-.top-main .team-selector select{padding:5px 7px;min-width:150px;font-size:.78rem}
-.compact-details{background:#16213e;border-radius:10px;padding:0;overflow:hidden}
-.compact-details summary{list-style:none;cursor:pointer;padding:9px 10px;font-weight:700;font-size:.88rem;color:#4ecca3;display:flex;justify-content:space-between;align-items:center}
-.compact-details summary::-webkit-details-marker{display:none}
-.compact-details summary:after{content:'▾';color:#aaa;font-size:.8rem}
-.compact-details:not([open]) summary:after{content:'▸'}
-.compact-body{padding:0 10px 10px;text-align:center}
-.compact-body .hint{font-size:.7rem;color:#aaa;margin:0 0 5px}
-.compact-body select{padding:5px 7px;margin:3px 0;min-width:0;width:100%;max-width:none;font-size:.78rem}
-.compact-body input{padding:6px!important;margin:3px 0!important;max-width:none!important;font-size:.78rem}
-.compact-body button{padding:6px 9px;font-size:.72rem}
-.compact-body #delegation-list{max-height:82px;overflow:auto;margin-top:5px!important;font-size:.7rem!important}
-.compact-body .error{font-size:.72rem;margin-top:3px}
-.toolbar{margin-bottom:6px}
-#tab-rose .board{padding-bottom:2px}
-@media (max-width:900px){.top-dashboard{grid-template-columns:1fr}.top-dashboard .card{margin-bottom:0}.top-main .phase-info,.top-main .team-info{text-align:center}.top-main .team-selector{justify-content:center}}
-
-
-/* v22 HOME + ASTA */
-.home-shell{max-width:1100px;margin:0 auto}.home-hero{text-align:center;padding:14px 12px}.home-hero h2{color:#4ecca3;margin-bottom:4px}.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-card{text-align:left}.home-card h3{font-size:.95rem;margin-bottom:7px;color:#4ecca3}.home-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:10px}.home-status{font-size:.82rem;color:#bbb;line-height:1.45}.admin-badge{color:#f5c542;font-weight:bold}.auction-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}.auction-head .team-selector{margin:0}.auction-head .team-info{margin:0;text-align:left}.btn-home{padding:8px 12px;border:0;border-radius:6px;background:#16213e;color:#fff;cursor:pointer}.transfer-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.transfer-row select{flex:1;min-width:160px}.pending-admin{border:1px solid #f5c542;border-radius:7px;padding:8px;margin-top:8px;text-align:center}.admin-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-tools select,.admin-tools input{max-width:none;width:100%}@media(max-width:760px){.home-grid,.admin-tools{grid-template-columns:1fr}}
-
-.preauction-shell{max-width:900px;margin:0 auto}.preauction-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.preauction-list{margin-top:10px}.preauction-row{display:grid;grid-template-columns:minmax(0,1fr) 70px 80px 110px;gap:8px;align-items:center;padding:7px 4px;border-bottom:1px solid #333;font-size:.82rem}.preauction-role{font-weight:bold;color:#4ecca3}.admin-correction{margin-top:10px;padding-top:10px;border-top:1px solid #444}.admin-correction-row{display:flex;gap:6px;flex-wrap:wrap}.admin-correction-row input{flex:1;min-width:190px;padding:8px;border-radius:6px;border:0}.correction-results{max-height:150px;overflow:auto;margin-top:5px}.correction-hit{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px;border-bottom:1px solid #333;font-size:.78rem}@media(max-width:650px){.preauction-row{grid-template-columns:minmax(0,1fr) 55px 70px 85px;font-size:.74rem}}
-
-/* v29 - pagina correzione acquisti */
+/* ---------- pre-asta e correzioni ---------- */
+.preauction-shell{max-width:900px;margin:0 auto}
+.preauction-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.preauction-head h2{margin:0;color:var(--gold);font-size:1.05rem;text-transform:uppercase}
+.preauction-list{margin-top:10px}
+.preauction-row{display:grid;grid-template-columns:minmax(0,1fr) 70px 80px 110px;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line);font-size:.84rem}
+.preauction-role{font-weight:800;color:var(--gold2)}
+#corrections-page .preauction-shell,#corrections-page{max-width:1200px;margin:0 auto}
 .correction-page-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:12px}
-.correction-team{background:#20252d;border:1px solid #3a424d;border-radius:8px;padding:8px;min-width:0}
-.correction-team h4{margin:0 0 8px;color:#4ecca3;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.correction-player{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 0;border-top:1px solid #343b45;font-size:.82rem}
+.correction-team{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:10px;padding:8px;min-width:0}
+.correction-team h4{margin:0 0 8px;color:var(--gold);font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.correction-player{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 0;border-top:1px solid var(--line);font-size:.8rem}
 .correction-player:first-of-type{border-top:0}
-.correction-player .p-del{flex:0 0 auto}
-@media(max-width:900px){.correction-page-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:1050px){.movements-board{grid-template-columns:repeat(2,minmax(150px,1fr))}}
-@media(max-width:600px){.movements-board{grid-template-columns:1fr}}
-/* Quando l'asta è incorporata nel sito principale, nasconde eventuali header/nav ereditati o iniettati. */
-body.asta-embedded > header,
-body.asta-embedded > nav,
-body.asta-embedded > .site-header,
-body.asta-embedded > #site-header,
-body.asta-embedded > .main-header,
-body.asta-embedded > #main-header { display:none !important; }
 
+/* ---------- istruzioni ---------- */
+#help-page{position:fixed;inset:0;z-index:500;background:rgba(3,7,15,.82);display:none;overflow:auto;padding:16px}
+#help-page.open{display:block}
+.help-box{max-width:820px;margin:0 auto;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid rgba(244,179,36,.35);border-radius:16px;padding:18px 18px 22px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.help-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;position:sticky;top:-16px;background:var(--panel);padding:8px 0;z-index:1}
+.help-top h2{color:var(--gold);font-size:1.1rem;text-transform:uppercase}
+.help-box section{border-top:1px solid var(--line);padding:12px 0 4px}
+.help-box h3{color:var(--gold2);font-size:.9rem;margin-bottom:6px;text-transform:none}
+.help-box p,.help-box li{font-size:.9rem;line-height:1.55;color:#dbe2ef}
+.help-box ul,.help-box ol{padding-left:20px}
+.help-box li{margin:3px 0}
+.help-box b{color:#fff}
+.help-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0 4px}
+.help-step{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;font-size:.8rem;color:var(--muted)}
+.help-step .n{display:block;font-family:"Arial Black",sans-serif;font-size:1.2rem;color:var(--gold)}
+.help-box .esempio{background:rgba(244,179,36,.08);border-left:3px solid var(--gold);padding:8px 10px;border-radius:6px;margin:6px 0;font-size:.86rem}
+.help-box table{border-collapse:collapse;margin:6px 0;font-size:.86rem}
+.help-box td,.help-box th{border:1px solid var(--line);padding:5px 9px;text-align:center}
+.help-box th{color:var(--gold2)}
+
+/* ---------- responsive ---------- */
+@media(max-width:1050px){.movements-board,.board,.correction-page-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+  body{padding:8px}
+  .home-grid,.admin-tools{grid-template-columns:1fr}
+  .auction-head{grid-template-columns:1fr}
+  .movements-board,.board,.correction-page-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .help-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .toolbar .tab-btn,.toolbar .btn-home,.toolbar .btn-help{padding:8px 10px;font-size:.78rem}
+  .search-wrap{order:10;min-width:100%;max-width:none}
+  .toolbar .tb-esci{display:none}
+}
+@media(max-width:600px){
+  .player-name{font-size:1.25rem}
+  .auction-status{grid-template-columns:1fr auto;gap:8px}
+  .bidder{font-size:1.2rem}
+  .timer-ring{width:92px;height:92px}
+  .timer{font-size:2rem}
+  .bid-input input{width:90px}
+  .bid-input button{padding:10px 12px;font-size:.92rem}
+  .preauction-row{grid-template-columns:minmax(0,1fr) 52px 62px 84px;font-size:.76rem;gap:5px}
+  .preauction-row .btn-reset{padding:7px 8px;font-size:.74rem}
+}
+@media(max-width:420px){.correction-page-grid{grid-template-columns:1fr}.movements-team h4{font-size:.72rem}.movements-item{font-size:.72rem}}
+
+/* Quando l'asta è incorporata nel sito principale, nasconde eventuali header/nav ereditati. */
+body.asta-embedded > header,body.asta-embedded > nav,body.asta-embedded > .site-header,body.asta-embedded > #site-header,body.asta-embedded > .main-header,body.asta-embedded > #main-header{display:none!important}
 </style>
 </head>
 
@@ -496,48 +244,44 @@ function goToCampionato() {
   } catch(e) {}
   window.location.href = 'index.html';
 }
-</script>
-<script>
 (function(){
-  try {
-    if (window.self !== window.top) document.body.classList.add('asta-embedded');
-  } catch(e) {
-    document.body.classList.add('asta-embedded');
-  }
+  try { if (window.self !== window.top) document.body.classList.add('asta-embedded'); }
+  catch(e) { document.body.classList.add('asta-embedded'); }
 })();
 </script>
 
-<h1>⚽ Fanta Asta di Riparazione</h1>
+<div class="asta-title">
+  <span class="hammer">🔨</span>
+  <h1>Asta di Riparazione<span class="sub">BORRACHO'S LEAGUE 26-27</span></h1>
+</div>
 
-<!-- =========================================================
-     LOGIN
-     ========================================================= -->
-
+<!-- ================= LOGIN ================= -->
 <div class="card" id="login-card">
-  <h3>Accesso</h3>
-  <div style="font-size:.82rem;color:#aaa;margin:6px 0 10px">Inserisci la password della tua squadra.</div>
-  <input id="login-password" type="password" placeholder="Password squadra" autocomplete="current-password" style="padding:8px;border-radius:6px;border:none;width:100%;max-width:250px;margin:8px 0">
-  <br>
-  <button class="btn-start" onclick="login()">Entra</button>
+  <h3>Accesso all'asta</h3>
+  <div class="home-status">Inserisci la password della tua squadra.</div>
+  <input id="login-password" type="password" placeholder="Password squadra" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+  <div class="login-actions">
+    <button class="btn-start" onclick="login()">Entra</button>
+    <button class="btn-help" onclick="openHelp()">📖 Come funziona</button>
+  </div>
   <div class="error" id="login-error"></div>
 </div>
 
-<!-- =========================================================
-     APP
-     ========================================================= -->
-
+<!-- ================= APP ================= -->
 <div id="main-area" style="display:none">
 
+  <!-- HOME -->
   <div id="home-page" class="home-shell">
     <div class="card home-hero">
-      <h2>⚽ Home della Lega</h2>
+      <h2>Home dell'asta</h2>
       <div class="home-status" id="home-identity"></div>
       <div class="home-actions">
         <button class="btn-start" onclick="openAuctionPage()">🔨 Entra nell'Asta</button>
-        <button class="tab-btn" onclick="goToCampionato()">🏆 Campionato</button>
         <button class="tab-btn" onclick="openPreAuctionPage()">✂ Svincoli pre-asta</button>
         <button class="tab-btn" id="home-corrections-btn" style="display:none" onclick="openCorrectionsPage()">🛠 Correzioni</button>
         <button class="btn-reset" id="home-pause-preauction" style="display:none" onclick="togglePreAuctionPause()">⏸ Torna a PRE-ASTA</button>
+        <button class="btn-help" onclick="openHelp()">📖 Come funziona</button>
+        <button class="tab-btn" onclick="goToCampionato()">🏆 Campionato</button>
         <button class="tab-btn" onclick="logout()">Esci</button>
       </div>
     </div>
@@ -556,7 +300,6 @@ function goToCampionato() {
         <div id="admin-accept-box" style="display:none"></div>
         <div id="coadmin-list" style="margin-top:8px"></div>
       </div>
-
     </div>
 
     <div id="home-admin-tools" class="card home-card" style="display:none">
@@ -575,50 +318,62 @@ function goToCampionato() {
           <div class="error" id="delegation-error"></div>
         </div>
         <div>
-          <h3>🔑 Password squadre</h3>
+          <h3>🔑 Password squadre (asta)</h3>
           <select id="password-team"></select>
-          <input id="password-new" type="password" placeholder="Nuova password" style="padding:8px;border-radius:6px;border:none;margin:8px 0">
+          <input id="password-new" type="password" placeholder="Nuova password">
           <button type="button" class="btn-start" id="btn-set-password">Salva password</button>
           <div class="error" id="password-error"></div>
+        </div>
+      </div>
+      <div class="danger-zone">
+        <h3>⚠ Zona pericolosa</h3>
+        <div class="home-status">Operazioni che cambiano tutta l'asta e non si possono annullare: ti verrà chiesto di scrivere una parola di conferma.</div>
+        <div class="row">
+          <button class="btn-reset" id="btn-reset" onclick="resetToSnapshot()">↩ Ripristina stato salvato</button>
+          <button class="btn-new" id="btn-new" onclick="newAuction()">🆕 Nuova asta da zero (500 cr)</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- SVINCOLI PRE-ASTA -->
   <div id="preauction-page" class="preauction-shell" style="display:none">
     <div class="card">
       <div class="preauction-head">
-        <div><h2 style="margin:0;color:#4ecca3">✂ Svincoli pre-asta</h2><div class="home-status">Vedi soltanto la tua rosa e le rose che ti sono state delegate.</div></div>
-        <button class="btn-home" onclick="openHomePage()">⌂ Home</button>
+        <div><h2>✂ Svincoli pre-asta</h2><div class="home-status">Vedi soltanto la tua rosa e le rose che ti sono state delegate. Recupero: metà del prezzo pagato (arrotondata per eccesso), tutto il prezzo se il giocatore non è più in Serie A.</div></div>
+        <div style="display:flex;gap:6px"><button class="btn-help" onclick="openHelp('svincoli')">📖</button><button class="btn-home" onclick="openHomePage()">⌂ Home</button></div>
       </div>
-      <div style="margin-top:10px"><label for="preauction-team">Rosa:</label> <select id="preauction-team" onchange="loadPreAuctionRoster()"></select></div>
-      <div id="preauction-credits" class="home-status" style="margin-top:8px;font-weight:bold;color:#4ecca3"></div>
+      <div style="margin-top:10px"><label for="preauction-team" class="home-status">Rosa:</label> <select id="preauction-team" onchange="loadPreAuctionRoster()"></select></div>
+      <div id="preauction-credits" class="home-status" style="margin-top:8px;font-weight:bold;color:var(--gold2)"></div>
       <div id="preauction-message" class="error"></div>
       <div id="preauction-list" class="preauction-list"></div>
     </div>
   </div>
 
-  <div id="corrections-page" class="preauction-shell" style="display:none">
+  <!-- CORREZIONI (ADMIN) -->
+  <div id="corrections-page" style="display:none">
     <div class="card">
       <div class="preauction-head">
-        <div><h2 style="margin:0;color:#4ecca3">🛠 Correzioni</h2><div class="home-status">Correggi gli acquisti dell’asta oppure ripristina uno svincolo pre-asta fatto per errore.</div></div>
+        <div><h2>🛠 Correzioni</h2><div class="home-status">Correggi gli acquisti dell’asta oppure ripristina uno svincolo pre-asta fatto per errore.</div></div>
         <button class="btn-home" onclick="openHomePage()">⌂ Home</button>
       </div>
       <div id="corrections-message" class="error"></div>
-      <h3 style="margin:16px 0 4px;color:#4ecca3">🛒 Acquisti da correggere</h3>
+      <h3 style="margin:16px 0 4px">🛒 Acquisti da correggere</h3>
       <div class="home-status">La X annulla l’acquisto, restituisce tutti i crediti e rimette il giocatore disponibile da zero.</div>
       <div id="corrections-grid" class="correction-page-grid"></div>
-      <h3 style="margin:22px 0 4px;color:#4ecca3">↩ Svincoli pre-asta da correggere</h3>
+      <h3 style="margin:22px 0 4px">↩ Svincoli pre-asta da correggere</h3>
       <div class="home-status">↩ rimette il giocatore nella rosa originaria e sottrae esattamente i crediti recuperati con lo svincolo.</div>
       <div id="release-corrections-grid" class="correction-page-grid"></div>
     </div>
   </div>
 
+  <!-- ASTA -->
   <div id="auction-page" style="display:none">
-    <div class="auction-head">
+    <div class="card auction-head">
       <div>
         <div class="phase-info" id="phase-info"></div>
         <div class="team-info" id="team-info"></div>
+        <div class="my-slots" id="my-slots"></div>
       </div>
       <div class="team-selector" id="team-selector-wrap" style="display:none">
         <label for="team-selector">Sto operando per:</label>
@@ -626,190 +381,194 @@ function goToCampionato() {
       </div>
     </div>
 
-  <!-- =======================================================
-       TOOLBAR
-       ======================================================= -->
-
-  <div class="toolbar">
-
-    <button
-      class="tab-btn active"
-      id="tab-btn-asta"
-      onclick="switchTab('asta')">
-      🔨 Asta
-    </button>
-
-    <button
-      class="tab-btn"
-      id="tab-btn-rose"
-      onclick="switchTab('rose')">
-      👥 Rose
-    </button>
-
-    <div
-      class="search-wrap"
-      id="search-wrap">
-
-      <input
-        type="text"
-        id="search-input"
-        placeholder="Cerca giocatore..."
-        autocomplete="off">
-
-      <div
-        class="search-dropdown"
-        id="search-dropdown">
+    <div class="toolbar">
+      <button class="tab-btn active" id="tab-btn-asta" onclick="switchTab('asta')">🔨 Asta</button>
+      <button class="tab-btn" id="tab-btn-rose" onclick="switchTab('rose')">👥 Rose</button>
+      <div class="search-wrap" id="search-wrap">
+        <input type="text" id="search-input" placeholder="🔎 Chiama giocatore (scrivi almeno 2 lettere)..." autocomplete="off">
+        <div class="search-dropdown" id="search-dropdown"></div>
       </div>
-
+      <button class="btn-start" id="btn-start" onclick="startAuction()">▶ Inizia asta</button>
+      <button class="btn-reset" id="btn-pause-preauction" style="display:none" onclick="togglePreAuctionPause()">⏸ Torna a PRE-ASTA</button>
+      <span class="spacer"></span>
+      <button class="btn-help" onclick="openHelp()">📖 Istruzioni</button>
+      <button class="btn-home" onclick="openHomePage()">⌂ Home</button>
+      <button class="tab-btn tb-esci" onclick="logout()">Esci</button>
     </div>
 
-
-    <button
-      class="btn-start"
-      id="btn-start"
-      onclick="startAuction()">
-      ▶ Inizia
-    </button>
-
-    <button class="btn-reset" id="btn-pause-preauction" style="display:none" onclick="togglePreAuctionPause()">⏸ Torna a PRE-ASTA</button>
-
-    <button
-      class="btn-reset"
-      id="btn-reset"
-      onclick="resetToSnapshot()">
-      ↩️ Reset
-    </button>
-
-    <button
-      class="btn-new"
-      id="btn-new"
-      onclick="newAuction()">
-      🆕 Nuova
-    </button>
-
-    <button class="btn-home" onclick="openHomePage()">⌂ Home</button>
-
-    <button
-      class="tab-btn"
-      onclick="logout()">
-      Esci
-    </button>
-
-  </div>
-
-
-  <!-- =======================================================
-       ASTA
-       ======================================================= -->
-
-  <div class="tab-content active" id="tab-asta">
-
-    <div
-      class="card"
-      id="auction-card"
-      style="display:none">
-
-      <div
-        class="player-name"
-        id="player-name">
-      </div>
-
-      <div class="auction-status">
-        <div class="auction-status-box">
-          <div class="auction-status-label">Miglior offerta</div>
-          <div
-            class="bidder"
-            id="current-bidder">
-            —
+    <div class="tab-content active" id="tab-asta">
+      <div class="card" id="auction-card" style="display:none">
+        <div class="player-name" id="player-name"></div>
+        <div class="auction-status">
+          <div class="auction-status-box">
+            <div class="auction-status-label">Miglior offerta</div>
+            <div class="bidder" id="current-bidder">—</div>
+          </div>
+          <div class="auction-status-box timer-box">
+            <div class="timer-ring" id="timer-ring">
+              <svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="52"/><circle class="prg" id="timer-prg" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="0"/></svg>
+              <div class="timer" id="timer">30</div>
+            </div>
           </div>
         </div>
-
-        <div class="auction-status-box">
-          <div class="auction-status-label">Tempo</div>
-          <div
-            class="timer"
-            id="timer">
-            30
-          </div>
+        <div class="error" id="error"></div>
+        <div id="poor-bid-message">
+          💸 SEI UN POVERACCIO<br>
+          <span id="poor-bid-detail" style="font-size:.78rem;font-weight:700;color:#ffd6dc;"></span>
         </div>
+        <div class="bid-input" id="bid-controls">
+          <button type="button" class="quick" onclick="quickBid(1)" title="Rilancia di 1 credito">+1</button>
+          <button type="button" class="quick" onclick="quickBid(5)" title="Rilancia di 5 crediti">+5</button>
+          <button type="button" class="quick" onclick="quickBid(10)" title="Rilancia di 10 crediti">+10</button>
+          <input type="number" id="bid-amount" placeholder="Cifra" min="1" inputmode="numeric" onkeydown="if(event.key==='Enter')placeBid()">
+          <button class="main" onclick="placeBid()">Rilancia</button>
+        </div>
+        <div class="bid-hint" id="bid-hint"></div>
+        <button class="btn-sell" id="btn-sell" onclick="sellNow()">✔ Aggiudica ora</button>
+      </div>
+      <div class="card" id="auction-idle">
+        <div class="big">⏳</div>
+        <div id="auction-idle-text">In attesa della prossima chiamata dell'admin…</div>
       </div>
 
-      <div
-        class="error"
-        id="error">
+      <div class="card">
+        <h3>Movimenti asta</h3>
+        <div class="movements-board" id="movements-board"></div>
+        <ul class="sold-list" id="sold-list"></ul>
       </div>
-
-      <div id="poor-bid-message" style="display:none;margin:10px 0;padding:12px;border-radius:10px;background:#4a1620;color:#fff;text-align:center;font-weight:900;font-size:1.15rem;">
-        💸 SEI UN POVERACCIO<br>
-        <span id="poor-bid-detail" style="font-size:.78rem;font-weight:700;color:#ffd6dc;"></span>
-      </div>
-
-      <div class="bid-input" id="bid-controls">
-
-        <input
-          type="number"
-          id="bid-amount"
-          placeholder="Offerta"
-          min="1">
-
-        <button onclick="placeBid()">
-          Rilancia
-        </button>
-
-        <button type="button" onclick="quickBid(1)" title="Rilancia di 1 credito">
-          +1
-        </button>
-        <button type="button" onclick="quickBid(5)" title="Rilancia di 5 crediti">
-          +5
-        </button>
-        <button type="button" onclick="quickBid(10)" title="Rilancia di 10 crediti">
-          +10
-        </button>
-
-      </div>
-
-      <button
-        class="btn-sell"
-        id="btn-sell"
-        onclick="sellNow()">
-        ✔ Vendi ora
-      </button>
-
     </div>
 
-
-    <div class="card">
-
-      <h3 style="font-size:1rem;margin-bottom:8px">
-        Movimenti asta
-      </h3>
-      <div class="movements-board" id="movements-board"></div>
-      <ul class="sold-list" id="sold-list"></ul>
-
+    <div class="tab-content" id="tab-rose">
+      <div class="home-status" style="margin:0 0 8px">Il numero giallo accanto a ogni giocatore sono i crediti che si recuperano svincolandolo in pre-asta.</div>
+      <div class="board" id="board"></div>
     </div>
-
   </div>
-
-
-  <!-- =======================================================
-       ROSE
-       ======================================================= -->
-
-  <div
-    class="tab-content"
-    id="tab-rose">
-
-    <div
-      class="board"
-      id="board">
-    </div>
-
-  </div>
-
-  </div>
-
 </div>
 
+<!-- ================= ISTRUZIONI ================= -->
+<div id="help-page" onclick="if(event.target===this)closeHelp()">
+  <div class="help-box">
+    <div class="help-top"><h2>📖 Come funziona l'asta</h2><button class="btn-home" onclick="closeHelp()">✕ Chiudi</button></div>
+
+    <section id="help-fasi">
+      <h3>Le fasi</h3>
+      <div class="help-steps">
+        <div class="help-step"><span class="n">1</span>Entri con la password della tua squadra</div>
+        <div class="help-step"><span class="n">2</span>PRE-ASTA: svincoli i giocatori che non vuoi</div>
+        <div class="help-step"><span class="n">3</span>ASTA: l'admin chiama, tutti rilanciano</div>
+        <div class="help-step"><span class="n">4</span>Allo zero il giocatore è aggiudicato</div>
+      </div>
+    </section>
+
+    <section id="help-accesso">
+      <h3>🔑 Accesso</h3>
+      <ul>
+        <li>Inserisci la <b>password della tua squadra per l'asta</b> (è diversa da quella del Match Center). La password la imposta l'admin.</li>
+        <li>Dalla <b>Home</b> entri nell'asta, negli svincoli pre-asta o torni al sito con <b>Campionato</b>.</li>
+        <li>Se ti è stata data una <b>delega</b>, in alto trovi <b>“Sto operando per”</b>: scegli la squadra per cui vuoi offrire o svincolare.</li>
+        <li>La pagina si aggiorna da sola: non serve ricaricarla. Se cade la connessione, riapri la pagina: di solito sei ancora dentro, altrimenti rientra con la password.</li>
+      </ul>
+    </section>
+
+    <section id="help-svincoli">
+      <h3>✂ Svincoli pre-asta</h3>
+      <ul>
+        <li>Prima dell'inizio dell'asta ognuno può svincolare i giocatori della propria rosa (e di quelle delegate) dalla pagina <b>Svincoli pre-asta</b>.</li>
+        <li>Recuperi <b>metà del prezzo pagato</b>, arrotondata per eccesso. Se il giocatore <b>non è più in Serie A</b> recuperi <b>tutto</b>.</li>
+        <li>Il giocatore svincolato torna libero e potrà essere chiamato in asta da chiunque.</li>
+        <li>Quando l'asta parte gli svincoli si chiudono. L'admin può riaprirli per un momento con <b>“Torna a PRE-ASTA”</b> (solo quando nessun giocatore è in asta).</li>
+        <li>Hai svincolato per errore? Chiedi all'admin: dalla pagina <b>Correzioni</b> può rimettere il giocatore in rosa togliendo i crediti recuperati.</li>
+      </ul>
+      <div class="esempio">Esempio: pagato 15, ancora in Serie A → recuperi 8. Pagato 15, andato all'estero → recuperi 15.</div>
+    </section>
+
+    <section id="help-asta">
+      <h3>🔨 L'asta</h3>
+      <ul>
+        <li>L'admin preme <b>▶ Inizia asta</b>, poi chiama i giocatori dalla casella di ricerca. Chi chiama apre l'asta con <b>1 credito</b> a nome della squadra per cui sta operando.</li>
+        <li>Alla chiamata il timer parte da <b>30 secondi</b>. Ogni rilancio lo riporta a <b>10 secondi</b>.</li>
+        <li>Per offrire usa <b>+1</b>, <b>+5</b>, <b>+10</b> (si aggiungono all'offerta migliore) oppure scrivi la cifra e premi <b>Rilancia</b>.</li>
+        <li>Puoi alzare anche la tua stessa offerta.</li>
+        <li>Quando il timer arriva a <b>0</b> il giocatore va a chi ha l'offerta più alta e i crediti vengono scalati subito. L'admin può chiudere prima con <b>Aggiudica ora</b>.</li>
+        <li>Fa fede l'orario del server: un'offerta arrivata dopo lo zero viene rifiutata, anche se sul tuo schermo vedevi ancora un secondo.</li>
+      </ul>
+    </section>
+
+    <section id="help-limiti">
+      <h3>📏 Limiti della rosa e dei crediti</h3>
+      <table><tr><th>POR</th><th>DIF</th><th>CEN</th><th>ATT</th><th>Totale</th></tr><tr><td>3</td><td>8</td><td>8</td><td>6</td><td>25</td></tr></table>
+      <ul>
+        <li>Non puoi offrire per un ruolo in cui hai già tutti gli slot occupati.</li>
+        <li>Devi sempre tenere <b>1 credito per ogni giocatore che ti manca</b> per completare la rosa. Il massimo che puoi offrire è: <b>crediti − (giocatori mancanti − 1)</b>.</li>
+        <li>Se non arrivi neanche all'offerta minima compare il messaggio <b>💸 SEI UN POVERACCIO</b> e i tasti delle offerte spariscono.</li>
+      </ul>
+      <div class="esempio">Esempio: hai 40 crediti e ti mancano 5 giocatori → puoi offrire al massimo 40 − 4 = 36.</div>
+    </section>
+
+    <section id="help-schermate">
+      <h3>👀 Cosa trovi nella pagina</h3>
+      <ul>
+        <li><b>Asta</b>: il giocatore in asta con offerta migliore e timer; sotto, i <b>Movimenti</b> di ogni squadra (svincolati e acquistati).</li>
+        <li><b>Rose</b>: crediti e rosa di tutte le squadre, con gli slot occupati per ruolo.</li>
+        <li>In alto vedi la fase, i tuoi crediti e i tuoi slot per ruolo.</li>
+      </ul>
+    </section>
+
+    <section id="help-admin">
+      <h3>👑 Solo per gli admin</h3>
+      <ul>
+        <li><b>Deleghe</b>: abilita una squadra a operare per un'altra (es. chi non può collegarsi).</li>
+        <li><b>Password squadre</b>: imposta o cambia la password d'asta di una squadra.</li>
+        <li><b>Correzioni</b>: annulla un acquisto (crediti restituiti, giocatore di nuovo libero) o ripristina uno svincolo.</li>
+        <li><b>Zona pericolosa</b>: “Ripristina stato salvato” e “Nuova asta da zero” cambiano tutta l'asta: si confermano scrivendo una parola.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script>
+/* v30 - funzioni di supporto per grafica e istruzioni (17/10/2026) */
+function openHelp(sezione){
+  var h=document.getElementById('help-page'); h.classList.add('open'); document.body.style.overflow='hidden';
+  var t=sezione&&document.getElementById('help-'+sezione); h.scrollTop=0; if(t)setTimeout(function(){t.scrollIntoView({block:'start'});},30);
+}
+function closeHelp(){ document.getElementById('help-page').classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('keydown',function(e){ if(e.key==='Escape')closeHelp(); });
+
+function confirmTyped(messaggio, parola){
+  var r=window.prompt(messaggio+'\n\nPer confermare scrivi: '+parola);
+  if(r===null)return false;
+  if(String(r).trim().toUpperCase()!==parola){ alert('Parola non corretta: operazione annullata.'); return false; }
+  return true;
+}
+
+function setPlayerTitle(p){
+  var el=document.getElementById('player-name'); if(!el||!p)return;
+  var r=normalizeAuctionRole(p.ruolo);
+  el.innerHTML='<span class="role-chip r-'+escapeHtml(r)+'">'+escapeHtml(rL[r]||p.ruolo||'')+'</span><span>'+escapeHtml(p.nome)+'</span>';
+  currentPlayerRuolo=r; setTimeout(renderMySlots,0);
+}
+
+function drawTimer(sec, durata){
+  var t=document.getElementById('timer'); if(t)t.textContent=sec;
+  var ring=document.getElementById('timer-ring'), prg=document.getElementById('timer-prg'); if(!ring||!prg)return;
+  var C=326.73, d=Number(durata)||30, f=Math.max(0,Math.min(1,sec/d));
+  prg.style.strokeDashoffset=String(C*(1-f));
+  ring.classList.toggle('hot',sec<=3); ring.classList.toggle('warn',sec>3&&sec<=6);
+  var b=document.getElementById('current-bidder'); if(b)b.classList.toggle('mine',!!currentBidder&&currentBidder===mySquadra);
+}
+
+function renderMySlots(){
+  var el=document.getElementById('my-slots'); if(!el)return;
+  var c=countByRole(myPlayers||[]), col={POR:'var(--por)',DIF:'var(--dif)',CENTRO:'var(--cen)',ATT:'var(--att)'};
+  var tot=0,max=0; rO.forEach(function(r){tot+=c[r]||0;max+=RL[r];});
+  var mancanti=Math.max(0,max-tot), spend=getMaxSpendable(mycrediti,tot);
+  el.innerHTML=rO.map(function(r){return '<span class="slot-chip'+((c[r]||0)>=RL[r]?' full':'')+'" style="--c:'+col[r]+'">'+rL[r]+' '+(c[r]||0)+'/'+RL[r]+'</span>';}).join('')+
+    '<span class="slot-chip" style="--c:var(--gold)">Mancano '+mancanti+' · max offerta '+spend+'</span>';
+  var hint=document.getElementById('bid-hint');
+  if(hint)hint.textContent=currentPlayerId?('Puoi offrire al massimo '+spend+' cr'+(currentPlayerRuolo&&RL[currentPlayerRuolo]!==undefined?' · slot '+rL[currentPlayerRuolo]+' '+(c[currentPlayerRuolo]||0)+'/'+RL[currentPlayerRuolo]:'')):'';
+}
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
@@ -876,16 +635,11 @@ var myRole = null;
    UTILITÀ
    ========================================================= */
 
+// Recupero di uno svincolo pre-asta (gli svincoli si fanno solo in pre-asta):
+// meta' del prezzo arrotondata per eccesso, tutto il prezzo se il giocatore non e' piu' in Serie A.
 function getRecovery(pagato, inSerieA) {
-
-  if (auctionStarted) {
-    return pagato;
-  }
-
-  if (!inSerieA) {
-    return pagato;
-  }
-
+  pagato = Number(pagato || 0);
+  if (!inSerieA) return pagato;
   return Math.ceil(pagato / 2);
 }
 
@@ -962,16 +716,14 @@ function showError(msg) {
    ========================================================= */
 
 function updatePhaseInfo() {
-
-  var el =
-    document.getElementById('phase-info');
-
-  el.innerHTML =
-    auctionStarted
-
-      ? '<span class="active">ASTA IN CORSO</span> — X = 100%'
-
-      : '<span class="active">PREPARAZIONE</span> — X = 50% (100% se non in Serie A)';
+  var el = document.getElementById('phase-info');
+  var fase, testo, cls;
+  if (!auctionStarted) { fase='PRE-ASTA'; cls='pre'; testo='Svincoli aperti · recupero 50% (100% se il giocatore non è più in Serie A)'; }
+  else if (auctionPausedPreauction) { fase='ASTA SOSPESA'; cls='pausa'; testo='L\'admin ha riaperto temporaneamente gli svincoli pre-asta'; }
+  else { fase='ASTA IN CORSO'; cls='live'; testo='Offerte aperte · timer 30 s alla chiamata, 10 s dopo ogni rilancio'; }
+  el.innerHTML = '<span class="phase-badge '+cls+'">'+fase+'</span><span class="phase-text">'+testo+'</span>';
+  var idle = document.getElementById('auction-idle-text');
+  if (idle) idle.textContent = !auctionStarted ? 'L\'asta non è ancora iniziata.' : (auctionPausedPreauction ? 'Asta sospesa: sono aperti gli svincoli pre-asta.' : 'In attesa della prossima chiamata dell\'admin…');
 }
 
 
@@ -1047,10 +799,10 @@ function updateTeamInfo() {
   var info = document.getElementById('team-info');
   var selected = availableTeams.find(function(team) { return team.squadra === mySquadra; });
   var delegated = selected && selected.access_type === 'delegated';
-  info.innerHTML = '<strong style="font-size:1rem">🎮 STAI GESTENDO: ' + escapeHtml(mySquadra) +
-    (delegated ? ' — DELEGATA' : ' — TUA SQUADRA') + '</strong> · ' + mycrediti + ' crediti';
+  info.innerHTML = '<div class="ti-name">' + escapeHtml(mySquadra || '') + ' <span class="ti-tag' + (delegated ? ' deleg' : '') + '">' + (delegated ? 'DELEGATA' : 'TUA SQUADRA') + '</span></div>' +
+    '<div class="ti-credits"><b>' + Number(mycrediti || 0) + '</b> crediti</div>';
+  renderMySlots();
 }
-
 
 /* =========================================================
    REFRESH IMMEDIATO / PROTEZIONE DATI APPENA MODIFICATI
@@ -1059,14 +811,23 @@ var locallyReleasedPlayerIds = new Set();
 var locallyCancelledPurchaseIds = new Set();
 var locallyRestoredReleaseIds = new Set();
 
-async function getFrontendState(){
-  var r=await sb.rpc('league_frontend_state');
-  if(r.error) throw r.error;
-  var d=r.data||{};
-  return {
-    squadre:Array.isArray(d.squadre)?d.squadre:[],
-    players:Array.isArray(d.players)?d.players:[]
-  };
+/* v30: una sola lettura condivisa dello stato (prima ogni lista lo richiedeva per conto suo,
+   anche 3-4 volte al secondo). Cache di 1,5 s; force=true per i controlli prima di offerte e chiamate. */
+var frontendCache=null,frontendCacheAt=0,frontendInFlight=null;
+function invalidateFrontendState(){frontendCache=null;frontendCacheAt=0;}
+async function getFrontendState(force){
+  if(!force&&frontendCache&&Date.now()-frontendCacheAt<1500)return frontendCache;
+  if(!force&&frontendInFlight)return frontendInFlight;
+  var job=(async function(){
+    var r=await sb.rpc('league_frontend_state');
+    if(r.error) throw r.error;
+    var d=r.data||{};
+    var st={squadre:Array.isArray(d.squadre)?d.squadre:[],players:Array.isArray(d.players)?d.players:[]};
+    frontendCache=st;frontendCacheAt=Date.now();
+    return st;
+  })();
+  if(!force)frontendInFlight=job;
+  try{return await job;}finally{if(frontendInFlight===job)frontendInFlight=null;}
 }
 
 async function confirmLocalMutationsFromDb(){
@@ -1176,7 +937,7 @@ async function enterLeagueApp(profile) {
   });
   setupTeamSelector(availableTeams);
   await loadHome();
-  updatePhaseInfo(); updateTeamInfo(); subscribe(); await loadInitialState();
+  updatePhaseInfo(); updateTeamInfo(); await loadInitialState();
 }
 
 /* =========================================================
@@ -1190,7 +951,7 @@ function hideMainPages(){
 async function openAuctionPage(){
   hideMainPages(); document.getElementById('auction-page').style.display='block';
   updatePhaseInfo(); updateTeamInfo();
-  await Promise.all([loadTeams(),loadPending(),loadMyPlayers(),refreshSoldList()]);
+  await Promise.all([loadPending(),loadMyPlayers(),refreshSoldList()]);
   var rose=document.getElementById('tab-rose'); if(rose&&rose.classList.contains('active'))await loadBoard();
 }
 function openHomePage(){
@@ -1425,6 +1186,7 @@ setInterval(syncLeagueRole,3000);
 
 async function refreshFrontendAfterMutation(options){
   options=options||{};
+  invalidateFrontendState();
   var jobs=[];
   jobs.push(loadSelectedTeamData());
   jobs.push(loadPending());
@@ -1436,6 +1198,7 @@ async function refreshFrontendAfterMutation(options){
   await syncAuctionState();
   // Second read shortly after the write: protects the UI from a delayed browser/PostgREST refresh.
   setTimeout(function(){
+    invalidateFrontendState();
     refreshSoldList();
     loadSelectedTeamData();
     loadPending();
@@ -1727,13 +1490,7 @@ async function syncAuctionState() {
   ).style.display =
     'block';
 
-  document.getElementById(
-    'player-name'
-  ).textContent =
-    p.nome +
-    ' (' +
-    p.ruolo +
-    ')';
+  setPlayerTitle(p);
 
   document.getElementById(
     'current-bidder'
@@ -1873,16 +1630,12 @@ function syncAuthoritativeTimer(state) {
     remaining;
 
 
-  document.getElementById(
-    'timer'
-  ).textContent =
-    currentTimer;
+  drawTimer(currentTimer, duration/1000);
 
 
   if (remaining <= 0) {
 
-    if (myRole === 'admin') {
-      sellCurrentPlayer();
+    { sellCurrentPlayer();
     }
 
     return;
@@ -1906,25 +1659,15 @@ function syncAuthoritativeTimer(state) {
           );
 
 
-        document.getElementById(
-          'timer'
-        ).textContent =
-          currentTimer;
+        drawTimer(currentTimer, duration/1000);
 
-
-        if (
-          currentTimer <= 0
-        ) {
+        if (currentTimer <= 0) {
 
           clearInterval(
             timerInterval
           );
 
-          if (
-            myRole === 'admin'
-          ) {
-
-            sellCurrentPlayer();
+          { sellCurrentPlayer();
 
           }
 
@@ -2135,7 +1878,7 @@ async function callPlayer(playerId) {
   // La chiamata assegna subito l'offerta iniziale di 1 credito alla squadra
   // dell'admin: quindi controlliamo gli slot già al momento della scelta.
   try {
-    var freshStateForCall = await getFrontendState();
+    var freshStateForCall = await getFrontendState(true);
     var freshPlayersForCall = freshStateForCall.players.filter(function(x) {
       return x.vincitore === mySquadra && x.stato === 'sold';
     });
@@ -2211,13 +1954,7 @@ async function callPlayer(playerId) {
   ).style.display =
     'block';
 
-  document.getElementById(
-    'player-name'
-  ).textContent =
-    p.nome +
-    ' (' +
-    p.ruolo +
-    ')';
+  setPlayerTitle(p);
 
   document.getElementById(
     'current-bidder'
@@ -2283,7 +2020,7 @@ async function startAuction() {
 
   if (
     !confirm(
-      "Iniziare l'asta? Da ora X = 100%."
+      "Iniziare l'asta?\n\nDa questo momento gli svincoli pre-asta si chiudono e si possono chiamare i giocatori."
     )
   ) {
 
@@ -2433,13 +2170,7 @@ function subscribe() {
           ).style.display =
             'block';
 
-          document.getElementById(
-            'player-name'
-          ).textContent =
-            p.nome +
-            ' (' +
-            p.ruolo +
-            ')';
+          setPlayerTitle(p);
 
           document.getElementById(
             'current-bidder'
@@ -2557,18 +2288,9 @@ function subscribe() {
    ========================================================= */
 
 function resetTimer(seconds) {
-
-  clearInterval(
-    timerInterval
-  );
-
-  currentTimer =
-    seconds;
-
-  document.getElementById(
-    'timer'
-  ).textContent =
-    currentTimer;
+  clearInterval(timerInterval);
+  currentTimer = seconds;
+  drawTimer(currentTimer, seconds);
 }
 
 
@@ -2601,9 +2323,9 @@ async function refreshAuthoritativeTimer() {
    ========================================================= */
 
 async function sellCurrentPlayer() {
-
+  // v30: allo scadere del tempo la chiusura parte da qualunque browser collegato;
+  // il database verifica comunque che il tempo sia davvero scaduto.
   if (
-    myRole !== 'admin' ||
     auctionPausedPreauction ||
     !currentPlayerId ||
     actionBusy
@@ -2636,11 +2358,8 @@ async function sellCurrentPlayer() {
 
 
   if (r.error) {
-
-    showError(
-      'Vendita: ' +
-      r.error.message
-    );
+    // Errori attesi e innocui: un altro browser ha già chiuso, oppure il tempo del server non è ancora scaduto.
+    if (myRole === 'admin' && !/attualmente in asta|non è ancora scaduto|già concluso|Solo un admin/i.test(r.error.message)) showError('Vendita: ' + r.error.message);
 
     return;
   }
@@ -2836,7 +2555,7 @@ async function placeBid() {
   // Prima di ogni rilancio rilegge la rosa dal DB: il controllo degli slot
   // non deve dipendere da una copia locale eventualmente non aggiornata.
   try {
-    var freshStateForBid = await getFrontendState();
+    var freshStateForBid = await getFrontendState(true);
     var freshPlayersForBid = freshStateForBid.players.filter(function(p) {
       return p.vincitore === mySquadra && p.stato === 'sold';
     });
@@ -2970,111 +2689,6 @@ async function placeBid() {
 
 
 /* =========================================================
-   SVINCOLO
-   ========================================================= */
-
-async function releasePlayer(playerId) {
-  var st;
-  try { st=await getFrontendState(); } catch(e) { alert('Errore: '+e.message); return; }
-  var p=st.players.find(function(x){return Number(x.id)===Number(playerId);});
-  if(!p){ alert('Giocatore non trovato.'); return; }
-
-  if (
-    p.vincitore !==
-    mySquadra
-  ) {
-
-    alert(
-      'Puoi svincolare solo i giocatori della tua squadra.'
-    );
-
-    return;
-  }
-
-
-  var rec =
-    getRecovery(
-      p.prezzo_finale,
-      p.in_serie_a
-    );
-
-
-  var msg =
-    'Svincolare ' +
-    p.nome +
-    '?\nRecupero: +' +
-    rec +
-    ' cr';
-
-
-  if (!auctionStarted) {
-
-    msg +=
-      '\n(Regola pre-asta: 50%)';
-
-  }
-
-
-  if (!confirm(msg)) {
-    return;
-  }
-
-
-  actionBusy =
-    true;
-
-
-  var x =
-    await sb.rpc(
-      'release_player_as_team',
-      {
-        p_player_id:
-          playerId,
-
-        p_squadra:
-          mySquadra
-      }
-    );
-
-
-  actionBusy =
-    false;
-
-
-  if (x.error) {
-
-    alert(
-      'Errore svincolo: ' +
-      x.error.message
-    );
-
-    return;
-  }
-
-
-  currentBid =
-    0;
-
-  currentBidder =
-    null;
-
-  currentPlayerId =
-    null;
-
-
-  await loadSelectedTeamData();
-
-  await loadPending();
-
-  await loadBoard();
-
-  await refreshSoldList();
-
-  updateTeamInfo();
-}
-
-
-/* =========================================================
    RESET
    ========================================================= */
 
@@ -3089,9 +2703,7 @@ async function resetToSnapshot() {
 
 
   if (
-    !confirm(
-      'Ripristinare lo stato iniziale?'
-    )
+    !confirmTyped('RIPRISTINO DELLO STATO SALVATO\n\nRose, crediti e offerte tornano come nell\'ultimo salvataggio (snapshot) e i movimenti vengono cancellati.\nOperazione NON annullabile.', 'RESET')
   ) {
 
     return;
@@ -3195,19 +2807,7 @@ async function newAuction() {
 
 
   if (
-    !confirm(
-      'NUOVA ASTA: 500 cr per tutte. Sicuro?'
-    )
-  ) {
-
-    return;
-  }
-
-
-  if (
-    !confirm(
-      'Confermi?'
-    )
+    !confirmTyped('NUOVA ASTA DA ZERO\n\nTUTTI i giocatori tornano liberi e TUTTE le squadre ripartono da 500 crediti.\nDa usare solo per l\'asta estiva di inizio stagione. Operazione NON annullabile.', 'NUOVA ASTA')
   ) {
 
     return;
@@ -3376,4 +2976,4 @@ restoreSession();
 </script>
 
 </body>
-</html>
+</html>
