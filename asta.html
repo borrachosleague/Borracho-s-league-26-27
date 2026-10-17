@@ -71,6 +71,14 @@ select:focus,input:focus{outline:2px solid var(--gold);outline-offset:0}
 .admin-tools h3{font-size:.85rem}
 .admin-tools select,.admin-tools input{width:100%;margin:5px 0}
 .delegation-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.seriea-box{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:10px;background:rgba(0,0,0,.18)}
+.seriea-search{margin-top:8px}
+.seriea-search input{width:100%}
+.seriea-results,.seriea-list{margin-top:4px}
+.seriea-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px solid var(--line);font-size:.84rem;flex-wrap:wrap}
+.seriea-row small{color:var(--muted)}
+.seriea-row button{padding:6px 10px;font-size:.76rem}
+.fuori-a{font-size:.66rem;font-weight:800;color:#8ab4ff;white-space:nowrap}
 .danger-zone{margin-top:14px;border:1px dashed #7c1d33;border-radius:10px;padding:10px;background:rgba(233,69,96,.06)}
 .danger-zone h3{color:#ff8da0}
 .danger-zone .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
@@ -325,6 +333,16 @@ function goToCampionato() {
           <div class="error" id="password-error"></div>
         </div>
       </div>
+      <div class="seriea-box">
+        <h3>✈ Giocatori usciti dalla Serie A</h3>
+        <div class="home-status">Da usare dopo la chiusura del mercato di gennaio e <b>prima</b> di aprire gli svincoli pre-asta. Chi è segnato qui, se svincolato, restituisce <b>tutto</b> il prezzo pagato invece della metà.</div>
+        <div class="seriea-search">
+          <input type="text" id="seriea-input" placeholder="🔎 Cerca un giocatore delle rose (almeno 2 lettere)..." autocomplete="off" oninput="searchSerieA()">
+          <div id="seriea-results" class="seriea-results"></div>
+        </div>
+        <div id="seriea-list" class="seriea-list"></div>
+        <div class="error" id="seriea-error"></div>
+      </div>
       <div class="danger-zone">
         <h3>⚠ Zona pericolosa</h3>
         <div class="home-status">Operazioni che cambiano tutta l'asta e non si possono annullare: ti verrà chiesto di scrivere una parola di conferma.</div>
@@ -519,6 +537,7 @@ function goToCampionato() {
       <ul>
         <li><b>Deleghe</b>: abilita una squadra a operare per un'altra (es. chi non può collegarsi).</li>
         <li><b>Password squadre</b>: imposta o cambia la password d'asta di una squadra.</li>
+        <li><b>Giocatori usciti dalla Serie A</b>: dopo la chiusura del mercato di gennaio e <b>prima</b> di aprire gli svincoli, l'admin segna chi è andato via (estero, Serie B, svincolato). Quei giocatori, se svincolati, restituiscono tutto il prezzo; nelle rose compaiono con ✈.</li>
         <li><b>Correzioni</b>: annulla un acquisto (crediti restituiti, giocatore di nuovo libero) o ripristina uno svincolo.</li>
         <li><b>Zona pericolosa</b>: “Ripristina stato salvato” e “Nuova asta da zero” cambiano tutta l'asta: si confermano scrivendo una parola.</li>
       </ul>
@@ -528,6 +547,42 @@ function goToCampionato() {
 
 <script>
 /* v30 - funzioni di supporto per grafica e istruzioni (17/10/2026) */
+
+/* v31 - Admin: giocatori usciti dalla Serie A (17/10/2026).
+   Cambia solo la casella in_serie_a tramite la funzione admin_set_in_serie_a (solo admin). */
+var serieAPlayers=[];
+async function loadSerieAPanel(){
+  var list=document.getElementById('seriea-list'),err=document.getElementById('seriea-error'); if(!list)return;
+  err.textContent='';
+  try{ invalidateFrontendState(); var st=await getFrontendState(true); }catch(e){ err.textContent='Errore: '+e.message; return; }
+  serieAPlayers=st.players.filter(function(p){return p.stato==='sold'&&p.vincitore;});
+  var fuori=serieAPlayers.filter(function(p){return p.in_serie_a===false;}).sort(function(a,b){return a.vincitore.localeCompare(b.vincitore)||a.nome.localeCompare(b.nome);});
+  list.innerHTML=fuori.length?('<div class="home-status" style="margin:8px 0 4px"><b>Segnati come usciti ('+fuori.length+'):</b></div>'+fuori.map(function(p){
+    return '<div class="seriea-row"><span><span class="role-chip r-'+escapeHtml(normalizeAuctionRole(p.ruolo))+'">'+escapeHtml(rL[normalizeAuctionRole(p.ruolo)]||p.ruolo)+'</span> <b>'+escapeHtml(p.nome)+'</b> <small>'+escapeHtml(p.vincitore)+' · pagato '+Number(p.prezzo_finale||0)+' cr</small></span><button class="tab-btn" onclick="setSerieA('+Number(p.id)+',true)">↩ Rimetti in Serie A</button></div>';
+  }).join('')):'<div class="home-status" style="margin-top:8px">Nessun giocatore segnato come uscito: tutti risultano in Serie A.</div>';
+  searchSerieA();
+}
+function searchSerieA(){
+  var box=document.getElementById('seriea-results'),q=(document.getElementById('seriea-input').value||'').trim().toLowerCase();
+  if(q.length<2){box.innerHTML='';return;}
+  var hit=serieAPlayers.filter(function(p){return p.nome.toLowerCase().indexOf(q)!==-1;}).slice(0,12);
+  box.innerHTML=hit.length?hit.map(function(p){
+    var out=p.in_serie_a===false;
+    return '<div class="seriea-row"><span><b>'+escapeHtml(p.nome)+'</b> <small>'+escapeHtml(p.ruolo)+' · '+escapeHtml(p.vincitore)+' · pagato '+Number(p.prezzo_finale||0)+' cr</small></span>'+
+      (out?'<button class="tab-btn" onclick="setSerieA('+Number(p.id)+',true)">↩ Rimetti in Serie A</button>':'<button class="btn-reset" onclick="setSerieA('+Number(p.id)+',false)">✈ Uscito dalla Serie A</button>')+'</div>';
+  }).join(''):'<div class="home-status">Nessun giocatore delle rose trovato.</div>';
+}
+async function setSerieA(id,inSerieA){
+  var p=serieAPlayers.find(function(x){return Number(x.id)===Number(id);}); if(!p)return;
+  var pieno=Number(p.prezzo_finale||0), meta=Math.ceil(pieno/2);
+  var msg=inSerieA
+    ? 'Rimettere '+p.nome+' ('+p.vincitore+') tra i giocatori IN Serie A?\n\nSe svincolato recupererà la metà: '+meta+' cr.'
+    : 'Segnare '+p.nome+' ('+p.vincitore+') come USCITO dalla Serie A?\n\nSe svincolato recupererà tutto il prezzo: '+pieno+' cr invece di '+meta+' cr.';
+  if(!confirm(msg))return;
+  var r=await sb.rpc('admin_set_in_serie_a',{p_player_id:Number(id),p_in_serie_a:inSerieA});
+  if(r.error){ document.getElementById('seriea-error').textContent='Errore: '+r.error.message; return; }
+  await loadSerieAPanel();
+}
 function openHelp(sezione){
   var h=document.getElementById('help-page'); h.classList.add('open'); document.body.style.overflow='hidden';
   var t=sezione&&document.getElementById('help-'+sezione); h.scrollTop=0; if(t)setTimeout(function(){t.scrollIntoView({block:'start'});},30);
@@ -995,7 +1050,7 @@ async function loadPreAuctionRoster(){
 
   creditsEl.textContent=team+' — Crediti disponibili: '+credits;
   if(!freshRoster.length){list.innerHTML='<div class="home-status">Nessun giocatore in rosa.</div>';return;}
-  list.innerHTML=freshRoster.map(function(p){var rec=getRecovery(p.prezzo_finale,p.in_serie_a);return '<div class="preauction-row" data-preauction-id="'+Number(p.id)+'"><span><span class="preauction-role">'+escapeHtml(p.ruolo)+'</span> '+escapeHtml(p.nome)+'</span><span>'+Number(p.prezzo_finale||0)+' cr</span><span>+'+Number(rec)+' cr</span><button class="btn-reset" onclick="releasePreAuctionPlayer('+Number(p.id)+',\''+String(team).replace(/'/g,"\\'")+'\')">Svincola</button></div>';}).join('');
+  list.innerHTML=freshRoster.map(function(p){var rec=getRecovery(p.prezzo_finale,p.in_serie_a);return '<div class="preauction-row" data-preauction-id="'+Number(p.id)+'"><span><span class="preauction-role">'+escapeHtml(p.ruolo)+'</span> '+escapeHtml(p.nome)+(p.in_serie_a===false?' <span class="fuori-a" title="Non è più in Serie A: recupero pieno">✈ fuori Serie A</span>':'')+'</span><span>'+Number(p.prezzo_finale||0)+' cr</span><span>+'+Number(rec)+' cr</span><button class="btn-reset" onclick="releasePreAuctionPlayer('+Number(p.id)+',\''+String(team).replace(/'/g,"\\'")+'\')">Svincola</button></div>';}).join('');
 }
 async function releasePreAuctionPlayer(id,team){
   var r=await sb.rpc('league_preauction_roster',{p_squadra:team});
@@ -1097,6 +1152,7 @@ async function loadDelegationPanel() {
     var op=document.createElement('option'); op.value=m.squadra; op.textContent=m.squadra; ps.appendChild(op);
   });
   renderDelegationList();
+  loadSerieAPanel();
 }
 
 function renderDelegationList() {
@@ -2953,7 +3009,7 @@ async function loadBoard() {
           var rec = getRecovery(p.prezzo_finale,p.in_serie_a);
           var row = document.createElement('div');
           row.className = 'player-row';
-          row.innerHTML = '<span class="p-name" title="' + escapeHtml(p.nome) + '">' + escapeHtml(p.nome) + '</span>' +
+          row.innerHTML = '<span class="p-name" title="' + escapeHtml(p.nome) + (p.in_serie_a===false?' - non è più in Serie A':'') + '">' + (p.in_serie_a===false?'✈ ':'') + escapeHtml(p.nome) + '</span>' +
             '<span class="p-recovery">+' + Number(rec) + '</span>';
           group.appendChild(row);
         });
