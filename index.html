@@ -5648,6 +5648,8 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 #page-live .mc-result-summary strong{display:block;font-size:32px;color:#ffd54a;margin-top:8px}
 #page-live .mc-await{text-align:center;font-size:15px;line-height:1.5;color:#eee;background:#2a2430;border:1px dashed #7d6536;padding:15px;border-radius:10px;margin:16px auto;max-width:790px}
 </style><style id="borrachos-match-center-mobile-compatto">
+#page-live .live-scoreboard tbody tr.live-da-giocare{cursor:default}
+#page-live .live-scoreboard tbody tr.live-da-giocare:hover{background:transparent}
 /* 17/10/2026 - Match Center su telefono: meno spazio verticale, controlli piu' piccoli */
 @media(max-width:700px){
   #page-live{padding:8px 8px 16px!important;min-height:0!important}
@@ -5668,6 +5670,8 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   #page-live .live-scoreboard td{padding:4px 6px!important;font-size:14px!important}
   #page-live .live-scoreboard .ris-logo{width:24px!important;height:24px!important}
   #page-live .live-scoreboard .live-goal{font-size:16px!important}
+  body:not(.home-active) .header .nav{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #page-home .home-nav .nav-btn:last-child{grid-column:1/-1!important}
   /* Dettaglio partita: una colonna, navigazione partite in orizzontale */
   html body #page-live #live-detail .live-detail-layout{display:block!important;margin:0!important;max-width:100%!important}
   html body #page-live #live-detail .live-detail-nav{display:flex!important;flex-direction:row!important;align-items:stretch!important;gap:4px!important;margin:0 0 6px!important;position:static!important;width:100%!important}
@@ -5718,7 +5722,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     <div class="nav">
         <button class="nav-btn" onclick="showPage('home', this)">&#8962; Home</button>
         <button class="nav-btn" onclick="showPage('classifica', this)">Classifica</button>
-        <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
+        <button class="nav-btn" onclick="showPage('risultati', this)" style="display:none!important" aria-hidden="true" tabindex="-1">Risultati</button>
         <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
         <button class="nav-btn" onclick="showPage('live', this)">🍺 MATCH CENTER</button>
@@ -5734,7 +5738,7 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
     </div>
     <div class="home-nav">
         <button class="nav-btn" onclick="showPage('classifica', this)">Classifica</button>
-        <button class="nav-btn" onclick="showPage('risultati', this)">Risultati</button>
+        <button class="nav-btn" onclick="showPage('risultati', this)" style="display:none!important" aria-hidden="true" tabindex="-1">Risultati</button>
         <button class="nav-btn" onclick="showPage('statistiche', this)">Statistiche</button>
         <button class="nav-btn" onclick="showPage('best11', this)">Best 11</button>
         <button class="nav-btn" onclick="showPage('live', this)">🍺 MATCH CENTER</button>
@@ -6432,13 +6436,18 @@ function mcRenderGiornata(gg){
   if(steps.length===2){steps[0].disabled=indice===0;steps[1].disabled=indice===mcArchivio.length-1;}
   livePartiteCache=(g.partite||[]).map(mcPartita);
   var sb=document.getElementById('live-scoreboard-body');
-  if(sb)sb.innerHTML=livePartiteCache.map(function(p,i){
+  if(sb&&g.daGiocare)sb.innerHTML=livePartiteCache.map(function(p){
+    var h=p.casa,a=p.trasferta;
+    return '<tr class="live-team-row live-match-first live-da-giocare"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(h.nome)+'" onerror="this.remove()"><span>'+liveEsc(h.nome)+'</span></div></td><td>—</td><td class="live-goal">—</td></tr>'+
+      '<tr class="live-team-row live-match-second live-da-giocare"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(a.nome)+'" onerror="this.remove()"><span>'+liveEsc(a.nome)+'</span></div></td><td>—</td><td class="live-goal">—</td></tr>';
+  }).join('');
+  else if(sb)sb.innerHTML=livePartiteCache.map(function(p,i){
     var h=p.casa,a=p.trasferta,r=p.risultato_reale;
     return '<tr class="live-team-row live-match-first" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(h.nome)+'" onerror="this.remove()"><span>'+liveEsc(h.nome)+'</span></div></td><td>'+liveTotale(h.totale)+'</td><td class="live-goal">'+r.gol_casa+'</td></tr>'+
       '<tr class="live-team-row live-match-second" onclick="mostraLivePartita('+i+')"><td><div class="ris-team"><img class="ris-logo" src="'+logoUrl(a.nome)+'" onerror="this.remove()"><span>'+liveEsc(a.nome)+'</span></div></td><td>'+liveTotale(a.totale)+'</td><td class="live-goal">'+r.gol_trasferta+'</td></tr>';
   }).join('');
   var meta=document.getElementById('live-meta');
-  if(meta)meta.textContent='Giornata '+mcGiornata+' · risultati definitivi · archivio locale Borrachos';
+  if(meta)meta.textContent='Giornata '+mcGiornata+(g.daGiocare?' · da giocare · calendario':' · risultati definitivi');
   tornaLiveTabellone();
 }
 function caricaLive(){
@@ -6449,12 +6458,14 @@ function caricaLive(){
   fetch('dati.json',{cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('Impossibile leggere dati.json');return r.json();
   }).then(function(d){
-    mcArchivio=(d.risultati||[]).filter(function(g){
-      return (g.partite||[]).length && g.partite.some(function(p){return Number(p.pt_casa)>0||Number(p.pt_trasferta)>0;});
+    // Tutte le giornate del calendario: quelle senza punteggi sono "da giocare" (sostituisce la pagina Risultati).
+    mcArchivio=(d.risultati||[]).filter(function(g){return (g.partite||[]).length;}).map(function(g){
+      g.daGiocare=!g.partite.some(function(p){return Number(p.pt_casa)>0||Number(p.pt_trasferta)>0;});return g;
     });
-    sel.innerHTML=mcArchivio.map(function(g){return '<option value="'+g.giornata+'">Giornata '+g.giornata+'</option>';}).join('');
-    if(!mcArchivio.length){if(meta)meta.textContent='Nessuna giornata conclusa in archivio';return;}
-    mcRenderGiornata(mcArchivio[mcArchivio.length-1].giornata);
+    sel.innerHTML=mcArchivio.map(function(g){return '<option value="'+g.giornata+'">Giornata '+g.giornata+(g.daGiocare?' · da giocare':'')+'</option>';}).join('');
+    if(!mcArchivio.length){if(meta)meta.textContent='Nessuna giornata in archivio';return;}
+    var giocate=mcArchivio.filter(function(g){return !g.daGiocare;});
+    mcRenderGiornata((giocate.length?giocate[giocate.length-1]:mcArchivio[0]).giornata);
     sel.value=String(mcGiornata);
   }).catch(function(e){if(meta)meta.textContent='Archivio non disponibile: '+e.message;});
 }
