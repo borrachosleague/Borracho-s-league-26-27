@@ -5708,6 +5708,24 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   html body #page-live #live-detail .live-fantavoto{font-size:13px!important;margin-top:1px!important}
 }
 </style>
+<style id="borrachos-best11-mobile">
+/* 17/10/2026 - Best 11 su telefono: campo libero, opzioni e panchina in pannelli apribili */
+@media(max-width:700px){
+  html body #page-best11#page-best11 .pitch-player{transform:translate(-50%,-50%) scale(.48)!important}
+  html body #page-best11#page-best11 .best11-controls,html body #page-best11#page-best11 .best11-bench{display:none!important}
+  html body.b11-opz #page-best11#page-best11 .best11-controls,html body.b11-pan #page-best11#page-best11 .best11-bench{display:flex!important;flex-direction:column!important;position:absolute!important;inset:50px 8px auto 8px!important;width:auto!important;height:auto!important;max-height:calc(100% - 140px)!important;overflow:auto!important;z-index:60!important;gap:6px!important;margin:0!important;padding:10px!important;background:rgba(14,14,22,.96)!important;border:2px solid #ffd54a!important;border-radius:12px!important;transform:none!important;box-shadow:0 8px 30px rgba(0,0,0,.6)!important}
+  html body #page-best11#page-best11 .best11-controls .best11-choice-unit{position:static!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:6px!important;width:auto!important;height:auto!important;inset:auto!important}
+  html body #page-best11#page-best11 .best11-controls .best11-label{flex:0 0 70px!important;width:70px!important;font-size:12px!important;height:auto!important;text-align:left!important;margin:0!important}
+  html body #page-best11#page-best11 .best11-controls .best11-v{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:5px!important;width:auto!important;height:auto!important;flex:1 1 auto!important;margin:0!important}
+  html body #page-best11#page-best11 .best11-controls .best11-v .subnav-btn{width:auto!important;min-width:0!important;height:auto!important;flex:1 1 0!important;font-size:12px!important;padding:7px 6px!important;line-height:1.1!important;white-space:nowrap!important;margin:0!important}
+  html body #page-best11#page-best11 .best11-bench #best11-bench-list{display:grid!important;grid-template-columns:1fr 1fr!important;column-gap:14px!important;height:auto!important;max-height:none!important}
+  html body #page-best11#page-best11 .best11-bench .bench-player{height:auto!important;font-size:13px!important;padding:4px 0!important}
+  html body #page-best11#page-best11 .best11-bench .best11-bench-title{font-size:13px!important;text-align:center!important;height:auto!important}
+  html body #page-best11#page-best11 .b11-toggle{display:block!important}
+}
+#page-best11#page-best11 .b11-toggle{display:none;position:absolute;top:8px;z-index:61;background:rgba(14,14,22,.92);color:#ffd54a;border:2px solid #ffd54a;border-radius:9px;font-weight:900;font-size:12px;padding:7px 10px;cursor:pointer}
+#page-best11#page-best11 .b11-toggle.on{background:#ffd54a;color:#111}
+</style>
 </head>
 <body>
 
@@ -8072,5 +8090,54 @@ caricaDatiBorrachos()
 </script>
 
 <script src="match_center_privato.js?v=6" defer></script>
+<script>
+/* 17/10/2026 - Best 11 su telefono: pulsanti OPZIONI e PANCHINA (visibili solo sotto 700px) */
+(function(){
+  function setup(){
+    var lay=document.querySelector('#page-best11 .best11-layout');
+    if(!lay||lay.querySelector('.b11-toggle'))return;
+    function mk(txt,cls,side){
+      var b=document.createElement('button');b.type='button';b.className='b11-toggle';b.textContent=txt;b.style[side]='8px';
+      b.onclick=function(){
+        var on=!document.body.classList.contains(cls);
+        document.body.classList.remove('b11-opz','b11-pan');
+        Array.prototype.forEach.call(document.querySelectorAll('.b11-toggle'),function(x){x.classList.remove('on')});
+        if(on){document.body.classList.add(cls);b.classList.add('on')}
+      };
+      return b;
+    }
+    lay.appendChild(mk('\u2699 OPZIONI','b11-opz','left'));
+    lay.appendChild(mk('PANCHINA','b11-pan','right'));
+  }
+  // Nomi lunghi nelle figurine: prima riduce il carattere, poi (se non basta) abbrevia il nome: "Carlos Augusto" -> "C. Augusto".
+  function adatta(){
+    Array.prototype.forEach.call(document.querySelectorAll('#pitch-best11 .pp-name'),function(n){
+      if(!n.clientWidth)return;
+      var t=n.textContent;
+      if(n.dataset.full==null||(t!==n.dataset.full&&t!==n.dataset.short)){n.dataset.full=t;n.dataset.short='';}
+      if(n.textContent!==n.dataset.full)n.textContent=n.dataset.full;
+      n.style.removeProperty('font-size');
+      var w=n.dataset.full.trim().split(/\s+/);
+      var abbreviabile=w.length>1&&!/\.$/.test(w[0])&&w[w.length-1].replace('.','').length>1;
+      var base=parseFloat(getComputedStyle(n).fontSize),s=base,min=Math.max(9,base*(abbreviabile?0.82:0.68));
+      function fit(){while(n.scrollWidth>n.clientWidth+1&&s>min){s-=0.5;n.style.setProperty('font-size',s+'px','important');}}
+      fit();
+      if(n.scrollWidth>n.clientWidth+1&&abbreviabile){
+        n.dataset.short=w[0].charAt(0)+'. '+w.slice(1).join(' ');
+        n.textContent=n.dataset.short;s=base;n.style.removeProperty('font-size');min=Math.max(9,base*0.68);fit();
+      }
+    });
+  }
+  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();},40);}
+  function osserva(){
+    var pitch=document.getElementById('pitch-best11');if(!pitch)return;
+    new MutationObserver(programma).observe(pitch,{childList:true});
+    if(window.ResizeObserver)new ResizeObserver(programma).observe(pitch);
+    window.addEventListener('resize',programma);programma();
+  }
+  function avvio(){setup();osserva();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',avvio);else avvio();
+})();
+</script>
 </body>
 </html>
