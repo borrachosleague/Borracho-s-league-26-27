@@ -5715,9 +5715,6 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   html body #page-best11#page-best11 #pitch-best11{left:38px!important;right:38px!important;width:auto!important;top:14px!important;bottom:112px!important;height:auto!important}
   html body #page-best11#page-best11 .pitch-player{transform:translate(-50%,-50%)!important;width:68px!important;height:auto!important;--ruolo:#2f7de1}
   html body #page-best11#page-best11 .pitch-player.pp-role-por{--ruolo:#8b5cf6}
-  /* Portiere un filo piu' su, tutti gli altri piu' giu': piu' spazio tra portiere e difesa */
-  html body #page-best11#page-best11 .pitch-player.pp-role-por{transform:translate(-50%,calc(-50% - 8px))!important}
-  html body #page-best11#page-best11 .pitch-player:not(.pp-role-por){transform:translate(-50%,calc(-50% + 22px))!important}
   html body #page-best11#page-best11 .pitch-player.pp-role-dif{--ruolo:#2f7de1}
   html body #page-best11#page-best11 .pitch-player.pp-role-cen{--ruolo:#22a35a}
   html body #page-best11#page-best11 .pitch-player.pp-role-att{--ruolo:#e23b3b}
@@ -8157,10 +8154,76 @@ caricaDatiBorrachos()
       }
     });
   }
-  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();},40);}
+  // Telefono: dispone le linee (portiere, difesa, centrocampo, attacco) a distanza uguale
+  // nello spazio libero tra il tabellone in alto e lo slider presenze in basso.
+  // Se in una linea due targhette sono troppo vicine in orizzontale (es. 5 centrocampisti),
+  // la linea viene sfalsata su due file a zig-zag. Le posizioni orizzontali restano quelle del modulo.
+  function disponi(){
+    var pitch=document.getElementById('pitch-best11');if(!pitch)return;
+    var telefono=window.matchMedia&&window.matchMedia('(max-width:700px)').matches;
+    var gioc=Array.prototype.slice.call(pitch.querySelectorAll('.pitch-player'));
+    gioc.forEach(function(p){
+      var t=p.style.getPropertyValue('top');
+      if(p.dataset.topOrig==null||(t&&t!==p.dataset.topSet)){p.dataset.topOrig=t;p.dataset.topSet='';}
+    });
+    if(!telefono){gioc.forEach(function(p){if(p.dataset.topOrig&&p.dataset.topSet){p.style.setProperty('top',p.dataset.topOrig,'important');p.dataset.topSet='';}});return;}
+    var pr=pitch.getBoundingClientRect();if(!pr.height||!pr.width)return;
+    var GAP=6,linee=[];
+    ['por','dif','cen','att'].forEach(function(r){
+      var g=gioc.filter(function(p){return p.classList.contains('pp-role-'+r);});
+      if(!g.length)return;
+      var el=g.map(function(p){
+        var b=p.getBoundingClientRect();
+        return {p:p,x:(parseFloat(p.style.getPropertyValue('left'))||50)/100*pr.width,t:parseFloat(p.dataset.topOrig)||50,w:b.width,h:b.height};
+      }).sort(function(a,b){return a.x-b.x;});
+      var h=Math.max.apply(null,el.map(function(e){return e.h;}));
+      var stretto=false;
+      for(var i=1;i<el.length;i++){if(el[i].x-el[i-1].x<(el[i].w+el[i-1].w)/2+14)stretto=true;}
+      if(stretto){
+        // due file alternate: quella con i giocatori piu' avanzati (top% maggiore) va sotto
+        var A=el.filter(function(e,i){return i%2===0;}),B=el.filter(function(e,i){return i%2===1;});
+        var mA=A.reduce(function(s,e){return s+e.t;},0)/A.length,mB=B.reduce(function(s,e){return s+e.t;},0)/B.length;
+        var sotto=mA>=mB?A:B;
+        el.forEach(function(e){e.dy=sotto.indexOf(e)>=0?h+GAP:0;});
+        linee.push({el:el,alt:2*h+GAP,h:h});
+      }else{
+        var media=el.reduce(function(s,e){return s+e.t;},0)/el.length;
+        el.forEach(function(e){e.dy=Math.max(-h/3,Math.min(h/3,(e.t-media)/100*pr.height*0.5));});
+        var minDy=Math.min.apply(null,el.map(function(e){return e.dy;}));
+        el.forEach(function(e){e.dy-=minDy;});
+        var maxDy=Math.max.apply(null,el.map(function(e){return e.dy;}));
+        linee.push({el:el,alt:h+maxDy,h:h});
+      }
+    });
+    if(!linee.length)return;
+    var slider=document.querySelector('#page-best11 .best11-presenze-unit');
+    var fondo=pr.height;
+    if(slider){var sr=slider.getBoundingClientRect();if(sr.height)fondo=Math.min(fondo,sr.top-pr.top-14);}
+    var alto=2,tot=linee.reduce(function(s,l){return s+l.alt;},0);
+    var spazio=linee.length>1?Math.max(GAP,(fondo-alto-tot)/(linee.length-1)):0;
+    var y=alto;
+    linee.forEach(function(l){
+      l.el.forEach(function(e){
+        var v=Math.round(y+e.dy+l.h/2)+'px';
+        if(e.p.style.getPropertyValue('top')!==v)e.p.style.setProperty('top',v,'important');
+        e.p.dataset.topSet=v;
+      });
+      y+=l.alt+spazio;
+    });
+  }
+  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();},40);}
   function osserva(){
     var pitch=document.getElementById('pitch-best11');if(!pitch)return;
-    new MutationObserver(programma).observe(pitch,{childList:true});
+    new MutationObserver(function(lista){
+      // reagisce solo a giocatori nuovi o spostati dal sito, non alle proprie modifiche (evita cicli)
+      for(var i=0;i<lista.length;i++){
+        var m=lista[i];
+        if(m.type==='childList'&&m.target===pitch){programma();return;}
+        if(m.type==='attributes'&&m.target.classList&&m.target.classList.contains('pitch-player')&&m.target.style.getPropertyValue('top')!==m.target.dataset.topSet){programma();return;}
+      }
+    }).observe(pitch,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+    ['best-modulo','best-gruppo','best-tipo','best-metrica'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('click',function(){setTimeout(programma,80);});});
+    var pres=document.getElementById('best-presenze-pct');if(pres)pres.addEventListener('change',function(){setTimeout(programma,80);});
     if(window.ResizeObserver)new ResizeObserver(programma).observe(pitch);
     window.addEventListener('resize',programma);programma();
   }
