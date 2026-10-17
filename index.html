@@ -5711,7 +5711,9 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 <style id="borrachos-best11-mobile">
 /* 17/10/2026 - Best 11 su telefono: campo libero, opzioni e panchina in pannelli apribili */
 @media(max-width:700px){
-  html body #page-best11#page-best11 .pitch-player{transform:translate(-50%,-50%) scale(.48)!important}
+  /* Targhette piu' grandi e campo piu' largo/alto: piu' spazio tra i giocatori */
+  html body #page-best11#page-best11 #pitch-best11{left:43px!important;right:43px!important;width:auto!important;top:22px!important;bottom:112px!important;height:auto!important}
+  html body #page-best11#page-best11 .pitch-player{transform:translate(-50%,-50%) scale(.52)!important}
   html body #page-best11#page-best11 .best11-controls,html body #page-best11#page-best11 .best11-bench{display:none!important}
   html body.b11-opz #page-best11#page-best11 .best11-controls,html body.b11-pan #page-best11#page-best11 .best11-bench{display:flex!important;flex-direction:column!important;position:absolute!important;inset:50px 8px auto 8px!important;width:auto!important;height:auto!important;max-height:calc(100% - 140px)!important;overflow:auto!important;z-index:60!important;gap:6px!important;margin:0!important;padding:10px!important;background:rgba(14,14,22,.96)!important;border:2px solid #ffd54a!important;border-radius:12px!important;transform:none!important;box-shadow:0 8px 30px rgba(0,0,0,.6)!important}
   html body #page-best11#page-best11 .best11-controls .best11-choice-unit{position:static!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:6px!important;width:auto!important;height:auto!important;inset:auto!important}
@@ -5723,7 +5725,8 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   html body #page-best11#page-best11 .best11-bench .best11-bench-title{font-size:13px!important;text-align:center!important;height:auto!important}
   html body #page-best11#page-best11 .b11-toggle{display:block!important}
   /* Slider presenze minime: piu' grande e sempre visibile in fondo allo schermo */
-  html body #page-best11#page-best11 .best11-presenze-unit.mobile-detached-presenze{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;transform:translateX(-50%) scale(1.75)!important;transform-origin:center bottom!important;z-index:36!important}
+  html body #page-best11#page-best11 .best11-presenze-unit.mobile-detached-presenze{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;transform:translateX(-50%) scale(2.3)!important;transform-origin:center bottom!important;z-index:36!important}
+  @media(max-width:360px){html body #page-best11#page-best11 .best11-presenze-unit.mobile-detached-presenze{transform:translateX(-50%) scale(2.1)!important}}
 }
 #page-best11#page-best11 .b11-toggle{display:none;position:absolute;top:8px;z-index:61;background:rgba(14,14,22,.92);color:#ffd54a;border:2px solid #ffd54a;border-radius:9px;font-weight:900;font-size:12px;padding:7px 10px;cursor:pointer}
 #page-best11#page-best11 .b11-toggle.on{background:#ffd54a;color:#111}
