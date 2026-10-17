@@ -5796,18 +5796,8 @@ html body #page-classifica#page-classifica .chalk-team{font-family:"Ultra Fresh 
 }
 </style>
 <style id="borrachos-best11-panchina-pc">
-/* 17/10/2026 - Best 11 su PC: la panchina e' un rettangolo in prospettiva che ricopre sedili + cassone di legno
-   della panchina disegnata, diviso in 10 sezioni verticali (un posto per panchinaro).
-   Passando sopra un nome compare la scheda centrale (MV, MFV, QI, QA, +/-). */
-@media(min-width:701px){
-  body.b11-pan-pc #page-best11 .best11-bench{display:none!important}
-  .pan4{position:absolute;left:0;top:0;width:250px;height:84px;transform-origin:0 0;z-index:40;display:flex;flex-direction:row;background:rgba(6,14,22,.9);border:2px solid #ffd54a;box-sizing:border-box;box-shadow:0 4px 14px rgba(0,0,0,.6)}
-  .pan4 .c{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(255,213,74,.45);border-top:5px solid var(--r);cursor:pointer;overflow:hidden}
-  .pan4 .c:last-child{border-right:0}
-  .pan4 .c:hover{background:rgba(255,213,74,.22)}
-  .pan4 .c .v{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;gap:4px;white-space:nowrap;font:700 11px/1.05 "Arial Narrow",Arial,sans-serif;color:#fff;max-height:74px;overflow:hidden}
-  .pan4 .c .v b{color:#ffd54a;font-weight:900}
-}
+/* 17/10/2026 - Best 11 su PC: panchina classica (elenco verticale) in basso a destra */
+@media(min-width:701px){html body #page-best11#page-best11 .best11-bench{top:auto!important;bottom:12px!important;right:12px!important;left:auto!important}}
 </style>
 </head>
 <body>
@@ -8303,47 +8293,7 @@ caricaDatiBorrachos()
     var val='matrix3d('+[t[0],t[3],0,t[6],t[1],t[4],0,t[7],0,0,1,0,t[2],t[5],0,t[8]].join(',')+')';
     if(c.style.getPropertyValue('transform')!==val)c.style.setProperty('transform',val,'important');
   }
-  // PC: panchina come striscia in prospettiva sopra la panchina disegnata nello sfondo (10 sezioni).
-  // La scheda centrale al passaggio del mouse usa gli stessi eventi delle righe originali della panchina.
-  var COL_RUOLO={POR:'#8b5cf6',DIF:'#2f7de1',CEN:'#22a35a',ATT:'#e23b3b'};
-  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  function matrice(D,W,H){
-    function adj(m){return [m[4]*m[8]-m[5]*m[7],m[2]*m[7]-m[1]*m[8],m[1]*m[5]-m[2]*m[4],m[5]*m[6]-m[3]*m[8],m[0]*m[8]-m[2]*m[6],m[2]*m[3]-m[0]*m[5],m[3]*m[7]-m[4]*m[6],m[1]*m[6]-m[0]*m[7],m[0]*m[4]-m[1]*m[3]];}
-    function mm(a,b){var r=[];for(var i=0;i<3;i++)for(var j=0;j<3;j++){var v=0;for(var k=0;k<3;k++)v+=a[3*i+k]*b[3*k+j];r[3*i+j]=v;}return r;}
-    function mv(m,v){return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
-    function base(p){var m=[p[0][0],p[1][0],p[2][0],p[0][1],p[1][1],p[2][1],1,1,1];var v=mv(adj(m),[p[3][0],p[3][1],1]);return mm(m,[v[0],0,0,0,v[1],0,0,0,v[2]]);}
-    var t=mm(base(D),adj(base([[0,0],[W,0],[0,H],[W,H]])));for(var i=0;i<9;i++)t[i]/=t[8];
-    return 'matrix3d('+[t[0],t[3],0,t[6],t[1],t[4],0,t[7],0,0,1,0,t[2],t[5],0,t[8]].join(',')+')';
-  }
-  var panFirma='';
-  // angoli (immagine 1536x1024) del rettangolo sedili+cassone: inizio-alto, fine-alto, inizio-basso, fine-basso
-  var PAN_QUAD=[[1330,297],[1522,500],[1253,353],[1500,634]];
-  function panchinaPC(){
-    var page=document.getElementById('page-best11'),lay=document.querySelector('#page-best11 .best11-layout');if(!page||!lay)return;
-    var pc=window.matchMedia&&window.matchMedia('(min-width:701px)').matches;
-    var vecchia=lay.querySelector('.pan4');
-    if(!pc){if(vecchia)vecchia.remove();document.body.classList.remove('b11-pan-pc');panFirma='';return;}
-    var pr=page.getBoundingClientRect(),lr=lay.getBoundingClientRect();if(!pr.width||!pr.height)return;
-    var righe=Array.prototype.slice.call(document.querySelectorAll('#best11-bench-list .bench-player'));
-    var dati=righe.map(function(b){var n=b.querySelector('.bench-name'),r=b.querySelector('.bench-role'),v=b.querySelector('.bench-vote');return [n?n.textContent:'',r?r.textContent.trim():'',v?v.textContent:''];});
-    var firma=JSON.stringify(dati)+'|'+[pr.width,pr.height,pr.left,pr.top,lr.left,lr.top].map(Math.round).join(',');
-    if(firma===panFirma&&vecchia)return;
-    panFirma=firma;if(vecchia)vecchia.remove();
-    document.body.classList.add('b11-pan-pc');
-    var B=document.createElement('div');B.className='pan4';
-    B.innerHTML=dati.map(function(d,i){return '<div class="c" data-i="'+i+'" style="--r:'+(COL_RUOLO[d[1]]||'#888')+'"><div class="v"><span>'+esc(d[0])+'</span><b>'+esc(d[2])+'</b></div></div>';}).join('');
-    Array.prototype.forEach.call(B.querySelectorAll('.c'),function(c){
-      var orig=righe[Number(c.getAttribute('data-i'))];
-      c.addEventListener('mouseenter',function(){if(orig)orig.dispatchEvent(new MouseEvent('mouseenter'));});
-      c.addEventListener('mouseleave',function(){if(orig)orig.dispatchEvent(new MouseEvent('mouseleave'));});
-    });
-    lay.appendChild(B);
-    // nomi lunghi: carattere piu' piccolo finche' ci stanno
-    Array.prototype.forEach.call(B.querySelectorAll('.v'),function(v){var f=11;while(v.scrollHeight>v.clientHeight+1&&f>8){f-=0.5;v.style.fontSize=f+'px';}});
-    var s=Math.max(pr.width/IMG_W,pr.height/IMG_H),ox=pr.left+(pr.width-IMG_W*s)*0.5,oy=pr.top;
-    B.style.transform=matrice(PAN_QUAD.map(function(p){return [ox+p[0]*s-lr.left,oy+p[1]*s-lr.top];}),B.offsetWidth,B.offsetHeight);
-  }
-  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();tabellone();panchinaPC();},40);}
+  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();tabellone();},40);}
   function osserva(){
     var pitch=document.getElementById('pitch-best11');if(!pitch)return;
     new MutationObserver(function(lista){
@@ -8355,7 +8305,6 @@ caricaDatiBorrachos()
       }
     }).observe(pitch,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
     ['best-modulo','best-gruppo','best-tipo','best-metrica'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('click',function(){setTimeout(programma,80);});});
-    var bl=document.getElementById('best11-bench-list');if(bl)new MutationObserver(programma).observe(bl,{childList:true,subtree:true,characterData:true});
     var pres=document.getElementById('best-presenze-pct');if(pres)pres.addEventListener('change',function(){setTimeout(programma,80);});
     if(window.ResizeObserver){new ResizeObserver(programma).observe(pitch);var pg=document.getElementById('page-best11');if(pg)new ResizeObserver(programma).observe(pg);}
     window.addEventListener('resize',programma);programma();
