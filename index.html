@@ -5722,6 +5722,8 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   html body #page-best11#page-best11 .best11-bench .bench-player{height:auto!important;font-size:13px!important;padding:4px 0!important}
   html body #page-best11#page-best11 .best11-bench .best11-bench-title{font-size:13px!important;text-align:center!important;height:auto!important}
   html body #page-best11#page-best11 .b11-toggle{display:block!important}
+  /* Slider presenze minime: piu' grande e sempre visibile in fondo allo schermo */
+  html body #page-best11#page-best11 .best11-presenze-unit.mobile-detached-presenze{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;transform:translateX(-50%) scale(1.75)!important;transform-origin:center bottom!important;z-index:36!important}
 }
 #page-best11#page-best11 .b11-toggle{display:none;position:absolute;top:8px;z-index:61;background:rgba(14,14,22,.92);color:#ffd54a;border:2px solid #ffd54a;border-radius:9px;font-weight:900;font-size:12px;padding:7px 10px;cursor:pointer}
 #page-best11#page-best11 .b11-toggle.on{background:#ffd54a;color:#111}
