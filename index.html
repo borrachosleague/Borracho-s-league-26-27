@@ -5782,6 +5782,19 @@ html body #page-classifica#page-classifica .chalk-team{font-family:"Ultra Fresh 
 @media(max-width:379px){html body #page-classifica#page-classifica .classifica-layout{zoom:.94}}
 @media(max-width:350px){html body #page-classifica#page-classifica .classifica-layout{zoom:.88}}
 </style>
+<style id="borrachos-best11-tabellone-pc">
+/* 17/10/2026 - Best 11 su PC: i comandi (Giocatori/Voti/Medie/Modulo/Presenze) stanno dentro il tabellone
+   disegnato nello sfondo, deformati in prospettiva (matrix3d calcolata da script). Solo da 701px in su. */
+@media(min-width:701px){
+  html body #page-best11#page-best11 .best11-controls.b11-tabellone{position:absolute!important;left:0!important;top:0!important;right:auto!important;bottom:auto!important;width:280px!important;height:262px!important;max-height:none!important;margin:0!important;padding:10px 12px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;gap:0!important;background:#050f17!important;border:0!important;border-radius:0!important;box-shadow:none!important;transform-origin:0 0!important;overflow:hidden!important;z-index:6!important}
+  html body #page-best11#page-best11 .b11-tabellone .best11-choice-unit{position:static!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:4px!important;width:auto!important;height:auto!important;margin:0!important;transform:none!important}
+  html body #page-best11#page-best11 .b11-tabellone .best11-label{font-size:13px!important;line-height:1!important;color:#fff!important;font-weight:700!important;text-align:left!important;margin:0!important;letter-spacing:.3px!important}
+  html body #page-best11#page-best11 .b11-tabellone .best11-v{display:flex!important;flex-direction:row!important;gap:5px!important;width:auto!important;height:auto!important;margin:0!important}
+  html body #page-best11#page-best11 .b11-tabellone .best11-v .subnav-btn{flex:1 1 0!important;min-width:0!important;width:auto!important;height:24px!important;padding:0 4px!important;font-size:12px!important;line-height:1!important;border-radius:6px!important;border:1px solid rgba(255,255,255,.55)!important;background:transparent!important;color:#fff!important;white-space:nowrap!important;margin:0!important}
+  html body #page-best11#page-best11 .b11-tabellone .best11-v .subnav-btn.active{background:#f4b324!important;border-color:#f4b324!important;color:#111!important;font-weight:800!important}
+  html body #page-best11#page-best11 .b11-tabellone .best11-presenze-unit{display:block!important;height:46px!important;position:relative!important}
+}
+</style>
 </head>
 <body>
 
@@ -8251,7 +8264,32 @@ caricaDatiBorrachos()
       y+=l.alt+spazio;
     });
   }
-  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();},40);}
+  // PC: comandi dentro il tabellone disegnato nello sfondo (immagine 1536x1024, background-size:cover, posizione 50% 0%).
+  // Angoli interni del tabellone misurati sull'immagine; la matrice prospettica viene ricalcolata a ogni ridimensionamento.
+  var TAB={TL:[25,79.2],TR:[308,56.6],BL:[25,427],BR:[308,388.5]},IMG_W=1536,IMG_H=1024;
+  function tabellone(){
+    var c=document.querySelector('#page-best11 .best11-controls'),page=document.getElementById('page-best11');
+    if(!c||!page)return;
+    var pc=window.matchMedia&&window.matchMedia('(min-width:701px)').matches;
+    if(!pc){if(c.classList.contains('b11-tabellone')){c.classList.remove('b11-tabellone');c.style.removeProperty('transform');}return;}
+    var lay=c.offsetParent;var pr=page.getBoundingClientRect();
+    if(!lay||!pr.width||!pr.height)return;
+    c.classList.add('b11-tabellone');
+    var lr=lay.getBoundingClientRect(),s=Math.max(pr.width/IMG_W,pr.height/IMG_H),ox=pr.left+(pr.width-IMG_W*s)*0.5,oy=pr.top;
+    function lerp(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];}
+    var L0=lerp(TAB.TL,TAB.BL,0.22),L1=lerp(TAB.TL,TAB.BL,0.975),R0=lerp(TAB.TR,TAB.BR,0.22),R1=lerp(TAB.TR,TAB.BR,0.975);
+    var D=[lerp(L0,R0,0.025),lerp(L0,R0,0.975),lerp(L1,R1,0.025),lerp(L1,R1,0.975)].map(function(p){return [ox+p[0]*s-lr.left,oy+p[1]*s-lr.top];});
+    var W=c.offsetWidth,H=c.offsetHeight;if(!W||!H)return;
+    function adj(m){return [m[4]*m[8]-m[5]*m[7],m[2]*m[7]-m[1]*m[8],m[1]*m[5]-m[2]*m[4],m[5]*m[6]-m[3]*m[8],m[0]*m[8]-m[2]*m[6],m[2]*m[3]-m[0]*m[5],m[3]*m[7]-m[4]*m[6],m[1]*m[6]-m[0]*m[7],m[0]*m[4]-m[1]*m[3]];}
+    function mm(a,b){var r=[];for(var i=0;i<3;i++)for(var j=0;j<3;j++){var v=0;for(var k=0;k<3;k++)v+=a[3*i+k]*b[3*k+j];r[3*i+j]=v;}return r;}
+    function mv(m,v){return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
+    function base(p){var m=[p[0][0],p[1][0],p[2][0],p[0][1],p[1][1],p[2][1],1,1,1];var v=mv(adj(m),[p[3][0],p[3][1],1]);return mm(m,[v[0],0,0,0,v[1],0,0,0,v[2]]);}
+    var t=mm(base(D),adj(base([[0,0],[W,0],[0,H],[W,H]])));
+    for(var i=0;i<9;i++)t[i]/=t[8];
+    var val='matrix3d('+[t[0],t[3],0,t[6],t[1],t[4],0,t[7],0,0,1,0,t[2],t[5],0,t[8]].join(',')+')';
+    if(c.style.getPropertyValue('transform')!==val)c.style.setProperty('transform',val,'important');
+  }
+  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();tabellone();},40);}
   function osserva(){
     var pitch=document.getElementById('pitch-best11');if(!pitch)return;
     new MutationObserver(function(lista){
@@ -8264,7 +8302,7 @@ caricaDatiBorrachos()
     }).observe(pitch,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
     ['best-modulo','best-gruppo','best-tipo','best-metrica'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('click',function(){setTimeout(programma,80);});});
     var pres=document.getElementById('best-presenze-pct');if(pres)pres.addEventListener('change',function(){setTimeout(programma,80);});
-    if(window.ResizeObserver)new ResizeObserver(programma).observe(pitch);
+    if(window.ResizeObserver){new ResizeObserver(programma).observe(pitch);var pg=document.getElementById('page-best11');if(pg)new ResizeObserver(programma).observe(pg);}
     window.addEventListener('resize',programma);programma();
   }
   function avvio(){setup();osserva();}
