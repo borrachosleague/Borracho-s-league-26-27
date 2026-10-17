@@ -11,14 +11,20 @@
  }
  const key=(day,a,b)=>String(day)+'|'+norm(a)+'|'+norm(b);
  function verify(data){
+  if(data && data.schema && data.schema!==SCHEMA)throw Error('archivio in formato vecchio ('+data.schema+'): rigeneralo con importa_formazioni.py');
   if(!data || data.schema!==SCHEMA || !Array.isArray(data.giornate) || !data.giornate.length)throw Error('Formato archivio JSON non valido');
   const map=new Map();
   for(const day of data.giornate){
-   if(!Number.isInteger(day.giornata) || !Array.isArray(day.partite) || day.partite.length!==5)throw Error('Giornata incompleta: '+day.giornata);
+   if(!Number.isInteger(day.giornata) || day.giornata<1 || day.giornata>36 || !Array.isArray(day.partite) || day.partite.length!==5)throw Error('Giornata o numero partite non valido: '+day.giornata);
    for(const p of day.partite){
     for(const side of ['casa','trasferta']){
      const t=p[side];
      if(!t || !t.nome || !Array.isArray(t.titolari) || t.titolari.length!==11 || !Array.isArray(t.panchina) || t.panchina.length>14)throw Error('Formazione incompleta alla G'+day.giornata);
+     const seen=new Set();
+     for(const g of t.titolari.concat(t.panchina)){
+      if(!g || typeof g.nome!=='string' || g.nome.trim().length<2 || [g.scr,g.cscr].some(v=>v!=null&&!(typeof v==='number'&&isFinite(v)&&v>=0&&v<20)))throw Error('Voti o giocatori non validi: '+t.nome+' G'+day.giornata);
+      const k=norm(g.nome);if(seen.has(k))throw Error('Giocatore duplicato in '+t.nome+': '+g.nome);seen.add(k);
+     }
      for(const f of ['totale','fantavoto_effettivo','pagella_effettiva','modificatore_difesa'])if(typeof t[f]!=='number'||!isFinite(t[f]))throw Error('Campo '+f+' mancante: '+t.nome+' G'+day.giornata+' (rigenera il JSON con importa_formazioni.py)');
      if(Math.abs(t.fantavoto_effettivo+t.modificatore_difesa-t.totale)>1e-6)throw Error('Totale non coerente: '+t.nome+' G'+day.giornata+' (fantavoto '+t.fantavoto_effettivo+' + mod '+t.modificatore_difesa+' ≠ '+t.totale+')');
     }
@@ -89,7 +95,7 @@
     byMatch=found;redraw();
     msg('Archivio attivo: '+data.giornate.length+' giornate e '+found.size+' partite. Salvato su questo browser.'+(diff.length?' ⚠ '+diff.length+' totali diversi da dati.json (restano quelli ufficiali): '+diff.slice(0,3).join('; '):''),diff.length>0);
     try{await dbAction('put',data)}catch(e){msg('Archivio attivo ora, ma salvataggio locale non riuscito: '+e.message,true)}
-   }catch(e){msg('Caricamento non riuscito: '+e.message,true)}finally{input.value=''}
+   }catch(e){msg('IMPORTAZIONE ANNULLATA: '+e.message,true)}finally{input.value=''}
   };
   clear.onclick=async()=>{byMatch.clear();redraw();try{await dbAction('delete');msg('Archivio privato rimosso da questo browser')}catch(e){msg('Dati rimossi dalla pagina; cancellazione locale non riuscita: '+e.message,true)}};
   panel.append(input,load,clear,status);picker.insertAdjacentElement('afterend',panel);
