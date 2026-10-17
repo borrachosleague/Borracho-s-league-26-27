@@ -66,6 +66,14 @@
   if(r.body.user&&r.body.user.is_anonymous)throw Error('Account non valido');
   salvaSessione(sessioneDa(r.body,slug));
  }
+ async function cambiaPassword(attuale,nuova){
+  if(!sess)throw Error('Accedi prima');
+  if(nuova.length<10)throw Error('La nuova password deve avere almeno 10 caratteri');
+  if(nuova===attuale)throw Error('La nuova password è uguale a quella attuale');
+  try{await accedi(sess.squadra,attuale)}catch(e){throw Error(/errata/.test(e.message)?'Password attuale errata':e.message)}
+  const r=await http('/auth/v1/user',{method:'PUT',headers:{apikey:SB_KEY,Authorization:'Bearer '+sess.access_token,'Content-Type':'application/json'},body:JSON.stringify({password:nuova})});
+  if(!r.ok){const c=r.body&&(r.body.error_code||r.body.code);throw Error(c==='weak_password'?'Password troppo debole: usa lettere, numeri e simboli':c==='same_password'?'La nuova password è uguale a quella attuale':'Cambio non riuscito ('+r.status+')')}
+ }
  async function token(){
   if(!sess)throw Error('NON_CONNESSO');
   if(sess.expires_at-90>Date.now()/1000)return sess.access_token;
@@ -127,7 +135,7 @@
   mostraLogin();stato(motivo||'Disconnesso. I dati riservati sono stati rimossi da questa pagina.',err);
  }
  function stato(t,err){if(!ui)return;ui.status.textContent=t;ui.status.style.color=err?'#ff9191':'#f3db84'}
- function mostraLogin(){if(!ui)return;ui.login.style.display='flex';ui.connesso.style.display='none'}
+ function mostraLogin(){if(!ui)return;ui.login.style.display='flex';ui.connesso.style.display='none';ui.chiudiCp()}
  function mostraConnesso(){if(!ui)return;ui.login.style.display='none';ui.connesso.style.display='flex'}
  function redraw(){
   if(typeof mcArchivio==='undefined'||!mcArchivio||!mcArchivio.length||typeof mcRenderGiornata!=='function')return;
@@ -158,10 +166,27 @@
   const connesso=document.createElement('div');connesso.style.cssText=rowCss+';display:none';
   const agg=document.createElement('button');agg.type='button';agg.textContent='↻ AGGIORNA';agg.style.cssText=btnCss;
   const out=document.createElement('button');out.type='button';out.textContent='✕ ESCI';out.style.cssText=btnCss;
-  connesso.append(agg,out);
+  const cp=document.createElement('button');cp.type='button';cp.textContent='🔑 CAMBIA PASSWORD';cp.style.cssText=btnCss;
+  connesso.append(agg,cp,out);
+  const cpForm=document.createElement('form');cpForm.style.cssText=rowCss+';display:none';
+  const mk=(ph,ac)=>{const i=document.createElement('input');i.type='password';i.placeholder=ph;i.style.cssText=fldCss;i.setAttribute('autocomplete',ac);i.setAttribute('aria-label',ph);return i};
+  const pOld=mk('Password attuale','current-password'),pNew=mk('Nuova password (min. 10)','new-password'),pNew2=mk('Ripeti nuova password','new-password');
+  const salva=document.createElement('button');salva.type='submit';salva.textContent='SALVA';salva.style.cssText=btnCss;
+  const annulla=document.createElement('button');annulla.type='button';annulla.textContent='ANNULLA';annulla.style.cssText=btnCss;
+  cpForm.append(pOld,pNew,pNew2,salva,annulla);
+  const chiudiCp=()=>{cpForm.style.display='none';pOld.value=pNew.value=pNew2.value=''};
+  cp.onclick=()=>{cpForm.style.display=cpForm.style.display==='none'?'flex':'none'};
+  annulla.onclick=chiudiCp;
+  cpForm.onsubmit=async ev=>{
+   if(ev&&ev.preventDefault)ev.preventDefault();
+   if(pNew.value!==pNew2.value){stato('Le due nuove password non coincidono',true);return}
+   salva.disabled=true;stato('Cambio password in corso…');
+   try{await cambiaPassword(pOld.value,pNew.value);chiudiCp();stato('Password cambiata. Usa la nuova password dal prossimo accesso.')}
+   catch(e){stato('PASSWORD NON CAMBIATA: '+e.message,true)}finally{salva.disabled=false}
+  };
   const status=document.createElement('div');status.id='mc-private-status';status.style.cssText='color:#f3db84;font-size:13px;font-weight:700';status.setAttribute('role','status');
-  panel.append(login,connesso,status);picker.insertAdjacentElement('afterend',panel);
-  ui={login,connesso,status,sel,pwd,entra};
+  panel.append(login,connesso,cpForm,status);picker.insertAdjacentElement('afterend',panel);
+  ui={login,connesso,status,sel,pwd,entra,cpForm,chiudiCp};
   login.onsubmit=async ev=>{
    if(ev&&ev.preventDefault)ev.preventDefault();
    if(!sel.value){stato('Scegli la tua squadra',true);return}
