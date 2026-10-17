@@ -5715,6 +5715,9 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   html body #page-best11#page-best11 #pitch-best11{left:38px!important;right:38px!important;width:auto!important;top:14px!important;bottom:112px!important;height:auto!important}
   html body #page-best11#page-best11 .pitch-player{transform:translate(-50%,-50%)!important;width:68px!important;height:auto!important;--ruolo:#2f7de1}
   html body #page-best11#page-best11 .pitch-player.pp-role-por{--ruolo:#8b5cf6}
+  /* Portiere un filo piu' su, tutti gli altri piu' giu': piu' spazio tra portiere e difesa */
+  html body #page-best11#page-best11 .pitch-player.pp-role-por{transform:translate(-50%,calc(-50% - 8px))!important}
+  html body #page-best11#page-best11 .pitch-player:not(.pp-role-por){transform:translate(-50%,calc(-50% + 22px))!important}
   html body #page-best11#page-best11 .pitch-player.pp-role-dif{--ruolo:#2f7de1}
   html body #page-best11#page-best11 .pitch-player.pp-role-cen{--ruolo:#22a35a}
   html body #page-best11#page-best11 .pitch-player.pp-role-att{--ruolo:#e23b3b}
