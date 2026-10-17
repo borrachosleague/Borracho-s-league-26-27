@@ -5773,6 +5773,15 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
   html body #page-statistiche#page-statistiche #tabella-giocatori thead th:nth-child(1),html body #page-statistiche#page-statistiche #tabella-giocatori thead th:nth-child(6){font-size:8.5px!important}
 }
 </style>
+<style id="borrachos-classifica-ritocchi">
+/* 17/10/2026 - Classifica: il font "Ultra Fresh" (demo) non ha il punto e mostrava un quadratino in "Atl. Improvvisato":
+   il punto ora viene preso da Arial, il resto resta Ultra Fresh. */
+@font-face{font-family:"Ultra Fresh Senza Punto";src:url("Ultra%20Fresh%20-%20Demo.ttf");unicode-range:U+0000-002D,U+002F-FFFF}
+html body #page-classifica#page-classifica .chalk-team{font-family:"Ultra Fresh Senza Punto",Arial,sans-serif!important}
+/* Telefoni stretti: la lavagna (larga 375px) viene ridotta per non uscire dallo schermo */
+@media(max-width:379px){html body #page-classifica#page-classifica .classifica-layout{zoom:.94}}
+@media(max-width:350px){html body #page-classifica#page-classifica .classifica-layout{zoom:.88}}
+</style>
 </head>
 <body>
 
