@@ -1,8 +1,10 @@
-/* BORRACHOS MATCH CENTER — archivio privato G1+ (17/10/2026, v4)
-   I file privati restano in IndexedDB sul dispositivo, non sono caricati online. */
+/* BORRACHOS MATCH CENTER — archivio riservato online (v5, 17/10/2026)
+   Formazioni, voti e bonus/malus arrivano da Supabase SOLO dopo l'accesso squadra + password.
+   Lettura protetta da RLS (tabella mc_giornate); nulla di riservato è nel repository o in dati.json.
+   Punteggi ufficiali: restano quelli di dati.json. Rendering e regole invariati rispetto alla v4. */
 (function(){
  'use strict';
- const SCHEMA='borrachos.matchcenter.privato.v2', DB='borrachos_match_center_privato', STORE='archivi';
+ const SCHEMA='borrachos.matchcenter.privato.v2';
  let byMatch=new Map(), ready=false;
  function norm(x){
   let s=String(x||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
@@ -35,23 +37,100 @@
   }
   return map;
  }
- function dbAction(action,value){
-  return new Promise((resolve,reject)=>{
-   if(!window.indexedDB)return reject(Error('IndexedDB non disponibile'));
-   const op=indexedDB.open(DB,1);
-   op.onupgradeneeded=()=>{if(!op.result.objectStoreNames.contains(STORE))op.result.createObjectStore(STORE)};
-   op.onerror=()=>reject(op.error);
-   op.onsuccess=()=>{
-    const db=op.result,tx=db.transaction(STORE,action==='get'?'readonly':'readwrite'),st=tx.objectStore(STORE);
-    const req=action==='get'?st.get('current'):action==='put'?st.put(value,'current'):st.delete('current');
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>reject(req.error);
-    tx.oncomplete=()=>db.close();
-   };
-  });
+ // ---------- Supabase (progetto Borrachos, chiave pubblica "publishable": NON segreta) ----------
+ const SB_URL='https://tlgzvgdxhtiavobyyxze.supabase.co', SB_KEY='sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL';
+ // Sessione del Match Center separata da quella dell'asta (chiave diversa da sb-...-auth-token).
+ const SESS_KEY='borrachos_mc_sessione_v1', POLL_MS=60000, EMAIL_DOMAIN='borrachosleague.github.io';
+ // Account tecnici Supabase Auth (creati dall'amministratore, nessuna email personale richiesta).
+ const SQUADRE=[
+  ['tricchetracht','TRICCHETRACHT'],['sesto-asensio','SESTO ASENSIO'],['atl-improvvisato','ATL IMPROVVISATO'],
+  ['san-gria','SAN GRIA'],['pesciculini','PESCICULINI'],['partizan-degrado','PARTIZAN DEGRADO'],
+  ['asparaghese','ASPARAGHESE'],['shark','SHARK'],['as-pipperia','AS PIPPERIA'],['internaziona-nale','INTERNAZIONA NALE']];
+ const emailDi=slug=>'mc-'+slug+'@'+EMAIL_DOMAIN;
+ let sess=null, firma='', timer=null, ui=null, busy=false;
+
+ function leggiSessione(){try{const s=JSON.parse(localStorage.getItem(SESS_KEY)||'null');return s&&s.refresh_token?s:null}catch(e){return null}}
+ function salvaSessione(s){sess=s;try{s?localStorage.setItem(SESS_KEY,JSON.stringify(s)):localStorage.removeItem(SESS_KEY)}catch(e){}}
+ function erroreRete(e){return Error(e&&e.name==='AbortError'?'Supabase non risponde (timeout)':'Connessione a Supabase non riuscita')}
+ async function http(path,opt){
+  const ctl=typeof AbortController==='function'?new AbortController():null, t=ctl&&setTimeout(()=>ctl.abort(),20000);
+  let r;try{r=await fetch(SB_URL+path,Object.assign({cache:'no-store',signal:ctl&&ctl.signal},opt))}catch(e){throw erroreRete(e)}finally{if(t)clearTimeout(t)}
+  let body=null;try{body=await r.json()}catch(e){}
+  return {status:r.status,ok:r.ok,body};
  }
+ function sessioneDa(b,squadra){return{access_token:b.access_token,refresh_token:b.refresh_token,expires_at:b.expires_at||Math.floor(Date.now()/1000)+(b.expires_in||3600),squadra}}
+ async function accedi(slug,password){
+  const r=await http('/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:emailDi(slug),password})});
+  if(r.status===429)throw Error('Troppi tentativi: riprova tra qualche minuto');
+  if(!r.ok||!r.body||!r.body.access_token)throw Error(r.status===400?'Squadra o password errata':'Accesso non riuscito ('+r.status+')');
+  if(r.body.user&&r.body.user.is_anonymous)throw Error('Account non valido');
+  salvaSessione(sessioneDa(r.body,slug));
+ }
+ async function token(){
+  if(!sess)throw Error('NON_CONNESSO');
+  if(sess.expires_at-90>Date.now()/1000)return sess.access_token;
+  const r=await http('/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:sess.refresh_token})});
+  if(!r.ok||!r.body||!r.body.access_token){if(r.status>=400&&r.status<500){esci('Sessione scaduta o accesso revocato: rientra con la password.',true);throw Error('SESSIONE')}throw Error('Rinnovo sessione non riuscito ('+r.status+')')}
+  salvaSessione(sessioneDa(r.body,sess.squadra));return sess.access_token;
+ }
+ async function rest(path){
+  const r=await http('/rest/v1/'+path,{headers:{apikey:SB_KEY,Authorization:'Bearer '+await token(),Accept:'application/json'}});
+  if(r.status===401||r.status===403){esci('Sessione non più valida: rientra con la password.',true);throw Error('SESSIONE')}
+  if(!r.ok)throw Error('Lettura dati non riuscita ('+r.status+')');
+  return r.body;
+ }
+ function confrontaUfficiali(data){
+  const diff=[];
+  if(typeof mcArchivio==='undefined'||!mcArchivio)return diff;
+  for(const day of data.giornate){
+   const real=mcArchivio.find(x=>Number(x.giornata)===day.giornata);
+   if(!real){diff.push('G'+day.giornata+' non ancora nei risultati ufficiali');continue}
+   for(const p of day.partite){
+    const r=real.partite.find(r=>key(day.giornata,r.casa,r.trasferta)===key(day.giornata,p.casa.nome,p.trasferta.nome));
+    if(!r){diff.push('G'+day.giornata+' '+p.casa.nome+' - '+p.trasferta.nome+' non trovata');continue}
+    if(Math.abs(Number(r.pt_casa)-p.casa.totale)>1e-6)diff.push('G'+day.giornata+' '+p.casa.nome+' '+p.casa.totale+' vs ufficiale '+r.pt_casa);
+    if(Math.abs(Number(r.pt_trasferta)-p.trasferta.totale)>1e-6)diff.push('G'+day.giornata+' '+p.trasferta.nome+' '+p.trasferta.totale+' vs ufficiale '+r.pt_trasferta);
+   }
+  }
+  return diff;
+ }
+ function quando(iso){try{return new Date(iso).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}catch(e){return iso}}
+ async function sincronizza(forza){
+  if(busy||!sess)return;busy=true;
+  try{
+   const me=await rest('mc_membri?select=squadra,is_admin,attivo');
+   if(!Array.isArray(me)||!me.length||!me[0].attivo){esci('Accesso al Match Center non autorizzato o revocato per questa squadra.',true);return}
+   const meta=await rest('mc_giornate?select=giornata,versione,aggiornato_il&order=giornata');
+   const nuovaFirma=JSON.stringify(meta);
+   if(!forza&&nuovaFirma===firma)return;
+   if(!meta.length){byMatch=new Map();firma=nuovaFirma;redraw();stato('Connesso come '+me[0].squadra+'. Nessuna giornata ancora pubblicata.');return}
+   const rows=await rest('mc_giornate?select=giornata,dati&order=giornata');
+   const data={schema:SCHEMA,giornate:rows.map(r=>r.dati)};
+   const found=verify(data), diff=confrontaUfficiali(data);
+   byMatch=found;firma=nuovaFirma;redraw();
+   const ultimo=meta.reduce((a,b)=>a.aggiornato_il>b.aggiornato_il?a:b);
+   stato('Connesso come '+me[0].squadra+' · '+data.giornate.length+' giornate · aggiornato '+quando(ultimo.aggiornato_il)+
+    (diff.length?' · ⚠ '+diff.length+' differenze con i risultati ufficiali (valgono quelli ufficiali): '+diff.slice(0,2).join('; '):''),diff.length>0);
+  }catch(e){
+   if(e.message!=='SESSIONE'&&e.message!=='NON_CONNESSO')stato('Aggiornamento non riuscito: '+e.message+'. Restano visibili i dati già caricati.',true);
+  }finally{busy=false}
+ }
+ function avviaPolling(){
+  if(timer)clearInterval(timer);
+  timer=setInterval(()=>document.hidden?null:sincronizza(false),POLL_MS);
+ }
+ function esci(motivo,err){
+  if(timer){clearInterval(timer);timer=null}
+  const rt=sess&&sess.access_token;
+  salvaSessione(null);firma='';byMatch=new Map();redraw();
+  if(rt)fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+rt}}).catch(()=>{});
+  mostraLogin();stato(motivo||'Disconnesso. I dati riservati sono stati rimossi da questa pagina.',err);
+ }
+ function stato(t,err){if(!ui)return;ui.status.textContent=t;ui.status.style.color=err?'#ff9191':'#f3db84'}
+ function mostraLogin(){if(!ui)return;ui.login.style.display='flex';ui.connesso.style.display='none'}
+ function mostraConnesso(){if(!ui)return;ui.login.style.display='none';ui.connesso.style.display='flex'}
  function redraw(){
-  if(typeof mcArchivio==='undefined'||!mcArchivio||typeof mcRenderGiornata!=='function')return;
+  if(typeof mcArchivio==='undefined'||!mcArchivio||!mcArchivio.length||typeof mcRenderGiornata!=='function')return;
   const day=mcGiornata||mcArchivio[mcArchivio.length-1].giornata;
   const detail=document.getElementById('live-detail');
   const open=detail&&detail.style.display==='block';
@@ -64,46 +143,42 @@
   const picker=document.querySelector('#page-live .match-day-picker');
   if(!picker)return;
   ready=true;
+  const btnCss='background:#201b23;color:#ffd54a;border:2px solid #ffd54a;border-radius:9px;font-weight:800;padding:10px 15px;cursor:pointer';
+  const fldCss='background:#120f14;color:#fff;border:2px solid #6b5a2a;border-radius:9px;padding:9px 11px;font-weight:700;font-size:15px;min-width:0';
+  const rowCss='display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:9px';
   const panel=document.createElement('div');panel.id='mc-private-tools';
-  panel.style.cssText='display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:9px;margin:12px auto 18px;text-align:center';
-  const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.hidden=true;
-  const load=document.createElement('button');load.type='button';load.textContent='📂 CARICA ARCHIVIO PRIVATO';
-  const clear=document.createElement('button');clear.type='button';clear.textContent='✕ RIMUOVI DATI PRIVATI';
-  for(const btn of [load,clear])btn.style.cssText='background:#201b23;color:#ffd54a;border:2px solid #ffd54a;border-radius:9px;font-weight:800;padding:10px 15px;cursor:pointer';
-  const status=document.createElement('div');status.id='mc-private-status';status.style.cssText='flex-basis:100%;color:#f3db84;font-size:13px;font-weight:700';status.setAttribute('role','status');
-  function msg(t,err){status.textContent=t;status.style.color=err?'#ff9191':'#f3db84'}
-  msg('Seleziona il JSON dell’archivio privato: i dati rimangono soltanto su questo dispositivo.');
-  load.onclick=()=>input.click();
-  input.onchange=async()=>{
-   try{
-    const f=input.files&&input.files[0];if(!f)return;
-    if(f.size>25*1024*1024)throw Error('File oltre 25 MB');
-    const data=JSON.parse(await f.text()),found=verify(data);
-    const diff=[];
-    if(typeof mcArchivio!=='undefined'&&mcArchivio){
-     for(const day of data.giornate){
-      const real=mcArchivio.find(x=>Number(x.giornata)===day.giornata);
-      if(!real)throw Error('Giornata '+day.giornata+' assente dai risultati ufficiali');
-      for(const p of day.partite){
-       const r=real.partite.find(r=>key(day.giornata,r.casa,r.trasferta)===key(day.giornata,p.casa.nome,p.trasferta.nome));
-       if(!r)throw Error('Squadre non corrispondenti alla G'+day.giornata+': '+p.casa.nome+' - '+p.trasferta.nome);
-       if(Math.abs(Number(r.pt_casa)-p.casa.totale)>1e-6)diff.push('G'+day.giornata+' '+p.casa.nome+' '+p.casa.totale+' vs ufficiale '+r.pt_casa);
-       if(Math.abs(Number(r.pt_trasferta)-p.trasferta.totale)>1e-6)diff.push('G'+day.giornata+' '+p.trasferta.nome+' '+p.trasferta.totale+' vs ufficiale '+r.pt_trasferta);
-      }
-     }
-    }
-    byMatch=found;redraw();
-    msg('Archivio attivo: '+data.giornate.length+' giornate e '+found.size+' partite. Salvato su questo browser.'+(diff.length?' ⚠ '+diff.length+' totali diversi da dati.json (restano quelli ufficiali): '+diff.slice(0,3).join('; '):''),diff.length>0);
-    try{await dbAction('put',data)}catch(e){msg('Archivio attivo ora, ma salvataggio locale non riuscito: '+e.message,true)}
-   }catch(e){msg('IMPORTAZIONE ANNULLATA: '+e.message,true)}finally{input.value=''}
+  panel.style.cssText='display:flex;flex-direction:column;align-items:center;gap:9px;margin:12px auto 18px;text-align:center;max-width:640px;padding:0 4px';
+  const login=document.createElement('form');login.style.cssText=rowCss;login.setAttribute('autocomplete','on');
+  const sel=document.createElement('select');sel.style.cssText=fldCss;sel.setAttribute('aria-label','Squadra');
+  const o0=document.createElement('option');o0.value='';o0.textContent='Scegli la tua squadra';sel.append(o0);
+  for(const [slug,nome] of SQUADRE){const o=document.createElement('option');o.value=slug;o.textContent=nome;sel.append(o)}
+  const pwd=document.createElement('input');pwd.type='password';pwd.placeholder='Password';pwd.style.cssText=fldCss;pwd.setAttribute('autocomplete','current-password');pwd.setAttribute('aria-label','Password');
+  const entra=document.createElement('button');entra.type='submit';entra.textContent='🔒 ENTRA NEL MATCH CENTER';entra.style.cssText=btnCss;
+  login.append(sel,pwd,entra);
+  const connesso=document.createElement('div');connesso.style.cssText=rowCss+';display:none';
+  const agg=document.createElement('button');agg.type='button';agg.textContent='↻ AGGIORNA';agg.style.cssText=btnCss;
+  const out=document.createElement('button');out.type='button';out.textContent='✕ ESCI';out.style.cssText=btnCss;
+  connesso.append(agg,out);
+  const status=document.createElement('div');status.id='mc-private-status';status.style.cssText='color:#f3db84;font-size:13px;font-weight:700';status.setAttribute('role','status');
+  panel.append(login,connesso,status);picker.insertAdjacentElement('afterend',panel);
+  ui={login,connesso,status,sel,pwd,entra};
+  login.onsubmit=async ev=>{
+   if(ev&&ev.preventDefault)ev.preventDefault();
+   if(!sel.value){stato('Scegli la tua squadra',true);return}
+   if(!pwd.value){stato('Inserisci la password',true);return}
+   entra.disabled=true;stato('Accesso in corso…');
+   try{await accedi(sel.value,pwd.value);pwd.value='';mostraConnesso();await sincronizza(true);if(sess)avviaPolling();ripulisciVecchioArchivio()}
+   catch(e){stato('ACCESSO NEGATO: '+e.message,true)}finally{entra.disabled=false}
   };
-  clear.onclick=async()=>{byMatch.clear();redraw();try{await dbAction('delete');msg('Archivio privato rimosso da questo browser')}catch(e){msg('Dati rimossi dalla pagina; cancellazione locale non riuscita: '+e.message,true)}};
-  panel.append(input,load,clear,status);picker.insertAdjacentElement('afterend',panel);
-  dbAction('get').then(data=>{if(!data)return;
-   try{byMatch=verify(data);redraw();msg('Archivio locale ripristinato: '+data.giornate.length+' giornate, '+byMatch.size+' partite')}
-   catch(e){byMatch=new Map();dbAction('delete').catch(()=>{});msg('Archivio locale obsoleto rimosso ('+e.message+'). Carica il JSON rigenerato.',true)}
-  }).catch(()=>{});
+  agg.onclick=()=>{stato('Aggiornamento…');sincronizza(true)};
+  out.onclick=()=>esci();
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sess)sincronizza(false)});
+  sess=leggiSessione();
+  if(sess){const i=SQUADRE.findIndex(s=>s[0]===sess.squadra);if(i>=0)sel.selectedIndex=i+1;mostraConnesso();stato('Riconnessione…');sincronizza(true).then(()=>{if(sess)avviaPolling()})}
+  else{mostraLogin();stato('Area riservata ai 10 partecipanti: scegli la squadra e inserisci la password per vedere formazioni e voti.')}
  }
+ // L'archivio caricato a mano nelle versioni precedenti (IndexedDB) non serve più: lo elimina dal dispositivo.
+ function ripulisciVecchioArchivio(){try{if(window.indexedDB)indexedDB.deleteDatabase('borrachos_match_center_privato')}catch(e){}}
  function install(){
   if(typeof mcPartita!=='function'){setup();return}
   const old=mcPartita;
