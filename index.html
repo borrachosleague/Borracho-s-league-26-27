@@ -5796,16 +5796,17 @@ html body #page-classifica#page-classifica .chalk-team{font-family:"Ultra Fresh 
 }
 </style>
 <style id="borrachos-best11-panchina-pc">
-/* 17/10/2026 - Best 11 su PC: la panchina e' una striscia in prospettiva sopra la panchina disegnata,
-   divisa in 10 sezioni (una per panchinaro). Passando sopra un nome compare la scheda centrale (MV, MFV, QI, QA, +/-). */
+/* 17/10/2026 - Best 11 su PC: la panchina e' un rettangolo in prospettiva che ricopre sedili + cassone di legno
+   della panchina disegnata, diviso in 10 sezioni verticali (un posto per panchinaro).
+   Passando sopra un nome compare la scheda centrale (MV, MFV, QI, QA, +/-). */
 @media(min-width:701px){
   body.b11-pan-pc #page-best11 .best11-bench{display:none!important}
-  .pan3-strip{position:absolute;left:0;top:0;width:200px;height:300px;transform-origin:0 0;z-index:40;display:flex;flex-direction:column;background:rgba(6,14,22,.93);border:3px solid #ffd54a;border-radius:6px;box-sizing:border-box;box-shadow:0 6px 18px rgba(0,0,0,.6);overflow:hidden}
-  .pan3-strip .t{height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;background:#ffd54a;color:#111;font:900 15px/1 "Arial Black",Arial,sans-serif;letter-spacing:1px}
-  .pan3-strip .r{flex:1 1 0;display:flex;align-items:center;gap:6px;padding:0 8px 0 6px;border-top:1px solid rgba(255,213,74,.35);border-left:6px solid var(--r);color:#fff;font:700 15px/1 Arial,sans-serif;white-space:nowrap;cursor:pointer;min-height:0}
-  .pan3-strip .r:hover{background:rgba(255,213,74,.2)}
-  .pan3-strip .r span{flex:1;overflow:hidden;text-overflow:ellipsis}
-  .pan3-strip .r b{color:#ffd54a;font-weight:900}
+  .pan4{position:absolute;left:0;top:0;width:250px;height:84px;transform-origin:0 0;z-index:40;display:flex;flex-direction:row;background:rgba(6,14,22,.9);border:2px solid #ffd54a;box-sizing:border-box;box-shadow:0 4px 14px rgba(0,0,0,.6)}
+  .pan4 .c{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(255,213,74,.45);border-top:5px solid var(--r);cursor:pointer;overflow:hidden}
+  .pan4 .c:last-child{border-right:0}
+  .pan4 .c:hover{background:rgba(255,213,74,.22)}
+  .pan4 .c .v{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;gap:4px;white-space:nowrap;font:700 11px/1.05 "Arial Narrow",Arial,sans-serif;color:#fff;max-height:74px;overflow:hidden}
+  .pan4 .c .v b{color:#ffd54a;font-weight:900}
 }
 </style>
 </head>
@@ -8305,7 +8306,6 @@ caricaDatiBorrachos()
   // PC: panchina come striscia in prospettiva sopra la panchina disegnata nello sfondo (10 sezioni).
   // La scheda centrale al passaggio del mouse usa gli stessi eventi delle righe originali della panchina.
   var COL_RUOLO={POR:'#8b5cf6',DIF:'#2f7de1',CEN:'#22a35a',ATT:'#e23b3b'};
-  var PAN_QUAD=[[1262,292],[1440,280],[1352,548],[1534,536]];
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function matrice(D,W,H){
     function adj(m){return [m[4]*m[8]-m[5]*m[7],m[2]*m[7]-m[1]*m[8],m[1]*m[5]-m[2]*m[4],m[5]*m[6]-m[3]*m[8],m[0]*m[8]-m[2]*m[6],m[2]*m[3]-m[0]*m[5],m[3]*m[7]-m[4]*m[6],m[1]*m[6]-m[0]*m[7],m[0]*m[4]-m[1]*m[3]];}
@@ -8316,10 +8316,12 @@ caricaDatiBorrachos()
     return 'matrix3d('+[t[0],t[3],0,t[6],t[1],t[4],0,t[7],0,0,1,0,t[2],t[5],0,t[8]].join(',')+')';
   }
   var panFirma='';
+  // angoli (immagine 1536x1024) del rettangolo sedili+cassone: inizio-alto, fine-alto, inizio-basso, fine-basso
+  var PAN_QUAD=[[1330,297],[1522,500],[1253,353],[1500,634]];
   function panchinaPC(){
     var page=document.getElementById('page-best11'),lay=document.querySelector('#page-best11 .best11-layout');if(!page||!lay)return;
     var pc=window.matchMedia&&window.matchMedia('(min-width:701px)').matches;
-    var vecchia=lay.querySelector('.pan3-strip');
+    var vecchia=lay.querySelector('.pan4');
     if(!pc){if(vecchia)vecchia.remove();document.body.classList.remove('b11-pan-pc');panFirma='';return;}
     var pr=page.getBoundingClientRect(),lr=lay.getBoundingClientRect();if(!pr.width||!pr.height)return;
     var righe=Array.prototype.slice.call(document.querySelectorAll('#best11-bench-list .bench-player'));
@@ -8328,14 +8330,16 @@ caricaDatiBorrachos()
     if(firma===panFirma&&vecchia)return;
     panFirma=firma;if(vecchia)vecchia.remove();
     document.body.classList.add('b11-pan-pc');
-    var B=document.createElement('div');B.className='pan3-strip';
-    B.innerHTML='<div class="t">PANCHINA</div>'+dati.map(function(d,i){return '<div class="r" data-i="'+i+'" style="--r:'+(COL_RUOLO[d[1]]||'#888')+'"><span>'+esc(d[0])+'</span><b>'+esc(d[2])+'</b></div>';}).join('');
-    Array.prototype.forEach.call(B.querySelectorAll('.r'),function(r){
-      var orig=righe[Number(r.getAttribute('data-i'))];
-      r.addEventListener('mouseenter',function(){if(orig)orig.dispatchEvent(new MouseEvent('mouseenter'));});
-      r.addEventListener('mouseleave',function(){if(orig)orig.dispatchEvent(new MouseEvent('mouseleave'));});
+    var B=document.createElement('div');B.className='pan4';
+    B.innerHTML=dati.map(function(d,i){return '<div class="c" data-i="'+i+'" style="--r:'+(COL_RUOLO[d[1]]||'#888')+'"><div class="v"><span>'+esc(d[0])+'</span><b>'+esc(d[2])+'</b></div></div>';}).join('');
+    Array.prototype.forEach.call(B.querySelectorAll('.c'),function(c){
+      var orig=righe[Number(c.getAttribute('data-i'))];
+      c.addEventListener('mouseenter',function(){if(orig)orig.dispatchEvent(new MouseEvent('mouseenter'));});
+      c.addEventListener('mouseleave',function(){if(orig)orig.dispatchEvent(new MouseEvent('mouseleave'));});
     });
     lay.appendChild(B);
+    // nomi lunghi: carattere piu' piccolo finche' ci stanno
+    Array.prototype.forEach.call(B.querySelectorAll('.v'),function(v){var f=11;while(v.scrollHeight>v.clientHeight+1&&f>8){f-=0.5;v.style.fontSize=f+'px';}});
     var s=Math.max(pr.width/IMG_W,pr.height/IMG_H),ox=pr.left+(pr.width-IMG_W*s)*0.5,oy=pr.top;
     B.style.transform=matrice(PAN_QUAD.map(function(p){return [ox+p[0]*s-lr.left,oy+p[1]*s-lr.top];}),B.offsetWidth,B.offsetHeight);
   }
