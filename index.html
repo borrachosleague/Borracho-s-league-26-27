@@ -8223,7 +8223,27 @@ caricaDatiBorrachos()
       var t=p.style.getPropertyValue('top');
       if(p.dataset.topOrig==null||(t&&t!==p.dataset.topSet)){p.dataset.topOrig=t;p.dataset.topSet='';}
     });
-    if(!telefono){gioc.forEach(function(p){if(p.dataset.topOrig&&p.dataset.topSet){p.style.setProperty('top',p.dataset.topOrig,'important');p.dataset.topSet='';}});return;}
+    if(!telefono){
+      // PC: parte dalle posizioni originali del modulo e, se due targhette si sovrappongono,
+      // abbassa quella piu' in basso quanto basta (max 3 passaggi). Esempio: centrocampo del 3-5-2.
+      gioc.forEach(function(p){if(p.dataset.topOrig&&p.style.getPropertyValue('top')!==p.dataset.topOrig)p.style.setProperty('top',p.dataset.topOrig,'important');});
+      for(var giro=0;giro<3;giro++){
+        var spostato=false,R=gioc.map(function(p){var m=p.querySelector('.pp-main')||p;return m.getBoundingClientRect();});
+        for(var i=0;i<gioc.length;i++)for(var j=i+1;j<gioc.length;j++){
+          var a=R[i],b=R[j];
+          var ox=Math.min(a.right,b.right)-Math.max(a.left,b.left),oy=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
+          if(ox>0&&oy>0){
+            var basso=a.top>=b.top?i:j,p=gioc[basso],t=parseFloat(p.style.getPropertyValue('top'));
+            if(isNaN(t)||!/px$/.test(p.style.getPropertyValue('top')))continue;
+            p.style.setProperty('top',(t+oy+6)+'px','important');spostato=true;
+            R[basso]=(p.querySelector('.pp-main')||p).getBoundingClientRect();
+          }
+        }
+        if(!spostato)break;
+      }
+      gioc.forEach(function(p){p.dataset.topSet=p.style.getPropertyValue('top');});
+      return;
+    }
     var pr=pitch.getBoundingClientRect();if(!pr.height||!pr.width)return;
     var GAP=6,linee=[];
     ['por','dif','cen','att'].forEach(function(r){
