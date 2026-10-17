@@ -1,171 +1,155 @@
-/* BORRACHOS MATCH CENTER PRIVATO 1.0
- * Nessuna chiamata a Fantacalcio o Supabase. I dati individuali rimangono
- * nella memoria locale del browser (IndexedDB), mai inviati a GitHub.
- * Il punteggio ufficiale della partita proviene sempre da dati.json.
- */
-(function () {
-  'use strict';
-  var SCHEMA='borrachos.matchcenter.privato.v1';
-  var DB='borrachos_match_center_privato',STORE='archivi';
-  var archivio=null;
-  var statusNode;
-
-  function norm(v){
-    var s=String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
-    var names={
-      'tricchetracht':'tricchetracht francoforte',
-      'tricchetracht frankfurt':'tricchetracht francoforte',
-      'sesto asensio':'il sesto asensio',
-      'atl improvvisato':'atletico improvvisato',
-      'pesciculini':'pesciculini fc',
-      'internazionanale':'fc internazioanale',
-      'interna ziona nale':'fc internazioanale',
-      'internaziona nale':'fc internazioanale',
-      'asparaghese':'ac asparaghese',
-      'shark fc':'shark'
-    };
-    return names[s]||s;
-  }
-  function key(g,c,a){return String(g)+'|'+norm(c)+'|'+norm(a);}
-  function validPlayer(x){
-    return x && typeof x.nome==='string' && x.nome.trim().length>1 &&
-      [x.scr,x.cscr].every(function(v){return v==null||(typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<20);});
-  }
-  function validate(data){
-    if(!data||data.schema!==SCHEMA||!Array.isArray(data.giornate)||!data.giornate.length)throw Error('Formato archivio non riconosciuto');
-    var total=0,known={};
-    data.giornate.forEach(function(g){
-      if(!Number.isInteger(g.giornata)||g.giornata<1||g.giornata>36||!Array.isArray(g.partite)||g.partite.length!==5)
-        throw Error('Giornata o numero partite non valido: '+g.giornata);
-      g.partite.forEach(function(p){
-        if(!p||!p.casa||!p.trasferta)throw Error('Partita incompleta alla G'+g.giornata);
-        [p.casa,p.trasferta].forEach(function(t){
-          if(!t.nome||!Array.isArray(t.titolari)||t.titolari.length!==11||!Array.isArray(t.panchina)||t.panchina.length>14)
-            throw Error('Formazione non valida: '+(t.nome||'squadra sconosciuta'));
-          if(!t.titolari.concat(t.panchina).every(validPlayer))throw Error('Voti o giocatori non validi: '+t.nome);
-          var seen=new Set();
-          t.titolari.concat(t.panchina).forEach(function(player){
-            var k=norm(player.nome);
-            if(seen.has(k))throw Error('Giocatore duplicato in '+t.nome+': '+player.nome);
-            seen.add(k);
-          });
-        });
-        var k=key(g.giornata,p.casa.nome,p.trasferta.nome);
-        if(known[k])throw Error('Partita duplicata: '+k);
-        known[k]=p; total++;
-      });
-    });
-    return {total:total,index:known,days:data.giornate.length};
-  }
-  function status(message,error){
-    if(statusNode){statusNode.textContent=message;statusNode.style.color=error?'#ff9d9d':'#f3db84';}
-  }
-  function indexedDBOpen(){
-    return new Promise(function(resolve,reject){
-      if(!window.indexedDB){reject(Error('Archivio browser non disponibile'));return;}
-      var req=indexedDB.open(DB,1);
-      req.onupgradeneeded=function(){if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE);};
-      req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error||Error('Database non disponibile'));};
-    });
-  }
-  async function storage(mode,value){
-    var db=await indexedDBOpen();
-    try{
-      return await new Promise(function(resolve,reject){
-        var tx=db.transaction(STORE,mode==='get'?'readonly':'readwrite');
-        var st=tx.objectStore(STORE);
-        var req=mode==='get'?st.get('current'):mode==='put'?st.put(value,'current'):st.delete('current');
-        req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error||Error('Operazione database fallita'));};
-      });
-    }finally{db.close();}
-  }
-  function rerender(){
-    if(typeof mcArchivio==='undefined'||!mcArchivio||typeof mcRenderGiornata!=='function')return;
-    var previous=mcGiornata;
-    var detail=document.getElementById('live-detail');
-    var wasOpen=detail&&detail.style.display==='block';
-    var index=typeof livePartitaAttiva==='number'?livePartitaAttiva:0;
-    mcRenderGiornata(previous||mcArchivio[mcArchivio.length-1].giornata);
-    if(wasOpen&&typeof mostraLivePartita==='function')mostraLivePartita(index);
-  }
-  function activate(data){
-    var v=validate(data);archivio=v.index;
-    status('Archivio PRIVATO: '+v.days+' giornate, '+v.total+' partite · dati solo su questo dispositivo');
-    rerender();
-  }
-  function buttons(){
-    var picker=document.querySelector('#page-live .match-day-picker');
-    if(!picker||document.getElementById('mc-private-tools'))return;
-    var wrap=document.createElement('div');wrap.id='mc-private-tools';
-    wrap.style.cssText='text-align:center;margin:0 auto 15px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px';
-    var input=document.createElement('input');input.id='mc-private-input';input.type='file';input.accept='.json,application/json';input.hidden=true;
-    var btn=document.createElement('button');btn.type='button';btn.textContent='📂 CARICA ARCHIVIO PRIVATO';
-    var clear=document.createElement('button');clear.type='button';clear.textContent='✕ RIMUOVI DATI PRIVATI';
-    [btn,clear].forEach(function(x){x.style.cssText='border:1px solid #ffd54a;border-radius:8px;background:#201b23;color:#ffd54a;padding:9px 12px;font-weight:800;cursor:pointer';});
-    statusNode=document.createElement('div');statusNode.id='mc-private-status';statusNode.setAttribute('role','status');statusNode.style.cssText='width:100%;color:#f3db84;font-size:12px';
-    status('Nessun archivio privato caricato · risultati sempre disponibili');
-    btn.onclick=function(){input.click();};
-    input.onchange=async function(){
-      try{
-        var f=input.files&&input.files[0];if(!f)return;
-        if(f.size>25*1024*1024)throw Error('Archivio troppo grande (massimo 25 MB)');
-        var data=JSON.parse(await f.text());
-        validate(data);
-        if(typeof mcArchivio!=='undefined'&&mcArchivio){
-          data.giornate.forEach(function(g){
-            var real=mcArchivio.find(function(x){return Number(x.giornata)===Number(g.giornata);});
-            if(!real)throw Error('Giornata '+g.giornata+' non presente nei risultati ufficiali');
-            g.partite.forEach(function(p){
-              if(!real.partite.some(function(r){return key(g.giornata,r.casa,r.trasferta)===key(g.giornata,p.casa.nome,p.trasferta.nome);}))
-                throw Error('Partita non riconosciuta G'+g.giornata+': '+p.casa.nome+' - '+p.trasferta.nome);
-            });
-          });
-        }
-        activate(data);
-        try{await storage('put',data);}catch(e){status('Archivio utilizzabile ORA, ma non memorizzato nel browser: '+e.message,true);}
-      }catch(e){status('IMPORTAZIONE ANNULLATA: '+e.message,true);}finally{input.value='';}
-    };
-    clear.onclick=async function(){
-      archivio=null;rerender();
-      try{await storage('delete');status('Archivio privato rimosso da questo browser');}
-      catch(e){status('Dati tolti dalla pagina. Cancellazione archivio browser non riuscita: '+e.message,true);}
-    };
-    wrap.appendChild(input);wrap.appendChild(btn);wrap.appendChild(clear);wrap.appendChild(statusNode);
-    picker.insertAdjacentElement('afterend',wrap);
-    storage('get').then(function(saved){if(saved)activate(saved);}).catch(function(){status('Archivio locale non disponibile: puoi comunque caricare il file a mano');});
-  }
-  function install(){
-    if(typeof mcPartita!=='function')return;
-    var original=mcPartita;
-    mcPartita=function(r){
-      var result=original(r);
-      if(!archivio)return result;
-      var found=archivio[key(mcGiornata,r.casa,r.trasferta)];
-      if(!found)return result;
-      ['casa','trasferta'].forEach(function(side){
-        var t=found[side];
-        result[side].titolari=t.titolari;
-        result[side].panchina=t.panchina;
-        result[side].consegnata=true;
-        result[side].modulo=t.modulo||null;
-      });
-      result.archivioSenzaFormazioni=false;
-      return result;
-    };
-    if(typeof liveCartellini==='function'){
-      var icons={gol:'⚽',assist:'🅰️',ammonizione:'🟨',espulsione:'🟥',gol_subito:'🥅',rig_parato:'🧤',rig_sbagliato:'❌',autogol:'🔴',gol_decisivo:'🏆'};
-      var base=liveCartellini;
-      liveCartellini=function(p){
-        var old=base(p), extra='';
-        var events=p&&p.eventi;
-        if(events&&typeof events==='object')Object.keys(icons).forEach(function(k){
-          var n=Number(events[k]);
-          if(Number.isInteger(n)&&n>0&&n<100)extra+='<span title="'+k.replace(/_/g,' ')+'" style="margin-left:3px">'+icons[k]+(n>1?'×'+n:'')+'</span>';
-        });
-        return old+extra;
-      };
+/* BORRACHOS MATCH CENTER — archivio privato G1+ (17/10/2026, v4)
+   I file privati restano in IndexedDB sul dispositivo, non sono caricati online. */
+(function(){
+ 'use strict';
+ const SCHEMA='borrachos.matchcenter.privato.v2', DB='borrachos_match_center_privato', STORE='archivi';
+ let byMatch=new Map(), ready=false;
+ function norm(x){
+  let s=String(x||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  const aliases={'tricchetracht':'tricchetracht francoforte','tricchetracht frankfurt':'tricchetracht francoforte','sesto asensio':'il sesto asensio','atl improvvisato':'atletico improvvisato','pesciculini':'pesciculini fc','internazionanale':'fc internazioanale','interna ziona nale':'fc internazioanale','internaziona nale':'fc internazioanale','asparaghese':'ac asparaghese','shark fc':'shark'};
+  return aliases[s]||s;
+ }
+ const key=(day,a,b)=>String(day)+'|'+norm(a)+'|'+norm(b);
+ function verify(data){
+  if(!data || data.schema!==SCHEMA || !Array.isArray(data.giornate) || !data.giornate.length)throw Error('Formato archivio JSON non valido');
+  const map=new Map();
+  for(const day of data.giornate){
+   if(!Number.isInteger(day.giornata) || !Array.isArray(day.partite) || day.partite.length!==5)throw Error('Giornata incompleta: '+day.giornata);
+   for(const p of day.partite){
+    for(const side of ['casa','trasferta']){
+     const t=p[side];
+     if(!t || !t.nome || !Array.isArray(t.titolari) || t.titolari.length!==11 || !Array.isArray(t.panchina) || t.panchina.length>14)throw Error('Formazione incompleta alla G'+day.giornata);
+     for(const f of ['totale','fantavoto_effettivo','pagella_effettiva','modificatore_difesa'])if(typeof t[f]!=='number'||!isFinite(t[f]))throw Error('Campo '+f+' mancante: '+t.nome+' G'+day.giornata+' (rigenera il JSON con importa_formazioni.py)');
+     if(Math.abs(t.fantavoto_effettivo+t.modificatore_difesa-t.totale)>1e-6)throw Error('Totale non coerente: '+t.nome+' G'+day.giornata+' (fantavoto '+t.fantavoto_effettivo+' + mod '+t.modificatore_difesa+' ≠ '+t.totale+')');
     }
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',buttons,{once:true});else buttons();
+    const k=key(day.giornata,p.casa.nome,p.trasferta.nome);
+    if(map.has(k))throw Error('Partita duplicata '+k);
+    map.set(k,p);
+   }
   }
-  install();
+  return map;
+ }
+ function dbAction(action,value){
+  return new Promise((resolve,reject)=>{
+   if(!window.indexedDB)return reject(Error('IndexedDB non disponibile'));
+   const op=indexedDB.open(DB,1);
+   op.onupgradeneeded=()=>{if(!op.result.objectStoreNames.contains(STORE))op.result.createObjectStore(STORE)};
+   op.onerror=()=>reject(op.error);
+   op.onsuccess=()=>{
+    const db=op.result,tx=db.transaction(STORE,action==='get'?'readonly':'readwrite'),st=tx.objectStore(STORE);
+    const req=action==='get'?st.get('current'):action==='put'?st.put(value,'current'):st.delete('current');
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+    tx.oncomplete=()=>db.close();
+   };
+  });
+ }
+ function redraw(){
+  if(typeof mcArchivio==='undefined'||!mcArchivio||typeof mcRenderGiornata!=='function')return;
+  const day=mcGiornata||mcArchivio[mcArchivio.length-1].giornata;
+  const detail=document.getElementById('live-detail');
+  const open=detail&&detail.style.display==='block';
+  const active=typeof livePartitaAttiva==='number'?livePartitaAttiva:0;
+  mcRenderGiornata(day);
+  if(open&&typeof mostraLivePartita==='function')mostraLivePartita(active);
+ }
+ function setup(){
+  if(ready)return;
+  const picker=document.querySelector('#page-live .match-day-picker');
+  if(!picker)return;
+  ready=true;
+  const panel=document.createElement('div');panel.id='mc-private-tools';
+  panel.style.cssText='display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:9px;margin:12px auto 18px;text-align:center';
+  const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.hidden=true;
+  const load=document.createElement('button');load.type='button';load.textContent='📂 CARICA ARCHIVIO PRIVATO';
+  const clear=document.createElement('button');clear.type='button';clear.textContent='✕ RIMUOVI DATI PRIVATI';
+  for(const btn of [load,clear])btn.style.cssText='background:#201b23;color:#ffd54a;border:2px solid #ffd54a;border-radius:9px;font-weight:800;padding:10px 15px;cursor:pointer';
+  const status=document.createElement('div');status.id='mc-private-status';status.style.cssText='flex-basis:100%;color:#f3db84;font-size:13px;font-weight:700';status.setAttribute('role','status');
+  function msg(t,err){status.textContent=t;status.style.color=err?'#ff9191':'#f3db84'}
+  msg('Seleziona il JSON dell’archivio privato: i dati rimangono soltanto su questo dispositivo.');
+  load.onclick=()=>input.click();
+  input.onchange=async()=>{
+   try{
+    const f=input.files&&input.files[0];if(!f)return;
+    if(f.size>25*1024*1024)throw Error('File oltre 25 MB');
+    const data=JSON.parse(await f.text()),found=verify(data);
+    const diff=[];
+    if(typeof mcArchivio!=='undefined'&&mcArchivio){
+     for(const day of data.giornate){
+      const real=mcArchivio.find(x=>Number(x.giornata)===day.giornata);
+      if(!real)throw Error('Giornata '+day.giornata+' assente dai risultati ufficiali');
+      for(const p of day.partite){
+       const r=real.partite.find(r=>key(day.giornata,r.casa,r.trasferta)===key(day.giornata,p.casa.nome,p.trasferta.nome));
+       if(!r)throw Error('Squadre non corrispondenti alla G'+day.giornata+': '+p.casa.nome+' - '+p.trasferta.nome);
+       if(Math.abs(Number(r.pt_casa)-p.casa.totale)>1e-6)diff.push('G'+day.giornata+' '+p.casa.nome+' '+p.casa.totale+' vs ufficiale '+r.pt_casa);
+       if(Math.abs(Number(r.pt_trasferta)-p.trasferta.totale)>1e-6)diff.push('G'+day.giornata+' '+p.trasferta.nome+' '+p.trasferta.totale+' vs ufficiale '+r.pt_trasferta);
+      }
+     }
+    }
+    byMatch=found;redraw();
+    msg('Archivio attivo: '+data.giornate.length+' giornate e '+found.size+' partite. Salvato su questo browser.'+(diff.length?' ⚠ '+diff.length+' totali diversi da dati.json (restano quelli ufficiali): '+diff.slice(0,3).join('; '):''),diff.length>0);
+    try{await dbAction('put',data)}catch(e){msg('Archivio attivo ora, ma salvataggio locale non riuscito: '+e.message,true)}
+   }catch(e){msg('Caricamento non riuscito: '+e.message,true)}finally{input.value=''}
+  };
+  clear.onclick=async()=>{byMatch.clear();redraw();try{await dbAction('delete');msg('Archivio privato rimosso da questo browser')}catch(e){msg('Dati rimossi dalla pagina; cancellazione locale non riuscita: '+e.message,true)}};
+  panel.append(input,load,clear,status);picker.insertAdjacentElement('afterend',panel);
+  dbAction('get').then(data=>{if(!data)return;
+   try{byMatch=verify(data);redraw();msg('Archivio locale ripristinato: '+data.giornate.length+' giornate, '+byMatch.size+' partite')}
+   catch(e){byMatch=new Map();dbAction('delete').catch(()=>{});msg('Archivio locale obsoleto rimosso ('+e.message+'). Carica il JSON rigenerato.',true)}
+  }).catch(()=>{});
+ }
+ function install(){
+  if(typeof mcPartita!=='function'){setup();return}
+  const old=mcPartita;
+  mcPartita=function(r){
+   const result=old(r);
+   const t=byMatch.get(key(mcGiornata,r.casa,r.trasferta));
+   if(t){for(const side of ['casa','trasferta']){
+    result[side].titolari=t[side].titolari;result[side].panchina=t[side].panchina;
+    result[side].modulo=t[side].modulo;result[side].modificatore_difesa=t[side].modificatore_difesa;result[side].pagella_effettiva=t[side].pagella_effettiva;result[side].fantavoto_effettivo=t[side].fantavoto_effettivo;result[side].subentrati=t[side].subentrati||[];result[side].giocatori_effettivi=t[side].giocatori_effettivi;result[side].consegnata=true;
+   }result.archivioSenzaFormazioni=false}
+   return result;
+  };
+  // Fantavoto e modificatore vengono letti dai totali ufficiali Excel. La pagella si mostra solo quando verificabile.
+  // Se il calcolo non si riconcilia col totale ufficiale, NON mostra numeri ingannevoli.
+  if(typeof liveSommaTitolari==='function'){
+   const originalSum=liveSommaTitolari;
+   liveSommaTitolari=function(team,field){
+    if(team&&Object.prototype.hasOwnProperty.call(team,'fantavoto_effettivo')){
+     const v=field==='scr'?team.pagella_effettiva:team.fantavoto_effettivo;
+     return typeof v==='number'?v.toFixed(1):'—';
+    }
+    return originalSum(team,field);
+   };
+  }
+  if(typeof renderLiveMatch==='function'){
+   const render=renderLiveMatch;
+   renderLiveMatch=function(match){
+    let html=render(match);
+    if(!match||match.archivioSenzaFormazioni)return html;
+    // Ogni riepilogo (home/away) e' sostituito separatamente: la vecchia replace() colpiva sempre la prima occorrenza.
+    return html.replace(/(live-side-(home|away)">(?:(?!<\/aside>)[\s\S])*?MOD\. DIFESA<\/span><strong>)—(<\/strong>)/g,function(m,pre,lato,post){
+     const t=match[lato==='home'?'casa':'trasferta'],v=t&&t.modificatore_difesa;
+     return pre+((typeof v==='number')?String(v).replace('.',','):'—')+post;
+    });
+   };
+  }
+  if(typeof liveCartellini==='function'){
+   const original=liveCartellini;
+   const symbols={AMM:'🟨',ESP:'🟥',G:'⚽',GS:'🥅',AU:'🔴',RS:'⚽',RSb:'❌',RP:'🧤',A:'🅰️',AS:'🅰️',AG:'🅰️',GV:'🏆',PI:'🏅'};
+   liveCartellini=function(p){
+    let html=original(p); const ev=p&&p.bonus_malus;
+    if(ev)for(const [k,v] of Object.entries(ev))if(symbols[k])html+='<span style="margin-left:4px" title="'+k+': '+v+' punti">'+symbols[k]+'</span>';
+    if(p&&p.subentrato)html+='<span style="margin-left:4px" title="Subentrato dalla panchina">⇄</span>';
+    return html;
+   };
+  }
+  // Chi non e' entrato nel punteggio (grigio nell'Excel) viene attenuato.
+  if(typeof liveVotoDoppio==='function'){
+   const doppio=liveVotoDoppio;
+   liveVotoDoppio=function(p){const h=doppio(p);return(p&&p.conta===false)?'<div style="opacity:.4" title="Non entrato nel punteggio">'+h+'</div>':h};
+  }
+  setup();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
