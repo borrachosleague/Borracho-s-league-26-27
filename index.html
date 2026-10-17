@@ -5647,7 +5647,30 @@ body.editor-authorized:not(.home-active) .layout-editor-tools { display:flex !im
 #page-live .mc-result-summary small{display:block;font-size:12px;color:#ddd}
 #page-live .mc-result-summary strong{display:block;font-size:32px;color:#ffd54a;margin-top:8px}
 #page-live .mc-await{text-align:center;font-size:15px;line-height:1.5;color:#eee;background:#2a2430;border:1px dashed #7d6536;padding:15px;border-radius:10px;margin:16px auto;max-width:790px}
-</style></head>
+</style><style id="borrachos-match-center-mobile-compatto">
+/* 17/10/2026 - Match Center su telefono: meno spazio verticale, controlli piu' piccoli */
+@media(max-width:700px){
+  #page-live{padding:8px 8px 16px!important;min-height:0!important}
+  #page-live .live-head{flex-direction:column;gap:0;white-space:normal;margin-bottom:0}
+  #page-live .live-title{font-size:15px;letter-spacing:1px}
+  #page-live .live-meta{font-size:11px}
+  #page-live .match-day-picker{margin:6px auto 4px!important;gap:6px!important}
+  #page-live .match-day-picker label{font-size:13px}
+  #page-live .match-day-picker select{font-size:13px!important;padding:5px 8px!important}
+  #page-live .mc-day-step{font-size:13px!important;padding:5px 10px!important}
+  #mc-private-tools{margin:4px auto 8px!important;gap:4px!important}
+  #mc-private-tools form,#mc-private-tools>div{gap:5px!important;width:100%}
+  #mc-private-tools select,#mc-private-tools input{font-size:15px!important;padding:6px 8px!important;border-width:1px!important;border-radius:7px!important;flex:1 1 40%;width:0}
+  #mc-private-tools button{font-size:12px!important;padding:6px 10px!important;border-width:1px!important;border-radius:7px!important}
+  #mc-private-tools form button[type=submit]{flex:1 1 100%}
+  #mc-private-status{font-size:11px!important;line-height:1.3}
+  #page-live .live-scoreboard th{padding:5px 6px!important;font-size:12px!important}
+  #page-live .live-scoreboard td{padding:4px 6px!important;font-size:14px!important}
+  #page-live .live-scoreboard .ris-logo{width:24px!important;height:24px!important}
+  #page-live .live-scoreboard .live-goal{font-size:16px!important}
+}
+</style>
+</head>
 <body>
 
 <div class="header">
@@ -6348,30 +6371,7 @@ function tornaLiveTabellone(){
     var home=document.getElementById('live-home'), detail=document.getElementById('live-detail');
     if(home)home.style.display='block'; if(detail)detail.style.display='none';
 }
-// Monitor LIVE: distingue il controllo del sito dalla freschezza dei dati Fantacalcio.
-var blMonitor={ultimoControllo:null,ultimoDato:null,ultimoTimestamp:null,errore:null,controlloInCorso:false};
-function blOra(t){return t?new Date(t).toLocaleTimeString('it-IT',{hour12:false}):'—';}
-function blMonitorDisegna(){
-    var meta=document.getElementById('live-meta');if(!meta)return;
-    var panel=document.getElementById('live-monitor-stato');
-    if(!panel){panel=document.createElement('div');panel.id='live-monitor-stato';panel.setAttribute('role','status');panel.style.cssText='margin:8px auto 12px;padding:8px 12px;max-width:980px;border:1px solid #7a672c;border-radius:8px;background:#16151a;color:#f4e8c6;font-size:12px;line-height:1.7;text-align:center;font-weight:700';meta.insertAdjacentElement('afterend',panel);}
-    var now=Date.now(),age=blMonitor.ultimoControllo?Math.floor((now-blMonitor.ultimoControllo)/1000):null;
-    var next=age===null?'—':Math.max(0,30-age)+'s';
-    var testo=blMonitor.errore?'COLLEGAMENTO IN ERRORE':blMonitor.controlloInCorso?'CONTROLLO IN CORSO':blMonitor.ultimoControllo?'SUPABASE RISPONDE':'IN ATTESA DI CONTROLLO';
-    var colore=blMonitor.errore?'#ff8686':blMonitor.ultimoControllo?'#8ff0ac':'#ffdf88';
-    if(age!==null&&age>65&&!blMonitor.controlloInCorso){testo='CONTROLLO IN RITARDO';colore='#ff8686';}
-    var freschezza=blMonitor.ultimoDato?'Dati Fantacalcio: '+blMonitor.ultimoDato:'Dati Fantacalcio: data non comunicata';
-    panel.textContent='● '+testo+'  |  Ultima risposta: '+blOra(blMonitor.ultimoControllo)+'  |  Prossimo controllo: '+next+'  |  '+freschezza+(blMonitor.errore?'  |  '+blMonitor.errore:'');
-    panel.style.borderColor=colore;
-}
-function blMonitorRicevuto(d){
-    blMonitor.ultimoControllo=Date.now();blMonitor.controlloInCorso=false;blMonitor.errore=null;
-    var ts=d&&d.aggiornato_il;
-    if(ts){var parsed=Date.parse(ts);blMonitor.ultimoDato=Number.isFinite(parsed)?new Date(parsed).toLocaleString('it-IT',{dateStyle:'short',timeStyle:'medium'}):String(ts);}
-    blMonitorDisegna();
-}
-function blMonitorErrore(e){blMonitor.controlloInCorso=false;blMonitor.errore=(e&&e.message)||'Errore di rete';blMonitorDisegna();}
-setInterval(blMonitorDisegna,1000);
+// (17/10/2026) Rimosso il vecchio pannello "IN ATTESA DI CONTROLLO": non c'e' piu' il collegamento live a Fantacalcio.
 // Archivio delle giornate: esclusivamente file statici pubblicati nel nostro repository.
 // NESSUNA chiamata a Fantacalcio o a funzioni Supabase.
 var mcArchivio=null, mcGiornata=null;
@@ -8028,4 +8028,4 @@ caricaDatiBorrachos()
 
 <script src="match_center_privato.js?v=6" defer></script>
 </body>
-</html>
+</html>
