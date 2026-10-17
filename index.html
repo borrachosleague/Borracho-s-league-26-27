@@ -5795,6 +5795,23 @@ html body #page-classifica#page-classifica .chalk-team{font-family:"Ultra Fresh 
   html body #page-best11#page-best11 .b11-tabellone .best11-presenze-unit{display:block!important;height:46px!important;position:relative!important}
 }
 </style>
+<style id="borrachos-best11-panchina-prova">
+/* 17/10/2026 - PROVA panchina su PC, attiva SOLO con ?panchina=1 o ?panchina=2 nell'indirizzo (gli altri non vedono differenze) */
+@media(min-width:701px){
+  body.pan-opt1 #page-best11 .best11-bench,body.pan-opt2 #page-best11 .best11-bench{display:none!important}
+  .pan1-layer{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:40}
+  .pan1-tag{position:absolute;display:flex;align-items:center;gap:3px;padding:0 4px 0 2px;background:rgba(8,12,20,.92);border:1px solid rgba(255,213,74,.55);border-left:3px solid var(--r);border-radius:3px;font-family:"Arial Narrow",Arial,sans-serif;font-weight:700;line-height:1;color:#fff;white-space:nowrap;transform:translate(-100%,-50%);box-shadow:0 1px 3px rgba(0,0,0,.6);box-sizing:border-box}
+  .pan1-tag img{object-fit:contain}
+  .pan1-tag b{color:#ffd54a;font-weight:900;margin-left:2px}
+  .pan2-board{position:absolute;left:0;top:0;width:300px;height:200px;transform-origin:0 0;background:#050f17;border:5px solid #5a3a1c;box-shadow:0 0 0 2px #2a1a0c,0 8px 20px rgba(0,0,0,.7);box-sizing:border-box;padding:8px 10px;z-index:40;color:#fff;font-family:Arial,sans-serif}
+  .pan2-board h4{margin:0 0 6px;text-align:center;color:#ffd54a;font:900 17px/1 "Arial Black",Arial,sans-serif;letter-spacing:1px}
+  .pan2-board .g{display:grid;grid-template-columns:1fr 1fr;column-gap:10px;row-gap:3px}
+  .pan2-board .r{display:flex;align-items:center;gap:4px;height:27px;padding:0 4px;border-left:3px solid var(--r);background:rgba(255,255,255,.06);border-radius:3px;font:700 12px/1 Arial,sans-serif;white-space:nowrap;overflow:hidden}
+  .pan2-board .r img{width:16px;height:16px;object-fit:contain}
+  .pan2-board .r span{flex:1;overflow:hidden;text-overflow:ellipsis}
+  .pan2-board .r b{color:#ffd54a}
+}
+</style>
 </head>
 <body>
 
@@ -8289,7 +8306,57 @@ caricaDatiBorrachos()
     var val='matrix3d('+[t[0],t[3],0,t[6],t[1],t[4],0,t[7],0,0,1,0,t[2],t[5],0,t[8]].join(',')+')';
     if(c.style.getPropertyValue('transform')!==val)c.style.setProperty('transform',val,'important');
   }
-  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();tabellone();},40);}
+  // PROVA panchina su PC: ?panchina=1 (giocatori sui seggiolini disegnati) o ?panchina=2 (tabellone in prospettiva in alto a destra)
+  var PAN_MODO=(function(){var m=/[?&]panchina=([12])/.exec(location.search);return m?Number(m[1]):0;})();
+  var COL_RUOLO={POR:'#8b5cf6',DIF:'#2f7de1',CEN:'#22a35a',ATT:'#e23b3b'};
+  var SEDILI=[[1315,320],[1330,334],[1345,345],[1357,360],[1370,375],[1430,435],[1447,452],[1462,470],[1480,487],[1492,510]];
+  var PAN2_QUAD=[[1236,48],[1508,66],[1236,226],[1508,236]];
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function matrice(D,W,H){
+    function adj(m){return [m[4]*m[8]-m[5]*m[7],m[2]*m[7]-m[1]*m[8],m[1]*m[5]-m[2]*m[4],m[5]*m[6]-m[3]*m[8],m[0]*m[8]-m[2]*m[6],m[2]*m[3]-m[0]*m[5],m[3]*m[7]-m[4]*m[6],m[1]*m[6]-m[0]*m[7],m[0]*m[4]-m[1]*m[3]];}
+    function mm(a,b){var r=[];for(var i=0;i<3;i++)for(var j=0;j<3;j++){var v=0;for(var k=0;k<3;k++)v+=a[3*i+k]*b[3*k+j];r[3*i+j]=v;}return r;}
+    function mv(m,v){return [m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
+    function base(p){var m=[p[0][0],p[1][0],p[2][0],p[0][1],p[1][1],p[2][1],1,1,1];var v=mv(adj(m),[p[3][0],p[3][1],1]);return mm(m,[v[0],0,0,0,v[1],0,0,0,v[2]]);}
+    var t=mm(base(D),adj(base([[0,0],[W,0],[0,H],[W,H]])));for(var i=0;i<9;i++)t[i]/=t[8];
+    return 'matrix3d('+[t[0],t[3],0,t[6],t[1],t[4],0,t[7],0,0,1,0,t[2],t[5],0,t[8]].join(',')+')';
+  }
+  var panFirma='';
+  function panchinaProva(){
+    if(!PAN_MODO)return;
+    var page=document.getElementById('page-best11'),lay=document.querySelector('#page-best11 .best11-layout');if(!page||!lay)return;
+    var pc=window.matchMedia&&window.matchMedia('(min-width:701px)').matches;
+    var vecchi=lay.querySelectorAll('.pan1-layer,.pan2-board');
+    if(!pc){Array.prototype.forEach.call(vecchi,function(e){e.remove();});document.body.classList.remove('pan-opt1','pan-opt2');panFirma='';return;}
+    var pr=page.getBoundingClientRect(),lr=lay.getBoundingClientRect();if(!pr.width||!pr.height)return;
+    var gioc=Array.prototype.map.call(document.querySelectorAll('#best11-bench-list .bench-player'),function(b){
+      var n=b.querySelector('.bench-name'),r=b.querySelector('.bench-role'),v=b.querySelector('.bench-vote'),i=b.querySelector('img');
+      return {n:n?n.textContent:'',r:r?r.textContent.trim():'',v:v?v.textContent:'',img:i?i.getAttribute('src'):''};
+    });
+    var firma=JSON.stringify(gioc)+'|'+Math.round(pr.width)+'x'+Math.round(pr.height)+'|'+Math.round(pr.top);
+    if(firma===panFirma&&vecchi.length)return;
+    panFirma=firma;Array.prototype.forEach.call(vecchi,function(e){e.remove();});
+    document.body.classList.add('pan-opt'+PAN_MODO);
+    var s=Math.max(pr.width/IMG_W,pr.height/IMG_H),ox=pr.left+(pr.width-IMG_W*s)*0.5,oy=pr.top;
+    function map(p){return [ox+p[0]*s-lr.left,oy+p[1]*s-lr.top];}
+    if(PAN_MODO===1){
+      var L=document.createElement('div');L.className='pan1-layer';
+      var h=Math.max(11,Math.round(13*s)),fs=Math.max(8.5,h-3.5),im=Math.max(9,h-3);
+      gioc.forEach(function(g,i){
+        var se=SEDILI[i];if(!se)return;var p=map([se[0]-4,se[1]]);
+        var t=document.createElement('div');t.className='pan1-tag';
+        t.style.cssText='left:'+p[0]+'px;top:'+p[1]+'px;height:'+h+'px;font-size:'+fs+'px;--r:'+(COL_RUOLO[g.r]||'#888');
+        t.innerHTML=(g.img?'<img src="'+esc(g.img)+'" style="width:'+im+'px;height:'+im+'px">':'')+esc(g.n)+'<b>'+esc(g.v)+'</b>';
+        L.appendChild(t);
+      });
+      lay.appendChild(L);
+    }else{
+      var B=document.createElement('div');B.className='pan2-board';
+      B.innerHTML='<h4>PANCHINA</h4><div class="g">'+gioc.map(function(g){return '<div class="r" style="--r:'+(COL_RUOLO[g.r]||'#888')+'">'+(g.img?'<img src="'+esc(g.img)+'">':'')+'<span>'+esc(g.n)+'</span><b>'+esc(g.v)+'</b></div>';}).join('')+'</div>';
+      lay.appendChild(B);
+      B.style.transform=matrice(PAN2_QUAD.map(map),B.offsetWidth,B.offsetHeight);
+    }
+  }
+  var attesa=0;function programma(){if(attesa)return;attesa=setTimeout(function(){attesa=0;adatta();disponi();tabellone();panchinaProva();},40);}
   function osserva(){
     var pitch=document.getElementById('pitch-best11');if(!pitch)return;
     new MutationObserver(function(lista){
@@ -8301,6 +8368,7 @@ caricaDatiBorrachos()
       }
     }).observe(pitch,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
     ['best-modulo','best-gruppo','best-tipo','best-metrica'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('click',function(){setTimeout(programma,80);});});
+    var bl=document.getElementById('best11-bench-list');if(bl)new MutationObserver(programma).observe(bl,{childList:true,subtree:true,characterData:true});
     var pres=document.getElementById('best-presenze-pct');if(pres)pres.addEventListener('change',function(){setTimeout(programma,80);});
     if(window.ResizeObserver){new ResizeObserver(programma).observe(pitch);var pg=document.getElementById('page-best11');if(pg)new ResizeObserver(programma).observe(pg);}
     window.addEventListener('resize',programma);programma();
