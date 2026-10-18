@@ -9153,5 +9153,219 @@ caricaDatiBorrachos()
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',avvio);else avvio();
 })();
 </script>
+
+<style id="borrachos-login-unico-css-v1">
+#lu-layer{position:absolute;left:0;top:0;width:0;height:0;z-index:60;pointer-events:none;display:none}
+body.home-active #lu-layer{display:block}
+body.home-editing #lu-layer,body.layout-editing #lu-layer{display:none!important}
+#lu-layer .lu-hot{position:absolute;border-radius:50%;pointer-events:auto;cursor:pointer;background:transparent;border:0;padding:0;
+  transform:translate(-50%,-50%);transition:box-shadow .15s,background .15s;-webkit-tap-highlight-color:transparent}
+#lu-layer .lu-hot:hover,#lu-layer .lu-hot:focus-visible{background:rgba(255,213,74,.10);box-shadow:0 0 0 3px rgba(255,213,74,.85),0 0 22px rgba(255,213,74,.55);outline:none}
+#lu-layer .lu-hot.lu-mia{box-shadow:0 0 0 4px #ffd54a,0 0 26px rgba(255,213,74,.75)}
+#lu-bar{position:absolute;left:50%;transform:translateX(-50%);pointer-events:auto;white-space:nowrap;
+  background:rgba(10,10,22,.86);border:1px solid rgba(255,213,74,.55);border-radius:999px;padding:6px 14px;
+  color:#fff;font:700 13px/1.25 'Segoe UI',Tahoma,sans-serif;display:flex;gap:10px;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+#lu-bar b{color:#ffd54a}
+#lu-bar button{background:#ffd54a;color:#111;border:0;border-radius:999px;padding:4px 10px;font:800 12px 'Segoe UI',sans-serif;cursor:pointer}
+#lu-bar button.lu-sec{background:transparent;color:#ffd54a;border:1px solid #ffd54a}
+#lu-modal{position:fixed;inset:0;z-index:100500;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
+#lu-modal.open{display:flex}
+#lu-card{background:#14142a;border:1px solid #2c2c48;border-top:3px solid #ffd54a;border-radius:16px;width:min(360px,100%);padding:18px;text-align:center;
+  color:#e0e0e0;font-family:'Segoe UI',Tahoma,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#lu-card img{width:110px;height:110px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,.6))}
+#lu-card h3{margin:6px 0 2px;color:#fff;font-size:1.25em}
+#lu-card p{margin:0 0 10px;font-size:.85em;color:#aab}
+#lu-card input{width:100%;box-sizing:border-box;margin:5px 0;padding:11px 12px;border-radius:10px;border:1px solid #444;background:#0b0b18;color:#fff;font-size:16px}
+#lu-card input:focus{outline:2px solid #ffd54a;border-color:transparent}
+#lu-card .lu-azioni{display:flex;gap:8px;justify-content:center;margin-top:8px}
+#lu-card button{border:0;border-radius:10px;padding:10px 16px;font-weight:800;cursor:pointer;font-size:14px}
+#lu-card .lu-ok{background:#ffd54a;color:#111}
+#lu-card .lu-no{background:transparent;color:#ddd;border:1px solid #555}
+#lu-card .lu-err{min-height:1.2em;margin-top:8px;font-size:.85em;font-weight:700;color:#ff8a8a}
+#lu-card .lu-err.ok{color:#5ee49a}
+@media (max-width:700px){#lu-bar{font-size:12px;padding:5px 11px;gap:7px}#lu-bar button{font-size:11px;padding:4px 8px}
+  #page-home .home-nav{top:57dvh!important}}
+</style>
+<div id="lu-layer" aria-label="Accesso squadre"></div>
+<div id="lu-modal" role="dialog" aria-modal="true"><div id="lu-card"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script id="borrachos-login-unico-js-v1">
+/* LOGIN UNICO (18/10/2026): dalla Home si entra con UNA password valida per asta e Match Center.
+   - asta: sessione Supabase anonima + rpc league_login (condivisa con asta.html, stessa origine)
+   - Match Center: account mc-<slug> (window.BorrachosMC, match_center_privato.js)
+   - cambio password: rpc league_cambia_mia_password (cambia entrambe lato server) */
+(function(){
+  var SB_URL='https://tlgzvgdxhtiavobyyxze.supabase.co', SB_KEY='sb_publishable_a0DVw4Juvcxls3mJVFfGKQ_CMYTG9mL';
+  // x,y = centro del logo nell'immagine home (2000x2000 px)
+  var TEAMS=[
+    {slug:'as-pipperia',       asta:'AS Pipperia',             nome:'AS Pipperia',               logo:'as-pipperia',              x:999.5, y:234.5},
+    {slug:'tricchetracht',     asta:'Tricchetracht Frankfurt', nome:'Tricchetracht Francoforte', logo:'tricchetracht-francoforte',x:549.5, y:380.5},
+    {slug:'asparaghese',       asta:'AC Asparaghese',          nome:'AC Asparaghese',            logo:'ac-asparaghese',           x:1448.5,y:379.8},
+    {slug:'shark',             asta:'Shark',                   nome:'Shark',                     logo:'shark',                    x:271.4, y:762.3},
+    {slug:'atl-improvvisato',  asta:'Atl. Improvvisato',       nome:'Atletico Improvvisato',     logo:'atletico-improvvisato',    x:1726.5,y:762.0},
+    {slug:'san-gria',          asta:'San Gria',                nome:'San Gria',                  logo:'san-gria',                 x:271.5, y:1235.5},
+    {slug:'internaziona-nale', asta:'FC Internazioanale',      nome:'FC Internazioanale',        logo:'fc-internazioanale',       x:1724.5,y:1234.9},
+    {slug:'pesciculini',       asta:'Pesciculini',             nome:'Pesciculini FC',            logo:'pesciculini-fc',           x:551.1, y:1614.3},
+    {slug:'sesto-asensio',     asta:'Sesto Asensio',           nome:'Il sesto Asensio',          logo:'sesto-asensio',            x:1445.1,y:1607.2},
+    {slug:'partizan-degrado',  asta:'Partizan Degrado',        nome:'Partizan Degrado',          logo:'partizan-degrado',         x:999.5, y:1764.5}
+  ];
+  var R_LOGO=175, IMG_N=2000;
+  var sb=null, mia=null, busy=false;
+  function client(){ if(!sb&&window.supabase&&window.supabase.createClient) sb=window.supabase.createClient(SB_URL,SB_KEY); return sb; }
+  function teamDaSlug(s){ for(var i=0;i<TEAMS.length;i++) if(TEAMS[i].slug===s) return TEAMS[i]; return null; }
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function mc(){ return window.BorrachosMC||null; }
+
+  /* ---------- zone cliccabili sopra l'immagine della Home ---------- */
+  var layer=document.getElementById('lu-layer'), bar=null, hots=[];
+  function costruisci(){
+    layer.innerHTML='';hots=[];
+    TEAMS.forEach(function(t){
+      var b=document.createElement('button');b.type='button';b.className='lu-hot';
+      b.setAttribute('aria-label','Entra come '+t.nome);b.title=t.nome;
+      b.onclick=function(ev){ev.preventDefault();ev.stopPropagation();cliccaSquadra(t);};
+      layer.appendChild(b);hots.push({b:b,t:t});
+    });
+    bar=document.createElement('div');bar.id='lu-bar';layer.appendChild(bar);
+    disegnaBarra();
+  }
+  function posiziona(){
+    var img=document.querySelector('#page-home .home-league');
+    if(!img||!document.body.classList.contains('home-active')) return;
+    var r=img.getBoundingClientRect(); if(!r.width||!r.height) return;
+    // l'immagine e' quadrata: con object-fit:contain il contenuto e' il quadrato centrato
+    var lato=Math.min(r.width,r.height), ox=r.left+(r.width-lato)/2+window.scrollX, oy=r.top+(r.height-lato)/2+window.scrollY, k=lato/IMG_N;
+    layer.style.left='0px';layer.style.top='0px';
+    hots.forEach(function(h){
+      var d=2*R_LOGO*k;
+      h.b.style.width=d+'px';h.b.style.height=d+'px';h.b.style.left=(ox+h.t.x*k)+'px';h.b.style.top=(oy+h.t.y*k)+'px';
+    });
+    if(bar){ bar.style.left=(ox+lato/2)+'px'; bar.style.top=(oy+lato+6)+'px'; }
+  }
+  function disegnaBarra(){
+    if(!bar) return;
+    hots.forEach(function(h){ h.b.classList.toggle('lu-mia', !!mia && h.t.slug===mia.slug); });
+    if(mia){
+      bar.innerHTML='<span>✓ Sei entrato come <b>'+esc(mia.nome)+'</b></span><button type="button" class="lu-sec" id="lu-cp">Cambia password</button><button type="button" id="lu-out">Esci</button>';
+      document.getElementById('lu-cp').onclick=apriCambio;
+      document.getElementById('lu-out').onclick=function(){ window.borrachosEsciTutto(); };
+    } else {
+      bar.innerHTML='<span>👆 Clicca sul <b>logo della tua squadra</b> e inserisci la password</span>';
+    }
+    posiziona();
+  }
+
+  /* ---------- finestra ---------- */
+  var modal=document.getElementById('lu-modal'), card=document.getElementById('lu-card');
+  function chiudi(){ modal.classList.remove('open'); card.innerHTML=''; }
+  modal.addEventListener('click',function(e){ if(e.target===modal && !busy) chiudi(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&modal.classList.contains('open')&&!busy) chiudi(); });
+  function errore(t,ok){ var e=card.querySelector('.lu-err'); if(e){ e.textContent=t||''; e.classList.toggle('ok',!!ok); } }
+
+  function cliccaSquadra(t){
+    if(mia){
+      if(mia.slug===t.slug){ apriCambio(); return; }
+      card.innerHTML='<img src="3d/'+t.logo+'.webp" alt=""><h3>'+esc(t.nome)+'</h3><p>Sei già entrato come <b>'+esc(mia.nome)+'</b>. Per entrare con un\'altra squadra prima esci.</p>'+
+        '<div class="lu-azioni"><button class="lu-ok" id="lu-x">Esci e cambia squadra</button><button class="lu-no" id="lu-a">Annulla</button></div>';
+      modal.classList.add('open');
+      document.getElementById('lu-a').onclick=chiudi;
+      document.getElementById('lu-x').onclick=async function(){ await esciTutto(true); cliccaSquadra(t); };
+      return;
+    }
+    card.innerHTML='<img src="3d/'+t.logo+'.webp" alt=""><h3>'+esc(t.nome)+'</h3><p>Inserisci la password della tua squadra.<br>Vale per il Match Center e per l\'asta.</p>'+
+      '<form id="lu-f"><input type="password" id="lu-pw" placeholder="Password" autocomplete="current-password" aria-label="Password">'+
+      '<div class="lu-azioni"><button type="submit" class="lu-ok" id="lu-go">Entra</button><button type="button" class="lu-no" id="lu-a">Annulla</button></div></form><div class="lu-err" role="status"></div>';
+    modal.classList.add('open');
+    var pw=document.getElementById('lu-pw'); setTimeout(function(){ pw.focus(); },50);
+    document.getElementById('lu-a').onclick=chiudi;
+    document.getElementById('lu-f').onsubmit=async function(ev){
+      ev.preventDefault(); if(busy) return;
+      if(!pw.value){ errore('Inserisci la password.'); return; }
+      var go=document.getElementById('lu-go'); busy=true; go.disabled=true; errore('Accesso in corso…',true);
+      try{ await entra(t,pw.value); chiudi(); }
+      catch(e){ errore(e.message||'Accesso non riuscito'); pw.select(); }
+      finally{ busy=false; if(document.getElementById('lu-go')) document.getElementById('lu-go').disabled=false; }
+    };
+  }
+
+  async function entra(t,password){
+    var c=client(); if(!c) throw Error('Servizio non disponibile, riprova tra poco');
+    if(!mc()) throw Error('Match Center non ancora caricato, riprova tra un attimo');
+    // 1) asta
+    var s=await c.auth.getSession();
+    if(!s.data||!s.data.session){ var a=await c.auth.signInAnonymously(); if(a.error) throw Error('Accesso tecnico non disponibile'); }
+    var r=await c.rpc('league_login',{p_password:password});
+    if(r.error||!r.data||r.data.squadra!==t.asta){
+      if(!r.error) await c.rpc('league_logout');
+      throw Error('Password errata per '+t.nome);
+    }
+    // 2) Match Center (stessa password)
+    try{ await mc().accedi(t.slug,password); }
+    catch(e){ await c.rpc('league_logout'); throw Error(/errata/i.test(e.message)?'Password errata per '+t.nome:e.message); }
+    try{ localStorage.setItem('fanta_selected_team',t.asta); }catch(e){}
+    mia=t; disegnaBarra();
+    try{ await mc().attiva(); }catch(e){}
+  }
+
+  async function esciTutto(silenzioso){
+    var c=client();
+    try{ if(c){ await c.rpc('league_logout'); await c.auth.signOut(); } }catch(e){}
+    try{ if(mc()) mc().esci(); else localStorage.removeItem('borrachos_mc_sessione_v1'); }catch(e){}
+    try{ localStorage.removeItem('fanta_selected_team'); }catch(e){}
+    mia=null; disegnaBarra();
+    if(!silenzioso) chiudi();
+  }
+  window.borrachosEsciTutto=function(){ return esciTutto(false); };
+
+  function apriCambio(){
+    if(!mia) return;
+    card.innerHTML='<img src="3d/'+mia.logo+'.webp" alt=""><h3>Cambia password</h3><p>'+esc(mia.nome)+' · la nuova password vale per Match Center e asta.</p>'+
+      '<form id="lu-cf"><input type="password" id="lu-o" placeholder="Password attuale" autocomplete="current-password">'+
+      '<input type="password" id="lu-n1" placeholder="Nuova password (min. 8 caratteri)" autocomplete="new-password">'+
+      '<input type="password" id="lu-n2" placeholder="Ripeti nuova password" autocomplete="new-password">'+
+      '<div class="lu-azioni"><button type="submit" class="lu-ok" id="lu-s">Salva</button><button type="button" class="lu-no" id="lu-a">Chiudi</button></div></form><div class="lu-err" role="status"></div>';
+    modal.classList.add('open');
+    document.getElementById('lu-a').onclick=chiudi;
+    document.getElementById('lu-cf').onsubmit=async function(ev){
+      ev.preventDefault(); if(busy) return;
+      var o=document.getElementById('lu-o').value, n1=document.getElementById('lu-n1').value, n2=document.getElementById('lu-n2').value;
+      if(!o||!n1){ errore('Compila tutti i campi.'); return; }
+      if(n1.length<8){ errore('La nuova password deve avere almeno 8 caratteri.'); return; }
+      if(n1!==n2){ errore('Le due nuove password non coincidono.'); return; }
+      busy=true; document.getElementById('lu-s').disabled=true; errore('Salvataggio…',true);
+      try{
+        var r=await client().rpc('league_cambia_mia_password',{p_attuale:o,p_nuova:n1});
+        if(r.error){ var m=r.error.message||''; throw Error(/Sessione/i.test(m)?'Sessione scaduta: esci e rientra con la password attuale.':m); }
+        errore('Password cambiata! Usala dal prossimo accesso, anche per l\'asta.',true);
+        ['lu-o','lu-n1','lu-n2'].forEach(function(id){ document.getElementById(id).value=''; });
+      }catch(e){ errore('Password NON cambiata: '+e.message); }
+      finally{ busy=false; var b=document.getElementById('lu-s'); if(b) b.disabled=false; }
+    };
+  }
+
+  /* ---------- all'avvio: ritrovo l'accesso (deve valere per entrambi) ---------- */
+  async function ripristina(){
+    var tentativi=0;
+    while(!mc() && tentativi<40){ await new Promise(function(r){setTimeout(r,150);}); tentativi++; }
+    var s=mc()?mc().sessione():null;
+    if(!s){ mia=null; disegnaBarra(); return; }
+    var t=teamDaSlug(s.squadra); var c=client();
+    try{
+      var ss=c?await c.auth.getSession():null;
+      var r=(ss&&ss.data&&ss.data.session)?await c.rpc('league_restore_session'):{data:null};
+      if(t && r && r.data && r.data.squadra===t.asta){ mia=t; disegnaBarra(); return; }
+    }catch(e){ if(t){ mia=t; disegnaBarra(); return; } }
+    // accesso a meta' (es. uscito dall'asta): esco da tutto per non confondere
+    await esciTutto(true);
+  }
+
+  costruisci();
+  window.addEventListener('resize',posiziona);
+  window.addEventListener('orientationchange',function(){ setTimeout(posiziona,300); });
+  window.addEventListener('load',function(){ posiziona(); ripristina(); });
+  setInterval(function(){ if(document.body.classList.contains('home-active')) posiziona(); },500);
+})();
+</script>
+
 </body>
 </html>

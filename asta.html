@@ -292,10 +292,10 @@ function goToCampionato() {
 <!-- ================= LOGIN ================= -->
 <div class="card" id="login-card">
   <h3>Accesso all'asta</h3>
-  <div class="home-status">Inserisci la password della tua squadra.</div>
-  <input id="login-password" type="password" placeholder="Password squadra" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+  <div class="home-status">Per entrare vai alla <b>Home</b> del sito, clicca il <b>logo della tua squadra</b> e inserisci la tua password: vale per l'asta e per il Match Center.</div>
+  <input id="login-password" type="password" style="display:none" tabindex="-1" aria-hidden="true">
   <div class="login-actions">
-    <button class="btn-start" onclick="login()">Entra</button>
+    <a class="btn-start" href="index.html" style="text-decoration:none;display:inline-block">🏠 Vai alla Home</a>
     <button class="btn-help" onclick="openHelp()">📖 Come funziona</button>
   </div>
   <div class="error" id="login-error"></div>
@@ -352,11 +352,17 @@ function goToCampionato() {
           <div class="error" id="delegation-error"></div>
         </div>
         <div>
-          <h3>🔑 Password squadre (asta)</h3>
+          <h3>🔑 Reset password (solo superadmin)</h3>
+          <div class="home-status">Genera una nuova password per la squadra, valida per asta e Match Center. La squadra viene scollegata: mandale la password, poi potrà cambiarla dalla Home.</div>
           <select id="password-team"></select>
-          <input id="password-new" type="password" placeholder="Nuova password">
-          <button type="button" class="btn-start" id="btn-set-password">Salva password</button>
+          <input id="password-new" type="hidden">
+          <button type="button" class="btn-start" id="btn-set-password">🔄 Reset password</button>
           <div class="error" id="password-error"></div>
+          <div id="password-result" style="display:none;margin-top:8px;padding:10px;border:1px solid var(--gold);border-radius:10px;text-align:center">
+            <div class="home-status" id="password-result-team"></div>
+            <div id="password-result-value" style="font-size:1.35rem;font-weight:900;letter-spacing:1px;color:var(--gold);margin:6px 0;user-select:all"></div>
+            <button type="button" class="btn-start" id="btn-copy-password">📋 Copia</button>
+          </div>
         </div>
       </div>
       <div class="seriea-box">
@@ -507,7 +513,7 @@ function goToCampionato() {
     <section id="help-accesso">
       <h3>🔑 Accesso</h3>
       <ul>
-        <li>Inserisci la <b>password della tua squadra per l'asta</b> (è diversa da quella del Match Center). La password la imposta l'admin.</li>
+        <li>Entra dalla <b>Home</b> del sito: clicca il <b>logo della tua squadra</b> e inserisci la tua password (una sola, vale per asta e Match Center). Dalla Home puoi anche cambiarla con <b>Cambia password</b>.</li>
         <li>Dalla <b>Home</b> entri nell'asta, negli svincoli pre-asta o torni al sito con <b>Campionato</b>.</li>
         <li>Se ti è stata data una <b>delega</b>, in alto trovi <b>“Sto operando per”</b>: scegli la squadra per cui vuoi offrire o svincolare.</li>
         <li>La pagina si aggiorna da sola: non serve ricaricarla. Se cade la connessione, riapri la pagina: di solito sei ancora dentro, altrimenti rientra con la password.</li>
@@ -562,7 +568,7 @@ function goToCampionato() {
       <h3>👑 Solo per gli admin</h3>
       <ul>
         <li><b>Deleghe</b>: abilita una squadra a operare per un'altra (es. chi non può collegarsi).</li>
-        <li><b>Password squadre</b>: imposta o cambia la password d'asta di una squadra.</li>
+        <li><b>Reset password</b> (solo superadmin): genera una nuova password per una squadra, valida per asta e Match Center, da mandarle; poi la squadra può cambiarla dalla Home.</li>
         <li><b>Giocatori usciti dalla Serie A</b>: dopo la chiusura del mercato di gennaio e <b>prima</b> di aprire gli svincoli, l'admin segna chi è andato via (estero, Serie B, svincolato). Quei giocatori, se svincolati, restituiscono tutto il prezzo; nelle rose compaiono con ✈.</li>
         <li><b>Correzioni</b>: annulla un acquisto (crediti restituiti, giocatore di nuovo libero) o ripristina uno svincolo.</li>
         <li><b>Zona pericolosa</b>: “Ripristina stato salvato” e “Nuova asta da zero” cambiano tutta l'asta: si confermano scrivendo una parola.</li>
@@ -1219,10 +1225,23 @@ async function removeDelegation(index){
   if(r.error){document.getElementById('delegation-error').textContent='Errore rimozione: '+r.error.message;return;} await loadDelegationPanel();
 }
 async function setTeamPassword(){
-  var team=document.getElementById('password-team').value, pw=document.getElementById('password-new').value, e=document.getElementById('password-error'); e.textContent='';
-  if(!team||pw.length<4){e.textContent='Password: almeno 4 caratteri.';return;}
-  var r=await sb.rpc('admin_set_team_password',{p_squadra:team,p_password:pw});
-  if(r.error){e.textContent='Errore: '+r.error.message;return;} document.getElementById('password-new').value=''; e.textContent='Password salvata per '+team+'.';
+  /* v33 (18/10/2026): reset password unica asta + Match Center (funzione Supabase superadmin_reset_password) */
+  var team=document.getElementById('password-team').value, e=document.getElementById('password-error'), box=document.getElementById('password-result');
+  e.textContent=''; box.style.display='none';
+  if(!team){e.textContent='Scegli la squadra.';return;}
+  if(!window.confirm('Generare una NUOVA password per '+team+'?\nLa password attuale smette subito di funzionare e la squadra viene scollegata.'))return;
+  var btn=document.getElementById('btn-set-password'); btn.disabled=true;
+  var r=await sb.rpc('superadmin_reset_password',{p_squadra:team});
+  btn.disabled=false;
+  if(r.error){e.textContent='Errore: '+r.error.message;return;}
+  document.getElementById('password-result-team').textContent='Nuova password per '+team+' (mandala alla squadra):';
+  document.getElementById('password-result-value').textContent=r.data;
+  document.getElementById('btn-copy-password').onclick=function(){
+    var t=r.data, b=this;
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){b.textContent='✓ Copiata';setTimeout(function(){b.textContent='📋 Copia';},1500);}).catch(function(){window.prompt('Copia la password:',t);});
+    else window.prompt('Copia la password:',t);
+  };
+  box.style.display='block';
 }
 
 /* =========================================================
@@ -1354,6 +1373,7 @@ async function restoreSession(){
 async function logout(){
   clearInterval(timerInterval);
   localStorage.removeItem('fanta_selected_team');
+  try{localStorage.removeItem('borrachos_mc_sessione_v1');}catch(e){}
   await sb.rpc('league_logout');
   await sb.auth.signOut();
   location.reload();

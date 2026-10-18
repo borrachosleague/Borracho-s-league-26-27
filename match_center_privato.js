@@ -1,4 +1,4 @@
-/* BORRACHOS MATCH CENTER — archivio riservato online (v5, 17/10/2026)
+/* BORRACHOS MATCH CENTER — archivio riservato online (v6, 18/10/2026: accesso unico dalla Home)
    Formazioni, voti e bonus/malus arrivano da Supabase SOLO dopo l'accesso squadra + password.
    Lettura protetta da RLS (tabella mc_giornate); nulla di riservato è nel repository o in dati.json.
    Punteggi ufficiali: restano quelli di dati.json. Rendering e regole invariati rispetto alla v4. */
@@ -163,11 +163,16 @@
   const pwd=document.createElement('input');pwd.type='password';pwd.placeholder='Password';pwd.style.cssText=fldCss;pwd.setAttribute('autocomplete','current-password');pwd.setAttribute('aria-label','Password');
   const entra=document.createElement('button');entra.type='submit';entra.textContent='🔒 ENTRA NEL MATCH CENTER';entra.style.cssText=btnCss;
   login.append(sel,pwd,entra);
+  // v6: si entra solo dalla Home (logo squadra + password unica asta/Match Center)
+  for(const el of [sel,pwd,entra])el.style.display='none';
+  const vaiHome=document.createElement('button');vaiHome.type='button';vaiHome.textContent='🏠 ENTRA DALLA HOME';vaiHome.style.cssText=btnCss;
+  vaiHome.onclick=()=>{if(typeof showPage==='function'){showPage('home');window.scrollTo(0,0)}};
+  login.append(vaiHome);
   const connesso=document.createElement('div');connesso.style.cssText=rowCss+';display:none';
   const agg=document.createElement('button');agg.type='button';agg.textContent='↻ AGGIORNA';agg.style.cssText=btnCss;
   const out=document.createElement('button');out.type='button';out.textContent='✕ ESCI';out.style.cssText=btnCss;
   const cp=document.createElement('button');cp.type='button';cp.textContent='🔑 CAMBIA PASSWORD';cp.style.cssText=btnCss;
-  connesso.append(agg,cp,out);
+  connesso.append(agg,out);
   const cpForm=document.createElement('form');cpForm.style.cssText=rowCss+';display:none';
   const mk=(ph,ac)=>{const i=document.createElement('input');i.type='password';i.placeholder=ph;i.style.cssText=fldCss;i.setAttribute('autocomplete',ac);i.setAttribute('aria-label',ph);return i};
   const pOld=mk('Password attuale','current-password'),pNew=mk('Nuova password (min. 10)','new-password'),pNew2=mk('Ripeti nuova password','new-password');
@@ -196,12 +201,20 @@
    catch(e){stato('ACCESSO NEGATO: '+e.message,true)}finally{entra.disabled=false}
   };
   agg.onclick=()=>{stato('Aggiornamento…');sincronizza(true)};
-  out.onclick=()=>esci();
+  out.onclick=()=>{if(typeof window.borrachosEsciTutto==='function')window.borrachosEsciTutto();else esci()};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sess)sincronizza(false)});
   sess=leggiSessione();
   if(sess){const i=SQUADRE.findIndex(s=>s[0]===sess.squadra);if(i>=0)sel.selectedIndex=i+1;mostraConnesso();stato('Riconnessione…');sincronizza(true).then(()=>{if(sess)avviaPolling()})}
-  else{mostraLogin();stato('Area riservata ai 10 partecipanti: scegli la squadra e inserisci la password per vedere formazioni e voti.')}
+  else{mostraLogin();stato('Area riservata ai 10 partecipanti: entra dalla Home cliccando il logo della tua squadra.')}
  }
+ // v6: funzioni usate dal login unico della Home
+ window.BorrachosMC={
+  accedi:async(slug,password)=>{await accedi(slug,password)},
+  sessione:()=>leggiSessione(),
+  attiva:async()=>{sess=leggiSessione();if(!sess)return;if(ui){const i=SQUADRE.findIndex(s=>s[0]===sess.squadra);if(i>=0)ui.sel.selectedIndex=i+1}
+   mostraConnesso();stato('Connessione…');await sincronizza(true);if(sess)avviaPolling();ripulisciVecchioArchivio()},
+  esci:()=>{if(sess||leggiSessione()){sess=sess||leggiSessione();esci('Sei uscito.')}else{salvaSessione(null)}}
+ };
  // L'archivio caricato a mano nelle versioni precedenti (IndexedDB) non serve più: lo elimina dal dispositivo.
  function ripulisciVecchioArchivio(){try{if(window.indexedDB)indexedDB.deleteDatabase('borrachos_match_center_privato')}catch(e){}}
  function install(){
