@@ -90,6 +90,11 @@ select:focus,input:focus{outline:2px solid var(--gold);outline-offset:0}
 .phase-badge.pre{background:#2a2f45;color:#cdd6ea}
 .phase-badge.pausa{background:#3a2a0b;color:var(--gold2)}
 .phase-badge.live{background:var(--red);color:#fff;animation:livepulse 1.6s infinite}
+.phase-badge.bloccata{background:#4a1020;color:#ffd2da;border:1px solid #e94560}
+body.asta-bloccata #search-wrap,body.asta-bloccata #btn-start,body.asta-bloccata #btn-pause-preauction,body.asta-bloccata #home-pause-preauction,body.asta-bloccata #bid-controls,body.asta-bloccata #btn-sell,body.asta-bloccata #btn-reset,body.asta-bloccata #btn-new,body.asta-bloccata .preauction-row button,body.asta-bloccata #corrections-page button:not(.btn-home),body.asta-bloccata .seriea-search{display:none!important}
+.blocco-box{margin-bottom:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.18);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.blocco-box.on{border-color:#e94560;background:rgba(233,69,96,.12)}
+.blocco-box .blocco-txt{flex:1;min-width:220px}
 @keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(233,69,96,.6)}50%{box-shadow:0 0 0 6px rgba(233,69,96,0)}}
 .team-info{margin-top:6px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .ti-name{font-family:"Arial Black",sans-serif;font-size:1rem}
@@ -338,6 +343,11 @@ function goToCampionato() {
 
     <div id="home-admin-tools" class="card home-card" style="display:none">
       <h3>⚙ Gestione Admin</h3>
+      <div class="blocco-box" id="blocco-box" style="display:none">
+        <div class="blocco-txt"><b id="blocco-titolo">🔓 Asta sbloccata</b><div class="home-status" id="blocco-desc"></div></div>
+        <button type="button" class="btn-start" id="btn-blocco-asta" onclick="toggleBloccoAsta()">🔒 Blocca asta</button>
+        <div class="error" id="blocco-error" style="width:100%"></div>
+      </div>
       <div class="admin-tools">
         <div>
           <h3>🔄 Deleghe</h3>
@@ -712,6 +722,7 @@ var currentPlayerRuolo = null;
 
 var auctionStarted = false;
 var auctionPausedPreauction = false;
+var auctionBloccata = false;
 var actionBusy = false;
 var subscriptionsReady = false;
 var sessionUser = null;
@@ -805,12 +816,14 @@ function showError(msg) {
 function updatePhaseInfo() {
   var el = document.getElementById('phase-info');
   var fase, testo, cls;
-  if (!auctionStarted) { fase='PRE-ASTA'; cls='pre'; testo='Svincoli aperti · recupero 50% (100% se il giocatore non è più in Serie A)'; }
+  if (auctionBloccata) { fase='🔒 ASTA BLOCCATA'; cls='bloccata'; testo='Il superadmin ha bloccato l\'asta: puoi consultare rose e movimenti, ma non si possono chiamare giocatori, fare offerte o svincolare.'; }
+  else if (!auctionStarted) { fase='PRE-ASTA'; cls='pre'; testo='Svincoli aperti · recupero 50% (100% se il giocatore non è più in Serie A)'; }
   else if (auctionPausedPreauction) { fase='ASTA SOSPESA'; cls='pausa'; testo='L\'admin ha riaperto temporaneamente gli svincoli pre-asta'; }
   else { fase='ASTA IN CORSO'; cls='live'; testo='Offerte aperte · timer 30 s alla chiamata, 10 s dopo ogni rilancio'; }
+  try{document.body.classList.toggle('asta-bloccata',auctionBloccata);}catch(e){}
   el.innerHTML = '<span class="phase-badge '+cls+'">'+fase+'</span><span class="phase-text">'+testo+'</span>';
   var idle = document.getElementById('auction-idle-text');
-  if (idle) idle.textContent = !auctionStarted ? 'L\'asta non è ancora iniziata.' : (auctionPausedPreauction ? 'Asta sospesa: sono aperti gli svincoli pre-asta.' : 'In attesa della prossima chiamata dell\'admin…');
+  if (idle) idle.textContent = auctionBloccata ? 'Asta bloccata dal superadmin.' : !auctionStarted ? 'L\'asta non è ancora iniziata.' : (auctionPausedPreauction ? 'Asta sospesa: sono aperti gli svincoli pre-asta.' : 'In attesa della prossima chiamata dell\'admin…');
 }
 
 
@@ -1051,6 +1064,8 @@ async function loadPreAuctionTeams(){
   var msg=document.getElementById('preauction-message'),sel=document.getElementById('preauction-team'); msg.textContent=''; sel.innerHTML='';
   var state=await sb.rpc('league_auction_phase');
   if(state.error){msg.textContent='Errore fase asta: '+state.error.message;return;}
+  if(state.data){auctionBloccata=state.data.bloccata===true;updatePhaseInfo();}
+  if(auctionBloccata){msg.textContent='🔒 Asta bloccata dal superadmin: gli svincoli non sono disponibili.';document.getElementById('preauction-list').innerHTML='';return;}
   if(state.data&&state.data.started && !state.data.paused_preauction){msg.textContent='L’asta è in corso. Un Admin può usare “⏸ Torna a PRE-ASTA” per riaprire temporaneamente gli svincoli.';document.getElementById('preauction-list').innerHTML='';return;}
   var r=await sb.rpc('league_preauction_teams');
   if(r.error){msg.textContent='Errore: '+r.error.message;return;}
@@ -1112,7 +1127,9 @@ async function loadHome(){
   if(!phaseHome.error && phaseHome.data){
     auctionStarted=phaseHome.data.started===true;
     auctionPausedPreauction=phaseHome.data.paused_preauction===true;
+    auctionBloccata=phaseHome.data.bloccata===true;
   }
+  updatePhaseInfo();
   updatePausePreauctionButton();
   var isSuper=homeLeagueState.is_super_admin===true;
   document.getElementById('home-identity').innerHTML='Sei entrato come <strong>'+escapeHtml(homeLeagueState.squadra||'')+'</strong>'+(isSuper?' — <span class="admin-badge">SUPER ADMIN</span>':(myRole==='admin'?' — <span class="admin-badge">ADMIN</span>':''));
@@ -1120,6 +1137,7 @@ async function loadHome(){
   document.getElementById('admin-status').innerHTML='👑 Super Admin permanente: <strong>'+escapeHtml(homeLeagueState.super_admin||'—')+'</strong>'+(admins.length?' · Admin aggiuntivi: <strong>'+admins.map(escapeHtml).join(', ')+'</strong>':' · Nessun admin aggiuntivo');
   document.getElementById('admin-transfer-box').style.display=isSuper?'block':'none';
   document.getElementById('home-admin-tools').style.display=myRole==='admin'?'block':'none';
+  var bb=document.getElementById('blocco-box'); if(bb)bb.style.display=isSuper?'flex':'none'; updateBloccoBox();
   document.getElementById('admin-accept-box').style.display='none';
   var sel=document.getElementById('admin-target-team'); sel.innerHTML='';
   (homeLeagueState.squadre||[]).forEach(function(t){ if(t!==homeLeagueState.super_admin && admins.indexOf(t)<0){var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);} });
@@ -1474,7 +1492,7 @@ async function syncAuctionState() {
     r.data;
 
   var phase = await sb.rpc('league_auction_phase');
-  if (!phase.error && phase.data) auctionPausedPreauction = phase.data.paused_preauction === true;
+  if (!phase.error && phase.data) { auctionPausedPreauction = phase.data.paused_preauction === true; auctionBloccata = phase.data.bloccata === true; }
 
 
   if (st.started_at) {
@@ -3076,6 +3094,43 @@ initSearch();
 
 restoreSession();
 
+
+/* =========================================================
+   BLOCCO ASTA (solo superadmin) - borrachos-blocco-asta-v1
+   ========================================================= */
+function updateBloccoBox(){
+  var box=document.getElementById('blocco-box'); if(!box)return;
+  var t=document.getElementById('blocco-titolo'),d=document.getElementById('blocco-desc'),b=document.getElementById('btn-blocco-asta');
+  box.classList.toggle('on',auctionBloccata);
+  t.textContent=auctionBloccata?'🔒 Asta BLOCCATA':'🔓 Asta sbloccata';
+  d.textContent=auctionBloccata
+    ?'Nessuno può chiamare, offrire, aggiudicare, svincolare o correggere (admin compresi). Rose e movimenti restano visibili a tutti.'
+    :'Bloccala per congelare tutto fino alla prossima sessione d\'asta (es. fino a febbraio).';
+  b.textContent=auctionBloccata?'🔓 Sblocca asta':'🔒 Blocca asta';
+  b.className=auctionBloccata?'btn-start':'btn-reset';
+}
+async function toggleBloccoAsta(){
+  var e=document.getElementById('blocco-error'); e.textContent='';
+  var nuovo=!auctionBloccata;
+  if(!confirm(nuovo?'Bloccare l\'asta?\nNessuno potrà più chiamare, offrire o svincolare finché non la sblocchi.':'Sbloccare l\'asta?\nTornano attive le funzioni della fase attuale.'))return;
+  var b=document.getElementById('btn-blocco-asta'); b.disabled=true;
+  var r=await sb.rpc('superadmin_blocca_asta',{p_bloccata:nuovo});
+  b.disabled=false;
+  if(r.error){e.textContent='Errore: '+r.error.message;return;}
+  auctionBloccata=r.data===true; updatePhaseInfo(); updateBloccoBox(); updatePausePreauctionButton();
+}
+setInterval(async function(){
+  try{
+    if(!sessionUser||document.hidden)return;
+    var r=await sb.rpc('league_auction_phase'); if(r.error||!r.data)return;
+    var v=r.data.bloccata===true;
+    if(v!==auctionBloccata){
+      auctionBloccata=v; updatePhaseInfo(); updateBloccoBox();
+      var pp=document.getElementById('preauction-page');
+      if(pp&&pp.style.display!=='none'){ lastPreAuctionSignature=null; loadPreAuctionTeams(); }
+    }
+  }catch(err){}
+},5000);
 </script>
 
 </body>
