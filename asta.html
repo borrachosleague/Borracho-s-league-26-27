@@ -295,7 +295,7 @@ function goToCampionato() {
   <div class="home-status">Per entrare vai alla <b>Home</b> del sito, clicca il <b>logo della tua squadra</b> e inserisci la tua password: vale per l'asta e per il Match Center.</div>
   <input id="login-password" type="password" style="display:none" tabindex="-1" aria-hidden="true">
   <div class="login-actions">
-    <a class="btn-start" href="index.html" style="text-decoration:none;display:inline-block">🏠 Vai alla Home</a>
+    <a class="btn-start" href="index.html" target="_top" onclick="try{if(window.top!==window&&window.top.showPage){window.top.showPage('home');window.top.scrollTo(0,0);return false;}}catch(e){}" style="text-decoration:none;display:inline-block">🏠 Vai alla Home</a>
     <button class="btn-help" onclick="openHelp()">📖 Come funziona</button>
   </div>
   <div class="error" id="login-error"></div>
@@ -1376,6 +1376,7 @@ async function logout(){
   try{localStorage.removeItem('borrachos_mc_sessione_v1');}catch(e){}
   await sb.rpc('league_logout');
   await sb.auth.signOut();
+  try{if(window.top!==window&&window.top.borrachosAggiornaAccesso)window.top.borrachosAggiornaAccesso();}catch(e){}
   location.reload();
 }
 

@@ -9264,7 +9264,7 @@ body.home-editing #lu-layer,body.layout-editing #lu-layer{display:none!important
 
   function cliccaSquadra(t){
     if(mia){
-      if(mia.slug===t.slug){ apriCambio(); return; }
+      if(mia.slug===t.slug){ apriMenu(); return; }
       card.innerHTML='<img src="3d/'+t.logo+'.webp" alt=""><h3>'+esc(t.nome)+'</h3><p>Sei già entrato come <b>'+esc(mia.nome)+'</b>. Per entrare con un\'altra squadra prima esci.</p>'+
         '<div class="lu-azioni"><button class="lu-ok" id="lu-x">Esci e cambia squadra</button><button class="lu-no" id="lu-a">Annulla</button></div>';
       modal.classList.add('open');
@@ -9303,7 +9303,7 @@ body.home-editing #lu-layer,body.layout-editing #lu-layer{display:none!important
     try{ await mc().accedi(t.slug,password); }
     catch(e){ await c.rpc('league_logout'); throw Error(/errata/i.test(e.message)?'Password errata per '+t.nome:e.message); }
     try{ localStorage.setItem('fanta_selected_team',t.asta); }catch(e){}
-    mia=t; disegnaBarra();
+    mia=t; disegnaBarra(); ricaricaAsta();
     try{ await mc().attiva(); }catch(e){}
   }
 
@@ -9312,11 +9312,35 @@ body.home-editing #lu-layer,body.layout-editing #lu-layer{display:none!important
     try{ if(c){ await c.rpc('league_logout'); await c.auth.signOut(); } }catch(e){}
     try{ if(mc()) mc().esci(); else localStorage.removeItem('borrachos_mc_sessione_v1'); }catch(e){}
     try{ localStorage.removeItem('fanta_selected_team'); }catch(e){}
-    mia=null; disegnaBarra();
+    var eraDentro=!!mia; mia=null; disegnaBarra(); if(eraDentro) ricaricaAsta();
     if(!silenzioso) chiudi();
   }
   window.borrachosEsciTutto=function(){ return esciTutto(false); };
+  window.borrachosAggiornaAccesso=function(){ return ripristina(); };
 
+  function vaiA(pagina){
+    chiudi();
+    var btn=document.querySelector('.header .nav .nav-btn[onclick*="\''+pagina+'\'"]');
+    if(typeof showPage==='function') showPage(pagina,btn);
+    window.scrollTo(0,0);
+  }
+  function apriMenu(){
+    if(!mia) return;
+    card.innerHTML='<img src="3d/'+mia.logo+'.webp" alt=""><h3>'+esc(mia.nome)+'</h3><p>Sei dentro: Match Center e asta sono aperti per la tua squadra.</p>'+
+      '<div class="lu-azioni" style="flex-wrap:wrap"><button class="lu-ok" id="lu-m1">🍺 Match Center</button><button class="lu-ok" id="lu-m2">🔨 Asta</button></div>'+
+      '<div class="lu-azioni" style="flex-wrap:wrap"><button class="lu-no" id="lu-m3">Cambia password</button><button class="lu-no" id="lu-m4">Esci</button><button class="lu-no" id="lu-a">Chiudi</button></div>';
+    modal.classList.add('open');
+    document.getElementById('lu-m1').onclick=function(){ vaiA('live'); };
+    document.getElementById('lu-m2').onclick=function(){ vaiA('asta'); };
+    document.getElementById('lu-m3').onclick=apriCambio;
+    document.getElementById('lu-m4').onclick=function(){ window.borrachosEsciTutto(); };
+    document.getElementById('lu-a').onclick=chiudi;
+  }
+  // 1) la pagina asta e' incorporata (iframe) e caricata all'apertura del sito: la ricarico quando cambia l'accesso
+  function ricaricaAsta(){
+    var f=document.getElementById('asta-frame'); if(!f) return;
+    try{ f.contentWindow.location.reload(); }catch(e){ f.src='asta.html?t='+Date.now(); }
+  }
   function apriCambio(){
     if(!mia) return;
     card.innerHTML='<img src="3d/'+mia.logo+'.webp" alt=""><h3>Cambia password</h3><p>'+esc(mia.nome)+' · la nuova password vale per Match Center e asta.</p>'+
