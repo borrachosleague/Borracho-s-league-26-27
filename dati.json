@@ -34,7 +34,7 @@
       "gs": 13,
       "dr": 3,
       "pt": 13,
-      "pt_totali": 591.0
+      "pt_totali": 593.0
     },
     {
       "nome": "AC Asparaghese",
@@ -24749,7 +24749,7 @@
           "pt_casa": 59.5,
           "gol_casa": 0,
           "gol_trasferta": 2,
-          "pt_trasferta": 75.0,
+          "pt_trasferta": 77.0,
           "trasferta": "Il sesto Asensio"
         },
         {
@@ -24784,8 +24784,8 @@
       "nome": "TRICCHETRACHT",
       "dati": {
         "pt": 532.5,
-        "bonus": 28.5,
-        "pt mod": 1.0,
+        "bonus": 19.5,
+        "pt mod": 10.0,
         "pt tot": 562.0,
         "class": 10.0,
         "gol cl": 10.0,
@@ -24823,8 +24823,8 @@
       "nome": "ATL. IMPROVVISATO",
       "dati": {
         "pt": 502.0,
-        "bonus": 17.0,
-        "pt mod": 8.0,
+        "bonus": 22.0,
+        "pt mod": 3.0,
         "pt tot": 527.0,
         "class": 8.0,
         "gol cl": 6.0,
@@ -24862,8 +24862,8 @@
       "nome": "PARTIZAN DEGRADO",
       "dati": {
         "pt": 527.5,
-        "bonus": 15.5,
-        "pt mod": 15.5,
+        "bonus": 20.0,
+        "pt mod": 11.0,
         "pt tot": 558.5,
         "class": 14.0,
         "gol cl": 10.0,
@@ -24901,9 +24901,9 @@
       "nome": "SESTO ASENSIO",
       "dati": {
         "pt": 537.0,
-        "bonus": 17.5,
-        "pt mod": 36.5,
-        "pt tot": 591.0,
+        "bonus": 49.0,
+        "pt mod": 7.0,
+        "pt tot": 593.0,
         "class": 13.0,
         "gol cl": 16.0,
         "gol r": 17.0,
@@ -24940,8 +24940,8 @@
       "nome": "AC ASPARAGHESE",
       "dati": {
         "pt": 534.0,
-        "bonus": 37.0,
-        "pt mod": 22.5,
+        "bonus": 52.5,
+        "pt mod": 7.0,
         "pt tot": 593.5,
         "class": 12.0,
         "gol cl": 16.0,
@@ -24979,8 +24979,8 @@
       "nome": "PESCICULINI",
       "dati": {
         "pt": 538.0,
-        "bonus": 11.5,
-        "pt mod": 41.0,
+        "bonus": 50.5,
+        "pt mod": 2.0,
         "pt tot": 590.5,
         "class": 8.0,
         "gol cl": 15.0,
@@ -25018,8 +25018,8 @@
       "nome": "SHARK",
       "dati": {
         "pt": 528.5,
-        "bonus": 9.0,
-        "pt mod": 10.0,
+        "bonus": 12.0,
+        "pt mod": 7.0,
         "pt tot": 547.5,
         "class": 7.0,
         "gol cl": 7.0,
@@ -25057,8 +25057,8 @@
       "nome": "SAN GRIA",
       "dati": {
         "pt": 538.5,
-        "bonus": 33.0,
-        "pt mod": 16.0,
+        "bonus": 43.0,
+        "pt mod": 6.0,
         "pt tot": 587.5,
         "class": 11.0,
         "gol cl": 14.0,
@@ -25095,9 +25095,9 @@
     {
       "nome": "AS PIPPERIA",
       "dati": {
-        "pt": 542.5,
-        "bonus": 17.0,
-        "pt mod": 32.0,
+        "pt": 542.0,
+        "bonus": 49.5,
+        "pt mod": 0.0,
         "pt tot": 591.5,
         "class": 12.0,
         "gol cl": 15.0,
@@ -25135,8 +25135,8 @@
       "nome": "FC INTERNAZIOANALE",
       "dati": {
         "pt": 534.5,
-        "bonus": 24.5,
-        "pt mod": 40.0,
+        "bonus": 53.5,
+        "pt mod": 11.0,
         "pt tot": 599.0,
         "class": 15.0,
         "gol cl": 17.0,
